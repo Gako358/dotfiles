@@ -1,0 +1,41 @@
+##
+## Arch Linux repository mirrorlist
+## Filtered by mirror score from mirror status page
+## Generated on 2020-01-01
+##
+
+## Norway
+Server = http://mirror.neuf.no/archlinux/$repo/os/$arch
+## Norway
+Server = http://mirror.terrahost.no/linux/archlinux/$repo/os/$arch
+## Norway
+Server = http://mirror.archlinux.no/$repo/os/$arch
+## Norway
+Server = http://archlinux.uib.no/$repo/os/$arch
+## Sweden
+Server = http://ftp.myrveln.se/pub/linux/archlinux/$repo/os/$arch
+## Sweden
+Server = http://archlinux.dynamict.se/$repo/os/$arch
+## Sweden
+Server = http://ftp.lysator.liu.se/pub/archlinux/$repo/os/$arch
+## Sweden
+Server = http://ftpmirror.infania.net/mirror/archlinux/$repo/os/$arch
+## Sweden
+Server = http://ftp.acc.umu.se/mirror/archlinux/$repo/os/$arch
+## Denmark
+Server = http://mirrors.dotsrc.org/archlinux/$repo/os/$arch
+## Denmark
+Server = http://mirror.one.com/archlinux/$repo/os/$arch
+## Worldwide
+Server = http://mirror.rackspace.com/archlinux/$repo/os/$arch
+## Worldwide
+Server = http://mirrors.evowise.com/archlinux/$repo/os/$arch
+
+
+
+
+
+
+
+
+
