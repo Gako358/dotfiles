@@ -1,0 +1,57 @@
+! special
+*.foreground:   #c5c8c6
+*.background:   #1f2229
+*.cursorColor:  #f4f4f4
+
+! black
+*.color0:       #1f2229
+*.color8:       #8c42ab
+
+! red
+*.color1:       #d41919
+*.color9:       #ec0101
+
+! green
+*.color2:       #5ebdab
+*.color10:      #47d4b9
+
+! yellow
+*.color3:       #fea44c
+*.color11:      #ff8a18
+
+! blue
+*.color4:       #367bf0
+*.color12:      #277fff
+
+! magenta
+*.color5:       #bf2e5d
+*.color13:      #d71655
+
+! cyan
+*.color6:       #49aee6
+*.color14:      #05a1f7
+
+! white
+*.color7:       #e6e6e6
+*.color15:      #ffffff
+
+URxvt.geometry: 120x55
+URxvt.intensityStyles:	false
+URxvt.background:       [99]#141c21
+URxvt.depth:		32
+URxvt.scrollBar:	false
+URxvt.cursorColor:	white
+
+!!Hack Bold
+U!!Rxvt.font: xft:Hack Nerd Font:pixelsize=11:antialias=true:hinting=true
+!!URxvt.boldFont: xft:Hack Nerd Font:bold:pixelsize=11:antialias=true:hinting=true
+!!URxvt.italicFont: xft:Hack Nerd Font:italic:pixelsize=11:antialias=true:hinting=true
+!!URxvt.boldItalicFont: xft:Hack Nerd Font:bold:italic:pixelsize=11:antialias=true:hinting=true
+!!URxvt.letterSpace: 1
+
+!!DroidSansMono
+URxvt.font: xft:DroidSansMono Nerd Font:pixelsize=11:antialias=true:hinting=true
+URxvt.boldFont: xft:DroidSansMono Nerd Font:bold:pixelsize=11:antialias=true:hinting=true
+URxvt.italicFont: xft:DroidSansMono Nerd Font:italic:pixelsize=11:antialias=true:hinting=true
+URxvt.boldItalicFont: xft:DroidSansMono Nerd Font:bold:italic:pixelsize=11:antialias=true:hinting=true
+URxvt.letterSpace: 1
