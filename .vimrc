@@ -57,7 +57,7 @@ syntax on
 set completeopt=longest,menu
 set number
 set mouse=a
-set tabstop=8
+set tabstop=4
 set shiftwidth=4
 set autoindent
 set smartindent

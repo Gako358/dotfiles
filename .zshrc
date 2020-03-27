@@ -41,7 +41,7 @@ POWERLEVEL9K_CUSTOM_OS_ICON='echo   $(whoami) '
 POWERLEVEL9K_CUSTOM_OS_ICON_BACKGROUND=red
 POWERLEVEL9K_CUSTOM_OS_ICON_FOREGROUND=white
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(custom_os_icon ssh root_indicator dir dir_writable vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time status background_jobs time ram)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time status background_jobs time virtualenv)
 
 # -------------------------------- FUNCTIONS ---------------------------------
 function lazygit() {
@@ -63,6 +63,7 @@ plugins=(
 	git
 	zsh-syntax-highlighting
 	zsh-autosuggestions
+	virtualenv
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -70,6 +71,15 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 alias zshconfig="mate ~/.zshrc"
 alias ohmyzsh="mate ~/.oh-my-zsh"
-alias inf="~/Projects/Informatikk/"
+alias 11="~/Projects/INF1101/"
+alias p11="~/Projects/INF1101/Papers/"
+alias 14="~/Projects/INF1400/"
+alias p14="~/Projects/INF1400/Papers/"
+alias t="~/Projects/Tutorials/"
+alias t="~/Projects/Tutorials/"
+alias t11="~/Projects/Tutorials/Clang/"
+alias t14="~/Projects/Tutorials/Python/"
+alias fil="~/Projects/FIL0700/"
+alias pfil="~/Projects/FIL0700/exPhil/"
 
 neofetch
