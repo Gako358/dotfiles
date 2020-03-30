@@ -41,7 +41,7 @@ POWERLEVEL9K_CUSTOM_OS_ICON='echo   $(whoami) '
 POWERLEVEL9K_CUSTOM_OS_ICON_BACKGROUND=red
 POWERLEVEL9K_CUSTOM_OS_ICON_FOREGROUND=white
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(custom_os_icon ssh root_indicator dir dir_writable vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time status background_jobs time virtualenv)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time status background_jobs ram virtualenv)
 
 # -------------------------------- FUNCTIONS ---------------------------------
 function lazygit() {
