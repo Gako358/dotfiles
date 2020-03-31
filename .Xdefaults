@@ -35,24 +35,28 @@
 *.color7:       #c5c8c6
 *.color15:      #ffffff
 
+!-----------------------------------------
+!URXT Terminal Config
+!----------------------------------------
 
-URxvt.geometry: 120x55
+URxvt.geometry: 	190x46
 URxvt.intensityStyles:	false
 URxvt.background:       [99]#141c21
 URxvt.depth:		32
 URxvt.scrollBar:	false
 URxvt.cursorColor:	white
+URxvt.cursorBlink:	false
 
 !!Hack Bold
-U!!Rxvt.font: xft:Hack Nerd Font:pixelsize=11:antialias=true:hinting=true
-!!URxvt.boldFont: xft:Hack Nerd Font:bold:pixelsize=11:antialias=true:hinting=true
-!!URxvt.italicFont: xft:Hack Nerd Font:italic:pixelsize=11:antialias=true:hinting=true
-!!URxvt.boldItalicFont: xft:Hack Nerd Font:bold:italic:pixelsize=11:antialias=true:hinting=true
-!!URxvt.letterSpace: 1
+URxvt.font: xft:Hack Nerd Font:pixelsize=12:antialias=true:hinting=true
+URxvt.boldFont: xft:Hack Nerd Font:bold:pixelsize=11:antialias=true:hinting=true
+URxvt.italicFont: xft:Hack Nerd Font:italic:pixelsize=12:antialias=true:hinting=true
+URxvt.boldItalicFont: xft:Hack Nerd Font:bold:italic:pixelsize=11:antialias=true:hinting=true
+URxvt.letterSpace: 1
 
 !!DroidSansMono
-URxvt.font: xft:DroidSansMono Nerd Font:pixelsize=11:antialias=true:hinting=true
-URxvt.boldFont: xft:DroidSansMono Nerd Font:bold:pixelsize=11:antialias=true:hinting=true
-URxvt.italicFont: xft:DroidSansMono Nerd Font:italic:pixelsize=11:antialias=true:hinting=true
-URxvt.boldItalicFont: xft:DroidSansMono Nerd Font:bold:italic:pixelsize=11:antialias=true:hinting=true
-URxvt.letterSpace: 1
+!!URxvt.font: xft:DroidSansMono Nerd Font:pixelsize=10:antialias=true:hinting=true
+!!URxvt.boldFont: xft:DroidSansMono Nerd Font:bold:pixelsize=9:antialias=true:hinting=true
+!!URxvt.italicFont: xft:DroidSansMono Nerd Font:italic:pixelsize=10:antialias=true:hinting=true
+!!URxvt.boldItalicFont: xft:DroidSansMono Nerd Font:bold:italic:pixelsize=9:antialias=true:hinting=true
+!!URxvt.letterSpace: 2
