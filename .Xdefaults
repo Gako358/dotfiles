@@ -48,15 +48,6 @@ URxvt.cursorColor:	white
 URxvt.cursorBlink:	false
 
 !!Hack Bold
-URxvt.font: xft:Hack Nerd Font:pixelsize=12:antialias=true:hinting=true
-URxvt.boldFont: xft:Hack Nerd Font:bold:pixelsize=11:antialias=true:hinting=true
-URxvt.italicFont: xft:Hack Nerd Font:italic:pixelsize=12:antialias=true:hinting=true
-URxvt.boldItalicFont: xft:Hack Nerd Font:bold:italic:pixelsize=11:antialias=true:hinting=true
-URxvt.letterSpace: 1
-
-!!DroidSansMono
-!!URxvt.font: xft:DroidSansMono Nerd Font:pixelsize=10:antialias=true:hinting=true
-!!URxvt.boldFont: xft:DroidSansMono Nerd Font:bold:pixelsize=9:antialias=true:hinting=true
-!!URxvt.italicFont: xft:DroidSansMono Nerd Font:italic:pixelsize=10:antialias=true:hinting=true
-!!URxvt.boldItalicFont: xft:DroidSansMono Nerd Font:bold:italic:pixelsize=9:antialias=true:hinting=true
-!!URxvt.letterSpace: 2
+URxvt.font: xft:NotoSans Nerd Font:style=Regular:pixelsize=12
+URxvt.boldFont: xft:NotoSans Nerd Font:style=Bold:pixelsize=11
+URxvt.letterSpace: -2
