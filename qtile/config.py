@@ -269,7 +269,8 @@ screens = [
                     font="Arial", foreground = colors[2],
                     text ="◤", fontsize = 73, padding = -11,
                 ),
-                widget.LaunchBar(progs=[('gimp', 'gimp', 'start gimp')]),
+                widget.LaunchBar(progs=[('gimp', 'gimp', 'start gimp')],
+                                 default_icon = '/home/merrinx/Pictures/Buttons/menu.png'),
                 widget.Systray(
                     background = colors[1],
                     foreground = colors[1],
