@@ -1,7 +1,7 @@
 ! special
 *.foreground:   #ebdbb2
 *.background:   #282828
-*.cursorColor:  #c5c8c6
+*.cursorColor:  #f8f8f2
 
 ! black
 *.color0:       #282828
@@ -41,7 +41,7 @@
 
 URxvt.geometry: 	190x46
 URxvt.intensityStyles:	false
-URxvt.background:       [99]#141c21
+URxvt.background:       [97]#141c21
 URxvt.depth:		32
 URxvt.scrollBar:	false
 URxvt.cursorColor:	white

@@ -63,10 +63,7 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 "" Color
-"" Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
-"" Sets the gruvbox to dark theme
-set bg=dark
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
@@ -167,8 +164,8 @@ set ruler
 set number
 
 let no_buffers_menu=1
-""silent! colorscheme molokai
 silent! colorscheme gruvbox
+set bg=dark
 
 set mousemodel=popup
 set t_Co=256
