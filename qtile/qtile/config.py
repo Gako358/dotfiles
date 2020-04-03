@@ -222,14 +222,24 @@ screens = [
                     font = "Arial", foreground = colors[2],
                     text = "◢", fontsize=73, padding = -11,
                 ),
+                widget.TextBox(
+                    font = "Arial", foreground = colors[1],
+                    text = "⟳", fontsize=28, padding = 0,
+                    background = colors[2],
+                ),
+                widget.Pacman(
+                    foreground = colors[1],
+                    background = colors[2],
+                    padding = 5,
+                ),
                 widget.BatteryIcon(
                     foreground = colors[1],
                     background = colors[2],
-                    padding = 7,
+                    padding = 5,
                 ),
                 widget.TextBox(
                     font = "Arial", foreground = colors[1],
-                    text = "", fontsize = 19, padding = 0,
+                    text = "", fontsize = 28, padding = 0,
                     background = colors[2],
                 ),
                 widget.Memory(
@@ -239,7 +249,7 @@ screens = [
                 ),
                 widget.TextBox(
                     font = "Arial", foreground = colors[1],
-                    text = "↯", fontsize = 19, padding = 0,
+                    text = "↯", fontsize = 28, padding = 0,
                     background = colors[2],
                 ),
                 widget.Net(
@@ -250,7 +260,7 @@ screens = [
                 ),
                 widget.TextBox( 
                     font = "Arial", foreground = colors[1],
-                    text = "♫", fontsize = 19, padding = 0,
+                    text = "♫", fontsize = 28, padding = 0,
                     background = colors[2],
                 ),
                 widget.Volume(
@@ -260,7 +270,7 @@ screens = [
                 ),
                 widget.TextBox(
                     font = "Arial", foreground = colors[3],
-                    text = "", fontsize=16, padding = 0,
+                    text = "", fontsize=28, padding = 0,
                     background = colors[2],
                 ),
                 widget.Clock(
@@ -268,7 +278,7 @@ screens = [
                     background = colors[2],
                     format="%d-%m-%Y %H: %M",
                     font = "TerminessTTF Nerd Font Medium",
-                    fonsize = 15,
+                    fonsize = 19,
                 ),
                 widget.TextBox(
                     font="Arial", foreground = colors[2],
