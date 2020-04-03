@@ -155,7 +155,7 @@ screens = [
                 ),
                 widget.GroupBox(
                     font="FontAwesome",
-                    fontsize = 15,
+                    fontsize = 16,
                     margin_y = -1,
                     margin_x = 0,
                     padding_y = 6,
@@ -211,6 +211,32 @@ screens = [
                     foreground = colors[1],
                     background = colors[2],
                     padding = 7,
+                ),
+                widget.TextBox(
+                    font = "Arial", foreground = colors[1],
+                    text = "", fontsize = 19, padding = 0,
+                    background = colors[2],
+                ),
+                widget.Memory(
+                    foreground = colors[1],
+                    background = colors[2],
+                    padding = 5,
+                ),
+                widget.TextBox(
+                    font = "Arial", foreground = colors[1],
+                    text = "↯", fontsize = 19, padding = 0,
+                    background = colors[2],
+                ),
+                widget.Net(
+                    interface = "wlp2s0",
+                    foreground = colors[1],
+                    background = colors[2],
+                    padding = 5,
+                ),
+                widget.TextBox( 
+                    font = "Arial", foreground = colors[1],
+                    text = "♫", fontsize = 19, padding = 0,
+                    background = colors[2],
                 ),
                 widget.Volume(
                     foreground = colors[1],
