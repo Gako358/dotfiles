@@ -1,39 +1,39 @@
 ! special
-*.foreground:   #c5c8c6
-*.background:   #1d1f21
-*.cursorColor:  #c5c8c6
+*.foreground:   #f8f8f2
+*.background:   #2b2c2a
+*.cursorColor:  #f8f8f2
 
 ! black
-*.color0:       #1d1f21
-*.color8:       #969896
+*.color0:       #272822
+*.color8:       #75715e
 
 ! red
-*.color1:       #cc342b
-*.color9:       #cc342b
+*.color1:       #f92672
+*.color9:       #f92672
 
 ! green
-*.color2:       #198844
-*.color10:      #198844
+*.color2:       #a6e22e
+*.color10:      #a6e22e
 
 ! yellow
-*.color3:       #fba922
-*.color11:      #fba922
+*.color3:       #f4bf75
+*.color11:      #f4bf75
 
 ! blue
-*.color4:       #3971ed
-*.color12:      #3971ed
+*.color4:       #66d9ef
+*.color12:      #66d9ef
 
 ! magenta
-*.color5:       #a36ac7
-*.color13:      #a36ac7
+*.color5:       #ae81ff
+*.color13:      #ae81ff
 
 ! cyan
-*.color6:       #66cccc
-*.color14:      #66cccc
+*.color6:       #a1efe4
+*.color14:      #a1efe4
 
 ! white
-*.color7:       #c5c8c6
-*.color15:      #ffffff
+*.color7:       #f8f8f2
+*.color15:      #f9f8f5
 
 !-----------------------------------------
 !URXT Terminal Config
