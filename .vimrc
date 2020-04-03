@@ -64,7 +64,7 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 
 "" Color
-Plug 'morhetz/gruvbox'
+Plug 'tomasr/molokai'
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
@@ -168,8 +168,7 @@ set number
 let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
 
 let no_buffers_menu=1
-silent! colorscheme gruvbox
-set bg=dark
+silent! colorscheme molokai
 
 set mousemodel=popup
 set t_Co=256

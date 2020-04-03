@@ -1,39 +1,39 @@
 ! special
-*.foreground:   #ebdbb2
-*.background:   #282828
-*.cursorColor:  #f8f8f2
+*.foreground:   #f1ebeb
+*.background:   #2a252a
+*.cursorColor:  #f1ebeb
 
 ! black
-*.color0:       #282828
-*.color8:       #928374
+*.color0:       #48483e
+*.color8:       #76715e
 
 ! red
-*.color1:       #cc241d
-*.color9:       #fb4934
+*.color1:       #dc2566
+*.color9:       #fa2772
 
 ! green
-*.color2:       #98971a
-*.color10:      #b8bb26
+*.color2:       #8fc029
+*.color10:      #a7e22e
 
 ! yellow
-*.color3:       #d79921
-*.color11:      #fabd2f
+*.color3:       #d4c96e
+*.color11:      #e7db75
 
 ! blue
-*.color4:       #458588
-*.color12:      #83a598
+*.color4:       #55bcce
+*.color12:      #66d9ee
 
 ! magenta
-*.color5:       #b16286
-*.color13:      #d3869b
+*.color5:       #9358fe
+*.color13:      #ae82ff
 
 ! cyan
-*.color6:       #689d6a
-*.color14:      #8ec07c
+*.color6:       #56b7a5
+*.color14:      #66efd5
 
 ! white
-*.color7:       #a89984
-*.color15:      #ebdbb2
+*.color7:       #acada1
+*.color15:      #cfd0c2
 
 !-----------------------------------------
 !URXT Terminal Config
@@ -41,7 +41,6 @@
 
 URxvt.geometry: 	190x46
 URxvt.intensityStyles:	false
-URxvt.background:       [99]#141c21
 URxvt.depth:		32
 URxvt.scrollBar:	false
 URxvt.cursorColor:	white
