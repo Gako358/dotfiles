@@ -17,11 +17,12 @@ keys = [
     Key([mod], "F4", lazy.spawn('lyx')),
     Key([mod], "F6", lazy.spawn('discord')),
     Key([mod], "F7", lazy.spawn('thunderbird')),
+    Key([mod], "r", lazy.spawn("urxvt -e ranger")),
     Key([mod], "Return", lazy.spawn("urxvt")),
 
     Key([mod], "q", lazy.window.kill()),
     Key([mod], "f", lazy.window.toggle_fullscreen()),
-    Key([mod], "r", lazy.spawncmd()),
+    Key([mod], "w", lazy.spawncmd()),
 
     # Super + Shift 
     Key([mod, "shift"], "h", lazy.layout.swap_left()),
@@ -108,7 +109,7 @@ for i, (name, kwargs) in enumerate(group_names, 1):
 ##### DEFAULT THEME SETTINGS FOR LAYOUTS #####
 layout_theme = {"border_width": 3,
                 "margin": 37,
-                "border_focus": "16a085",
+                "border_focus": "3daee9",
                 "border_normal": "1D2330"
                 }
 layouts = [
@@ -132,7 +133,9 @@ def init_colors():
             ["#a9a9a9", "#a9a9a9"], # color 9
             ["#16a085", "#16a085"], # color 10 #Cyan
             ["#3daee9", "#3daee9"], # color 11 #Blue
-            ["#fba922", "#fba922"]] # color 12 #Orange
+            ["#fba922", "#fba922"], # color 12 #Orange
+            ["#3971ed", "#3971ed"], # color 13 #Dark Blue
+            ["#cc342b", "#cc342b"]] # color 14 #Red
 
 colors = init_colors()
 
@@ -165,7 +168,7 @@ screens = [
                     inactive = colors[1],
                     rounded = False,
                     highlight_method = "text",
-                    this_current_screen_border = colors[10],
+                    this_current_screen_border = colors[14],
                     foreground = colors[1],
                     background = colors[2]
                 ),
