@@ -41,13 +41,32 @@
 
 URxvt.geometry: 	190x46
 URxvt.intensityStyles:	false
-URxvt.background:       [99]#141c21
+URxvt.background:       [91]#141c21
 URxvt.depth:		32
 URxvt.scrollBar:	false
 URxvt.cursorColor:	white
 URxvt.cursorBlink:	false
 
 !!Hack Bold
-URxvt.font: xft:NotoSans Nerd Font:style=Regular:pixelsize=12
-URxvt.boldFont: xft:NotoSans Nerd Font:style=Bold:pixelsize=11
-URxvt.letterSpace: -2
+URxvt.font: xft:NotoSans Nerd Font:style=Regular:pixelsize=13
+URxvt.boldFont: xft:NotoSans Nerd Font:style=Bold:pixelsize=12
+URxvt.letterSpace: -1
+
+! Perl Extension
+URxvt.perl-ext-common:  default,matcher
+URxvt.matcher.button:   1
+URxvt.urlLauncher:      firefox
+
+URxvt.perl-ext-common:  ...,font-size
+URxvt.keysym.C-Up:      perl:font-size:increase
+URxvt.keysym.C-Down:    perl:font-size:decrease
+
+
+
+
+
+
+
+
+
+
