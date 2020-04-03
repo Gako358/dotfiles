@@ -15,6 +15,7 @@ keys = [
 
     Key([mod], "F1", lazy.spawn('firefox')),
     Key([mod], "F4", lazy.spawn('lyx')),
+    Key([mod], "F5", lazy.spawn('gimp')),
     Key([mod], "F6", lazy.spawn('discord')),
     Key([mod], "F7", lazy.spawn('thunderbird')),
     Key([mod], "r", lazy.spawn("urxvt -e ranger")),
@@ -34,8 +35,8 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown()),
 
     # Increase / Decrease Brightness
-    Key([], "XF86MonBrightnessUp", lazy.spawn("xorg-xbacklight -inc 5")),
-    Key([], "XF86MonBrightnessDown", lazy.spawn("xorg-xbacklight -dec 5")),
+    Key([], "XF86MonBrightnessUp", lazy.spawn("xbacklight -inc 10")),
+    Key([], "XF86MonBrightnessDown", lazy.spawn("xbacklight -dec 10")),
 
     # Increase / Decrease Volume
     Key([], "XF86AudioMute", lazy.spawn("amixer -q set Master toggle")),
@@ -74,7 +75,7 @@ keys = [
         lazy.layout.shrink(),
         lazy.layout.increase_nmaster(),
         ),
-    
+
     # System Commands
     Key([mod, "control"], "x", lazy.run_extension(extension.CommandSet(
         commands={
@@ -146,7 +147,18 @@ widget_defaults = dict(
     background=colors[1]
 )
 
-extension_defaults = widget_defaults.copy()
+extension_defaults = dict(
+    dmenu_promt=">",
+    dmenu_font='sans',
+    dmenu_fontsize = 12,
+    background=colors[1],
+    foreground=colors[2],
+    selected_background=colors[11],
+    selected_foreground=colors[14],
+    dmenu_height=24,
+)
+
+#extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(

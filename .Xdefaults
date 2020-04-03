@@ -41,7 +41,7 @@
 
 URxvt.geometry: 	190x46
 URxvt.intensityStyles:	false
-URxvt.background:       [97]#141c21
+URxvt.background:       [99]#141c21
 URxvt.depth:		32
 URxvt.scrollBar:	false
 URxvt.cursorColor:	white
