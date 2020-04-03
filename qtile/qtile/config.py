@@ -76,18 +76,6 @@ keys = [
         lazy.layout.increase_nmaster(),
         ),
 
-    # System Commands
-    Key([mod, "control"], "x", lazy.run_extension(extension.CommandSet(
-        commands={
-            'lock': 'slock',
-            'suspend': 'systemctl suspend && slock',
-            'restart': 'reboot',
-            'halt': 'systemctl poweroff',
-            'logout': 'qtile-cmd -o cmd -f shutdown',
-            'reload': 'qtile-cmd -o cmd -f restart',
-            },
-        foreground="2F343F", selected_background="c0c5ce"))),
-
     Key([mod], "Tab", lazy.next_layout()),
     Key([mod], "space", lazy.window.toggle_floating()),
 ]
@@ -147,18 +135,7 @@ widget_defaults = dict(
     background=colors[1]
 )
 
-extension_defaults = dict(
-    dmenu_promt=">",
-    dmenu_font='sans',
-    dmenu_fontsize = 12,
-    background=colors[1],
-    foreground=colors[2],
-    selected_background=colors[11],
-    selected_foreground=colors[14],
-    dmenu_height=24,
-)
-
-#extension_defaults = widget_defaults.copy()
+extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(
@@ -292,6 +269,7 @@ screens = [
                     font="Arial", foreground = colors[2],
                     text ="◤", fontsize = 73, padding = -11,
                 ),
+                widget.LaunchBar(progs=[('gimp', 'gimp', 'start gimp')]),
                 widget.Systray(
                     background = colors[1],
                     foreground = colors[1],
