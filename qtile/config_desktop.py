@@ -260,7 +260,7 @@ def init_widgets_list_1():
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[12],
+            font = "Arial", foreground = colors[5],
             text = "", fontsize=28, padding = 0,
             background = colors[2],
         ),
