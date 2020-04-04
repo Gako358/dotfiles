@@ -121,7 +121,8 @@ def init_colors():
             ["#20b4ea", "#20b4ea"], # color 8 Blue
             ["#ae81ff", "#ae81ff"], # color 9 Magneta
             ["#a1efe4", "#a1efe4"], # color 10 Cyan
-            ["#f8f8f2", "#f8f8f2"]] # color 11 White
+            ["#f8f8f2", "#f8f8f2"], # color 11 White
+            ["#c36a05", "#c36a05"]] # color 12 Orange
 
 colors = init_colors()
 
@@ -183,7 +184,7 @@ screens = [
                 widget.Prompt(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 15,
-                    foreground = colors[4],
+                    foreground = colors[11],
                     background = colors[3],
                 ),
                 widget.WindowName(
@@ -192,12 +193,31 @@ screens = [
                     foreground = colors[8],
                     background = colors[3],
                 ),
+
+                widget.LaunchBar(progs=[
+                    ('Lock', 'slock', 'Screen Lock')],
+                    default_icon = '/home/merrinx/Pictures/Buttons/lock.png',
+                    padding = 0,
+                    background = colors[3],
+                ),
+                widget.LaunchBar(progs=[
+                    ('Sleep', 'systemctl suspend', 'Sleep')],
+                    default_icon = '/home/merrinx/Pictures/Buttons/sleep.png',
+                    padding = 0,
+                    background = colors[3],
+                ),
+                widget.LaunchBar(progs=[
+                    ('Logout', 'qshell:self.qtile.cmd_shutdown()', 'Logout')],
+                    default_icon = '/home/merrinx/Pictures/Buttons/logout.png',
+                    padding = 0,
+                    background = colors[3],
+                ),
                 widget.TextBox(
                     font = "Arial", foreground = colors[2],
                     text = "◢", fontsize=73, padding = -11,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[1],
+                    font = "Arial", foreground = colors[12],
                     text = "⟳", fontsize=28, padding = 0,
                     background = colors[2],
                 ),
@@ -220,7 +240,7 @@ screens = [
                     show_short_text = True,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[1],
+                    font = "Arial", foreground = colors[12],
                     text = "", fontsize = 28, padding = 0,
                     background = colors[2],
                 ),
@@ -230,7 +250,7 @@ screens = [
                     padding = 5,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[1],
+                    font = "Arial", foreground = colors[12],
                     text = "↯", fontsize = 28, padding = 0,
                     background = colors[2],
                 ),
@@ -241,7 +261,7 @@ screens = [
                     padding = 5,
                 ),
                 widget.TextBox( 
-                    font = "Arial", foreground = colors[1],
+                    font = "Arial", foreground = colors[12],
                     text = "♫", fontsize = 28, padding = 0,
                     background = colors[2],
                 ),
@@ -251,7 +271,7 @@ screens = [
                     padding = 5,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[1],
+                    font = "Arial", foreground = colors[12],
                     text = "", fontsize=28, padding = 0,
                     background = colors[2],
                 ),
@@ -266,8 +286,6 @@ screens = [
                     font="Arial", foreground = colors[2],
                     text ="◤", fontsize = 73, padding = -11,
                 ),
-                widget.LaunchBar(progs=[('gimp', 'gimp', 'start gimp')],
-                                 default_icon = '/home/merrinx/Pictures/Buttons/menu.png'),
                 widget.Systray(
                     background = colors[3],
                     foreground = colors[1],
