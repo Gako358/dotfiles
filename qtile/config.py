@@ -110,21 +110,18 @@ layouts = [
 ]
 
 def init_colors():
-    return [["#2F343F", "#2F343F"], # color 0
-            ["#2F343F", "#2F343F"], # color 1
-            ["#c0c5ce", "#c0c5ce"], # color 2
-            ["#720000", "#720000"], # color 3
-            ["#3384d0", "#3384d0"], # color 4
-            ["#f3f4f5", "#f3f4f5"], # color 5
-            ["#cd1f3f", "#cd1f3f"], # color 6
-            ["#773d8e", "#773d8e"], # color 7 #1a2f56 #62FF00
-            ["#6790eb", "#6790eb"], # color 8
-            ["#a9a9a9", "#a9a9a9"], # color 9
-            ["#16a085", "#16a085"], # color 10 #Cyan
-            ["#3daee9", "#3daee9"], # color 11 #Blue
-            ["#fba922", "#fba922"], # color 12 #Orange
-            ["#3971ed", "#3971ed"], # color 13 #Dark Blue
-            ["#cc342b", "#cc342b"]] # color 14 #Red
+    return [["#2F343F", "#2F343F"], # color 0 Dark Grey
+            ["#2F343F", "#2F343F"], # color 1 Dark Grey
+            ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
+            ["#272822", "#272822"], # color 3 Black
+            ["#75715e", "#75715e"], # color 4 Brown
+            ["#c30046", "#c30046"], # color 5 Red
+            ["#a4f600", "#a4f600"], # color 6 Green
+            ["#f4bf75", "#f4bf75"], # color 7 Yellow
+            ["#20b4ea", "#20b4ea"], # color 8 Blue
+            ["#ae81ff", "#ae81ff"], # color 9 Magneta
+            ["#a1efe4", "#a1efe4"], # color 10 Cyan
+            ["#f8f8f2", "#f8f8f2"]] # color 11 White
 
 colors = init_colors()
 
@@ -132,7 +129,7 @@ widget_defaults = dict(
     font='sans',
     fontsize=12,
     padding=2,
-    background=colors[1]
+    background=colors[3]
 )
 
 extension_defaults = widget_defaults.copy()
@@ -153,11 +150,11 @@ screens = [
                     padding_y = 6,
                     padding_x = 5,
                     borderwidth = 0,
-                    active = colors[11],
+                    active = colors[8],
                     inactive = colors[1],
                     rounded = False,
                     highlight_method = "text",
-                    this_current_screen_border = colors[14],
+                    this_current_screen_border = colors[9],
                     foreground = colors[1],
                     background = colors[2]
                 ),
@@ -168,8 +165,8 @@ screens = [
                 widget.CurrentLayout(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 13,
-                    foreground = colors[11],
-                    background = colors[1],
+                    foreground = colors[8],
+                    background = colors[3],
                 ),
                 widget.CurrentLayoutIcon(
                     font = "TerminessTTF Nerd Font Medium",
@@ -181,19 +178,19 @@ screens = [
                     linewidth = 1,
                     padding = 10,
                     foreground = colors[2],
-                    background = colors[1],
+                    background = colors[3],
                 ),
                 widget.Prompt(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 15,
-                    foreground = colors[5],
-                    background = colors[1],
+                    foreground = colors[4],
+                    background = colors[3],
                 ),
                 widget.WindowName(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 15,
-                    foreground = colors[5],
-                    background = colors[1],
+                    foreground = colors[8],
+                    background = colors[3],
                 ),
                 widget.TextBox(
                     font = "Arial", foreground = colors[2],
@@ -254,7 +251,7 @@ screens = [
                     padding = 5,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[3],
+                    font = "Arial", foreground = colors[1],
                     text = "", fontsize=28, padding = 0,
                     background = colors[2],
                 ),
@@ -272,7 +269,7 @@ screens = [
                 widget.LaunchBar(progs=[('gimp', 'gimp', 'start gimp')],
                                  default_icon = '/home/merrinx/Pictures/Buttons/menu.png'),
                 widget.Systray(
-                    background = colors[1],
+                    background = colors[3],
                     foreground = colors[1],
                     icon_size = 25,
                     pading = 5,

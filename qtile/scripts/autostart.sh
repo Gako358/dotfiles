@@ -10,8 +10,8 @@ is_running() {
 
 # Set the background image
 # feh --bg-fill /home/merrinx/Pictures/Wallpapers/abstract_face.jpg &
-feh --bg-fill /home/merrinx/Pictures/Wallpapers/digital_sky.jpg &
-# feh --bg-fill /home/merrinx/Pictures/Wallpapers/digital_forrest.jpg &
+# feh --bg-fill /home/merrinx/Pictures/Wallpapers/digital_sky.jpg &
+feh --bg-fill /home/merrinx/Pictures/Wallpapers/digital_forrest.jpg &
 
 # Wait to let the X-Session start up correctly
 sleep 1
