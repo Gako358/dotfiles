@@ -14,10 +14,10 @@ mod = "mod4"
 keys = [
 
     Key([mod], "F1", lazy.spawn('firefox')),
-    Key([mod], "F4", lazy.spawn('lyx')),
-    Key([mod], "F5", lazy.spawn('gimp')),
-    Key([mod], "F6", lazy.spawn('discord')),
-    Key([mod], "F7", lazy.spawn('thunderbird')),
+    Key([mod], "F2", lazy.spawn('thunderbird')),
+    Key([mod], "F3", lazy.spawn('discord')),
+    Key([mod], "F5", lazy.spawn('lyx')),
+    Key([mod], "F6", lazy.spawn('gimp')),
     Key([mod], "r", lazy.spawn("urxvt -e ranger")),
     Key([mod], "Return", lazy.spawn("urxvt")),
 
@@ -30,6 +30,8 @@ keys = [
     Key([mod, "shift"], "l", lazy.layout.swap_right()),
     Key([mod, "shift"], "k", lazy.layout.shuffle_down()),
     Key([mod, "shift"], "j", lazy.layout.shuffle_up()),
+    
+    Key([mod, "shift"], "F3", lazy.spawn('steam')),
 
     # Super + Ctrl
     Key([mod, "control"], "r", lazy.restart()),
@@ -49,6 +51,9 @@ keys = [
     Key([mod], "k", lazy.layout.up()),
     Key([mod], "h", lazy.layout.left()),
     Key([mod], "l", lazy.layout.right()),
+    
+    Key([mod], "z", 
+        lazy.layout.down()),
 
     # Change Focus to selected screen
     Key([mod], "a", lazy.to_screen(0)),
@@ -86,13 +91,13 @@ keys = [
 ]
 
 ##### GROUPS #####
-group_names = [(" Web", {'layout': 'floating'}),
+group_names = [(" Web", {'layout': 'stack'}),
                (" Dev", {'layout': 'monadtall'}),
-               (" Sys", {'layout': 'monadtall'}),
+               (" Game", {'layout': 'stack'}),
+               (" Vbox", {'layout': 'stack'}),
                (" Doc", {'layout': 'monadtall'}),
-               (" Vbox", {'layout': 'monadtall'}),
-               (" Chat", {'layout': 'monadtall'}),
-               (" Mail", {'layout': 'monadtall'})]
+               (" Img", {'layout': 'monadtall'}),
+               (" Sys", {'layout': 'monadtall'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
@@ -107,7 +112,7 @@ layout_theme = {"border_width": 3,
                 "border_normal": "1D2330"
                 }
 layouts = [
-    layout.Stack(num_stacks=2),
+    layout.Stack(num_stacks=1,margin=37),
     layout.MonadTall(**layout_theme),
     layout.Bsp(**layout_theme),
     layout.Max(**layout_theme),
