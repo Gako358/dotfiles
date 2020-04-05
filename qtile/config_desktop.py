@@ -92,12 +92,12 @@ keys = [
 
 ##### GROUPS #####
 group_names = [(" Web", {'layout': 'stack'}),
-               (" Dev", {'layout': 'monadtall'}),
+               (" Sys", {'layout': 'monadtall'}),
                (" Chat", {'layout': 'stack'}),
-               (" Vbox", {'layout': 'stack'}),
+               (" Dev", {'layout': 'stack'}),
                (" Doc", {'layout': 'monadtall'}),
-               (" Img", {'layout': 'monadtall'}),
-               (" Sys", {'layout': 'monadtall'})]
+               (" Media", {'layout': 'monadtall'}),
+               (" Vbox", {'layout': 'monadtall'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
