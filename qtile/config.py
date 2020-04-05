@@ -17,7 +17,7 @@ keys = [
     Key([mod], "F2", lazy.spawn('thunderbird')),
     Key([mod], "F3", lazy.spawn('discord')),
     Key([mod], "F5", lazy.spawn('lyx')),
-    Key([mod], "F7", lazy.spawn('gimp')),
+    Key([mod], "F6", lazy.spawn('gimp')),
     Key([mod], "r", lazy.spawn("urxvt -e ranger")),
     Key([mod], "Return", lazy.spawn("urxvt")),
 
