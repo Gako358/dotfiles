@@ -158,7 +158,7 @@ def init_widgets_list_1():
             inactive = colors[1],
             rounded = False,
             highlight_method = "text",
-            this_current_screen_border = colors[9],
+            this_current_screen_border = colors[5],
             foreground = colors[1],
             background = colors[2]
         ),
@@ -307,7 +307,7 @@ def init_widgets_list_2():
             inactive = colors[1],
             rounded = False,
             highlight_method = "text",
-            this_current_screen_border = colors[9],
+            this_current_screen_border = colors[5],
             foreground = colors[1],
             background = colors[2]
         ),
