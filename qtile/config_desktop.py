@@ -280,6 +280,11 @@ def init_widgets_list_1():
             font="Arial", foreground = colors[2],
             text ="◤", fontsize = 73, padding = -11,
         ),
+        widget.KeyboardLayout(
+            configured_keyboards = ['us', 'no'],
+            background = colors[3],
+            foreground = colors[11],
+        ),
         widget.Systray(
             background = colors[3],
             foreground = colors[1],
