@@ -290,7 +290,7 @@ screens = [
                     text ="◤", fontsize = 73, padding = -11,
                 ),
                 widget.KeyboardLayout(
-                    padding = 1,
+                    configured_keyboards = ['us', 'no'],
                 ),
                 widget.Systray(
                     background = colors[3],
