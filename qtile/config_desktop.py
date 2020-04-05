@@ -16,8 +16,9 @@ keys = [
     Key([mod], "F1", lazy.spawn('firefox')),
     Key([mod], "F2", lazy.spawn('thunderbird')),
     Key([mod], "F3", lazy.spawn('discord')),
-    Key([mod], "F5", lazy.spawn('lyx')),
-    Key([mod], "F6", lazy.spawn('gimp')),
+    Key([mod], "F4", lazy.spawn('lyx')),
+    Key([mod], "F5", lazy.spawn('gimp')),
+    Key([mod], "F6", lazy.spawn('steam')),
     Key([mod], "r", lazy.spawn("urxvt -e ranger")),
     Key([mod], "Return", lazy.spawn("urxvt")),
 
@@ -31,15 +32,11 @@ keys = [
     Key([mod, "shift"], "k", lazy.layout.shuffle_down()),
     Key([mod, "shift"], "j", lazy.layout.shuffle_up()),
     
-    Key([mod, "shift"], "F3", lazy.spawn('steam')),
-
     # Super + Ctrl
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
-
-    # Increase / Decrease Brightness
-    Key([], "XF86MonBrightnessUp", lazy.spawn("xbacklight -inc 10")),
-    Key([], "XF86MonBrightnessDown", lazy.spawn("xbacklight -dec 10")),
+    
+    Key([mod, "control"], "x", lazy.spawn("slock")),
 
     # Increase / Decrease Volume
     Key([], "XF86AudioMute", lazy.spawn("amixer -q set Master toggle")),
@@ -52,8 +49,8 @@ keys = [
     Key([mod], "h", lazy.layout.left()),
     Key([mod], "l", lazy.layout.right()),
     
-    Key([mod], "z", 
-        lazy.layout.down()),
+    Key([mod], "z", lazy.layout.down()),
+    Key([mod], "x", lazy.layout.down()),
 
     # Change Focus to selected screen
     Key([mod], "a", lazy.to_screen(0)),
@@ -91,13 +88,13 @@ keys = [
 ]
 
 ##### GROUPS #####
-group_names = [(" Web", {'layout': 'stack'}),
-               (" Sys", {'layout': 'monadtall'}),
-               (" Chat", {'layout': 'stack'}),
-               (" Dev", {'layout': 'stack'}),
-               (" Doc", {'layout': 'monadtall'}),
-               (" Media", {'layout': 'monadtall'}),
-               (" Vbox", {'layout': 'monadtall'})]
+group_names = [(" Web", {'layout': 'floating'}),
+               (" Sys", {'layout': 'monadtall'}),
+               (" Chat", {'layout': 'stack'}),
+               (" Dev", {'layout': 'monadtall'}),
+               (" Doc", {'layout': 'monadtall'}),
+               (" Steam", {'layout': 'stack'}),
+               (" Vbox", {'layout': 'stack'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
@@ -114,8 +111,6 @@ layout_theme = {"border_width": 3,
 layouts = [
     layout.Stack(num_stacks=1,margin=37),
     layout.MonadTall(**layout_theme),
-    layout.Bsp(**layout_theme),
-    layout.Max(**layout_theme),
     layout.Floating(**layout_theme)
 ]
 
