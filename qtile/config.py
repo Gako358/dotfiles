@@ -16,8 +16,8 @@ keys = [
     Key([mod], "F1", lazy.spawn('firefox')),
     Key([mod], "F2", lazy.spawn('thunderbird')),
     Key([mod], "F3", lazy.spawn('discord')),
-    Key([mod], "F5", lazy.spawn('lyx')),
-    Key([mod], "F6", lazy.spawn('gimp')),
+    Key([mod], "F4", lazy.spawn('lyx')),
+    Key([mod], "F5", lazy.spawn('gimp')),
     Key([mod], "r", lazy.spawn("urxvt -e ranger")),
     Key([mod], "Return", lazy.spawn("urxvt")),
 
@@ -30,9 +30,12 @@ keys = [
     Key([mod, "shift"], "l", lazy.layout.swap_right()),
     Key([mod, "shift"], "k", lazy.layout.shuffle_down()),
     Key([mod, "shift"], "j", lazy.layout.shuffle_up()),
+
     # Super + Ctrl
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
+
+    Key([mod, "control"], "x", lazy.spawn("slock")),
 
     # Increase / Decrease Brightness
     Key([], "XF86MonBrightnessUp", lazy.spawn("xbacklight -inc 10")),
@@ -84,13 +87,13 @@ keys = [
 ]
 
 ##### GROUPS #####
-group_names = [(" Web", {'layout': 'stack'}),
-               (" Sys", {'layout': 'monadtall'}),
-               (" Chat", {'layout': 'stack'}),
-               (" Dev", {'layout': 'stack'}),
-               (" Doc", {'layout': 'monadtall'}),
-               (" Img", {'layout': 'monadtall'}),
-               (" Vbox", {'layout': 'monadtall'})]
+group_names = [(" Web", {'layout': 'floating'}),
+               (" Sys", {'layout': 'monadtall'}),
+               (" Chat", {'layout': 'stack'}),
+               (" Dev", {'layout': 'monadtall'}),
+               (" Doc", {'layout': 'monadtall'}),
+               (" Media", {'layout': 'stack'}),
+               (" Vbox", {'layout': 'stack'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
@@ -107,8 +110,6 @@ layout_theme = {"border_width": 3,
 layouts = [
     layout.Stack(num_stacks=1,margin=37),
     layout.MonadTall(**layout_theme),
-    layout.Bsp(**layout_theme),
-    layout.Max(**layout_theme),
     layout.Floating(**layout_theme)
 ]
 
@@ -158,7 +159,7 @@ screens = [
                     inactive = colors[1],
                     rounded = False,
                     highlight_method = "text",
-                    this_current_screen_border = colors[9],
+                    this_current_screen_border = colors[5],
                     foreground = colors[1],
                     background = colors[2]
                 ),
