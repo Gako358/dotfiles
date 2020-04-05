@@ -86,7 +86,7 @@ keys = [
 ##### GROUPS #####
 group_names = [(" Web", {'layout': 'stack'}),
                (" Dev", {'layout': 'monadtall'}),
-               (" Chat", {'layout': 'stack'}),
+               (" Chat", {'layout': 'stack'}),
                (" Vbox", {'layout': 'stack'}),
                (" Doc", {'layout': 'monadtall'}),
                (" Img", {'layout': 'monadtall'}),
