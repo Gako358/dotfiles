@@ -27,5 +27,3 @@ fi;
 # Network manager
 [[ $(is_running 'nm-applet') ]] || nm-applet &
 
-# Applications
-run ckb-next &
