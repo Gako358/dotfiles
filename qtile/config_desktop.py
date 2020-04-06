@@ -397,7 +397,7 @@ floating_layout = layout.Floating(float_rules=[
     {'wname': 'pinentry'},  # GPG key password entry
     {'wmclass': 'ssh-askpass'},  # ssh-askpass
 ])
-auto_fullscreen = True
+auto_fullscreen = False
 focus_on_window_activation = "smart"
 
 ##### STARTUP APPLICATIONS #####
