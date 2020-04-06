@@ -147,7 +147,7 @@ let g:session_command_aliases = 1
 "*****************************************************************************
 syntax on
 set ruler
-set relativenumber 
+set number relativenumber 
 
 " You Complete Me Global settings
 let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
