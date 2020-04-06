@@ -1,24 +1,6 @@
 "*****************************************************************************
 "" Vim-PLug core
 "*****************************************************************************
-let vimplug_exists=expand('~/.vim/autoload/plug.vim')
-
-let g:vim_bootstrap_langs = "c,html,javascript,lua,python"
-let g:vim_bootstrap_editor = "vim"				" nvim or vim
-
-if !filereadable(vimplug_exists)
-  if !executable("curl")
-    echoerr "You have to install curl or first install vim-plug yourself!"
-    execute "q!"
-  endif
-  echo "Installing Vim-Plug..."
-  echo ""
-  silent exec "!\curl -fLo " . vimplug_exists . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-  let g:not_finish_vimplug = "yes"
-
-  autocmd VimEnter * PlugInstall
-endif
-
 " Required:
 call plug#begin(expand('~/.vim/plugged'))
 
@@ -38,9 +20,9 @@ Plug 'Raimondi/delimitMate'
 Plug 'majutsushi/tagbar'
 Plug 'w0rp/ale'
 Plug 'Yggdroot/indentLine'
-Plug 'avelino/vim-bootstrap-updater'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
+Plug 'mbbill/undotree'
 Plug 'Valloric/YouCompleteMe'
 
 if isdirectory('/usr/local/opt/fzf')
@@ -65,7 +47,7 @@ Plug 'honza/vim-snippets'
 
 "" Color
 Plug 'tomasr/molokai'
-let g:molokai_original = 1
+let g:rehash256 = 1
 "*****************************************************************************
 "" Custom bundles
 "*****************************************************************************
@@ -132,6 +114,9 @@ set softtabstop=0
 set shiftwidth=4
 set expandtab
 
+"" Vim tries to indent the files
+set smartindent
+
 "" Map leader to ,
 let mapleader=','
 
@@ -163,44 +148,21 @@ let g:session_command_aliases = 1
 "*****************************************************************************
 syntax on
 set ruler
-set number relativenumber
+set relativenumber 
 
 " You Complete Me Global settings
 let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
+
+nnoremap <silent> <Leader>cd :YcmCompleter GoTo<CR>
+nnoremap <silent> <Leader>cf :YcmCompleter FixIt<CR>
 
 let no_buffers_menu=1
 silent! colorscheme molokai
 
 set mousemodel=popup
+set mouse=a
+
 set t_Co=256
-set guioptions=egmrti
-set gfn=Monospace\ 10
-
-if has("gui_running")
-  if has("gui_mac") || has("gui_macvim")
-    set guifont=Menlo:h12
-    set transparency=7
-  endif
-else
-  let g:CSApprox_loaded = 1
-
-  " IndentLine
-  let g:indentLine_enabled = 1
-  let g:indentLine_concealcursor = 0
-  let g:indentLine_char = '┆'
-  let g:indentLine_faster = 1
-
-  
-  if $COLORTERM == 'gnome-terminal'
-    set term=gnome-256color
-  else
-    if $TERM == 'xterm'
-      set term=xterm-256color
-    endif
-  endif
-  
-endif
-
 
 if &term =~ '256color'
   set t_ut=
@@ -332,6 +294,9 @@ set autoread
 "" Split
 noremap <Leader>h :<C-u>split<CR>
 noremap <Leader>v :<C-u>vsplit<CR>
+
+"" UndoTree
+noremap <Leader>u :UndotreeShow<CR>
 
 "" Git
 noremap <Leader>ga :Gwrite<CR>

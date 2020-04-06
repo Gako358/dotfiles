@@ -47,8 +47,8 @@ URxvt.cursorColor:	white
 URxvt.cursorBlink:	false
 
 !!Hack Bold
-URxvt.font: xft:NotoSans Nerd Font:style=Regular:pixelsize=13
-URxvt.boldFont: xft:NotoSans Nerd Font:style=Bold:pixelsize=12
+URxvt.font: xft:Hack Nerd Font Mono:style=Regular:pixelsize=13
+URxvt.boldFont: xft:Hack Nerd Font:style=Bold:pixelsize=12
 URxvt.letterSpace: -1
 
 ! Perl Extension

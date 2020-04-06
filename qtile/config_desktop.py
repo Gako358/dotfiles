@@ -50,7 +50,7 @@ keys = [
     Key([mod], "l", lazy.layout.right()),
     
     Key([mod], "z", lazy.layout.down()),
-    Key([mod], "x", lazy.layout.down()),
+    Key([mod], "x", lazy.layout.up()),
 
     # Change Focus to selected screen
     Key([mod], "a", lazy.to_screen(0)),
