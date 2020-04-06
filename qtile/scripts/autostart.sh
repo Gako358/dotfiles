@@ -21,7 +21,7 @@ sleep 1
 
 # Compton visual compositing but not for qtile as it messes things up
 if ! [[ $RUNNING_QTILE ]]; then
-  [[ $(is_running 'picom') ]] || picom -CG &
+  [[ $(is_running 'picom') ]] || picom -CGb -d :0 &
 fi;
 
 # Network manager
