@@ -53,8 +53,9 @@ keys = [
     Key([mod], "x", lazy.layout.up()),
 
     # Change Focus to selected screen
-    Key([mod], "a", lazy.to_screen(0)),
+    Key([mod], "s", lazy.to_screen(0)),
     Key([mod], "d", lazy.to_screen(1)),
+    Key([mod], "a", lazy.to_screen(2)),
 
     # Resize UP, DOWN, LEFT, RIGHT
     Key([mod, "control"], "l",
@@ -349,22 +350,28 @@ def init_widgets_list_2():
     return widgets_list
 
 def init_widgets_screen1():
-    widgets_screen1 = init_widgets_list_1()
+    widgets_screen1 = init_widgets_list_2()
     return widgets_screen1
 
 def init_widgets_screen2():
-    widgets_screen2 = init_widgets_list_2()
+    widgets_screen2 = init_widgets_list_1()
     return widgets_screen2
+
+def init_widgets_screen3():
+    widgets_screen3 = init_widgets_list_2()
+    return widgets_screen3
 
 def init_screens():
     return [Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=0.91, size=28)),
-            Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=0.91, size=28))]
+            Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=0.91, size=28)),
+            Screen(top=bar.Bar(widgets=init_widgets_screen3(), opacity=0.91, size=28))]
 
 if __name__ in ["config", "__main__"]:
     screens = init_screens()
-    widgets_list = init_widgets_list_1()
-    widgets_screen1 = init_widgets_screen1()
-    widgets_screen2 = init_widgets_screen2()
+    widgets_list = init_widgets_list_2()
+    widgets_screen1 = init_widgets_screen2()
+    widgets_screen2 = init_widgets_screen1()
+    widgets_screen3 = init_widgets_screen2()
 
 # Drag floating layouts.
 mouse = [
