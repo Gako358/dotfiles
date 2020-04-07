@@ -12,8 +12,8 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'majutsushi/tagbar'
-Plug 'Yggdroot/indentLine'
 Plug 'Valloric/YouCompleteMe'
+Plug 'jiangmiao/auto-pairs'
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
