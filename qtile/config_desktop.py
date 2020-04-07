@@ -84,18 +84,21 @@ keys = [
         lazy.layout.increase_nmaster(),
         ),
 
+    Key([mod], 'm', lazy.layout.maximize()),
+    Key([mod], 'n', lazy.layout.normalize()),
+
     Key([mod], "Tab", lazy.next_layout()),
     Key([mod], "space", lazy.window.toggle_floating()),
 ]
 
 ##### GROUPS #####
-group_names = [(" Web", {'layout': 'floating'}),
-               (" Sys", {'layout': 'monadtall'}),
-               (" Chat", {'layout': 'stack'}),
-               (" Dev", {'layout': 'monadtall'}),
+group_names = [(" Dev", {'layout': 'monadtall'}),
+               (" Web", {'layout': 'stack'}),
+               (" Sys", {'layout': 'verticaltile'}),
+               (" Chat", {'layout': 'verticaltile'}),
                (" Doc", {'layout': 'monadtall'}),
-               (" Steam", {'layout': 'stack'}),
-               (" Vbox", {'layout': 'stack'})]
+               (" Steam", {'layout': 'monadtall'}),
+               (" Vbox", {'layout': 'monadtall'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
@@ -105,14 +108,15 @@ for i, (name, kwargs) in enumerate(group_names, 1):
 
 ##### DEFAULT THEME SETTINGS FOR LAYOUTS #####
 layout_theme = {"border_width": 3,
-                "margin": 37,
+                "margin": 19,
                 "border_focus": "3daee9",
                 "border_normal": "1D2330"
                 }
 layouts = [
-    layout.Stack(num_stacks=1,margin=37),
+    layout.Stack(num_stacks=1,margin=19),
     layout.MonadTall(**layout_theme),
-    layout.Floating(**layout_theme)
+    layout.Floating(**layout_theme),
+    layout.VerticalTile(**layout_theme)
 ]
 
 def init_colors():
@@ -278,12 +282,8 @@ def init_widgets_list_1():
         ),
         widget.KeyboardLayout(
             configured_keyboards = ['us', 'no'],
-            background = colors[3],
-            foreground = colors[11],
         ),
         widget.Systray(
-            background = colors[3],
-            foreground = colors[1],
             icon_size = 25,
             pading = 5,
         ),
@@ -350,11 +350,11 @@ def init_widgets_list_2():
     return widgets_list
 
 def init_widgets_screen1():
-    widgets_screen1 = init_widgets_list_2()
+    widgets_screen1 = init_widgets_list_1()
     return widgets_screen1
 
 def init_widgets_screen2():
-    widgets_screen2 = init_widgets_list_1()
+    widgets_screen2 = init_widgets_list_2()
     return widgets_screen2
 
 def init_widgets_screen3():
@@ -369,8 +369,8 @@ def init_screens():
 if __name__ in ["config", "__main__"]:
     screens = init_screens()
     widgets_list = init_widgets_list_2()
-    widgets_screen1 = init_widgets_screen2()
-    widgets_screen2 = init_widgets_screen1()
+    widgets_screen1 = init_widgets_screen1()
+    widgets_screen2 = init_widgets_screen2()
     widgets_screen3 = init_widgets_screen2()
 
 # Drag floating layouts.

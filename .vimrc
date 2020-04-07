@@ -21,7 +21,7 @@ Plug 'xolox/vim-session'
 
 "" Color
 Plug 'tomasr/molokai'
-let g:rehash256 = 1
+let g:molokai_original = 1
 
 call plug#end()
 
