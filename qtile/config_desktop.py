@@ -129,7 +129,8 @@ def init_colors():
             ["#ce9178", "#ce9178"], # color 6 Orange
             ["#f44747", "#f44747"], # color 7 Red
             ["#646695", "#646695"], # color 8 Magneta
-            ["#d4d4d4", "#d4d4d4"]] # color 9 Text
+            ["#d4d4d4", "#d4d4d4"], # color 9 Text
+            ["#013c6e", "#013c6e"]] # color 10 Dark Blue
 
 colors = init_colors()
 
@@ -160,7 +161,7 @@ def init_widgets_list_1():
             inactive = colors[9],
             rounded = False,
             highlight_method = "text",
-            this_current_screen_border = colors[9],
+            this_current_screen_border = colors[0],
             foreground = colors[9],
             background = colors[3]
         ),
@@ -178,7 +179,7 @@ def init_widgets_list_1():
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
             scale = .70,
-            background = colors[2],
+            background = colors[4],
         ),
         widget.Sep(
             linewidth = 1,
@@ -221,7 +222,7 @@ def init_widgets_list_1():
             text = "◢", fontsize=73, padding = -11,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[7],
+            font = "Arial", foreground = colors[10],
             text = "⟳", fontsize=28, padding = 0,
             background = colors[3],
         ),
@@ -231,7 +232,7 @@ def init_widgets_list_1():
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[7],
+            font = "Arial", foreground = colors[0],
             text = "", fontsize = 28, padding = 0,
             background = colors[3],
         ),
@@ -241,7 +242,7 @@ def init_widgets_list_1():
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[7],
+            font = "Arial", foreground = colors[5],
             text = "↯", fontsize = 28, padding = 0,
             background = colors[3],
         ),
@@ -252,7 +253,7 @@ def init_widgets_list_1():
             padding = 5,
         ),
         widget.TextBox( 
-            font = "Arial", foreground = colors[7],
+            font = "Arial", foreground = colors[8],
             text = "♫", fontsize = 28, padding = 0,
             background = colors[3],
         ),
@@ -305,7 +306,7 @@ def init_widgets_list_2():
             inactive = colors[9],
             rounded = False,
             highlight_method = "text",
-            this_current_screen_border = colors[9],
+            this_current_screen_border = colors[0],
             foreground = colors[9],
             background = colors[3]
         ),
@@ -323,7 +324,7 @@ def init_widgets_list_2():
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
             scale = .70,
-            background = colors[2],
+            background = colors[4],
         ),
         widget.Sep(
             linewidth = 1,
