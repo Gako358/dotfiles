@@ -121,16 +121,19 @@ layouts = [
 
 def init_colors():
     return [["#1e1e1e", "#1e1e1e"], # color 0 Black
-            ["#2F343F", "#2F343F"], # color 1 Dark Grey
+            ["#808080", "#808080"], # color 1 Grey
             ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
             ["#569cd6", "#569cd6"], # color 3 Blue
             ["#608b4e", "#608b4e"], # color 4 Green
             ["#f1ac27", "#f1ac27"], # color 5 Yellow
             ["#ce9178", "#ce9178"], # color 6 Orange
-            ["#f44747", "#f44747"], # color 7 Red
-            ["#646695", "#646695"], # color 8 Magneta
+            ["#d16969", "#d16969"], # color 7 Red
+            ["#c586c0", "#c586c0"], # color 8 Magenta
             ["#d4d4d4", "#d4d4d4"], # color 9 Text
-            ["#013c6e", "#013c6e"]] # color 10 Dark Blue
+            ["#013c6e", "#013c6e"], # color 10 Dark Blue
+            ["#e69d0e", "#e69d0e"], # color 11 Dark Yellow
+            ["#646695", "#646695"], # color 12 Dark Magenta
+            ["#2F343F", "#2F343F"]] # color 13 Dark Grey
 
 colors = init_colors()
 
@@ -157,7 +160,7 @@ def init_widgets_list_1():
             padding_y = 6,
             padding_x = 5,
             borderwidth = 0,
-            active = colors[8],
+            active = colors[12],
             inactive = colors[9],
             rounded = False,
             highlight_method = "text",
@@ -172,7 +175,7 @@ def init_widgets_list_1():
         widget.CurrentLayout(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
-            foreground = colors[3],
+            foreground = colors[11],
             background = colors[0],
         ),
         widget.CurrentLayoutIcon(
@@ -190,13 +193,13 @@ def init_widgets_list_1():
         widget.Prompt(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[3],
+            foreground = colors[11],
             background = colors[0],
         ),
         widget.WindowName(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[3],
+            foreground = colors[11],
             background = colors[0],
         ),
         widget.LaunchBar(progs=[
@@ -232,7 +235,7 @@ def init_widgets_list_1():
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[0],
+            font = "Arial", foreground = colors[1],
             text = "", fontsize = 28, padding = 0,
             background = colors[3],
         ),
@@ -242,7 +245,7 @@ def init_widgets_list_1():
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[5],
+            font = "Arial", foreground = colors[11],
             text = "↯", fontsize = 28, padding = 0,
             background = colors[3],
         ),
@@ -253,7 +256,7 @@ def init_widgets_list_1():
             padding = 5,
         ),
         widget.TextBox( 
-            font = "Arial", foreground = colors[8],
+            font = "Arial", foreground = colors[12],
             text = "♫", fontsize = 28, padding = 0,
             background = colors[3],
         ),
@@ -302,7 +305,7 @@ def init_widgets_list_2():
             padding_y = 6,
             padding_x = 5,
             borderwidth = 0,
-            active = colors[8],
+            active = colors[12],
             inactive = colors[9],
             rounded = False,
             highlight_method = "text",
@@ -317,7 +320,7 @@ def init_widgets_list_2():
         widget.CurrentLayout(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
-            foreground = colors[3],
+            foreground = colors[11],
             background = colors[0],
         ),
         widget.CurrentLayoutIcon(
@@ -335,13 +338,13 @@ def init_widgets_list_2():
         widget.Prompt(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[3],
+            foreground = colors[11],
             background = colors[0],
         ),
         widget.WindowName(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[3],
+            foreground = colors[11],
             background = colors[0],
         ),
     ]
