@@ -113,14 +113,14 @@ layout_theme = {"border_width": 3,
                 "border_normal": "9cdcfe"
                 }
 layouts = [
-    layout.Stack(num_stacks=1,margin=19),
+    layout.Stack(num_stacks=1,margin=37),
     layout.MonadTall(**layout_theme),
     layout.Floating(**layout_theme),
     layout.VerticalTile(**layout_theme)
 ]
 
 def init_colors():
-    return [["#212225", "#212225"], # color 0 Black
+    return [["#1e1e1e", "#1e1e1e"], # color 0 Black
             ["#808080", "#808080"], # color 1 Grey
             ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
             ["#569cd6", "#569cd6"], # color 3 Blue
