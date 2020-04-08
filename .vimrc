@@ -21,7 +21,6 @@ Plug 'xolox/vim-session'
 
 "" Color
 Plug 'tomasr/molokai'
-let g:molokai_original = 1
 
 call plug#end()
 
@@ -78,6 +77,8 @@ nnoremap <silent> <Leader>cd :YcmCompleter GoTo<CR>
 nnoremap <silent> <Leader>cf :YcmCompleter FixIt<CR>
 
 let no_buffers_menu=1
+"let g:molokai_original = 1
+
 silent! colorscheme molokai
 
 set mousemodel=popup
