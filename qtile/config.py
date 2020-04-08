@@ -82,6 +82,9 @@ keys = [
         lazy.layout.increase_nmaster(),
         ),
 
+    Key([mod], 'm', lazy.layout.maximize()),
+    Key([mod], 'n', lazy.layout.normalize()),
+
     Key([mod], "Tab", lazy.next_layout()),
     Key([mod], "space", lazy.window.toggle_floating()),
 ]
@@ -104,8 +107,8 @@ for i, (name, kwargs) in enumerate(group_names, 1):
 ##### DEFAULT THEME SETTINGS FOR LAYOUTS #####
 layout_theme = {"border_width": 3,
                 "margin": 37,
-                "border_focus": "3daee9",
-                "border_normal": "1D2330"
+                "border_focus": "569cd6",
+                "border_normal": "9cdcfe"
                 }
 layouts = [
     layout.Stack(num_stacks=1,margin=37),
@@ -114,17 +117,20 @@ layouts = [
 ]
 
 def init_colors():
-    return [["#1e1e1e", "#1e1e1e"], # color 0 Black
-            ["#2F343F", "#2F343F"], # color 1 Dark Grey
+    return [["#212225", "#212225"], # color 0 Black
+            ["#808080", "#808080"], # color 1 Grey
             ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
             ["#569cd6", "#569cd6"], # color 3 Blue
             ["#608b4e", "#608b4e"], # color 4 Green
             ["#f1ac27", "#f1ac27"], # color 5 Yellow
             ["#ce9178", "#ce9178"], # color 6 Orange
-            ["#f44747", "#f44747"], # color 7 Red
-            ["#646695", "#646695"], # color 8 Magneta
+            ["#d16969", "#d16969"], # color 7 Red
+            ["#c586c0", "#c586c0"], # color 8 Magenta
             ["#d4d4d4", "#d4d4d4"], # color 9 Text
-            ["#013c6e", "#013c6e"]] # color 10 Dark Blue
+            ["#013c6e", "#013c6e"], # color 10 Dark Blue
+            ["#e69d0e", "#e69d0e"], # color 11 Dark Yellow
+            ["#646695", "#646695"], # color 12 Dark Magenta
+            ["#2F343F", "#2F343F"]] # color 13 Dark Grey
 
 colors = init_colors()
 
@@ -153,7 +159,7 @@ screens = [
                     padding_y = 6,
                     padding_x = 5,
                     borderwidth = 0,
-                    active = colors[8],
+                    active = colors[12],
                     inactive = colors[9],
                     rounded = False,
                     highlight_method = "text",
@@ -168,7 +174,7 @@ screens = [
                 widget.CurrentLayout(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 13,
-                    foreground = colors[3],
+                    foreground = colors[11],
                     background = colors[0],
                 ),
                 widget.CurrentLayoutIcon(
@@ -186,13 +192,13 @@ screens = [
                 widget.Prompt(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 15,
-                    foreground = colors[3],
+                    foreground = colors[11],
                     background = colors[0],
                 ),
                 widget.WindowName(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 15,
-                    foreground = colors[3],
+                    foreground = colors[11],
                     background = colors[0],
                 ),
 
@@ -242,7 +248,7 @@ screens = [
                     show_short_text = True,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[0],
+                    font = "Arial", foreground = colors[1],
                     text = "", fontsize = 28, padding = 0,
                     background = colors[3],
                 ),
@@ -252,7 +258,7 @@ screens = [
                     padding = 5,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[5],
+                    font = "Arial", foreground = colors[11],
                     text = "↯", fontsize = 28, padding = 0,
                     background = colors[3],
                 ),
@@ -263,7 +269,7 @@ screens = [
                     padding = 5,
                 ),
                 widget.TextBox( 
-                    font = "Arial", foreground = colors[8],
+                    font = "Arial", foreground = colors[12],
                     text = "♫", fontsize = 28, padding = 0,
                     background = colors[3],
                 ),
@@ -297,7 +303,7 @@ screens = [
                 ),
             ],
             28,
-            opacity=0.97,
+            opacity=0.99,
         ),
     ),
 ]
