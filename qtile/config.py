@@ -114,19 +114,17 @@ layouts = [
 ]
 
 def init_colors():
-    return [["#2F343F", "#2F343F"], # color 0 Dark Grey
+    return [["#1e1e1e", "#1e1e1e"], # color 0 Black
             ["#2F343F", "#2F343F"], # color 1 Dark Grey
             ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
-            ["#272822", "#272822"], # color 3 Black
-            ["#75715e", "#75715e"], # color 4 Brown
-            ["#c30046", "#c30046"], # color 5 Red
-            ["#a4f600", "#a4f600"], # color 6 Green
-            ["#f4bf75", "#f4bf75"], # color 7 Yellow
-            ["#20b4ea", "#20b4ea"], # color 8 Blue
-            ["#ae81ff", "#ae81ff"], # color 9 Magneta
-            ["#a1efe4", "#a1efe4"], # color 10 Cyan
-            ["#f8f8f2", "#f8f8f2"], # color 11 White
-            ["#c36a05", "#c36a05"]] # color 12 Orange
+            ["#569cd6", "#569cd6"], # color 3 Blue
+            ["#608b4e", "#608b4e"], # color 4 Green
+            ["#f1ac27", "#f1ac27"], # color 5 Yellow
+            ["#ce9178", "#ce9178"], # color 6 Orange
+            ["#f44747", "#f44747"], # color 7 Red
+            ["#646695", "#646695"], # color 8 Magneta
+            ["#d4d4d4", "#d4d4d4"], # color 9 Text
+            ["#013c6e", "#013c6e"]] # color 10 Dark Blue
 
 colors = init_colors()
 
@@ -134,7 +132,7 @@ widget_defaults = dict(
     font='sans',
     fontsize=12,
     padding=2,
-    background=colors[3]
+    background=colors[0]
 )
 
 extension_defaults = widget_defaults.copy()
@@ -144,7 +142,7 @@ screens = [
         top=bar.Bar(
             [
                 widget.TextBox(
-                    font="Arial", foreground= colors[2],
+                    font="Arial", foreground= colors[3],
                     text="◢", fontsize=73, padding=-11
                 ),
                 widget.GroupBox(
@@ -156,152 +154,150 @@ screens = [
                     padding_x = 5,
                     borderwidth = 0,
                     active = colors[8],
-                    inactive = colors[1],
+                    inactive = colors[9],
                     rounded = False,
                     highlight_method = "text",
-                    this_current_screen_border = colors[5],
-                    foreground = colors[1],
-                    background = colors[2]
+                    this_current_screen_border = colors[0],
+                    foreground = colors[9],
+                    background = colors[3]
                 ),
                 widget.TextBox(
-                    font="Arial", foreground= colors[2],
+                    font="Arial", foreground= colors[3],
                     text="◤", fontsize=73, padding=-11
                 ),
                 widget.CurrentLayout(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 13,
-                    foreground = colors[8],
-                    background = colors[3],
+                    foreground = colors[3],
+                    background = colors[0],
                 ),
                 widget.CurrentLayoutIcon(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 13,
                     scale = .70,
-                    background = colors[2],
+                    background = colors[4],
                 ),
                 widget.Sep(
                     linewidth = 1,
                     padding = 10,
                     foreground = colors[2],
-                    background = colors[3],
+                    background = colors[0],
                 ),
                 widget.Prompt(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 15,
-                    foreground = colors[11],
-                    background = colors[3],
+                    foreground = colors[3],
+                    background = colors[0],
                 ),
                 widget.WindowName(
                     font = "TerminessTTF Nerd Font Medium",
                     fontsize = 15,
-                    foreground = colors[8],
-                    background = colors[3],
+                    foreground = colors[3],
+                    background = colors[0],
                 ),
 
                 widget.LaunchBar(progs=[
                     ('Lock', 'slock', 'Screen Lock')],
                     default_icon = '/home/merrinx/Pictures/Buttons/lock.png',
                     padding = 0,
-                    background = colors[3],
+                    background = colors[0],
                 ),
                 widget.LaunchBar(progs=[
                     ('Sleep', 'systemctl suspend', 'Sleep')],
                     default_icon = '/home/merrinx/Pictures/Buttons/sleep.png',
                     padding = 0,
-                    background = colors[3],
+                    background = colors[0],
                 ),
                 widget.LaunchBar(progs=[
                     ('Logout', 'qshell:self.qtile.cmd_shutdown()', 'Logout')],
                     default_icon = '/home/merrinx/Pictures/Buttons/logout.png',
                     padding = 0,
-                    background = colors[3],
+                    background = colors[0],
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[2],
+                    font = "Arial", foreground = colors[3],
                     text = "◢", fontsize=73, padding = -11,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[12],
+                    font = "Arial", foreground = colors[10],
                     text = "⟳", fontsize=28, padding = 0,
-                    background = colors[2],
+                    background = colors[3],
                 ),
                 widget.Pacman(
-                    foreground = colors[1],
-                    background = colors[2],
+                    foreground = colors[9],
+                    background = colors[3],
                     padding = 5,
                 ),
                 widget.BatteryIcon(
-                    foreground = colors[1],
-                    background = colors[2],
+                    foreground = colors[0],
+                    background = colors[3],
                     padding = 0,
                 ),
                 widget.Battery(
-                    foreground = colors[1],
-                    background = colors[2],
+                    foreground = colors[9],
+                    background = colors[3],
                     padding = 5,
                     discharge_char = '',
                     format = '{char} {percent:2.0%}',
                     show_short_text = True,
                 ),
                 widget.TextBox(
-                    font = "Arial", foreground = colors[12],
+                    font = "Arial", foreground = colors[0],
                     text = "", fontsize = 28, padding = 0,
-                    background = colors[2],
+                    background = colors[3],
                 ),
                 widget.Memory(
-                    foreground = colors[1],
-                    background = colors[2],
-                    padding = 5,
-                ),
-                widget.TextBox(
-                    font = "Arial", foreground = colors[12],
-                    text = "↯", fontsize = 28, padding = 0,
-                    background = colors[2],
-                ),
-                widget.Net(
-                    interface = "wlp2s0",
-                    foreground = colors[1],
-                    background = colors[2],
-                    padding = 5,
-                ),
-                widget.TextBox( 
-                    font = "Arial", foreground = colors[12],
-                    text = "♫", fontsize = 28, padding = 0,
-                    background = colors[2],
-                ),
-                widget.Volume(
-                    foreground = colors[1],
-                    background = colors[2],
+                    foreground = colors[9],
+                    background = colors[3],
                     padding = 5,
                 ),
                 widget.TextBox(
                     font = "Arial", foreground = colors[5],
+                    text = "↯", fontsize = 28, padding = 0,
+                    background = colors[3],
+                ),
+                widget.Net(
+                    interface = "wlp2s0",
+                    foreground = colors[9],
+                    background = colors[3],
+                    padding = 5,
+                ),
+                widget.TextBox( 
+                    font = "Arial", foreground = colors[8],
+                    text = "♫", fontsize = 28, padding = 0,
+                    background = colors[3],
+                ),
+                widget.Volume(
+                    foreground = colors[9],
+                    background = colors[3],
+                    padding = 5,
+                ),
+                widget.TextBox(
+                    font = "Arial", foreground = colors[7],
                     text = "", fontsize=28, padding = 0,
-                    background = colors[2],
+                    background = colors[3],
                 ),
                 widget.Clock(
-                    foreground = colors[1],
-                    background = colors[2],
+                    foreground = colors[9],
+                    background = colors[3],
                     format="%d-%m-%Y %H: %M",
                     font = "TerminessTTF Nerd Font Medium",
                     fonsize = 19,
                 ),
                 widget.TextBox(
-                    font="Arial", foreground = colors[2],
+                    font="Arial", foreground = colors[3],
                     text ="◤", fontsize = 73, padding = -11,
                 ),
                 widget.KeyboardLayout(
                     configured_keyboards = ['us', 'no'],
                 ),
                 widget.Systray(
-                    background = colors[3],
-                    foreground = colors[1],
                     icon_size = 25,
                     pading = 5,
                 ),
             ],
             28,
-            opacity=0.91,
+            opacity=0.97,
         ),
     ),
 ]
@@ -342,7 +338,7 @@ floating_layout = layout.Floating(float_rules=[
     {'wname': 'pinentry'},  # GPG key password entry
     {'wmclass': 'ssh-askpass'},  # ssh-askpass
 ])
-auto_fullscreen = True
+auto_fullscreen = False
 focus_on_window_activation = "smart"
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
