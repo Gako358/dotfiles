@@ -108,9 +108,9 @@ for i, (name, kwargs) in enumerate(group_names, 1):
 
 ##### DEFAULT THEME SETTINGS FOR LAYOUTS #####
 layout_theme = {"border_width": 3,
-                "margin": 19,
-                "border_focus": "3daee9",
-                "border_normal": "1D2330"
+                "margin": 37,
+                "border_focus": "569cd6",
+                "border_normal": "9cdcfe"
                 }
 layouts = [
     layout.Stack(num_stacks=1,margin=19),
@@ -120,7 +120,7 @@ layouts = [
 ]
 
 def init_colors():
-    return [["#1e1e1e", "#1e1e1e"], # color 0 Black
+    return [["#212225", "#212225"], # color 0 Black
             ["#808080", "#808080"], # color 1 Grey
             ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
             ["#569cd6", "#569cd6"], # color 3 Blue
@@ -363,9 +363,9 @@ def init_widgets_screen3():
     return widgets_screen3
 
 def init_screens():
-    return [Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=0.97, size=28)),
-            Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=0.97, size=28)),
-            Screen(top=bar.Bar(widgets=init_widgets_screen3(), opacity=0.97, size=28))]
+    return [Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=0.99, size=28)),
+            Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=0.99, size=28)),
+            Screen(top=bar.Bar(widgets=init_widgets_screen3(), opacity=0.99, size=28))]
 
 if __name__ in ["config", "__main__"]:
     screens = init_screens()
