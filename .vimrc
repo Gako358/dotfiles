@@ -20,7 +20,7 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 "" Color
-Plug 'tomasr/molokai'
+Plug 'tomasiser/vim-code-dark'
 
 call plug#end()
 
@@ -69,6 +69,7 @@ let g:session_command_aliases = 1
 syntax on
 set ruler
 set number relativenumber 
+set t_Co=256
 
 " You Complete Me Global settings
 let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/.ycm_extra_conf.py'
@@ -77,18 +78,12 @@ nnoremap <silent> <Leader>cd :YcmCompleter GoTo<CR>
 nnoremap <silent> <Leader>cf :YcmCompleter FixIt<CR>
 
 let no_buffers_menu=1
-"let g:molokai_original = 1
 
-silent! colorscheme molokai
+silent! colorscheme codedark
 
 set mousemodel=popup
 set mouse=a
-
-set t_Co=256
-
-if &term =~ '256color'
-  set t_ut=
-endif
+set bg=dark
 
 "" Disable the blinking cursor.
 set gcr=a:blinkon0
@@ -111,7 +106,7 @@ nnoremap n nzzzv
 nnoremap N Nzzzv
 
 " vim-airline
-let g:airline_theme = 'powerlineish'
+let g:airline_theme = 'codedark'
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
