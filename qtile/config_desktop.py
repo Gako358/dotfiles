@@ -20,10 +20,10 @@ keys = [
     Key([mod], "F5", lazy.spawn('gimp')),
     Key([mod], "F6", lazy.spawn('steam')),
     Key([mod], "r", lazy.spawn("urxvt -e ranger")),
+    Key([mod], "f", lazy.spawn('spacefm')),
     Key([mod], "Return", lazy.spawn("urxvt")),
 
     Key([mod], "q", lazy.window.kill()),
-    Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "w", lazy.spawncmd()),
 
     # Super + Shift 
@@ -31,6 +31,8 @@ keys = [
     Key([mod, "shift"], "l", lazy.layout.swap_right()),
     Key([mod, "shift"], "k", lazy.layout.shuffle_down()),
     Key([mod, "shift"], "j", lazy.layout.shuffle_up()),
+
+    Key([mod, "shift"], "f", lazy.window.toggle_fullscreen()),
     
     # Super + Ctrl
     Key([mod, "control"], "r", lazy.restart()),
