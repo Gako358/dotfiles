@@ -20,10 +20,10 @@ keys = [
     Key([mod], "F5", lazy.spawn('gimp')),
     Key([mod], "F6", lazy.spawn('steam')),
     Key([mod], "r", lazy.spawn("urxvt -e ranger")),
-    Key([mod], "f", lazy.spawn('spacefm')),
     Key([mod], "Return", lazy.spawn("urxvt")),
 
     Key([mod], "q", lazy.window.kill()),
+    Key([mod], "f", lazy.window.toggle_fullscreen()),
     Key([mod], "w", lazy.spawncmd()),
 
     # Super + Shift 
@@ -32,13 +32,15 @@ keys = [
     Key([mod, "shift"], "k", lazy.layout.shuffle_down()),
     Key([mod, "shift"], "j", lazy.layout.shuffle_up()),
 
-    Key([mod, "shift"], "f", lazy.window.toggle_fullscreen()),
-    
     # Super + Ctrl
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
-    
+
     Key([mod, "control"], "x", lazy.spawn("slock")),
+
+    # Increase / Decrease Brightness
+    Key([], "XF86MonBrightnessUp", lazy.spawn("xbacklight -inc 10")),
+    Key([], "XF86MonBrightnessDown", lazy.spawn("xbacklight -dec 10")),
 
     # Increase / Decrease Volume
     Key([], "XF86AudioMute", lazy.spawn("amixer -q set Master toggle")),
@@ -50,14 +52,9 @@ keys = [
     Key([mod], "k", lazy.layout.up()),
     Key([mod], "h", lazy.layout.left()),
     Key([mod], "l", lazy.layout.right()),
-    
-    Key([mod], "z", lazy.layout.down()),
-    Key([mod], "x", lazy.layout.up()),
 
-    # Change Focus to selected screen
-    Key([mod], "s", lazy.to_screen(0)),
-    Key([mod], "d", lazy.to_screen(1)),
-    Key([mod], "a", lazy.to_screen(2)),
+    Key([mod], "z", 
+        lazy.layout.down()),
 
     # Resize UP, DOWN, LEFT, RIGHT
     Key([mod, "control"], "l",
@@ -86,6 +83,10 @@ keys = [
         lazy.layout.increase_nmaster(),
         ),
 
+    Key([mod], 's', lazy.to_screen(0)),
+    Key([mod], 'd', lazy.to_screen(1)),
+    Key([mod], 'a', lazy.to_screen(2)),
+
     Key([mod], 'm', lazy.layout.maximize()),
     Key([mod], 'n', lazy.layout.normalize()),
 
@@ -93,14 +94,16 @@ keys = [
     Key([mod], "space", lazy.window.toggle_floating()),
 ]
 
+
 ##### GROUPS #####
+
 group_names = [(" Dev", {'layout': 'monadtall'}),
                (" Web", {'layout': 'stack'}),
                (" Sys", {'layout': 'verticaltile'}),
                (" Chat", {'layout': 'verticaltile'}),
                (" Doc", {'layout': 'monadtall'}),
-               (" Steam", {'layout': 'monadtall'}),
-               (" Vbox", {'layout': 'monadtall'})]
+               (" Steam", {'layout': 'stack'}),
+               (" Vbox", {'layout': 'stack'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
@@ -122,7 +125,7 @@ layouts = [
 ]
 
 def init_colors():
-    return [["#1e1e1e", "#1e1e1e"], # color 0 Black
+    return [["#212225", "#212225"], # color 0 Black
             ["#808080", "#808080"], # color 1 Grey
             ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
             ["#569cd6", "#569cd6"], # color 3 Blue
@@ -148,7 +151,7 @@ widget_defaults = dict(
 
 extension_defaults = widget_defaults.copy()
 
-def init_widgets_list_1():
+def init_widgets_list():
     widgets_list = [
         widget.TextBox(
             font="Arial", foreground= colors[3],
@@ -293,7 +296,7 @@ def init_widgets_list_1():
     ]
     return widgets_list
 
-def init_widgets_list_2():
+def init_widgets_list_slave():
     widgets_list = [
         widget.TextBox(
             font="Arial", foreground= colors[3],
@@ -353,28 +356,23 @@ def init_widgets_list_2():
     return widgets_list
 
 def init_widgets_screen1():
-    widgets_screen1 = init_widgets_list_1()
+    widgets_screen1 = init_widgets_list()
     return widgets_screen1
 
 def init_widgets_screen2():
-    widgets_screen2 = init_widgets_list_2()
+    widgets_screen2 = init_widgets_list_slave()
     return widgets_screen2
-
-def init_widgets_screen3():
-    widgets_screen3 = init_widgets_list_2()
-    return widgets_screen3
 
 def init_screens():
     return [Screen(top=bar.Bar(widgets=init_widgets_screen1(), opacity=0.99, size=28)),
             Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=0.99, size=28)),
-            Screen(top=bar.Bar(widgets=init_widgets_screen3(), opacity=0.99, size=28))]
+            Screen(top=bar.Bar(widgets=init_widgets_screen2(), opacity=0.99, size=28))]
 
 if __name__ in ["config", "__main__"]:
     screens = init_screens()
-    widgets_list = init_widgets_list_2()
+    widgets_list = init_widgets_list()
     widgets_screen1 = init_widgets_screen1()
     widgets_screen2 = init_widgets_screen2()
-    widgets_screen3 = init_widgets_screen2()
 
 # Drag floating layouts.
 mouse = [
@@ -388,6 +386,11 @@ mouse = [
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
 main = None
+
+@hook.subscribe.startup_once
+def start_once():
+    subprocess.call('/home/merrinx/.config/qtile/scripts/autostart.sh')
+
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
@@ -409,11 +412,6 @@ floating_layout = layout.Floating(float_rules=[
 ])
 auto_fullscreen = False
 focus_on_window_activation = "smart"
-
-##### STARTUP APPLICATIONS #####
-@hook.subscribe.startup_once
-def start_once():
-    subprocess.call('/home/merrinx/.config/qtile/scripts/autostart.sh')
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
