@@ -220,7 +220,7 @@ def init_widgets_list():
             background = colors[0],
         ),
         widget.LaunchBar(progs=[
-            ('Logout', 'qshell:self.qtile.cmd_shutdown()', 'Logout')],
+            ('Reboot', 'systemctl reboot', 'Reboot')],
             default_icon = '/home/merrinx/Pictures/Buttons/logout.png',
             padding = 0,
             background = colors[0],
