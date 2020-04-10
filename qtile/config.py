@@ -234,19 +234,6 @@ screens = [
                     background = colors[3],
                     padding = 5,
                 ),
-                widget.BatteryIcon(
-                    foreground = colors[0],
-                    background = colors[3],
-                    padding = 0,
-                ),
-                widget.Battery(
-                    foreground = colors[9],
-                    background = colors[3],
-                    padding = 5,
-                    discharge_char = '',
-                    format = '{char} {percent:2.0%}',
-                    show_short_text = True,
-                ),
                 widget.TextBox(
                     font = "Arial", foreground = colors[1],
                     text = "", fontsize = 28, padding = 0,
