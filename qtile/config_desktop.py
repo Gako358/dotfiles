@@ -128,16 +128,16 @@ def init_colors():
     return [["#212225", "#212225"], # color 0 Black
             ["#808080", "#808080"], # color 1 Grey
             ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
-            ["#569cd6", "#569cd6"], # color 3 Blue
-            ["#608b4e", "#608b4e"], # color 4 Green
-            ["#f1ac27", "#f1ac27"], # color 5 Yellow
+            ["#458588", "#458588"], # color 3 Blue
+            ["#98971a", "#98971a"], # color 4 Green
+            ["#d79921", "#d79921"], # color 5 Yellow
             ["#ce9178", "#ce9178"], # color 6 Orange
-            ["#d16969", "#d16969"], # color 7 Red
-            ["#c586c0", "#c586c0"], # color 8 Magenta
-            ["#d4d4d4", "#d4d4d4"], # color 9 Text
-            ["#013c6e", "#013c6e"], # color 10 Dark Blue
-            ["#e69d0e", "#e69d0e"], # color 11 Dark Yellow
-            ["#646695", "#646695"], # color 12 Dark Magenta
+            ["#cc241d", "#cc241d"], # color 7 Red
+            ["#b16286", "#b16286"], # color 8 Magenta
+            ["#ebdbb2", "#ebdbb2"], # color 9 Text
+            ["#83a598", "#83a598"], # color 10 Dark Blue
+            ["#fabd2f", "#fabd2f"], # color 11 Dark Yellow
+            ["#d3869b", "#d3869b"], # color 12 Dark Magenta
             ["#2F343F", "#2F343F"]] # color 13 Dark Grey
 
 colors = init_colors()
