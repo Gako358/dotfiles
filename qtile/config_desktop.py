@@ -150,7 +150,7 @@ def init_widgets_list():
     widgets_list = [
         widget.TextBox(
             font="Arial", foreground= colors[5],
-            text="◢", fontsize=73, padding=-11
+            text="◢", fontsize=91, padding=-11
         ),
         widget.GroupBox(
             font="FontAwesome",
@@ -170,7 +170,7 @@ def init_widgets_list():
         ),
         widget.TextBox(
             font="Arial", foreground= colors[5],
-            text="◤", fontsize=73, padding=-11
+            text="◤", fontsize=91, padding=-11
         ),
         widget.CurrentLayout(
             font = "TerminessTTF Nerd Font Medium",
@@ -222,7 +222,7 @@ def init_widgets_list():
         ),
         widget.TextBox(
             font = "Arial", foreground = colors[5],
-            text = "◢", fontsize=73, padding = -11,
+            text = "◢", fontsize=91, padding = -11,
         ),
         widget.TextBox(
             font = "Arial", foreground = colors[7],
@@ -279,7 +279,7 @@ def init_widgets_list():
         ),
         widget.TextBox(
             font="Arial", foreground = colors[5],
-            text ="◤", fontsize = 73, padding = -11,
+            text ="◤", fontsize = 91, padding = -11,
         ),
         widget.KeyboardLayout(
             configured_keyboards = ['us', 'no'],
@@ -295,7 +295,7 @@ def init_widgets_list_slave():
     widgets_list = [
         widget.TextBox(
             font="Arial", foreground= colors[5],
-            text="◢", fontsize=73, padding=-11
+            text="◢", fontsize=91, padding=-11
         ),
         widget.GroupBox(
             font="FontAwesome",
@@ -315,7 +315,7 @@ def init_widgets_list_slave():
         ),
         widget.TextBox(
             font="Arial", foreground= colors[5],
-            text="◤", fontsize=73, padding=-11
+            text="◤", fontsize=91, padding=-11
         ),
         widget.CurrentLayout(
             font = "TerminessTTF Nerd Font Medium",
