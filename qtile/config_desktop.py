@@ -133,7 +133,7 @@ def init_colors():
             ["#66d9ef", "#66d9ef"], # color 5 Blue
             ["#ae81ff", "#ae81ff"], # color 6 Magenta
             ["#2aa198", "#2aa198"], # color 7 Cyan
-            ["#f8f8f2", "#f8f8f2"]] # color 8 White
+            ["#ffffff", "#ffffff"]] # color 8 White
 
 colors = init_colors()
 
