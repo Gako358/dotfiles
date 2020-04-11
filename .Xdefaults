@@ -1,39 +1,39 @@
 ! special
 *.foreground:   #ebdbb2
-*.background:   [99]#1d1f21
+*.background:   [99]#1d2021
 *.cursorColor:  #f8f8f2
 
 ! black
-*.color0:       #282828
-*.color8:       #928374
+*.color0:       #272822
+*.color8:       #75715e
 
 ! red
-*.color1:       #cc241d
-*.color9:       #fb4934
+*.color1:       #f92672
+*.color9:       #f92672
 
 ! green
-*.color2:       #98971a
-*.color10:      #b8bb26
+*.color2:       #a6e22e
+*.color10:      #a6e22e
 
 ! yellow
-*.color3:       #d79921
-*.color11:      #fabd2f
+*.color3:       #f4bf75
+*.color11:      #f4bf75
 
 ! blue
-*.color4:       #458588
-*.color12:      #83a598
+*.color4:       #66d9ef
+*.color12:      #66d9ef
 
 ! magenta
-*.color5:       #b16286
-*.color13:      #d3869b
+*.color5:       #ae81ff
+*.color13:      #ae81ff
 
 ! cyan
-*.color6:       #689d6a
-*.color14:      #8ec07c
+*.color6:       #2AA198
+*.color14:      #2AA198
 
 ! white
 *.color7:       #ebdbb2
-*.color15:      #ebdbb2
+*.color15:      #f8f8f2
 
 !-----------------------------------------
 !URXT Terminal Config
@@ -47,8 +47,8 @@ URxvt.cursorColor:	white
 URxvt.cursorBlink:	false
 
 !!Hack Bold
-URxvt.font: xft:Hack Nerd Font Mono:style=Regular:pixelsize=14
-URxvt.boldFont: xft:Hack Nerd Font:style=Bold:pixelsize=13
+URxvt.font: xft:Hack Nerd Font Mono:style=Regular:pixelsize=13
+URxvt.boldFont: xft:Hack Nerd Font:style=Bold:pixelsize=12
 URxvt.letterSpace: -1
 
 ! Perl Extension

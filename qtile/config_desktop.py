@@ -125,20 +125,15 @@ layouts = [
 ]
 
 def init_colors():
-    return [["#212225", "#212225"], # color 0 Black
-            ["#808080", "#808080"], # color 1 Grey
-            ["#c0c5ce", "#c0c5ce"], # color 2 Cream White
-            ["#458588", "#458588"], # color 3 Blue
-            ["#98971a", "#98971a"], # color 4 Green
-            ["#d79921", "#d79921"], # color 5 Yellow
-            ["#ce9178", "#ce9178"], # color 6 Orange
-            ["#cc241d", "#cc241d"], # color 7 Red
-            ["#b16286", "#b16286"], # color 8 Magenta
-            ["#ebdbb2", "#ebdbb2"], # color 9 Text
-            ["#83a598", "#83a598"], # color 10 Dark Blue
-            ["#fabd2f", "#fabd2f"], # color 11 Dark Yellow
-            ["#d3869b", "#d3869b"], # color 12 Dark Magenta
-            ["#2F343F", "#2F343F"]] # color 13 Dark Grey
+    return [["#1d2021", "#1d2021"], # color 0 Black
+            ["#ebdbb2", "#ebdbb2"], # color 1 Text
+            ["#f92672", "#f92672"], # color 2 Red
+            ["#a6e22e", "#a6e22e"], # color 3 Green
+            ["#f4bf75", "#f4bf75"], # color 4 Yellow
+            ["#66d9ef", "#66d9ef"], # color 5 Blue
+            ["#ae81ff", "#ae81ff"], # color 6 Magenta
+            ["#2aa198", "#2aa198"], # color 7 Cyan
+            ["#f8f8f2", "#f8f8f2"]] # color 8 White
 
 colors = init_colors()
 
@@ -154,7 +149,7 @@ extension_defaults = widget_defaults.copy()
 def init_widgets_list():
     widgets_list = [
         widget.TextBox(
-            font="Arial", foreground= colors[3],
+            font="Arial", foreground= colors[5],
             text="◢", fontsize=73, padding=-11
         ),
         widget.GroupBox(
@@ -165,46 +160,46 @@ def init_widgets_list():
             padding_y = 6,
             padding_x = 5,
             borderwidth = 0,
-            active = colors[12],
-            inactive = colors[9],
+            active = colors[2],
+            inactive = colors[8],
             rounded = False,
             highlight_method = "text",
             this_current_screen_border = colors[0],
-            foreground = colors[9],
-            background = colors[3]
+            foreground = colors[8],
+            background = colors[5]
         ),
         widget.TextBox(
-            font="Arial", foreground= colors[3],
+            font="Arial", foreground= colors[5],
             text="◤", fontsize=73, padding=-11
         ),
         widget.CurrentLayout(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
-            foreground = colors[11],
+            foreground = colors[4],
             background = colors[0],
         ),
         widget.CurrentLayoutIcon(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
             scale = .70,
-            background = colors[4],
+            background = colors[3],
         ),
         widget.Sep(
             linewidth = 1,
             padding = 10,
-            foreground = colors[2],
+            foreground = colors[8],
             background = colors[0],
         ),
         widget.Prompt(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[11],
+            foreground = colors[4],
             background = colors[0],
         ),
         widget.WindowName(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[11],
+            foreground = colors[4],
             background = colors[0],
         ),
         widget.LaunchBar(progs=[
@@ -226,64 +221,64 @@ def init_widgets_list():
             background = colors[0],
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[3],
+            font = "Arial", foreground = colors[5],
             text = "◢", fontsize=73, padding = -11,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[10],
+            font = "Arial", foreground = colors[7],
             text = "⟳", fontsize=28, padding = 0,
-            background = colors[3],
+            background = colors[5],
         ),
         widget.Pacman(
-            foreground = colors[9],
-            background = colors[3],
+            foreground = colors[8],
+            background = colors[5],
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[1],
+            font = "Arial", foreground = colors[0],
             text = "", fontsize = 28, padding = 0,
-            background = colors[3],
+            background = colors[5],
         ),
         widget.Memory(
-            foreground = colors[9],
-            background = colors[3],
+            foreground = colors[8],
+            background = colors[5],
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[11],
+            font = "Arial", foreground = colors[4],
             text = "↯", fontsize = 28, padding = 0,
-            background = colors[3],
+            background = colors[5],
         ),
         widget.Net(
             interface = "wlp5s0",
-            foreground = colors[9],
-            background = colors[3],
+            foreground = colors[8],
+            background = colors[5],
             padding = 5,
         ),
         widget.TextBox( 
-            font = "Arial", foreground = colors[12],
+            font = "Arial", foreground = colors[6],
             text = "♫", fontsize = 28, padding = 0,
-            background = colors[3],
+            background = colors[5],
         ),
         widget.Volume(
-            foreground = colors[9],
-            background = colors[3],
+            foreground = colors[8],
+            background = colors[5],
             padding = 5,
         ),
         widget.TextBox(
-            font = "Arial", foreground = colors[7],
+            font = "Arial", foreground = colors[2],
             text = "", fontsize=28, padding = 0,
-            background = colors[3],
+            background = colors[5],
         ),
         widget.Clock(
-            foreground = colors[9],
-            background = colors[3],
+            foreground = colors[8],
+            background = colors[5],
             format="%d-%m-%Y %H: %M",
             font = "TerminessTTF Nerd Font Medium",
             fonsize = 19,
         ),
         widget.TextBox(
-            font="Arial", foreground = colors[3],
+            font="Arial", foreground = colors[5],
             text ="◤", fontsize = 73, padding = -11,
         ),
         widget.KeyboardLayout(
@@ -299,7 +294,7 @@ def init_widgets_list():
 def init_widgets_list_slave():
     widgets_list = [
         widget.TextBox(
-            font="Arial", foreground= colors[3],
+            font="Arial", foreground= colors[5],
             text="◢", fontsize=73, padding=-11
         ),
         widget.GroupBox(
@@ -310,46 +305,46 @@ def init_widgets_list_slave():
             padding_y = 6,
             padding_x = 5,
             borderwidth = 0,
-            active = colors[12],
-            inactive = colors[9],
+            active = colors[2],
+            inactive = colors[8],
             rounded = False,
             highlight_method = "text",
             this_current_screen_border = colors[0],
-            foreground = colors[9],
-            background = colors[3]
+            foreground = colors[8],
+            background = colors[5]
         ),
         widget.TextBox(
-            font="Arial", foreground= colors[3],
+            font="Arial", foreground= colors[5],
             text="◤", fontsize=73, padding=-11
         ),
         widget.CurrentLayout(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
-            foreground = colors[11],
+            foreground = colors[4],
             background = colors[0],
         ),
         widget.CurrentLayoutIcon(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 13,
             scale = .70,
-            background = colors[4],
+            background = colors[3],
         ),
         widget.Sep(
             linewidth = 1,
             padding = 10,
-            foreground = colors[2],
+            foreground = colors[8],
             background = colors[0],
         ),
         widget.Prompt(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[11],
+            foreground = colors[4],
             background = colors[0],
         ),
         widget.WindowName(
             font = "TerminessTTF Nerd Font Medium",
             fontsize = 15,
-            foreground = colors[11],
+            foreground = colors[4],
             background = colors[0],
         ),
     ]

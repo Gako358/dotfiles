@@ -19,9 +19,6 @@ Plug 'mbbill/undotree'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
-"" Color
-Plug 'morhetz/gruvbox'
-
 "" Coding Intellisense with coc-tabnine
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -78,9 +75,6 @@ set incsearch
 set ignorecase
 set smartcase
 
-"" Indentline colorscheme
-let g:indentLine_setColors = 0
-
 " session management
 let g:session_directory = "~/.vim/session"
 let g:session_autoload = "no"
@@ -96,12 +90,9 @@ set number relativenumber
 set t_Co=256
 
 let no_buffers_menu=1
-let g:gruvbox_contrast_dark='hard'
-let g:gruvbox_hls_cursor='yellow'
-let g:gruvbox_improved_warnings=1
 
 " Loading the color scheme
-silent! colorscheme gruvbox
+silent! colorscheme mXcode
 
 set mousemodel=popup
 set mouse=a
@@ -128,7 +119,7 @@ nnoremap n nzzzv
 nnoremap N Nzzzv
 
 " vim-airline
-let g:airline_theme = 'gruvbox'
+let g:airline_theme = 'molokai'
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
