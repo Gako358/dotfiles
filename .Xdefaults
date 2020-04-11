@@ -32,8 +32,8 @@
 *.color14:      #2AA198
 
 ! white
-*.color7:       #ebdbb2
-*.color15:      #f8f8f2
+*.color7:       #fbf1c7
+*.color15:      #ebdbb2
 
 !-----------------------------------------
 !URXT Terminal Config
@@ -47,8 +47,8 @@ URxvt.cursorColor:	white
 URxvt.cursorBlink:	false
 
 !!Hack Bold
-URxvt.font: xft:Hack Nerd Font Mono:style=Regular:pixelsize=13
-URxvt.boldFont: xft:Hack Nerd Font:style=Bold:pixelsize=12
+URxvt.font: xft:Hack Nerd Font Mono:style=Regular:pixelsize=14
+URxvt.boldFont: xft:Hack Nerd Font:style=Bold:pixelsize=13
 URxvt.letterSpace: -1
 
 ! Perl Extension
