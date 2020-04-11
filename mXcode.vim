@@ -11,11 +11,7 @@ endif
 set t_Co=256
 let g:colors_name = "mXcode"
 
-"hi CTagsMember -- no settings --
-"hi CTagsGlobalConstant -- no settings --
-hi Normal guifg=#ebdbb2 guibg=#272822 guisp=#272822 gui=NONE ctermfg=187 ctermbg=235 cterm=NONE
-"hi CTagsImport -- no settings --
-"hi CTagsGlobalVariable -- no settings --
+hi Normal guifg=#ebdbb2 guibg=#1d2021 guisp=#1d2021 gui=NONE ctermfg=187 ctermbg=234 cterm=NONE
 "hi SpellRare -- no settings --
 "hi EnumerationValue -- no settings --
 "hi Union -- no settings --
@@ -26,7 +22,6 @@ hi Normal guifg=#ebdbb2 guibg=#272822 guisp=#272822 gui=NONE ctermfg=187 ctermbg
 "hi DefinedName -- no settings --
 "hi LocalVariable -- no settings --
 "hi SpellBad -- no settings --
-"hi CTagsClass -- no settings --
 "hi TabLine -- no settings --
 "hi clear -- no settings --
 hi IncSearch guifg=#282828 guibg=#fd951f guisp=#fd951f gui=NONE ctermfg=235 ctermbg=208 cterm=NONE
@@ -37,10 +32,12 @@ hi Typedef guifg=#66D9EF guibg=NONE guisp=NONE gui=NONE ctermfg=81 ctermbg=NONE 
 hi Title guifg=#ef5939 guibg=NONE guisp=NONE gui=NONE ctermfg=209 ctermbg=NONE cterm=NONE
 hi Folded guifg=#465457 guibg=#000000 guisp=#000000 gui=NONE ctermfg=240 ctermbg=NONE cterm=NONE
 hi PreCondit guifg=#A6E22E guibg=NONE guisp=NONE gui=bold ctermfg=112 ctermbg=NONE cterm=bold
-hi Include guifg=#A6E22E guibg=NONE guisp=NONE gui=NONE ctermfg=112 ctermbg=NONE cterm=NONE
+hi Include guifg=#a6e22e guibg=NONE guisp=NONE gui=NONE ctermfg=112 ctermbg=NONE cterm=NONE
 hi Float guifg=#AE81FF guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NONE cterm=NONE
 hi StatusLineNC guifg=#808080 guibg=#080808 guisp=#080808 gui=NONE ctermfg=8 ctermbg=232 cterm=NONE
+hi CTagsMember guifg=#fb4834 guibg=NONE guisp=NONE gui=NONE ctermfg=13 ctermbg=NONE cterm=NONE
 hi NonText guifg=#BCBCBC guibg=#272822 guisp=#272822 gui=NONE ctermfg=250 ctermbg=235 cterm=NONE
+hi CTagsGlobalConstant guifg=#ad81ff guibg=NONE guisp=NONE gui=NONE ctermfg=141 ctermbg=NONE cterm=NONE
 hi DiffText guifg=NONE guibg=#4C4745 guisp=#4C4745 gui=bold,italic ctermfg=NONE ctermbg=239 cterm=bold
 hi ErrorMsg guifg=#F92672 guibg=#232526 guisp=#232526 gui=bold ctermfg=197 ctermbg=235 cterm=bold
 hi Ignore guifg=#808080 guibg=#272822 guisp=#272822 gui=NONE ctermfg=8 ctermbg=235 cterm=NONE
@@ -55,8 +52,10 @@ hi Special guifg=#66D9EF guibg=#272822 guisp=#272822 gui=italic ctermfg=81 cterm
 hi LineNr guifg=#BCBCBC guibg=#272822 guisp=#272822 gui=NONE ctermfg=250 ctermbg=235 cterm=NONE
 hi StatusLine guifg=#455354 guibg=#F8F8F2 guisp=#F8F8F2 gui=NONE ctermfg=240 ctermbg=230 cterm=NONE
 hi Label guifg=#E6DB74 guibg=NONE guisp=NONE gui=NONE ctermfg=185 ctermbg=NONE cterm=NONE
+hi CTagsImport guifg=#a6e22e guibg=NONE guisp=NONE gui=NONE ctermfg=112 ctermbg=NONE cterm=NONE
 hi PMenuSel guifg=NONE guibg=#808080 guisp=#808080 gui=NONE ctermfg=NONE ctermbg=8 cterm=NONE
 hi Search guifg=#282828 guibg=#fd951f guisp=#fd951f gui=NONE ctermfg=235 ctermbg=208 cterm=NONE
+hi CTagsGlobalVariable guifg=#fd951f guibg=NONE guisp=NONE gui=NONE ctermfg=208 ctermbg=NONE cterm=NONE
 hi Delimiter guifg=#8F8F8F guibg=NONE guisp=NONE gui=NONE ctermfg=245 ctermbg=NONE cterm=NONE
 hi Statement guifg=#f92673 guibg=NONE guisp=NONE gui=bold ctermfg=197 ctermbg=NONE cterm=bold
 hi Comment guifg=#608b4e guibg=NONE guisp=NONE gui=NONE ctermfg=65 ctermbg=NONE cterm=NONE
@@ -89,10 +88,11 @@ hi PMenu guifg=#66D9EF guibg=#000000 guisp=#000000 gui=NONE ctermfg=81 ctermbg=N
 hi SpecialKey guifg=#66D9EF guibg=NONE guisp=NONE gui=italic ctermfg=81 ctermbg=NONE cterm=NONE
 hi Constant guifg=#AE81FF guibg=NONE guisp=NONE gui=bold ctermfg=141 ctermbg=NONE cterm=bold
 hi Tag guifg=#F92672 guibg=NONE guisp=NONE gui=italic ctermfg=197 ctermbg=NONE cterm=NONE
-hi String guifg=#ce9178 guibg=NONE guisp=NONE gui=NONE ctermfg=180 ctermbg=NONE cterm=NONE
+hi String guifg=#d16969 guibg=NONE guisp=NONE gui=NONE ctermfg=167 ctermbg=NONE cterm=NONE
 hi PMenuThumb guifg=#66D9EF guibg=NONE guisp=NONE gui=NONE ctermfg=81 ctermbg=NONE cterm=NONE
 hi MatchParen guifg=#000000 guibg=#FD971F guisp=#FD971F gui=bold ctermfg=NONE ctermbg=208 cterm=bold
 hi Repeat guifg=#F92672 guibg=NONE guisp=NONE gui=bold ctermfg=197 ctermbg=NONE cterm=bold
+hi CTagsClass guifg=#f92673 guibg=NONE guisp=NONE gui=NONE ctermfg=197 ctermbg=NONE cterm=NONE
 hi Directory guifg=#A6E22E guibg=NONE guisp=NONE gui=bold ctermfg=112 ctermbg=NONE cterm=bold
 hi Structure guifg=#66D9EF guibg=NONE guisp=NONE gui=NONE ctermfg=81 ctermbg=NONE cterm=NONE
 hi Macro guifg=#C4BE89 guibg=NONE guisp=NONE gui=italic ctermfg=186 ctermbg=NONE cterm=NONE

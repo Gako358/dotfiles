@@ -84,7 +84,7 @@ let g:session_command_aliases = 1
 "*****************************************************************************
 "" Visual Settings
 "*****************************************************************************
-syntax on
+syntax enable
 set ruler
 set number relativenumber 
 set t_Co=256
