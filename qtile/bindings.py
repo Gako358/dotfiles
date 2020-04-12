@@ -26,7 +26,7 @@ import os
 from libqtile.config import Click, Drag, EzKey
 from libqtile.command import lazy
 
-from settings import MOD, TERMINAL, ACME_SCRIPT_DIR
+from settings import MOD, TERMINAL
 from helpers import script, notify
 from groups import groups
 
@@ -151,9 +151,12 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-C-<Left>", lazy.layout.grow_left()),
     ("M-C-<Right>", lazy.layout.grow_right()),
 
+    ("M-C-k", lazy.layout.grow_up()),
+    ("M-C-j", lazy.layout.grow_down()),
+    ("M-C-h", lazy.layout.grow_left()),
+    ("M-C-l", lazy.layout.grow_right()),
+
     # .: Xmonad :. #
-    # ("M-<slash>", lazy.layout.maximize()),
-    # ("M-S-<slash>", lazy.layout.normalize()),
     # Swap the position of the master/child panes
     ("M-<backslash>", lazy.layout.flip()),
     ("M-<minus>", lazy.layout.shrink()),
@@ -166,45 +169,34 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-A-<Left>", lazy.layout.flip_left()),
     ("M-A-<Right>", lazy.layout.flip_right()),
 
+    ("M-A-k", lazy.layout.flip_up()),
+    ("M-A-j", lazy.layout.flip_down()),
+    ("M-A-h", lazy.layout.flip_left()),
+    ("M-A-k", lazy.layout.flip_right()),
+
     # .: Program Launchers :. #
     ("M-<Return>", lazy.spawn(TERMINAL + " -e zsh")),
-    ("M-<semicolon>", lazy.spawn('rofi-apps')),
-    ("M-d", lazy.spawn(
-        "dmenu_run -b -p 'λ' -sb '#83a598' -nb '#504945' -nf '#ebdbb2'")),
-    ("M-n", lazy.spawn('rofi-wifi-menu')),
-    ("M-r", lazy.spawncmd()),  # Quick execution of shell commands
-    ("M-w", lazy.spawn('rofi -show window')),
-    ("M-C-a", lazy.spawn("acme")),
-    ("M-C-c", lazy.spawn("chromium-browser")),
-    ("M-C-e", lazy.spawn("emacs")),
+    ("M-w", lazy.spawncmd()),
     ("M-C-f", lazy.spawn("firefox")),
-    ("M-C-i", lazy.spawn("python3.6 -m qtconsole")),
-    ("M-C-S-i", lazy.spawn("python3.7 -m qtconsole")),
+    ("M-C-d", lazy.spawn("discord")),
     ("M-C-r", lazy.spawn(TERMINAL + ' -e "ranger"')),
-    ("M-C-t", lazy.spawn("thunar")),
     ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
 
     # Scratchpad toggles
     ("M-<slash>", lazy.group['scratchpad'].dropdown_toggle('term')),
-    ("M-S-<slash>", lazy.group['scratchpad'].dropdown_toggle('ipython')),
-    # ("M-<slash>", lazy.window.function(to_scratchpad)),
-    # ("M-S-<slash>", lazy.function(show_scratchpad)),
 
     # .: Layout / Focus Manipulation :. #
     ("M-f", lazy.window.toggle_fullscreen()),
     # Toggle between the available layouts.
-    ("M-<grave>", lazy.next_layout()),
-    ("A-<grave>", lazy.prev_layout()),
+    ("M-<Tab>", lazy.next_layout()),
     # Switch focus between two screens
-    ("M-<bracketleft>", lazy.to_screen(0)),
-    ("M-<bracketright>", lazy.to_screen(1)),
+    ("M-s", lazy.to_screen(0)),
+    ("M-d", lazy.to_screen(1)),
+    ("M-a", lazy.to_screen(2)),
     # Move the focused group to one of the screens and follow it
-    ("M-S-<bracketleft>", switch_screens(0), lazy.to_screen(0)),
-    ("M-S-<bracketright>", switch_screens(1), lazy.to_screen(1)),
-    # Toggle between the two most recently used groups
-    # TODO :: Write my own version of this that has the same
-    #         screen preserving behaviour
-    ("M-<Tab>", lazy.screen.toggle_group()),
+    ("M-S-s", switch_screens(0), lazy.to_screen(0)),
+    ("M-S-d", switch_screens(1), lazy.to_screen(1)),
+    ("M-S-a", switch_screens(1), lazy.to_screen(2)),
     # Close the current window: NO WARNING!
     ("M-S-q", lazy.window.kill()),
     ("M-S-<BackSpace>", lazy.window.kill()),
@@ -218,11 +210,6 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-A-l", lazy.spawn("lock-screen")),
     ("M-A-s", lazy.spawn("screenshot")),
     ("M-A-<Delete>", lazy.spawn(script("power-menu.sh"))),
-
-    # Acme editor shortcuts
-    ("M-o", lazy.spawn(os.path.join(ACME_SCRIPT_DIR, "afindfile.sh"))),
-    ("M-s", lazy.spawn(os.path.join(
-        ACME_SCRIPT_DIR, "acme-fuzzy-window-search.sh"))),
 ]]
 
 # .: Jump between groups and also throw windows to groups :. #

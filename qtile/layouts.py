@@ -23,7 +23,7 @@ BORDER_NORMAL = COLS["dark_2"]
 # BORDER_FOCUS = COLS["blue_2"]
 BORDER_FOCUS = COLS["red_1"]
 BORDER_WIDTH = 3
-MARGIN = 10
+MARGIN = 19
 
 
 layouts = [
@@ -62,38 +62,10 @@ layouts = [
         active_bg=COLS["light_3"],
         active_fg=BORDER_NORMAL,
         sections=["    .: Windows :."],
-        # Want a consistant font w. the terminal here
         foreground=FONT_PARAMS["foreground"],
         fontsize=FONT_PARAMS["fontsize"],
         font="ProFontWindows Nerd Font Mono Book",
     ),
-    # XXX : Emulate Wmii tiling: each new window adds to the focused
-    #       column. Moving a window "out" of the current colmun creates
-    #       a new column.
-    #layout.Wmii(
-    #    border_normal=BORDER_NORMAL,
-    #    border_focus=BORDER_FOCUS,
-    #    border_width=BORDER_WIDTH,
-    #    margin=MARGIN,
-    #),
-    # XXX : A simple grid fill of the screen aiming for square number tilings
-    #       at the expense of leaving blank positions if it correctly places
-    #       the remaining windows.
-    # layout.Matrix(
-    #     border_normal=BORDER_NORMAL,
-    #     border_focus=BORDER_FOCUS,
-    #     border_width=BORDER_WIDTH,
-    #     margin=MARGIN,
-    # ),
-    # XXX: Split the screen according to a given ratio. Kind of tricky to
-    #      know exactly what it will do without experimenting...!
-    # layout.RatioTile(
-    #     border_normal=BORDER_NORMAL,
-    #     border_focus=BORDER_FOCUS,
-    #     border_width=BORDER_WIDTH,
-    #     margin=MARGIN,
-    #     ratio=2.5
-    # ),
 ]
 
 # Specification for auto floating windows: this isn't a layout in the same

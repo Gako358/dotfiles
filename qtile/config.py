@@ -19,7 +19,7 @@ from helpers import run_script
 from layouts import layouts, floating_layout    # NOQA
 from bindings import keys, mouse                # NOQA
 from groups import groups                       # NOQA
-from widgets import ShellScript
+# from widgets import ShellScript
 
 
 # ----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ def make_screen(systray=False):
         widget.TextBox(
             font="Arial", foreground=COLS["dark_4"],
             # font="Arial", foreground=COLS["deus_3"],
-            text="◢", fontsize=50, padding=-1
+            text="◢", fontsize=73, padding=-5
         ),
         widget.GroupBox(
             other_current_screen_border=COLS["orange_0"],
@@ -111,7 +111,7 @@ def make_screen(systray=False):
         widget.TextBox(
             font="Arial", foreground=COLS["dark_4"],
             # font="Arial", foreground=COLS["deus_3"],
-            text="◤ ", fontsize=50, padding=-5
+            text="◤ ", fontsize=73, padding=-11
         ),
         # Show the title for the focused window
         widget.WindowName(**FONT_PARAMS),
@@ -124,66 +124,6 @@ def make_screen(systray=False):
             **FONT_PARAMS
         ),
         _separator(),
-        # Resource usage graphs
-        widget.CPUGraph(
-            border_color=COLS["yellow_1"],
-            graph_color=COLS["yellow_1"],
-            border_width=1,
-            line_width=1,
-            type="line",
-            width=50,
-            **FONT_PARAMS
-        ),
-        widget.MemoryGraph(
-            border_color=COLS["blue_2"],
-            graph_color=COLS["blue_2"],
-            border_width=1,
-            line_width=1,
-            type="line",
-            width=50,
-            **FONT_PARAMS
-        ),
-        widget.NetGraph(
-            border_color=COLS["green_1"],
-            graph_color=COLS["green_1"],
-            border_width=1,
-            line_width=1,
-            type="line",
-            width=50,
-            **FONT_PARAMS
-        ),
-        # IP information
-        ShellScript(
-            fname="ipadr.sh",
-            update_interval=10,
-            markup=True,
-            padding=1,
-            **FONT_PARAMS
-        ),
-        # Available apt upgrades
-        ShellScript(
-            fname="aptupgrades.sh",
-            update_interval=600,
-            markup=True,
-            padding=1,
-            **FONT_PARAMS
-        ),
-        # Current battery level
-        ShellScript(
-            fname="battery.sh",
-            update_interval=60,
-            markup=True,
-            padding=1,
-            **FONT_PARAMS
-        ),
-        # Wifi strength
-        ShellScript(
-            fname="wifi-signal.sh",
-            update_interval=60,
-            markup=True,
-            padding=1,
-            **FONT_PARAMS
-        ),
         # Volume % : scroll mouse wheel to change volume
         widget.TextBox("", **FONT_PARAMS),
         widget.Volume(**FONT_PARAMS),
@@ -211,7 +151,7 @@ def make_screen(systray=False):
         blocks.insert(-1, _separator())
 
     # return Screen(top=bar.Bar(blocks, 25, background=COLS["deus_1"]))
-    return Screen(top=bar.Bar(blocks, 25, background=COLS["dark_2"]))
+    return Screen(top=bar.Bar(blocks, 28, background=COLS["dark_2"]))
 
 
 # XXX : When I run qtile inside of mate, I don"t actually want a qtile systray

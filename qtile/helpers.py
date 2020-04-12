@@ -19,12 +19,6 @@ def run(cmd, with_output=False):
     else:
         subprocess.run(cmd.split())
 
-
-def wallpaper(fname):
-    """Set the wallpaper using feh"""
-    run("feh --bg-fill /home/innes/Pictures/Wallpapers/%s" % fname)
-
-
 def script(fname):
     """Get the path of a script in the scripts directory"""
     return os.path.expanduser(SCRIPT_DIR + fname)
