@@ -62,10 +62,10 @@ R_ALT = "mod3"  # Right Alt
 DIRECTIONS = ("Left", "Down", "Up", "Right")
 
 # Programs
-# TERMINAL = "urxvt"
+TERMINAL = "urxvt"
 # TERMINAL = "mate-terminal"
 # TERMINAL = "tilix"
-TERMINAL = "st"
+# TERMINAL = "st"
 
 # UI Config vars
 # FONT = 'Hack Regular'

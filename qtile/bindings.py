@@ -232,8 +232,8 @@ for _ix, group in enumerate(groups[:10]):
 
     keys.extend([EzKey(k[0], *k[1:]) for k in [
         # M-ix = switch to that group
-        # ("M-%d" % ix, lazy.group[group.name].toscreen()),
-        ("M-%d" % ix, focus_or_switch(group.name)),
+        ("M-%d" % ix, lazy.group[group.name].toscreen()),
+        # ("M-%d" % ix, focus_or_switch(group.name)),
         # M-S-ix = switch to & move focused window to that group
         ("M-S-%d" % ix, lazy.window.togroup(group.name)),
     ]])
