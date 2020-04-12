@@ -124,6 +124,36 @@ def make_screen(systray=False):
             **FONT_PARAMS
         ),
         _separator(),
+        # Resource usage graphs
+        widget.CPUGraph(
+            border_color=COLS["yellow_1"],
+            graph_color=COLS["yellow_1"],
+            border_width=1,
+            line_width=1,
+            type="line",
+            width=50,
+            **FONT_PARAMS
+        ),
+        widget.MemoryGraph(
+            border_color=COLS["blue_2"],
+            graph_color=COLS["blue_2"],
+            border_width=1,
+            line_width=1,
+            type="line",
+            width=50,
+            **FONT_PARAMS
+        ),
+        widget.NetGraph(
+            border_color=COLS["green_1"],
+            graph_color=COLS["green_1"],
+            border_width=1,
+            line_width=1,
+            type="line",
+            width=50,
+            **FONT_PARAMS
+        ),
+        widget.TextBox("", **FONT_PARAMS),
+        widget.Pacman(**FONT_PARAMS),
         # Volume % : scroll mouse wheel to change volume
         widget.TextBox("", **FONT_PARAMS),
         widget.Volume(**FONT_PARAMS),
@@ -153,11 +183,10 @@ def make_screen(systray=False):
     # return Screen(top=bar.Bar(blocks, 25, background=COLS["deus_1"]))
     return Screen(top=bar.Bar(blocks, 28, background=COLS["dark_2"]))
 
-
 # XXX : When I run qtile inside of mate, I don"t actually want a qtile systray
 #       as mate handles that. (Plus, if it _is_ enabled then the mate and
 #       qtile trays both crap out...)
-screens = [make_screen(systray=WITH_SYS_TRAY)]
+screens = [make_screen(systray=WITH_SYS_TRAY), make_screen(systray=False), make_screen(systray=False)]
 
 # ----------------------------------------------------------------------------
 # .: Assorted additional config :.
@@ -168,7 +197,7 @@ bring_front_click = False
 auto_fullscreen = True
 dgroups_app_rules = []
 cursor_warp = True
-# main = None
+main = None
 
 # XXX :: Horrible hack needed to make grumpy java apps work correctly.
 #        (This is from the default config)
