@@ -125,15 +125,15 @@ layouts = [
 ]
 
 def init_colors():
-    return [["#1d2021", "#1d2021"], # color 0 Black
+    return [["#1e1e1e", "#1e1e1e"], # color 0 Black
             ["#ebdbb2", "#ebdbb2"], # color 1 Text
-            ["#f92672", "#f92672"], # color 2 Red
-            ["#a6e22e", "#a6e22e"], # color 3 Green
-            ["#f4bf75", "#f4bf75"], # color 4 Yellow
-            ["#66d9ef", "#66d9ef"], # color 5 Blue
-            ["#ae81ff", "#ae81ff"], # color 6 Magenta
-            ["#2aa198", "#2aa198"], # color 7 Cyan
-            ["#f9f5d7", "#f9f5d7"]] # color 8 White
+            ["#f44747", "#f44747"], # color 2 Red
+            ["#608b4e", "#608b4e"], # color 3 Green
+            ["#d7ba7d", "#d7ba7d"], # color 4 Yellow
+            ["#569cd6", "#569cd6"], # color 5 Blue
+            ["#646695", "#646695"], # color 6 Magenta
+            ["#4ec9b0", "#4ec9b0"], # color 7 Cyan
+            ["#d4d4d4", "#d4d4d4"]] # color 8 White
 
 colors = init_colors()
 
