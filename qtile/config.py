@@ -149,7 +149,7 @@ def make_screen(systray=False):
         ),
         # Keyboard layout
         widget.KeyboardLayout(
-            configured_keyboards=['us', 'gb'],
+            configured_keyboards=['us', 'no'],
             **FONT_PARAMS
         ),
         # Visual indicator of the current layout for this workspace.

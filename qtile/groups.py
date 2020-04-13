@@ -25,7 +25,7 @@ from layouts import layouts
 
 groups = [
         Group("1 ", {'layout': 'bsp'}),
-        Group("2 ", {'layout': 'monadtall'}),
+        Group("2 ", {'layout': 'bsp'}),
         Group("3 ", {'layout': 'monadtall'}),
         Group("4 ", {'layout': 'monadtall'}),
         Group("5 ", {'layout': 'stack'}),

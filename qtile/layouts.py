@@ -43,7 +43,7 @@ layouts = [
         border_focus=BORDER_FOCUS,
         border_width=BORDER_WIDTH,
         margin=MARGIN,
-        ratio=0.7,
+        ratio=0.8,
     ),
     # XXX : Same idea as MonadTall but the smaller windows are along the
     #       top/bottom of the main window

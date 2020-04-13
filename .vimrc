@@ -167,6 +167,11 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
 
+" Buffer Navigation
+nnoremap <Leader>a :b#<CR>      " previous buffer
+nnoremap <Leader>d :bn<CR>      " next buffer
+nnoremap <Leader>q :bd!<CR>     " close buffer
+
 " vim-airline
 let g:airline#extensions#virtualenv#enabled = 1
 
