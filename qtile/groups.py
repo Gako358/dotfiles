@@ -36,7 +36,7 @@ groups = [
         matches=[Match(wm_class=['Chromium'])], exclusive=True, layout="stack"
         ),
     Group("6 ", init=True, persist=True,
-        matches=[Match(wm_class=['mailspring'])], exclusive=True, layout="stack"
+        matches=[Match(wm_class=['Mailspring'])], exclusive=True, layout="stack"
         ),
     Group("7 "),
     Group("8 λ"),

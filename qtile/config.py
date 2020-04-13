@@ -170,7 +170,7 @@ def make_screen(systray=False):
 # XXX : When I run qtile inside of mate, I don"t actually want a qtile systray
 #       as mate handles that. (Plus, if it _is_ enabled then the mate and
 #       qtile trays both crap out...)
-screens = [make_screen(systray=WITH_SYS_TRAY), make_screen(systray=False), make_screen(systray=False)]
+screens = [make_screen(systray=WITH_SYS_TRAY)]
 
 # ----------------------------------------------------------------------------
 # .: Assorted additional config :.
