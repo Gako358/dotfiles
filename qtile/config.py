@@ -19,8 +19,6 @@ from helpers import run_script
 from layouts import layouts, floating_layout    # NOQA
 from bindings import keys, mouse                # NOQA
 from groups import groups                       # NOQA
-# from widgets import ShellScript
-
 
 # ----------------------------------------------------------------------------
 # Hooks
@@ -33,20 +31,6 @@ def autostart():
     """
     os.environ.setdefault('RUNNING_QTILE', 'True')
     run_script("autostart.sh")
-
-
-@hook.subscribe.screen_change
-def restart_on_randr(qtile, ev):
-    """
-    Restart and reload config when screens are changed so that we correctly
-    init any new screens and correctly remove any old screens that we no
-    longer need.
-
-    There is an annoying side effect of removing a second monitor that results
-    in windows being 'stuck' on the now invisible desktop...
-    """
-    qtile.cmd_restart()
-
 
 @hook.subscribe.setgroup
 def remove_scratchpad_on_group_change():

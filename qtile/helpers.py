@@ -29,13 +29,6 @@ def run_script(fname, with_output=False):
     return run(script(fname), with_output=with_output)
 
 
-def poll_func(script_name):
-    """Used in generating the status bar"""
-    def poll():
-        return run_script(script_name, with_output=True)
-    return poll
-
-
 # XXX : Ah, looks like this is a thing already...!
 def ez_keys(key_bindings):
     """

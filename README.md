@@ -1,60 +1,26 @@
-How to install and setup Laptop
+My qtile config
+===============
 
-BTRFS:
+![dirty](/qtile/misc/scrot1.png)
 
-btrfs sub cr /mn/@
-btrfs sub cr /mnt/log
-btrfs sub cr /mnt/pkg
-btrfs sub cr /mnt/snapshots
+# Setting up qtile
+qtile docs can be found [here](0)
 
-mount -o relatime,space_cache=v2,ssd,compress=lzo,subvol=@ /dev/sdaN /mnt
-mount -o relatime,space_cache=v2,ssd,compress=lzo,subvol=@log /dev/sdaN /mnt/var/log
-mount -o relatime,space_cache=v2,ssd,compress=lzo,subvol=@pkg /dev/sdaN /mnt/var/cache/pacman/pkg
-mount -o relatime,space_cache=v2,ssd,compress=lzo,subvolid=5 /dev/sdaN /mnt/btrfs
-
-PACKAGES INSTALL:
-
-acpilight
-cronie
-cmatrix
-dmenu2
-yay
-firefox
-thunderbird
-gimp
-lightdm
-lightdm-webkit-theme-aether
-lyx
-neofetch
-zsh
-alsa-utils
-pavucontrol
-pulseaudio
-picom
-qtile
-ranger
-slock
-ttf-font-awesome
-unzip
-urxvt-font-size-git
-urxvt-perls
-rxvt-unicode
-vim
-xorg-server
-ytop
-python-cairocffi
-python-pip
-python-psutil
-python-xcffib
-BTRFS TOOLS:
-snapper
-
-sudo snapper config new 
-Edit and set up grub snaps and setup the timers, also enable cronie for timeline snaps
-
-btrfs-grub
-snap pac
-snap-pac-grub
+Info on running qtile as the wm for Gnome can be found [here](1). It should be
+possible to do something similar with mate...
 
 
+### Installing qtile
+```bash
+$ sudo apt-get install libpangocairo-1.0-0 libxcb-render0-dev libffi-dev
+$ sudo python3 -m pip install xcffib cairocfii qtile
+```
 
+### Adding qtile to the desktop list
+```bash
+$ cp misc/qtile.desktop /usr/share/xsessions/
+```
+
+
+  [0]: http://docs.qtile.org/en/latest/
+  [1]: http://docs.qtile.org/en/latest/manual/config/gnome.html

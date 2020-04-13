@@ -198,18 +198,16 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-S-d", switch_screens(1), lazy.to_screen(1)),
     ("M-S-a", switch_screens(1), lazy.to_screen(2)),
     # Close the current window: NO WARNING!
-    ("M-S-q", lazy.window.kill()),
+    ("M-q", lazy.window.kill()),
     ("M-S-<BackSpace>", lazy.window.kill()),
 
     # .: Sys + Utils :. #
     # Restart qtile in place and pull in config changes (check config before
     # doing this with `check-qtile-conf` script to avoid crashes)
-    ("M-A-r", lazy.restart()),
+    ("M-S-r", lazy.restart()),
     # Shut down qtile.
-    ("M-A-<Escape>", lazy.shutdown()),
-    ("M-A-l", lazy.spawn("lock-screen")),
-    ("M-A-s", lazy.spawn("screenshot")),
-    ("M-A-<Delete>", lazy.spawn(script("power-menu.sh"))),
+    ("M-S-q", lazy.shutdown()),
+    ("M-S-l", lazy.spawn("slock")),
 ]]
 
 # .: Jump between groups and also throw windows to groups :. #

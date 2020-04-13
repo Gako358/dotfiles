@@ -54,6 +54,13 @@ layouts = [
         margin=MARGIN,
         ratio=0.9,
     ),
+    layout.Stack(
+        border_normal=BORDER_NORMAL,
+        border_focus=BORDER_FOCUS,
+        border_width=BORDER_WIDTH,
+        margin=MARGIN,
+        num_stacks=1,
+    ),
     # XXX : Good for browser style flipping between windows when working on
     #       large coding projects (beats constant buffer/tab swaps in Vim!)
     layout.TreeTab(

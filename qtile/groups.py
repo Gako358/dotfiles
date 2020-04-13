@@ -21,17 +21,30 @@ NOTE :: Match is imported from libqtile.config
     )
 '''
 from libqtile.config import Group, ScratchPad, DropDown
+from layouts import layouts 
 
 groups = [
-    Group("1 "),
-    Group("2 "),
-    Group("3 "),
-    Group("4 "),
-    Group("5 "),
-    Group("6 "),
-    Group("7 "),
-    Group("8 λ"),
-    Group("9 "),
-    Group("10 "),
+        Group("1 ", {'layout': 'bsp'}),
+        Group("2 ", {'layout': 'monadtall'}),
+        Group("3 ", {'layout': 'monadtall'}),
+        Group("4 ", {'layout': 'monadtall'}),
+        Group("5 ", {'layout': 'stack'}),
+        Group("6 ", {'layout': 'monadtall'}),
+        Group("7 ", {'layout': 'monadwide'}),
+        Group("8 λ", {'layout': 'monadwide'}),
+        Group("9 ", {'layout': 'stack'}),
+        Group("10 ", {'layout': 'stack'}),
+    # Group("scratchpad"),
+    # Scratchpads on M-/ and M-S-/
+    ScratchPad("scratchpad", [
+        # NOTE :: Need to force spawning as a new process so that
+        #         qtile can capture the new terminal by pid.
+        DropDown("term", "tilix --new-process",
+                 on_focus_lost_hide=False, x=0.05, y=0.05,
+                 width=0.9, height=0.9),
+        DropDown("ipython", "python3.7 -m qtconsole",
+                 on_focus_lost_hide=False, x=0.05, y=0.05,
+                 width=0.9, height=0.9)
+    ]),
 ]
 

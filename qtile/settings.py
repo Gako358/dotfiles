@@ -81,7 +81,7 @@ FONT_PARAMS = {
 }
 
 # Location of my script files (must have a trailing slash!)
-SCRIPT_DIR = os.path.expanduser('~/bin/scripts/')
+SCRIPT_DIR = os.path.expanduser('/home/merrinx/.config/qtile/scripts/')
 
 # Whether or not the primary monitor should spawn a systray
 # NOTE :: When embedding qtile inside of another desktop environment (such
