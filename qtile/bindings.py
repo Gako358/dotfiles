@@ -183,6 +183,7 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-C-d", lazy.spawn("discord")),
     ("M-C-m", lazy.spawn("mailspring")),
     ("M-C-l", lazy.spawn("lyx")),
+    ("M-C-g", lazy.spawn("steam")),
     ("M-C-r", lazy.spawn(TERMINAL + ' -e "ranger"')),
     ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
 

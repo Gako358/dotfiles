@@ -31,7 +31,9 @@ groups = [
     Group("3 ", init=True, persist=True,
         matches=[Match(wm_class=['lyx'])], exclusive=False, layout="monadtall"
         ),
-    Group("4 "),
+    Group("4 ", init=True, persist=True, spawn='urxvt -e weechat', 
+        matches=[Match(wm_class=['urxvt -e weechat'])], layout="monadtall"
+        ),
     Group("5 ", init=True, persist=True, spawn='chromium',
         matches=[Match(wm_class=['Chromium'])], exclusive=True, layout="stack"
         ),
@@ -44,7 +46,7 @@ groups = [
         matches=[Match(wm_class=['discord'])], exclusive=True, layout="stack"
         ),
     Group("10 ", init=False, persist=True,
-        matches=[Match(wm_class=['steam'])], exclusive=True, layout="stack"
+        matches=[Match(wm_class=['Steam'])], exclusive=True, layout="stack"
         ),
     # Group("scratchpad"),
     # Scratchpads on M-/ and M-S-/
