@@ -43,7 +43,7 @@ layouts = [
         border_focus=BORDER_FOCUS,
         border_width=BORDER_WIDTH,
         margin=MARGIN,
-        ratio=0.8,
+        ratio=0.6,
     ),
     # XXX : Same idea as MonadTall but the smaller windows are along the
     #       top/bottom of the main window
@@ -52,7 +52,7 @@ layouts = [
         border_focus=BORDER_FOCUS,
         border_width=BORDER_WIDTH,
         margin=MARGIN,
-        ratio=0.9,
+        ratio=0.3,
     ),
     layout.Stack(
         border_normal=BORDER_NORMAL,

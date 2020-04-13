@@ -20,20 +20,32 @@ NOTE :: Match is imported from libqtile.config
         init=True
     )
 '''
-from libqtile.config import Group, ScratchPad, DropDown
+from libqtile.config import Group, ScratchPad, DropDown, Match, Rule
 from layouts import layouts 
 
 groups = [
-        Group("1 ", {'layout': 'bsp'}),
-        Group("2 ", {'layout': 'bsp'}),
-        Group("3 ", {'layout': 'monadtall'}),
-        Group("4 ", {'layout': 'monadtall'}),
-        Group("5 ", {'layout': 'stack'}),
-        Group("6 ", {'layout': 'monadtall'}),
-        Group("7 ", {'layout': 'monadwide'}),
-        Group("8 λ", {'layout': 'monadwide'}),
-        Group("9 ", {'layout': 'stack'}),
-        Group("10 ", {'layout': 'stack'}),
+    Group("1 "),
+    Group("2 ", init=True, persist=True, spawn='urxvt -e ytop',
+        matches=[Match(wm_class=['urxvt -e ytop'])], layout="monadwide"
+        ),
+    Group("3 ", init=True, persist=True,
+        matches=[Match(wm_class=['lyx'])], exclusive=False, layout="monadtall"
+        ),
+    Group("4 "),
+    Group("5 ", init=True, persist=True, spawn='chromium',
+        matches=[Match(wm_class=['Chromium'])], exclusive=True, layout="stack"
+        ),
+    Group("6 ", init=True, persist=True,
+        matches=[Match(wm_class=['mailspring'])], exclusive=True, layout="stack"
+        ),
+    Group("7 "),
+    Group("8 λ"),
+    Group("9 ", init=True, persist=True, spawn='discord',
+        matches=[Match(wm_class=['discord'])], exclusive=True, layout="stack"
+        ),
+    Group("10 ", init=False, persist=True,
+        matches=[Match(wm_class=['steam'])], exclusive=True, layout="stack"
+        ),
     # Group("scratchpad"),
     # Scratchpads on M-/ and M-S-/
     ScratchPad("scratchpad", [
@@ -47,4 +59,21 @@ groups = [
                  width=0.9, height=0.9)
     ]),
 ]
+
+dgroups_app_rules = [
+    # Everything i want to be float, but don't want to change group
+    Rule(Match(title=['nested', 'gscreenshot'],
+               wm_class=['Guake.py', 'Exe', 'Onboard', 'Florence',
+                         'Plugin-container', 'Terminal', 'Gpaint',
+                         'Kolourpaint', 'Wrapper', 'Gcr-prompter',
+                         'Ghost', 'feh', 'Gnuplot', 'Pinta', 
+                         'Gnome-keyring-prompt'],
+               ),
+         float=True, intrusive=True),
+
+    # floating windows
+    Rule(Match(wm_class=['Synfigstudio', 'Wine', 'Xephyr', 'postal2-bin']
+               ),
+         float=True),
+    ]
 

@@ -29,7 +29,7 @@ def autostart():
     state from the rest of the init. This will cause start/restart of qtile
     to hang slightly as the sleep runs.
     """
-    os.environ.setdefault('RUNNING_QTILE', 'True')
+    #os.environ.setdefault('RUNNING_QTILE', 'True')
     run_script("autostart.sh")
 
 @hook.subscribe.setgroup

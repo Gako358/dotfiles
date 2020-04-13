@@ -132,6 +132,8 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-k", lazy.layout.up()),
     ("M-l", lazy.layout.right()),
 
+    ("M-z", lazy.layout.down()),
+
     # Swap panes: target relative to active.
     # NOTE :: The `swap` commands are for XMonad
     ("M-S-<Up>", lazy.layout.shuffle_up()),
@@ -177,8 +179,10 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     # .: Program Launchers :. #
     ("M-<Return>", lazy.spawn(TERMINAL + " -e zsh")),
     ("M-w", lazy.spawncmd()),
-    ("M-C-f", lazy.spawn("firefox")),
+    ("M-C-c", lazy.spawn("chromium")),
     ("M-C-d", lazy.spawn("discord")),
+    ("M-C-m", lazy.spawn("mailspring")),
+    ("M-C-l", lazy.spawn("lyx")),
     ("M-C-r", lazy.spawn(TERMINAL + ' -e "ranger"')),
     ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
 
@@ -191,8 +195,8 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-<Tab>", lazy.next_layout()),
     # Switch focus between two screens
     ("M-s", lazy.to_screen(0)),
-    ("M-d", lazy.to_screen(1)),
-    ("M-a", lazy.to_screen(2)),
+    ("M-a", lazy.to_screen(1)),
+    ("M-d", lazy.to_screen(2)),
     # Move the focused group to one of the screens and follow it
     ("M-S-s", switch_screens(0), lazy.to_screen(0)),
     ("M-S-d", switch_screens(1), lazy.to_screen(1)),
@@ -208,6 +212,7 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     # Shut down qtile.
     ("M-S-q", lazy.shutdown()),
     ("M-S-l", lazy.spawn("slock")),
+    ("M-S-p", lazy.spawn("systemctl suspend")),
 ]]
 
 # .: Jump between groups and also throw windows to groups :. #
