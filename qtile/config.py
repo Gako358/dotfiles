@@ -29,24 +29,8 @@ def autostart():
     state from the rest of the init. This will cause start/restart of qtile
     to hang slightly as the sleep runs.
     """
-    #os.environ.setdefault('RUNNING_QTILE', 'True')
+    os.environ.setdefault('RUNNING_QTILE', 'True')
     run_script("autostart.sh")
-
-@hook.subscribe.setgroup
-def remove_scratchpad_on_group_change():
-    """
-    If we were showing windows from the scratchpad when we move to a new
-    group, we hide them again automatically.
-    """
-    previous_group = hook.qtile.currentScreen.previous_group
-    if not previous_group:
-        # No windows to hide
-        return
-
-    for w in list(previous_group.windows):
-        if w.on_scratchpad:
-            w.togroup('scratchpad')
-
 
 @hook.subscribe.client_new
 def init_scratchpad_on_new(window):
@@ -212,6 +196,7 @@ def make_slaves(systray=False):
     ]
     return blocks
 
+# Screen functions to be used when on desktop and multiply monitors
 def init_widgets_screen_master():
     widgets_screen1 = make_master(systray=WITH_SYS_TRAY)
     return widgets_screen1
