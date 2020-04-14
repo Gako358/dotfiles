@@ -59,7 +59,7 @@ def init_scratchpad_on_new(window):
 
 
 # ----------------------------------------------------------------------------
-def make_screen(systray=False):
+def make_master(systray=False):
     """Defined as a function so that I can duplicate this on other monitors"""
     def _separator():
         # return widget.Sep(linewidth=2, foreground=COLS["dark_3"])
@@ -165,13 +165,76 @@ def make_screen(systray=False):
         blocks.insert(-1, _separator())
 
     # return Screen(top=bar.Bar(blocks, 25, background=COLS["deus_1"]))
-    return Screen(top=bar.Bar(blocks, 28, background=COLS["dark_2"]))
+    # return Screen(top=bar.Bar(blocks, 28, background=COLS["dark_2"]))
+    return blocks
+
+
+def make_slaves(systray=False):
+    """Defined as a function so that I can duplicate this on other monitors"""
+    def _separator():
+        # return widget.Sep(linewidth=2, foreground=COLS["dark_3"])
+        return widget.Sep(linewidth=2, foreground=COLS["deus_1"])
+
+    blocks = [
+        # Marker for the start of the groups to give a nice bg: ◢■■■■■■■◤
+        widget.TextBox(
+            font="Arial", foreground=COLS["dark_4"],
+            # font="Arial", foreground=COLS["deus_3"],
+            text="◢", fontsize=73, padding=-5
+        ),
+        widget.GroupBox(
+            other_current_screen_border=COLS["orange_0"],
+            this_current_screen_border=COLS["blue_0"],
+            # this_current_screen_border=COLS["deus_2"],
+            other_screen_border=COLS["orange_0"],
+            this_screen_border=COLS["blue_0"],
+            # this_screen_border=COLS["deus_2"],
+            highlight_color=COLS["blue_0"],
+            # highlight_color=COLS["deus_2"],
+            urgent_border=COLS["red_1"],
+            background=COLS["dark_4"],
+            # background=COLS["deus_3"],
+            highlight_method="line",
+            inactive=COLS["dark_2"],
+            active=COLS["light_2"],
+            disable_drag=True,
+            borderwidth=2,
+            **FONT_PARAMS,
+        ),
+        # Marker for the end of the groups to give a nice bg: ◢■■■■■■■◤
+        widget.TextBox(
+            font="Arial", foreground=COLS["dark_4"],
+            # font="Arial", foreground=COLS["deus_3"],
+            text="◤ ", fontsize=73, padding=-11
+        ),
+        # Show the title for the focused window
+        widget.WindowName(**FONT_PARAMS),
+    ]
+    return blocks
+
+def init_widgets_screen_master():
+    widgets_screen1 = make_master(systray=WITH_SYS_TRAY)
+    return widgets_screen1
+
+def init_widgets_screen_slave():
+    widgets_screen2 = make_slaves(systray=False)
+    return widgets_screen2
+
+def init_screens():
+    return [Screen(top=bar.Bar(widgets=init_widgets_screen_master(), size=28, background=COLS["dark_2"])),
+            Screen(top=bar.Bar(widgets=init_widgets_screen_slave(), size=28, background=COLS["dark_2"])),
+            Screen(top=bar.Bar(widgets=init_widgets_screen_slave(), size=28, background=COLS["dark_2"]))]
+
+if __name__ in ["config", "__main__"]:
+    screens = init_screens()
+    widgets_list = make_master()
+    widgets_screen1 = init_widgets_screen_master()
+    widgets_screen2 = init_widgets_screen_slave()
 
 # XXX : When I run qtile inside of mate, I don"t actually want a qtile systray
 #       as mate handles that. (Plus, if it _is_ enabled then the mate and
 #       qtile trays both crap out...)
-screens = [make_screen(systray=WITH_SYS_TRAY)]
-
+# screens = [make_screen(systray=WITH_SYS_TRAY)]
 # ----------------------------------------------------------------------------
 # .: Assorted additional config :.
 focus_on_window_activation = "smart"
@@ -189,8 +252,8 @@ wmname = "LG3D"
 
 
 # ----------------------------------------------------------------------------
-def main(qtile):
-    """Optional entry point for the config"""
-    # Make sure that we have a screen / bar for each monitor that is attached
-    while len(screens) < len(qtile.conn.pseudoscreens):
-        screens.append(make_screen())
+#def main(qtile):
+#    """Optional entry point for the config"""
+#    # Make sure that we have a screen / bar for each monitor that is attached
+#    while len(screens) < len(qtile.conn.pseudoscreens):
+#        screens.append(make_screen())
