@@ -192,6 +192,11 @@ def make_slaves(systray=False):
         ),
         # Show the title for the focused window
         widget.WindowName(**FONT_PARAMS),
+        # Visual indicator of the current layout for this workspace.
+        widget.CurrentLayoutIcon(
+            custom_icon_paths=[os.path.expanduser("~/.config/qtile/icons")],
+            **FONT_PARAMS
+        ),
     ]
     return blocks
 
@@ -225,7 +230,7 @@ focus_on_window_activation = "smart"
 dgroups_key_binder = None
 follow_mouse_focus = True
 bring_front_click = False
-auto_fullscreen = True
+auto_fullscreen = False
 dgroups_app_rules = []
 cursor_warp = True
 main = None

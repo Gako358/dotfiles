@@ -184,11 +184,11 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-C-m", lazy.spawn("mailspring")),
     ("M-C-l", lazy.spawn("lyx")),
     ("M-C-g", lazy.spawn("steam")),
-    ("M-C-r", lazy.spawn(TERMINAL + ' -e "ranger"')),
     ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
 
     # Scratchpad toggles
     ("M-<slash>", lazy.group['scratchpad'].dropdown_toggle('term')),
+    ("M-r", lazy.group['scratchpad'].dropdown_toggle('ranger')),
 
     # .: Layout / Focus Manipulation :. #
     ("M-f", lazy.window.toggle_fullscreen()),

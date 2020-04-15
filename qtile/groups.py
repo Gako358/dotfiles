@@ -53,10 +53,10 @@ groups = [
     ScratchPad("scratchpad", [
         # NOTE :: Need to force spawning as a new process so that
         #         qtile can capture the new terminal by pid.
-        DropDown("term", "tilix --new-process",
+        DropDown("term", "urxvt",
                  on_focus_lost_hide=False, x=0.05, y=0.05,
                  width=0.9, height=0.9),
-        DropDown("ipython", "python3.7 -m qtconsole",
+        DropDown("ranger", "urxvt -e ranger",
                  on_focus_lost_hide=False, x=0.05, y=0.05,
                  width=0.9, height=0.9)
     ]),
