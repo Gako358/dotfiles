@@ -65,7 +65,7 @@ groups = [
 dgroups_app_rules = [
     # Everything i want to be float, but don't want to change group
     Rule(Match(title=['nested', 'gscreenshot'],
-               wm_class=['Guake.py', 'Exe', 'Onboard', 'Florence',
+               wm_class=['Guake.py', 'Exe', 'gimp', 'Onboard', 'Florence',
                          'Plugin-container', 'Terminal', 'Gpaint',
                          'Kolourpaint', 'Wrapper', 'Gcr-prompter',
                          'Ghost', 'feh', 'Gnuplot', 'Pinta', 
