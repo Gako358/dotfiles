@@ -159,7 +159,10 @@ nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
 
 "" Undo Tree
-nnoremap <F4> :UndotreeToggle<cr>
+nnoremap <F4> :UndotreeToggle<CR>
+
+"" Reset Search
+nnoremap <F5> :noh<CR>
 
 "" Switching windows
 noremap <C-j> <C-w>j
