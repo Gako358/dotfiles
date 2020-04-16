@@ -123,7 +123,10 @@ def make_master(systray=False):
         widget.Pacman(**FONT_PARAMS),
         # Volume % : scroll mouse wheel to change volume
         widget.TextBox("", **FONT_PARAMS),
-        widget.Volume(**FONT_PARAMS),
+        widget.Volume(
+            cardid='Corsair VOID PRO Wireless Gamin',
+            **FONT_PARAMS
+        ),
         _separator(),
         # Current time
         widget.Clock(
