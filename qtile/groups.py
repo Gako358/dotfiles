@@ -58,6 +58,9 @@ groups = [
                  width=0.9, height=0.9),
         DropDown("ranger", "urxvt -e ranger",
                  on_focus_lost_hide=False, x=0.05, y=0.05,
+                 width=0.9, height=0.9),
+        DropDown("radio", "urxvt -e curseradio",
+                 on_focus_lost_hide=False, x=0.05, y=0.05,
                  width=0.9, height=0.9)
     ]),
 ]

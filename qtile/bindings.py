@@ -190,6 +190,7 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     # Scratchpad toggles
     ("M-<slash>", lazy.group['scratchpad'].dropdown_toggle('term')),
     ("M-r", lazy.group['scratchpad'].dropdown_toggle('ranger')),
+    ("M-m", lazy.group['scratchpad'].dropdown_toggle('radio')),
 
     # .: Layout / Focus Manipulation :. #
     ("M-f", lazy.window.toggle_fullscreen()),
