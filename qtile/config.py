@@ -124,7 +124,7 @@ def make_master(systray=False):
         # Volume % : scroll mouse wheel to change volume
         widget.TextBox("", **FONT_PARAMS),
         widget.Volume(
-            cardid='Corsair VOID PRO Wireless Gamin',
+            channel='PCM',
             **FONT_PARAMS
         ),
         _separator(),
