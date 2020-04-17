@@ -37,7 +37,7 @@ groups = [
     Group("5 ", init=True, persist=True, spawn='chromium',
         matches=[Match(wm_class=['Chromium'])], exclusive=True, layout="stack"
         ),
-    Group("6 ", init=True, persist=True,
+    Group("6 ", init=True, persist=True, spawn='mailspring',
         matches=[Match(wm_class=['Mailspring'])], exclusive=True, layout="stack"
         ),
     Group("7 "),
