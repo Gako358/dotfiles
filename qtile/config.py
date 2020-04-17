@@ -235,7 +235,7 @@ follow_mouse_focus = True
 bring_front_click = False
 auto_fullscreen = False
 dgroups_app_rules = []
-cursor_warp = True
+cursor_warp = False
 main = None
 
 # XXX :: Horrible hack needed to make grumpy java apps work correctly.
