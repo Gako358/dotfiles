@@ -13,7 +13,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'Yggdroot/indentLine'
-Plug 'mbbill/undotree'
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
@@ -157,9 +156,6 @@ nnoremap <leader>sc :CloseSession<CR>
 nnoremap <Tab> gt
 nnoremap <S-Tab> gT
 nnoremap <silent> <S-t> :tabnew<CR>
-
-"" Undo Tree
-nnoremap <F4> :UndotreeToggle<CR>
 
 "" Reset Search
 nnoremap <F5> :noh<CR>

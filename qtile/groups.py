@@ -37,11 +37,13 @@ groups = [
     Group("5 ", init=True, persist=True, spawn='chromium',
         matches=[Match(wm_class=['Chromium'])], exclusive=True, layout="stack"
         ),
-    Group("6 ", init=True, persist=True, spawn='mailspring',
+    Group("6 ", init=True, persist=True, spawn='mailspring',
         matches=[Match(wm_class=['Mailspring'])], exclusive=True, layout="stack"
         ),
     Group("7 "),
-    Group("8 λ"),
+    Group("8 ", init=True, persist=True,
+        matches=[Match(wm_class=['Virt-manager'])], exclusive=True, layout="stack"
+        ),
     Group("9 ", init=True, persist=True, spawn='discord',
         matches=[Match(wm_class=['discord'])], exclusive=True, layout="stack"
         ),

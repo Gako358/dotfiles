@@ -185,6 +185,7 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-C-l", lazy.spawn("lyx")),
     ("M-C-s", lazy.spawn("steam")),
     ("M-C-g", lazy.spawn("gimp")),
+    ("M-C-v", lazy.spawn("virt-manager")),
     ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
 
     # Scratchpad toggles
