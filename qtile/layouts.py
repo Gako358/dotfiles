@@ -98,5 +98,6 @@ floating_layout = layout.Floating(
         {'wname': 'branchdialog'},
         {'wname': 'pinentry'},
         {'wmclass': 'ssh-askpass'},
+        {'wmclass': 'thunar'},
     ]
 )

@@ -70,7 +70,7 @@ groups = [
 dgroups_app_rules = [
     # Everything i want to be float, but don't want to change group
     Rule(Match(title=['nested', 'gscreenshot'],
-               wm_class=['Guake.py', 'Exe', 'gimp', 'Onboard', 'Florence',
+               wm_class=['Guake.py', 'Exe', 'gimp', 'thunar', 'Onboard', 'Florence',
                          'Plugin-container', 'Terminal', 'Gpaint',
                          'Kolourpaint', 'Wrapper', 'Gcr-prompter',
                          'Ghost', 'feh', 'Gnuplot', 'Pinta', 
@@ -79,7 +79,7 @@ dgroups_app_rules = [
          float=True, intrusive=True),
 
     # floating windows
-    Rule(Match(wm_class=['Synfigstudio', 'Wine', 'Xephyr', 'postal2-bin']
+    Rule(Match(wm_class=['Synfigstudio', 'Wine', 'Xephyr', 'postal2-bin', 'File Manager']
                ),
          float=True),
     ]
