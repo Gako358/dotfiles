@@ -178,21 +178,18 @@ keys = [EzKey(k[0], *k[1:]) for k in [
 
     # .: Program Launchers :. #
     ("M-<Return>", lazy.spawn(TERMINAL + " -e zsh")),
-    ("M-w", lazy.spawncmd()),
+    ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
+    ("M-C-v", lazy.spawn("virt-manager")),
     ("M-C-c", lazy.spawn("chromium")),
     ("M-C-d", lazy.spawn("discord")),
-    ("M-C-m", lazy.spawn("mailspring")),
-    ("M-C-l", lazy.spawn("lyx")),
-    ("M-C-s", lazy.spawn("steam")),
-    ("M-C-g", lazy.spawn("gimp")),
-    ("M-C-t", lazy.spawn("thunar")),
-    ("M-C-v", lazy.spawn("virt-manager")),
-    ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
+    ("M-C-t", lazy.spawncmd()),
+
+    # Easy Access
+    ("M-r", lazy.spawn("thunar")),
+    ("M-w", lazy.spawn("rofi -show run")),
 
     # Scratchpad toggles
     ("M-<slash>", lazy.group['scratchpad'].dropdown_toggle('term')),
-    ("M-r", lazy.group['scratchpad'].dropdown_toggle('ranger')),
-    ("M-m", lazy.group['scratchpad'].dropdown_toggle('radio')),
 
     # .: Layout / Focus Manipulation :. #
     ("M-f", lazy.window.toggle_fullscreen()),
@@ -204,8 +201,8 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     ("M-d", lazy.to_screen(2)),
     # Move the focused group to one of the screens and follow it
     ("M-S-s", switch_screens(0), lazy.to_screen(0)),
-    ("M-S-d", switch_screens(1), lazy.to_screen(1)),
-    ("M-S-a", switch_screens(1), lazy.to_screen(2)),
+    ("M-S-d", switch_screens(2), lazy.to_screen(2)),
+    ("M-S-a", switch_screens(1), lazy.to_screen(1)),
     # Close the current window: NO WARNING!
     ("M-q", lazy.window.kill()),
     ("M-S-<BackSpace>", lazy.window.kill()),
