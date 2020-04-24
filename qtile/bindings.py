@@ -179,9 +179,6 @@ keys = [EzKey(k[0], *k[1:]) for k in [
     # .: Program Launchers :. #
     ("M-<Return>", lazy.spawn(TERMINAL + " -e zsh")),
     ("M-C-w", lazy.spawn(TERMINAL + ' -e "weechat"')),
-    ("M-C-v", lazy.spawn("virt-manager")),
-    ("M-C-c", lazy.spawn("chromium")),
-    ("M-C-d", lazy.spawn("discord")),
     ("M-C-t", lazy.spawncmd()),
 
     # Easy Access
