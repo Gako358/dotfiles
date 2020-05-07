@@ -31,6 +31,7 @@ alias t11="~/Projects/Tutorials/Clang/"
 alias t14="~/Projects/Tutorials/Python/"
 alias dot="~/Sources/Dotfiles/"
 alias doc="~/Documents/"
+alias nm="ncmpcpp"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

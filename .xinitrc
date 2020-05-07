@@ -10,7 +10,7 @@ fi
 
 # enable window compositing
 if [ -f /usr/bin/picom ]; then
-	picom -b -d :0 & 
+	picom -b & 
 fi
 
 # Start slstatus bar
@@ -25,6 +25,7 @@ export SSH_AUTH_SOCK
 /usr/bin/brave &
 discord &
 mailspring &
+mopidy &
 
 # launch dwm
 exec dwm
