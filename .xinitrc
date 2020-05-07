@@ -20,7 +20,7 @@ exec dwm
 /usr/local/bin/dwmblocks &
 
 # Autostart Apps
-chromium &
+brave &
 discord &
 mailspring &
 
