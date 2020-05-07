@@ -10,19 +10,24 @@ fi
 
 # enable window compositing
 if [ -f /usr/bin/picom ]; then
-    picom -b -d :0 & 
+	picom -b -d :0 & 
 fi
+
+# Start slstatus bar
+dwmblocks &
+
+# Gnome keyring
+dbus-update-activation-environment --systemd DISPLAY
+eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
+export SSH_AUTH_SOCK
+
+# Autostart Apps
+/usr/bin/brave &
+discord &
+mailspring &
 
 # launch dwm
 exec dwm
-
-# Start slstatus bar
-/usr/local/bin/dwmblocks &
-
-# Autostart Apps
-brave &
-discord &
-mailspring &
 
 # relaunch DWM if the binary changes, otherwise bail
 csum=$(sha1sum $(which dwm))
