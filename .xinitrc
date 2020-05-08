@@ -5,7 +5,8 @@ xrandr --output HDMI-0 --primary --mode 1920x1080 --pos 1080x840 --rotate normal
 
 # set the background
 if [ -f /usr/bin/feh ]; then
-    feh --bg-fill /home/merrinx/Pictures/Wallpapers/xinerama_landscape.jpg &
+    # feh --bg-fill /home/merrinx/Pictures/Wallpapers/xinerama_landscape.jpg &
+    feh --bg-scale --no-xinerama /home/merrinx/Pictures/Wallpapers/xinerama_landscape.jpg &
 fi
 
 # enable window compositing
@@ -22,7 +23,7 @@ eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
 export SSH_AUTH_SOCK
 
 # Autostart Apps
-/usr/bin/brave &
+brave &
 discord &
 mailspring &
 mopidy &
