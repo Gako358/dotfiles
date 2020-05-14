@@ -12,7 +12,7 @@ fi
 # enable window compositing
 # This have some errors when running monitors with different refresh rate
 if [ -f /usr/bin/picom ]; then
-	picom -b & 
+	DISPLAY=":0" picom -b & 
 fi
 
 # Start slstatus bar
