@@ -10,6 +10,7 @@ if [ -f /usr/bin/feh ]; then
 fi
 
 # enable window compositing
+# This have some errors when running monitors with different refresh rate
 if [ -f /usr/bin/picom ]; then
 	picom -b & 
 fi
@@ -27,6 +28,7 @@ brave &
 discord &
 mailspring &
 mopidy &
+ckb-next --background &
 
 # launch dwm
 exec dwm
