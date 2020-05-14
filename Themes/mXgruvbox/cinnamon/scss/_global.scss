@@ -4,10 +4,10 @@
 // 1.0 < 1 will result in most cinnamon surfaces being transparent
 $button_bg_color: #ebdbb2;
 $button_fg_color: #282828;
-$selected_bg_color: #83a598;
+$selected_bg_color: #fb4934;
 $selected_fg_color: #f9f5d7;
-$tooltip_bg_color: #3c3836;
-$tooltip_fg_color: #f9f5d7;
+$tooltip_bg_color: #ebdbb2;
+$tooltip_fg_color: #282828;
 $dark_bg_color: fade-out(#282828, 1 - 1.0);
 $dark_fg_color: #f9f5d7;
 
@@ -65,7 +65,7 @@ $scrollbar_slider_color: mix($dark_bg_color, $dark_fg_color, 20%);
 $scrollbar_slider_hover_color: mix($dark_bg_color, $selected_bg_color, 20%);
 
 // caret colors for dialog entrys
-$primary_caret_color: #f9f5d7;
+$primary_caret_color: #282828;
 
 // other colors used in the theme
 $link_color: #6499b8;
