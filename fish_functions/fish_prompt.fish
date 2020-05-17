@@ -2,7 +2,7 @@ function fish_prompt --description 'Write out the prompt'
     set laststatus $status
 
     if set -l git_branch (command git symbolic-ref HEAD 2>/dev/null | string replace refs/heads/ '')
-        set git_branch (set_color -o blue)"$git_branch"
+        set git_branch (set_color -o purple)"$git_branch"
         if command git diff-index --quiet HEAD --
             if set -l count (command git rev-list --count --left-right $upstream...HEAD 2>/dev/null)
                 echo $count | read -l ahead behind
@@ -40,7 +40,7 @@ function fish_prompt --description 'Write out the prompt'
     or set -lx fish_prompt_pwd_dir_length 0
 
     set_color -b black
-    printf '%s%s%s%s%s%s%s%s%s%s%s%s%s' (set_color -o white) '❰' (set_color blue)  $USER (set_color white) '❙' (set_color yellow) (prompt_pwd) (set_color white) $git_info (set_color white) '❱' (set_color white)
+    printf '%s%s%s%s%s%s%s%s%s%s%s%s%s' (set_color -o white) '❰' (set_color blue) $USER (set_color white) '❙' (set_color yellow) (prompt_pwd) (set_color green) $git_info (set_color white) '❱' (set_color white)
     if test $laststatus -eq 0
         printf "%s✔%s≻%s " (set_color -o green) (set_color white) (set_color normal)
     else
