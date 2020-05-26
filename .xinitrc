@@ -29,6 +29,8 @@ discord &
 mailspring &
 mopidy &
 ckb-next --background &
+sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc &
+sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc2 &
 
 # launch dwm
 exec dwm
