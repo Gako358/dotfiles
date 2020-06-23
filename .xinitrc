@@ -6,7 +6,7 @@ xrandr --output HDMI-0 --primary --mode 1920x1080 --pos 1080x840 --rotate normal
 # set the background
 if [ -f /usr/bin/feh ]; then
     # feh --bg-fill /home/merrinx/Pictures/Wallpapers/xinerama_landscape.jpg &
-    feh --bg-scale --no-xinerama /home/merrinx/Pictures/Wallpapers/xinerama_landscape.jpg &
+    feh --bg-scale --no-xinerama /home/merrinx/Pictures/Wallpapers/digital_arch.jpg &
 fi
 
 # enable window compositing
@@ -14,6 +14,8 @@ fi
 if [ -f /usr/bin/picom ]; then
 	DISPLAY=":0" picom -b & 
 fi
+
+xset s 0 -dpms
 
 # Start slstatus bar
 dwmblocks &
@@ -24,13 +26,13 @@ eval $(/usr/bin/gnome-keyring-daemon --start --components=pkcs11,secrets,ssh)
 export SSH_AUTH_SOCK
 
 # Autostart Apps
-brave &
-discord &
-mailspring &
 mopidy &
-ckb-next --background &
-sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc &
-sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc2 &
+brave &
+# discord &
+mailspring &
+# ckb-next --background &
+# sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc &
+# sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc2 &
 
 # launch dwm
 exec dwm
