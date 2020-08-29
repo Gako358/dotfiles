@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #Xrandr screen settings
-xrandr --output HDMI-0 --primary --mode 1920x1080 --pos 1080x840 --rotate normal --output HDMI-1 --mode 1920x1080 --pos 0x0 --rotate right --output DP-3 --mode 1920x1080 --pos 3000x840 --rotate normal
+xrandr --output DP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-1 --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-2 --off --output DP-3 --off
 
 # set the background
 if [ -f /usr/bin/feh ]; then
     # feh --bg-fill /home/merrinx/Pictures/Wallpapers/xinerama_landscape.jpg &
-    feh --bg-scale --no-xinerama /home/merrinx/Pictures/Wallpapers/digital_arch.jpg &
+    feh --bg-scale --no-xinerama /home/merrinx/Pictures/Wallpapers/digital_mountain.jpg &
 fi
 
 # enable window compositing
@@ -28,7 +28,9 @@ export SSH_AUTH_SOCK
 # Autostart Apps
 mopidy &
 brave &
-# discord &
+#synergyc 10.0.0.69 &
+#synergys &
+discord &
 mailspring &
 # ckb-next --background &
 # sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc &
