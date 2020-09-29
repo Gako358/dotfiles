@@ -25,6 +25,9 @@ Plug 'gruvbox-community/gruvbox'
 "" Coding Intellisense with coc-tabnine
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+"" Coding error handling /msg
+Plug 'scrooloose/syntastic'
+
 call plug#end()
 
 " Required:
@@ -59,6 +62,23 @@ nmap <buffer> <leader>gy <Plug>(coc-type-definition)
 nmap <buffer> <leader>gi <Plug>(coc-implementation)
 nmap <buffer> <leader>gr <Plug>(coc-references)
 nnoremap <buffer> <leader>cr :CocRestart
+
+" Syntetics Error Handling
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_quiet_messages = { "type": "style"  }
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" Python Checkers
+let g:syntastic_python_checkers = ['pylint']
+
+" C Checkers
+let g:syntastic_c_checkers=['make','gcc']
 
 "" Tabs. May be overridden by autocmd rules
 set tabstop=4
