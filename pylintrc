@@ -1,0 +1,80 @@
+[MASTER]
+
+# Use multiple processes to speed up Pylint.
+jobs=1
+
+
+[MESSAGES CONTROL]
+
+# Disable all to choose the Tests one by one
+disable=all
+
+# Tests
+enable=bad-indentation,       		# Used when an unexpected number of indentation’s tabulations or spaces has been found.
+       mixed-indentation,     		# Used when there are some mixed tabs and spaces in a module.
+       unnecessary-semicolon, 		# Used when a statement is ended by a semi-colon (”;”), which isn’t necessary.
+       unused-variable        		# Used when a variable is defined but not used. (Use _var to ignore var).
+       zip-builtin-not-iterating	# zip built-in referenced when not iterating Used when the zip built-in is referenced in a non-iterating
+       range-builtin-not-iterating	# range built-in referenced when not iterating Used when the range built-in is referenced in a non-iterating context 
+       map-builtin-not-iterating 	# map built-in referenced when not iterating Used when the map built-in is referenced in a non-iterating context 
+       not-in-loop					# %r not properly in loop Used when break or continue keywords are used outside a loop.
+       function-redefined			# %s already defined line %s Used when a function / class / method is redefined.
+       return-in-init				# Explicit return in __init__ Used when the special class method __init__ has an explicit return value.
+       return-outside-function		# Return outside function Used when a “return” statement is found outside a function or method.
+       return-arg-in-generator		# Return with argument inside generator Used when a “return” statement with an argument is found outside in a generator
+       yield-outside-function		# Yield outside function Used when a “yield” statement is found outside a function or method.
+       assert-on-tuple				# Assert called on a 2-uple. Did you mean ‘assert x,y’? 
+       duplicate-key				# Duplicate key %r in dictionary Used when a dictionary expression binds the same key multiple times.
+       consider-iterating-dictionary 
+       consider-using-enumerate		# Consider using enumerate instead of iterating with range and len Emitted when code that iterates with range and len is encountered. Such code can be simplified by using the enumerate builtin.
+       empty-docstring				# 
+       invalid-name					#
+       repeated-keyword				# Got multiple values for keyword argument %r in function call Emitted when a function call got multiple values for a keyword.
+       no-value-for-parameter		# No value for argument %s in %s call Used when a function call passes too few arguments.
+       too-many-function-args		# Too many positional arguments for %s call Used when a function call passes too many positional arguments.
+       unexpected-keyword-arg		# Unexpected keyword argument %r in %s call Used when a function call passes a keyword argument that doesn’t correspond to one of the function’s parameter names.
+       bad-except-order				# Bad except clauses order (%s) Used when except clauses are not in the correct order (from the more specific to the more generic). If you don’t fix the order, some exceptions may not be catched by the most specific handler.
+       catching-non-exception		# Catching an exception which doesn’t inherit from BaseException: %s Used when a class which doesn’t inherit from BaseException is used as an exception in an except clause.
+       raising-bad-type				# Raising %s while only classes or instances are allowed Used when something which is neither a class, an instance or a string is raised (i.e. a TypeError will be raised).
+       raising-non-exception		# Raising a new style class which doesn’t inherit from BaseException Used when a new style class which doesn’t inherit from BaseException is raised.
+       import-error					# Unable to import %s Used when pylint has been unable to import a module.
+       import-self					# Module import itself Used when a module is importing itself.
+       used-before-assignment		# Using variable %r before assignment Used when a local variable is accessed before it’s assignment.
+       undefined-variable			# Undefined variable %r Used when an undefined variable is accessed.
+       unused-import				# Unused %s Used when an imported module or variable is not used.
+       unused-argument				# Unused argument %r Used when a function or method argument is not used.
+       duplicate-code				# Similar lines in %s files Indicates that a set of similar lines has been detected among multiple file. This usually means that the code should be refactored to avoid this duplication.
+       no-method-argument			# Method has no argument Used when a method which should have the bound instance as first argument has no argument defined.
+       no-self-argument				# Method should have “self” as first argument Used when a method has an attribute different the “self” as first argument. This is considered as an error since this is a so common convention that you shouldn’t break it!
+       
+		
+
+[REPORTS]
+
+# Tells whether to display a full report or only the messages
+reports=no
+
+# Activate the evaluation score.
+score=no
+
+
+[FORMAT]
+
+# Regexp for a line that is allowed to be longer than the limit.
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$
+
+# Number of spaces of indent required inside a hanging or continued line.
+indent-after-paren=4
+
+# String used as indentation unit. This is usually "    " (4 spaces) or "\t" (1
+# tab).
+indent-string='    '
+
+# Maximum number of lines in a module
+max-module-lines=1000
+
+
+[EXCEPTIONS]
+
+# Exceptions that will emit a warning when being caught.
+overgeneral-exceptions=Exception
