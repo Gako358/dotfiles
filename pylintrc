@@ -1,7 +1,7 @@
 [MASTER]
 
 # Use multiple processes to speed up Pylint.
-jobs=1
+jobs=3
 
 
 [MESSAGES CONTROL]
@@ -26,8 +26,6 @@ enable=zip-builtin-not-iterating,
        pointless-statement,
        consider-iterating-dictionary,
        consider-using-enumerate,
-       empty-docstring,
-       missing-docstring,
        invalid-unary-operand-type,
        unsupported-binary-operation,
        repeated-keyword,
