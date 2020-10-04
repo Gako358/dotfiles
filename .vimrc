@@ -45,6 +45,34 @@ set ttyfast
 "" Fix backspace indent
 set backspace=indent,eol,start
 
+"" Tabs. May be overridden by autocmd rules
+set tabstop=4
+set softtabstop=0
+set shiftwidth=4
+set expandtab
+
+"" Vim tries to indent the files
+set smartindent
+
+"" Map leader to ,
+let mapleader=','
+
+"" Searching
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" session management
+let g:session_directory = "~/.vim/session"
+let g:session_autoload = "no"
+let g:session_autosave = "no"
+let g:session_command_aliases = 1
+
+
+"*****************************************************************************
+"" Coding Settings
+"*****************************************************************************
 "" CoC Tabnine
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -74,38 +102,11 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 1
 
-" Check Code
-nnoremap <F7> :SyntasticCheck<CR>
-
 " Python Checkers
 let g:syntastic_python_checkers = ['pylint']
 
 " C Checkers
 let g:syntastic_c_checkers=['make','gcc']
-
-"" Tabs. May be overridden by autocmd rules
-set tabstop=4
-set softtabstop=0
-set shiftwidth=4
-set expandtab
-
-"" Vim tries to indent the files
-set smartindent
-
-"" Map leader to ,
-let mapleader=','
-
-"" Searching
-set hlsearch
-set incsearch
-set ignorecase
-set smartcase
-
-" session management
-let g:session_directory = "~/.vim/session"
-let g:session_autoload = "no"
-let g:session_autosave = "no"
-let g:session_command_aliases = 1
 
 "*****************************************************************************
 "" Visual Settings
@@ -116,7 +117,7 @@ set number relativenumber
 set t_Co=256
 
 let no_buffers_menu=1
-let g:gruvbox_contrast_dark="hard"
+let g:gruvbox_contrast_dark="medium"
 
 " Loading the color scheme
 silent! colorscheme gruvbox
@@ -170,6 +171,13 @@ command! FixWhitespace :%s/\s\+$//e
 "*****************************************************************************
 "" Mappings
 "*****************************************************************************
+" Check Code
+nnoremap <F7> :SyntasticCheck<CR>
+
+" Navigating error messages
+nnoremap <Leader>en :lne<CR>
+nnoremap <Leader>ep :lp<CR>
+
 " session management
 nnoremap <leader>so :OpenSession<Space>
 nnoremap <leader>ss :SaveSession<Space>
