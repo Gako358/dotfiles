@@ -15,6 +15,7 @@ if [ -f /usr/bin/picom ]; then
 	DISPLAY=":0" picom -b & 
 fi
 
+# Make sure we do not have any screensavers activated or sleep timers
 xset s 0 -dpms
 
 # Start slstatus bar
@@ -28,8 +29,8 @@ export SSH_AUTH_SOCK
 # Autostart Apps
 mopidy &
 brave &
-sleep 1 && discord &
-sleep 3 && mailspring &
+sleep 3 && discord &
+sleep 5 && mailspring &
 # ckb-next --background &
 # sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc &
 # sleep 5 && conky --config=/home/merrinx/.config/conky/conkyrc2 &
