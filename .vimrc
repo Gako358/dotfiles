@@ -23,8 +23,9 @@ Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
 
 "" Color Scheme
-"" Plug 'morhetz/gruvbox'
-Plug 'gruvbox-community/gruvbox'
+"" Plug 'morhetz/gruvbox'               ### Original Gruvbox
+"" Plug 'gruvbox-community/gruvbox'     ### Updated Gruvbox
+Plug 'tomasr/molokai'                   
 
 "" Coding Intellisense with coc-tabnine
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -121,10 +122,12 @@ set number relativenumber
 set t_Co=256
 
 let no_buffers_menu=1
-let g:gruvbox_contrast_dark="hard"
+"" let g:gruvbox_contrast_dark="hard"
+let g:rehash256 = 1
+let g:molokai_original = 1
 
 " Loading the color scheme
-silent! colorscheme gruvbox
+silent! colorscheme molokai
 
 set mousemodel=popup
 set mouse=a
@@ -163,7 +166,7 @@ cnoreabbrev Q q
 cnoreabbrev Qall qall
 
 " vim-airline
-let g:airline_theme = 'gruvbox'
+let g:airline_theme = 'powerlineish'
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
