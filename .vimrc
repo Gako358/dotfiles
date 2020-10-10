@@ -13,6 +13,9 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 Plug 'Yggdroot/indentLine'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'terryma/vim-multiple-cursors'
 
 "" Vim-Session
 Plug 'xolox/vim-misc'
@@ -117,7 +120,7 @@ set number relativenumber
 set t_Co=256
 
 let no_buffers_menu=1
-let g:gruvbox_contrast_dark="medium"
+let g:gruvbox_contrast_dark="hard"
 
 " Loading the color scheme
 silent! colorscheme gruvbox
@@ -145,6 +148,18 @@ set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
 
 nnoremap n nzzzv
 nnoremap N Nzzzv
+
+"" no one is really happy until you have this shortcuts
+cnoreabbrev W! w!
+cnoreabbrev Q! q!
+cnoreabbrev Qall! qall!
+cnoreabbrev Wq wq
+cnoreabbrev Wa wa
+cnoreabbrev wQ wq
+cnoreabbrev WQ wq
+cnoreabbrev W w
+cnoreabbrev Q q
+cnoreabbrev Qall qall
 
 " vim-airline
 let g:airline_theme = 'gruvbox'
@@ -174,6 +189,10 @@ command! FixWhitespace :%s/\s\+$//e
 " Check Code
 nnoremap <F7> :SyntasticCheck<CR>
 
+"" Split
+noremap <Leader>h :<C-u>split<CR>
+noremap <Leader>v :<C-u>vsplit<CR>
+
 " Navigating error messages
 nnoremap <Leader>en :lne<CR>
 nnoremap <Leader>ep :lp<CR>
@@ -191,6 +210,29 @@ nnoremap <silent> <S-t> :tabnew<CR>
 
 "" Reset Search
 nnoremap <F5> :noh<CR>
+
+"" Git
+noremap <Leader>ga :Gwrite<CR>
+noremap <Leader>gc :Gcommit<CR>
+noremap <Leader>gsh :Gpush<CR>
+noremap <Leader>gll :Gpull<CR>
+noremap <Leader>gs :Gstatus<CR>
+noremap <Leader>gb :Gblame<CR>
+noremap <Leader>gd :Gvdiff<CR>
+noremap <Leader>gr :Gremove<CR>
+
+"" Multi Cursor addon
+let g:multi_cursor_use_default_mapping=0
+
+" Default mapping
+let g:multi_cursor_start_word_key      = '<C-n>'
+let g:multi_cursor_select_all_word_key = '<A-n>'
+let g:multi_cursor_start_key           = 'g<C-n>'
+let g:multi_cursor_select_all_key      = 'g<A-n>'
+let g:multi_cursor_next_key            = '<C-n>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
 
 "" Switching windows
 noremap <C-j> <C-w>j
