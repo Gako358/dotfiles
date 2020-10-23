@@ -1,4 +1,4 @@
-function gstatus --description 'git status'
+function gs --description 'git status'
     echo (set_color brred) Checking Dotfiles (set_color normal)
     echo (set_color brgreen) -------------------- (set_color normal)
     cd /home/merrinx/Sources/Dotfiles/ $argv

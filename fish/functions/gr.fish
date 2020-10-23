@@ -1,4 +1,4 @@
-function gremote --description 'git remote'
+function gr --description 'git remote'
     echo (set_color brred) Checking Dotfiles (set_color normal)
     echo (set_color brgreen)--------------------(set_color normal)
     cd /home/merrinx/Sources/Dotfiles/ $argv
