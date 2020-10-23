@@ -213,6 +213,9 @@ nnoremap <silent> <S-t> :tabnew<CR>
 "" Reset Search
 nnoremap <F5> :noh<CR>
 
+"" Terminal
+noremap <Leader>t :below terminal<CR>
+
 "" Git
 noremap <Leader>ga :Gwrite<CR>
 noremap <Leader>gc :Gcommit<CR>
