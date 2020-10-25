@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <metacity_theme>
 <info>
-	<name>mXgruvbox</name>
+	<name>oomox-mXgruvbox</name>
 	<author>Satyajit Sahoo</author>
 	<copyright>GPL-3.0+</copyright>
 	<date>11 December 2013</date>
@@ -9,16 +9,16 @@
 </info>
 
 <!-- ::: CONSTANTS ::: -->
-<constant name="C_titlebar_focused" value="#1d2021" />
-<constant name="C_titlebar_unfocused" value="#282828" />
-<constant name="C_border_focused" value="#282828" />
+<constant name="C_titlebar_focused" value="#282828" />
+<constant name="C_titlebar_unfocused" value="#fbf1c7" />
+<constant name="C_border_focused" value="#458588" />
 <constant name="C_border_unfocused" value="#282828" />
-<constant name="C_title_focused" value="#458588" />
-<constant name="C_title_unfocused" value="blend/#458588/#282828/0.4" />
-<constant name="C_icons_focused" value="#458588" />
+<constant name="C_title_focused" value="#ebdbb2" />
+<constant name="C_title_unfocused" value="blend/#282828/#fbf1c7/0.4" />
+<constant name="C_icons_focused" value="#ebdbb2" />
 <constant name="C_icons_focused_prelight" value="gtk:bg[SELECTED])" />
 <constant name="C_icons_focused_pressed" value="shade/gtk:bg[SELECTED]/0.8" />
-<constant name="C_icons_unfocused" value="blend/#458588/#282828/0.4" />
+<constant name="C_icons_unfocused" value="blend/#282828/#fbf1c7/0.4" />
 <constant name="C_icons_unfocused_prelight" value="gtk:bg[SELECTED])" />
 <constant name="C_icons_unfocused_pressed" value="shade/gtk:bg[SELECTED]/0.8" />
 

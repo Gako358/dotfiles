@@ -5,7 +5,7 @@ Comment=A partially sexual act; when a female (of any species; mostly humanoids)
 Encoding=UTF-8
 
 [X-GNOME-Metatheme]
-Name=mXgruvbox
-GtkTheme=mXgruvbox
-IconTheme=mXgruvbox
-MetacityTheme=mXgruvbox
+Name=oomox-mXgruvbox
+GtkTheme=oomox-mXgruvbox
+IconTheme=oomox-mXgruvbox
+MetacityTheme=oomox-mXgruvbox
