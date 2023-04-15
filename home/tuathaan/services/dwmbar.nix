@@ -73,6 +73,18 @@ with builtins; let
        printf "^c$forground^ $(free -h | awk '/^Mem/ { print $3 }' | sed s/i//g) "
      }
 
+     disk_rem() {
+       usage=$(df -h / | awk 'NR==2 {print $5}')
+       printf "^c$blue^ ^b$grey^  "
+       printf "^c$forground^ ^b$grey^ $usage"
+     }
+
+     disk_usage() {
+       space_left=$(df -h / | awk 'NR==2 {print $4}')
+       printf "^c$blue^ ^b$grey^  "
+       printf "^c$forground^ ^b$grey^ $space_left"
+     }
+
      brightness() {
        printf "^c$blue^^b$grey^   "
        printf "^c$forground^%.0f\n" $(xbacklight -get | sed 's/\..*//g')
@@ -105,7 +117,7 @@ with builtins; let
      }
 
      while true; do
-       sleep 1 && xsetroot -name "$(volume) $(spacer) $(spacer) $(cpu) $(battery) $(mem) $(brightness) $(spacer) $(wlan) $(spacer) $(clock) $(spacer) $(lang)"
+       sleep 1 && xsetroot -name "$(volume) $(spacer) $(spacer) $(cpu) $(battery) $(mem) $(brightness) $(spacer) $(disk_rem) $(disk_usage) $(spacer)  $(wlan) $(spacer) $(clock) $(spacer) $(lang)"
      done
   '';
 

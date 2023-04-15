@@ -1,4 +1,5 @@
 {
+  pkgs,
   lib,
   config,
   ...
@@ -15,7 +16,7 @@ in {
         lightdm = {
           enable = true;
           greeters.enso.enable = true;
-          background = nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+          background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
         };
         defaultSession = "none+dwm";
       };

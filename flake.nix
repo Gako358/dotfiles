@@ -83,7 +83,7 @@
             nixosModules
             {
               # Set desktop environment
-              desktop.gnome.enable = true;
+              desktop.xsession.enable = true;
               # Services enabled
               # services.lock.enable = true;
               # Programs to enable

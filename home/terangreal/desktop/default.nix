@@ -14,7 +14,7 @@ with builtins; {
         "bspwm"
         "dwm"
       ];
-      default = "gnome";
+      default = "dwm";
       description = "Desktop environment to use.";
     };
   };

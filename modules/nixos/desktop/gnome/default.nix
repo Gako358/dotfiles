@@ -44,7 +44,6 @@ in
       gnome.gnome-tweaks
       gnome.dconf-editor
       gnome.gnome-notes
-      gnome.gpaste
       spotify
       arandr
       evince

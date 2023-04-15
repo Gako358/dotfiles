@@ -1,8 +1,9 @@
-{ config
-, pkgs
-, host
-, lib
-, ...
+{
+  config,
+  pkgs,
+  host,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
@@ -20,6 +21,7 @@ with builtins; let
       pkgs.glibc
       pkgs.toybox
       pkgs.networkmanager
+      pkgs.lm_sensors
     ]}
 
      interval=0
@@ -55,6 +57,24 @@ with builtins; let
        printf "^c$forground^ $(free -h | awk '/^Mem/ { print $3 }' | sed s/i//g) "
      }
 
+     temp() {
+       cpu_temp=$(sensors | grep -E -m 1 'Tdie|temp1|Tctl' | awk '{print $2}')
+       printf "^c$red^ ^b$grey^  "
+       printf "^c$forground^ ^b$grey^ $cpu_temp"
+     }
+
+     disk_rem() {
+       usage=$(df -h / | awk 'NR==2 {print $5}')
+       printf "^c$blue^ ^b$grey^  "
+       printf "^c$forground^ ^b$grey^ $usage"
+     }
+
+     disk_usage() {
+       space_left=$(df -h / | awk 'NR==2 {print $4}')
+       printf "^c$blue^ ^b$grey^  "
+       printf "^c$forground^ ^b$grey^ $space_left"
+     }
+
      # wlan2() {
      #   ssid="$(LANG=C nmcli -t -f active,ssid dev wifi | grep ^yes | cut -d: -f2-)"
      # 	case "$(cat /sys/class/net/wl*/operstate 2>/dev/null)" in
@@ -82,16 +102,15 @@ with builtins; let
      }
 
      while true; do
-       sleep 1 && xsetroot -name "$(volume) $(spacer) $(spacer) $(cpu) $(mem) $(spacer) $(wlan) $(spacer) $(clock) $(spacer) $(lang)"
+       sleep 1 && xsetroot -name "$(volume) $(spacer) $(spacer) $(cpu) $(mem) $(spacer) $(temp) $(spacer) $(disk_rem) $(disk_usage) $(spacer) $(wlan) $(spacer) $(clock) $(spacer) $(lang)"
      done
   '';
 
   cfg = config.desktop;
-in
-{
+in {
   config = mkIf (cfg.environment == "dwm") {
     systemd.user.services.dwmstatus = {
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = ["graphical-session.target"];
       Service.ExecStart = "${script}";
     };
   };
