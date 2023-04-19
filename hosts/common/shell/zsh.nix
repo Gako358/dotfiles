@@ -1,7 +1,8 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 with builtins;
 with lib; let
@@ -35,8 +36,7 @@ with lib; let
 
     rzsh = "source ~/.zshrc";
   };
-in
-{
+in {
   # When need to set a variable in the environment, use this
   # environment.variables.CITRIX_CERT_PATH = "../../../modules/nixos/programs/certs/";
   environment.systemPackages = with pkgs; [

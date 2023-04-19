@@ -136,8 +136,8 @@
         angreal = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
-            .hosts/angreal
-            .nixosModules
+            ./hosts/angreal
+            nixosModules
             {
               # Set neccessary options
             }

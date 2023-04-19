@@ -1,48 +1,60 @@
 {
-  config,
-  nixpkgs,
-  overlays,
+  pkgs,
+  lib,
   inputs,
-}:
-# See https://github.com/NixOS/nixpkgs/blob/master/flake.nix#L24 for reference.
-nixpkgs.lib.nixosSystem rec {
-  system = "x86_64-linux";
-
-  modules = [
-    inputs.agenix.nixosModules.age
+  config,
+  ...
+}: {
+  imports = [
     inputs.nixos-wsl.nixosModules.wsl
-
-    {
-      # age = {
-      #   identityPaths = ["/home/merrinx/.ssh/id_ed25519"];
-
-      #   secrets.github-token = {
-      #     file = ../../secrets/github-token.age;
-      #     owner = "gako358";
-      #     mode = "0444";
-      #   };
-      # };
-
-      nix = import ../../nix-settings.nix {
-        inherit inputs system nixpkgs;
-        max-jobs = 12;
-      };
-
-      nixpkgs = {inherit config overlays;};
-      networking.hostName = "wsl";
-      system.stateVersion = "22.05";
-
-      wsl = {
-        enable = true;
-        automountPath = "/mnt";
-        defaultUser = "merrinx";
-        startMenuLaunchers = true;
-        wslConf.network.hostname = "wsl";
-      };
-    }
-
-    ./configuration.nix
+    ../common/shell
   ];
 
-  specialArgs = {inherit inputs system;};
+  environment.etc."resolv.conf".enable = false;
+  environment.systemPackages = with pkgs; [
+    git
+    zip
+    curl
+    wget
+    cacert
+    openssh
+    lazygit
+    xdotool
+    ripgrep
+    wgetpaste
+    nix-index
+    nodejs-16_x
+    alejandra
+  ];
+
+  wsl = {
+    enable = true;
+    defaultUser = "nixos";
+    startMenuLaunchers = true;
+    nativeSystemd = true;
+
+    wslConf.interop.appendWindowsPath = false;
+
+    # Enable native Docker support
+    docker-native.enable = true;
+
+    # Enable integration with Docker Desktop (needs to be installed)
+    # docker-desktop.enable = true;
+  };
+
+  systemd.services.firewall.enable = false;
+  systemd.services.systemd-resolved.enable = false;
+  systemd.services.systemd-udevd.enable = false;
+
+  networking = {
+    hostName = "nixos";
+    nameservers = [
+      "172.30.205.7"
+      "172.30.205.8"
+      "172.30.205.5"
+    ];
+  };
+
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
