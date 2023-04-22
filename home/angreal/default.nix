@@ -1,23 +1,22 @@
-{ inputs
-, lib
-, config
-, pkgs
-, ...
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
 }: {
   imports = [
-    ../common
-    ./desktop
-    ./services
- ];
+    ../common/services/shell.nix
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
   home = {
-    username = "merrinx";
-    homeDirectory = "/home/merrinx";
+    username = "nixos";
+    homeDirectory = "/home/nixos";
   };
 
-  home.packages = with pkgs; [ ];
+  home.packages = with pkgs; [];
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
@@ -31,5 +30,5 @@
   systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  home.stateVersion = "23.05";
+  home.stateVersion = "22.05";
 }

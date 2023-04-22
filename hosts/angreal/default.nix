@@ -1,30 +1,20 @@
 {
-  pkgs,
   lib,
+  pkgs,
   inputs,
-  config,
   ...
 }: {
   imports = [
     inputs.nixos-wsl.nixosModules.wsl
+    ../common/core
     ../common/shell
   ];
 
   environment.etc."resolv.conf".enable = false;
+
+  # Enable direnv until hm is restored
   environment.systemPackages = with pkgs; [
-    git
-    zip
-    curl
-    wget
-    cacert
-    openssh
-    lazygit
-    xdotool
-    ripgrep
-    wgetpaste
-    nix-index
-    nodejs-16_x
-    alejandra
+    nix-direnv
   ];
 
   wsl = {
@@ -34,6 +24,7 @@
     nativeSystemd = true;
 
     wslConf.interop.appendWindowsPath = false;
+    wslConf.network.generateResolvConf = false;
 
     # Enable native Docker support
     docker-native.enable = true;
@@ -55,6 +46,17 @@
     ];
   };
 
+  nix = {
+    settings = {
+      # Enable flakes and new 'nix' command
+      experimental-features = "nix-command flakes";
+      # Deduplicate and optimize nix store
+      auto-optimise-store = true;
+    };
+  };
+
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  system.stateVersion = "23.05";
 }

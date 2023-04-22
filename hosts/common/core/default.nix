@@ -6,22 +6,17 @@
     wgetpaste
     neofetch
     ripgrep
+    cmatrix
     xdotool
     lazygit
+    openssh
     pstree
+    cacert
     unzip
     xclip
-    fd
-
-    # GUI Core
-    thunderbird
-    firefox
-    cmatrix
-    discord
-    geany
-    gimp
     acpi
     btop
+    fd
 
     # Archive tools
     xarchiver

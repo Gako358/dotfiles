@@ -75,42 +75,44 @@ http_proxy = http://<proxy_address>:<proxy_port>
 https_proxy = https://<proxy_address>:<proxy_port>
 ```
 
-2.  Set environment variables: Configure the proxy settings by setting the http_proxy, https_proxy, and ftp_proxy environment variables in your NixOS WSL environment.
+### ENVIRONMENT
+2. Set the env for systemd
+```
+#!/usr/bin/env bash
 
-To set the environment variables temporarily for the current session, run the following commands in the WSL terminal, replacing `<proxy_address>` and `<proxy_port>` with the correct values:
+proxy_server="www-proxy.address-to-use.com"
+proxy_port="8080"
+
+# Create the directory for the Nix daemon service override
+mkdir -p /run/systemd/system/nix-daemon.service.d/
+
+# Create the override.conf file with the appropriate proxy settings
+cat << EOF >/run/systemd/system/nix-daemon.service.d/override.conf
+[Service]
+Environment="http_proxy=http://$proxy_server:$proxy_port"
+Environment="https_proxy=http://$proxy_server:$proxy_port"
+Environment="ftp_proxy=http://$proxy_server:$proxy_port"
+EOF
+
+# Reload the systemd daemon and restart the Nix daemon
+systemctl daemon-reload
+systemctl restart nix-daemon.service
+
+# Print success message
+echo "Proxy settings and SSL certificate applied successfully for Nix daemon."
+```
+### WSL config
+3. Edit /etc/wsl.conf
 
 ```
-export http_proxy=http://<proxy_address>:<proxy_port>
-export https_proxy=https://<proxy_address>:<proxy_port>
-export ftp_proxy=ftp://<proxy_address>:<proxy_port>
+generateResolveConf=false
 ```
 
-To set the environment variables permanently, add the above lines to your NixOS WSL shell's configuration file (e.g., ~/.bashrc or ~/.zshrc) and restart the terminal.
+### NIX config
+4. Edit /etc/nix/nix.conf
 
-3.  Reset WSL network: You can try resetting the WSL network by running the following command in PowerShell as an administrator:
+Add:
 ```
-wsl.exe --terminate <DistroName>
-```
-
-## SSL peer certificate
-
-1. Obtain the proxy SSL certificate: Request the proxy SSL certificate from your network administrator. The certificate should be in PEM format (`.pem`, `.crt`, or `.cer` file). If the certificate is in a different format, you may need to convert it using tools like `openssl`.
-
-2. Import the proxy SSL certificate into the Nix store:
-
-```
-nix-store --add-fixed sha256 /path/to/proxy_cert.pem
+ssl-cert-file = /etc/ssl/certs/ca-bundle.crt
 ```
 
-1. Configure Nix to use the proxy SSL certificate:
-edit `/etc/nix/nix.conf`
-
-```
-sudo nano /etc/nix/nix.conf
-```
-
-```
-http_proxy = http://my-proxy.address.com:8080
-https_proxy = http://my-proxy.address.com:8080
-ssl_ca_file = /nix/store/abcdefgh1234567890abcdef-proxy_cert.pem
-```
