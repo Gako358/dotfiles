@@ -1,14 +1,14 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
   cfg = config.desktop.gnome;
-in
-{
-  options.desktop.gnome.enable = lib.mkEnableOption "gnome";
+in {
+  options.desktop.gnome.enable = lib.mkEnableOption "Gnome Desktop";
   config = lib.mkIf cfg.enable {
     environment.gnome.excludePackages =
       (with pkgs; [
@@ -49,9 +49,8 @@ in
       evince
     ];
     # ensure gnome-settings-daemon udev rules are enabled
-    services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+    services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
     # ensure telepathy is enable
     services.telepathy.enable = true;
   };
 }
-

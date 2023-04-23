@@ -37,7 +37,8 @@ The above assuse your computer name matches one of the configurations in the fla
 - `hosts`: NixOS Configurations, accessible via `nixos-rebuild --flake`.
   - `common`: Shared configurations consumed by the machine-specific ones.
   - `terangreal`: Desktop PC - 48GB RAM, Ryzon7 5600
-  - `tuathaan`: ASUS laptop
+  - `tuathaan`: HP work laptop
+  - `sangreal`: ASUS laptop
   - `angreal`: WSL for work
 - `home`: My Home-manager configuration, acessible via `home-manager --flake`
     - Each directory here is a "feature" each hm configuration can toggle, thus

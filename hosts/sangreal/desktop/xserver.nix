@@ -8,7 +8,7 @@ with lib;
 with builtins; let
   cfg = config.desktop;
 in {
-  config = mkIf (cfg.environment == "gnome" || cfg.environment == "dwm") {
+  config = mkIf (cfg.environment == "gnome" || cfg.environment == "kde") {
     services.xserver = {
       enable = true;
       libinput.enable = true;
@@ -17,7 +17,7 @@ in {
       excludePackages = with pkgs; [
         xterm
       ];
-      videoDrivers = ["intel"];
+      videoDrivers = ["amd"];
     };
   };
 }

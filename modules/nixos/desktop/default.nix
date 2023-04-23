@@ -6,5 +6,6 @@
   imports = [
     ./gnome
     ./xorg
+    ./kde
   ];
 }

@@ -106,7 +106,7 @@
             })
         ];
       };
-      # LAPTOP
+      # LAPTOP Work
       tuathaan = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
@@ -135,6 +135,21 @@
                 st.defaultPackage.x86_64-linux
               ];
             })
+        ];
+      };
+      # LAPTOP Kid
+      sangreal = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/sangreal
+          nixosModules
+          {
+            # Set desktop environment
+            desktop.kde.enable = true;
+            # Services enabled
+            programs.vscode.enable = true;
+            programs.discord.enable = true;
+          }
         ];
       };
       # WSL
@@ -173,6 +188,14 @@
         extraSpecialArgs = {inherit inputs;};
         modules = [
           ./home/tuathaan
+          homeManagerModules
+        ];
+      };
+      "mathoa@sangreal" = home-manager.lib.homeManagerConfiguration {
+        pkgs = legacyPackages.x86_64-linux;
+        extraSpecialArgs = {inherit inputs;};
+        modules = [
+          ./home/sangreal
           homeManagerModules
         ];
       };
