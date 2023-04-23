@@ -17,6 +17,8 @@ in {
     environment.systemPackages = with pkgs; [
       spotify
       arandr
+      brave
+      vim
     ];
   };
 }

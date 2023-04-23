@@ -118,6 +118,7 @@
             # Services enabled
             services.lock.enable = true;
             programs.slack.enable = true;
+            programs.teams.enable = true;
             programs.vscode.enable = true;
             programs.discord.enable = true;
             services.battery.enable = true;
