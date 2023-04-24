@@ -28,4 +28,9 @@
     description = "WebAssembly environment";
     path = ./wasm;
   };
+
+  java = {
+    description = "Java environment";
+    path = ./java;
+  };
 }

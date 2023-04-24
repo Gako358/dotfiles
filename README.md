@@ -6,7 +6,7 @@
 > change drastically and without warning.
 
 # NIXOS Configuration
-This is my collection of dot files which I use to build my Linux systems and 
+This is my collection of dot files which I use to build my Linux systems and
 control how they are configured.
 
 For more information on NixOS the Linux distribution I use and also nix
@@ -57,6 +57,7 @@ The above assuse your computer name matches one of the configurations in the fla
     -  `python` - Python develop environment
     -  `rust` - Rust develop environment
     -  `wasm` - wasm develop environment
+    -  `java` - Java develop environment
 
 
 ## Via install media
@@ -66,6 +67,11 @@ You can also install this via the install media in the nix-install repo by doing
 - Create the partition schedule and mount it to /mnt
 - Run `nixos-install --flake github:gako358/dotfiles#terangreal
 
+## Templates
+To use, secify the template
+```
+nix flake new -t github:gako358/dotfiles/templates#java
+```
 
 
 ## NixOS wsl

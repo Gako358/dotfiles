@@ -14,6 +14,7 @@
 
   # Enable direnv until hm is restored
   environment.systemPackages = with pkgs; [
+    direnv
     nix-direnv
   ];
 
@@ -52,8 +53,16 @@
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
       auto-optimise-store = true;
+      keep-outputs = true;
+      keep-derivations = true;
     };
   };
+  environment.pathsToLink = [
+    "/share/nix-direnv"
+  ];
+  nixpkgs.overlays = [
+    (self: super: {nix-direnv = super.nix-direnv.override {enableFlakes = true;};})
+  ];
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

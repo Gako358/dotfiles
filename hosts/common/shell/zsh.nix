@@ -45,6 +45,7 @@ in {
     fzf
     fzf-zsh
     broot
+    jump
   ];
 
   users.defaultUserShell = pkgs.zsh;
@@ -58,6 +59,7 @@ in {
     enableBashCompletion = true;
     interactiveShellInit = ''
       eval "$(direnv hook zsh)"
+      eval "$(jump shell)"
     '';
     shellInit = ''
       source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup
