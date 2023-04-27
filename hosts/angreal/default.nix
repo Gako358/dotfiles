@@ -64,6 +64,11 @@
     (self: super: {nix-direnv = super.nix-direnv.override {enableFlakes = true;};})
   ];
 
+  # Enable fonts
+  # Create a symlink to the fonts directory in the user's home directory
+  # $ ln -s /run/current-system/sw/share/X11/fonts ~/.local/share/fonts
+  fonts.fontDir.enable = true;
+
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
