@@ -50,6 +50,7 @@
       "aarch64-darwin"
       "x86_64-darwin"
     ];
+
   in rec {
     # Your custom packages and modifications
     overlays = {
@@ -85,7 +86,7 @@
             # Services enabled
             # services.lock.enable = true;
             # Programs to enable
-            programs.slack.enable = true;
+            programs.teams.enable = true;
             programs.citrix.enable = true;
             programs.vscode.enable = true;
             programs.discord.enable = true;
@@ -94,16 +95,16 @@
           }
           {nixpkgs.overlays = builtins.attrValues overlays;}
           ({
-              config,
-              pkgs,
-              ...
-            } @ inputs: {
-              environment.systemPackages = with pkgs; [
-                neovim-flake.defaultPackage.x86_64-linux
-                scramgit.defaultPackage.x86_64-linux
-                st.defaultPackage.x86_64-linux
-              ];
-            })
+            config,
+            pkgs,
+            ...
+          }: {
+            environment.systemPackages = [
+              neovim-flake.defaultPackage.x86_64-linux
+              scramgit.defaultPackage.x86_64-linux
+              st.defaultPackage.x86_64-linux
+            ];
+          })
         ];
       };
       # LAPTOP Work
@@ -126,16 +127,16 @@
           }
           {nixpkgs.overlays = builtins.attrValues overlays;}
           ({
-              config,
-              pkgs,
-              ...
-            } @ inputs: {
-              environment.systemPackages = with pkgs; [
-                neovim-flake.defaultPackage.x86_64-linux
-                scramgit.defaultPackage.x86_64-linux
-                st.defaultPackage.x86_64-linux
-              ];
-            })
+            config,
+            pkgs,
+            ...
+          }: {
+            environment.systemPackages = [
+              neovim-flake.defaultPackage.x86_64-linux
+              scramgit.defaultPackage.x86_64-linux
+              st.defaultPackage.x86_64-linux
+            ];
+          })
         ];
       };
       # LAPTOP Kid
@@ -164,14 +165,14 @@
           }
           {nixpkgs.overlays = builtins.attrValues overlays;}
           ({
-              config,
-              pkgs,
-              ...
-            } @ inputs: {
-              environment.systemPackages = with pkgs; [
-                neovim-flake.defaultPackage.x86_64-linux
-              ];
-            })
+            config,
+            pkgs,
+            ...
+          }: {
+            environment.systemPackages = [
+              neovim-flake.defaultPackage.x86_64-linux
+            ];
+          })
         ];
       };
     };

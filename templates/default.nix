@@ -33,4 +33,9 @@
     description = "Java environment";
     path = ./java;
   };
+
+  nodejs = {
+    description = "Node.js environment";
+    path = ./nodejs;
+  };
 }

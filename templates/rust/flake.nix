@@ -1,53 +1,57 @@
 {
-  description = "Foo Bar Rust Project";
-
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
     naersk.url = "github:nix-community/naersk";
-    naersk.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , naersk
-    ,
-    }:
-    let
-      inherit (nixpkgs.lib) genAttrs systems;
-      forAllSystems = genAttrs systems.flakeExposed;
-      pkgsFor = forAllSystems (system:
-        import nixpkgs {
-          inherit system;
-          overlays = [ self.overlays.default ];
-        });
-    in
-    {
-      overlays = rec {
-        default = final: prev: {
-          foo-bar = prev.callPackage ./. { inherit naersk; };
-        };
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+    naersk,
+  }:
+    flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = import nixpkgs {
+        inherit system;
       };
-
-      packages = forAllSystems (s:
-        let
-          pkgs = pkgsFor.${s};
-        in
-        rec {
-          inherit (pkgs) foo-bar;
-          default = foo-bar;
-        });
-
-      devShells = forAllSystems (s:
-        let
-          pkgs = pkgsFor.${s};
-        in
-        rec {
-          foo-bar = pkgs.mkShell {
-            inputsFrom = [ pkgs.foo-bar ];
-            buildInputs = with pkgs; [ rustc rust-analyzer cargo rustfmt clippy ];
-          };
-          default = foo-bar;
-        });
-    };
+      naersk-lib = pkgs.callPackage naersk {};
+      # Package set for this system, add packages here
+    in {
+      devShell = let
+        generateEditorConfig = pkgs.writeShellSciptBin "generateEditorConfig" ''
+          if [ ! -f .editorconfig ]; then
+            echo "root = true" > .editorconfig
+            echo "" >> .editorconfig
+            echo "[*]" >> .editorconfig
+            echo "end_of_line = lf" >> .editorconfig
+            echo "charset = utf-8" >> .editorconfig
+            echo "trim_trailing_whitespace = true" >> .editorconfig
+            echo "insert_final_newline = true" >> .editorconfig
+            echo "indent_style = space" >> .editorconfig
+            echo "indent_size = 4" >> .editorconfig
+            echo "max_line_length = 120" >> .editorconfig
+            echo "" >> .editorconfig
+            echo "[*.md]" >> .editorconfig
+            echo "trim_trailing_whitespace = false" >> .editorconfig
+            echo "" >> .editorconfig
+            echo "[*.yml]" >> .editorconfig
+            echo "indent_size = 2" >> .editorconfig
+          fi
+        '';
+      in
+        pkgs.mkShell {
+          name = "Rust devShell";
+          buildInputs = with pkgs; [
+            cargo
+            rustc
+            rustfmt
+            pre-commit
+            rustPackages.clippy
+          ];
+          shellHook = ''
+            ${generateEditorConfig}/bin/generateEditorConfig
+          '';
+        };
+    });
 }

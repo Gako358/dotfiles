@@ -18,6 +18,7 @@ with lib; let
     doc = "cd ~/Documents/Reports";
     nvim = "cd ~/Projects/neovim";
     work = "cd ~/Projects/";
+    www = "cd ~/Projects/wwwsite/";
 
     # Git
     ga = "git add -A && git commit";
@@ -37,8 +38,6 @@ with lib; let
     rzsh = "source ~/.zshrc";
   };
 in {
-  # When need to set a variable in the environment, use this
-  # environment.variables.CITRIX_CERT_PATH = "../../../modules/nixos/programs/certs/";
   environment.systemPackages = with pkgs; [
     spaceship-prompt
     nix-zsh-completions

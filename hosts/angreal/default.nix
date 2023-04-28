@@ -12,10 +12,21 @@
 
   environment.etc."resolv.conf".enable = false;
 
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings = {
+      data-root = "/opt/containerd/";
+    };
+    # extraOptions = "--storage-driver=btrfs";
+  };
+  virtualisation.podman.enable = true;
+
   # Enable direnv until hm is restored
   environment.systemPackages = with pkgs; [
     direnv
     nix-direnv
+    openssl
+    docker-compose
   ];
 
   wsl = {
