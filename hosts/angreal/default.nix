@@ -14,6 +14,7 @@
 
   virtualisation.docker = {
     enable = true;
+    rootless.enable = true;
     daemon.settings = {
       data-root = "/opt/containerd/";
     };
@@ -56,6 +57,10 @@
       "172.30.205.8"
       "172.30.205.5"
     ];
+  };
+
+  users.users.nixos = {
+    isNormalUser = true;
   };
 
   nix = {
