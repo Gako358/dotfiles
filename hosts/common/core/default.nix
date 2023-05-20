@@ -25,7 +25,7 @@
     zip
     git
 
-    nodejs-16_x # Github Copilot requires nodejs 16
+    nodejs-18_x # Github Copilot requires nodejs 16
     alejandra # Nix formatting tool
   ];
 

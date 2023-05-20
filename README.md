@@ -18,6 +18,8 @@ the packaging tool and language that most of this repository is writen in
 
 ![screenshot](https://github.com/Gako358/archive/blob/main/images/config/work.png)
 
+> **Neovim:** _My Neovim flake is available:_ [here](https://github.com/Gako358/neovim)
+
 # HowTo
 
 These dot files can be installed onto a system by 1 of two ways:
