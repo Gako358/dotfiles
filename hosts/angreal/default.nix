@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  config,
   inputs,
   ...
 }: {
@@ -10,49 +11,59 @@
     ../common/shell
   ];
 
-  environment.etc."resolv.conf".enable = false;
-
-  virtualisation.docker = {
-    enable = true;
-    rootless.enable = true;
-    rootless.setSocketVariable = true;
-    daemon.settings = {
-      data-root = "/opt/containerd/";
-    };
-    # extraOptions = "--storage-driver=btrfs";
+  # WSL uses its own bootloader, so disable the NixOS one
+  boot = {
+    initrd.enable = false;
+    kernel.enable = false;
+    loader.grub.enable = false;
+    modprobeConfig.enable = false;
   };
-  virtualisation.podman.enable = true;
+  systemd.build.installBootLoader = "${pkgs.coreutils}/bin/true";
 
-  # Enable direnv until hm is restored
-  environment.systemPackages = with pkgs; [
-    direnv
-    nix-direnv
-    openssl
-    docker-compose
-  ];
+  # Disable power management in WSL
+  powerManagement.enable = false;
+
+  # Default user will not have root password
+  security.sudo.wheelNeedsPassword = false;
+
+  users.users.nixos = {
+    isNormalUser = true;
+    extraGroups = ["wheel" "docker"];
+  };
+
+  # Otherwise WSL will fail to login as root with "initgroups: invalid argument"
+  users.users.root.extraGroups = ["root"];
 
   wsl = {
     enable = true;
+    wslConf.automount.root = "/mnt";
     defaultUser = "nixos";
     startMenuLaunchers = true;
     nativeSystemd = true;
-
-    wslConf.interop.appendWindowsPath = false;
-    wslConf.network.generateResolvConf = false;
-
-    # Enable native Docker support
-    docker-native.enable = true;
-
-    # Enable integration with Docker Desktop (needs to be installed)
-    # docker-desktop.enable = true;
+    docker-desktop.enable = true;
   };
 
-  systemd.services.firewall.enable = false;
-  systemd.services.systemd-resolved.enable = false;
-  systemd.services.systemd-udevd.enable = false;
+  time.timeZone = "Europe/Oslo";
+  i18n.supportedLocales = [
+    "en_US.UTF-8 UTF-8"
+  ];
+
+  # WSL does not support virtual consoles
+  console.enable = false;
+
+  # Enable hardware acceleration
+  hardware.opengl = {
+    enable = true;
+    driSupport32Bit = true;
+  };
+
+  environment.etc = {
+    "resolv.conf".enable = false;
+    "hosts".enable = false;
+  };
 
   networking = {
-    hostName = "nixos";
+    dhcpcd.enable = false;
     nameservers = [
       "172.30.205.7"
       "172.30.205.8"
@@ -60,8 +71,49 @@
     ];
   };
 
-  users.users.nixos = {
-    isNormalUser = true;
+  virtualisation.docker.rootless = {
+    enable = true;
+    rootless.setSocketVariable = true;
+  };
+
+  # Enable properiety packages
+  nixpkgs.config.allowUnfree = true;
+
+  # Enable fonts
+  fonts.fontDir.enable = true;
+
+  # Packages to install in the system profile
+  environment.systemPackages = with pkgs; [
+    direnv
+    openssl
+    coreutils
+    nix-direnv
+    docker-compose
+  ];
+
+  services.openssh = {
+    enable = true;
+    settings.passwordAuthentication = false;
+  };
+
+  systemd.services = {
+    firewall.enable = false;
+    systemd-resolved.enable = false;
+    systemd-udevd.enable = false;
+    docker-desktop-proxy = {
+      description = "Docker Desktop proxy";
+      script = ''
+        ${config.wsl.wslConf.automount.root}/wsl/docker-desktop/docker-desktop-user-distro proxy --docker-desktop-root ${config.wsl.wslConf.automount.root}/wsl/docker-desktop
+      '';
+      wantedBy = ["multi-user.target"];
+      serviceConfig = {
+        Restart = "on-failure";
+        RestartSec = "30s";
+      };
+    };
+    users.groups.docker.members = [
+      config.wsl.defaultUser
+    ];
   };
 
   nix = {
@@ -81,13 +133,6 @@
     (self: super: {nix-direnv = super.nix-direnv.override {enableFlakes = true;};})
   ];
 
-  # Enable fonts
-  # Create a symlink to the fonts directory in the user's home directory
-  # $ ln -s /run/current-system/sw/share/X11/fonts ~/.local/share/fonts
-  fonts.fontDir.enable = true;
-
-  nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-
   system.stateVersion = "23.05";
 }
