@@ -1,22 +1,18 @@
-{ pkgs
-, config
-, lib
-, ...
-}:
+{lib, ...}:
 with lib;
 with builtins; {
+  imports = [
+    ./pulse.nix
+  ];
   options.sys.audio = {
     server = mkOption {
       type = types.enum [
         "pulse"
         "pipewire"
+        "none"
       ];
-      default = "pulse";
+      default = "none";
       description = "Audio server";
     };
   };
-
-  imports = [
-    ./pulse.nix
-  ];
 }

@@ -1,11 +1,9 @@
-{
-  lib,
-  ...
-}:
+{lib, ...}:
 with lib;
 with builtins; {
   imports = [
     ./dwm.nix
+    ./wsl.nix
     ./gnome.nix
     ./xserver.nix
     ./environment.nix
@@ -16,8 +14,10 @@ with builtins; {
         "gnome"
         "bspwm"
         "dwm"
+        "kde"
+        "wsl"
       ];
-      default = "dwm";
+      default = "none";
       description = "Desktop environment to use.";
     };
   };

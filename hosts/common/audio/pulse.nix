@@ -1,13 +1,13 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
   cfg = config.sys.audio;
-in
-{
+in {
   config = mkIf (cfg.server == "pulse") {
     sound.enable = true;
 
