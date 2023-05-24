@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}:
+with lib; {
   # Core pakages for system
   environment.systemPackages = with pkgs; [
     # Nix Core
@@ -28,9 +33,6 @@
     nodejs-18_x # Github Copilot requires nodejs 16
     alejandra # Nix formatting tool
   ];
-
-  # Enable the NixOS module system
-  programs.dconf.enable = true;
 
   imports = [
     ./fonts.nix

@@ -2,7 +2,6 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../common
-    ./desktop
     ./services
     ./boot.nix
     ./disks.nix
@@ -12,6 +11,12 @@
     ./system.nix
     ./user.nix
   ];
+
+  # Set desktop environment
+  desktop.environment = "dwm";
+
+  # Set audio server
+  sys.audio.server = "pulse";
 
   # Remove if you wish to disable unfree packages for your system
   nixpkgs.config.allowUnfree = true;
