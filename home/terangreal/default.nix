@@ -1,16 +1,14 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ../common
     ./desktop
     ./services
   ];
 
+  # Set desktop environment
+  desktop.environment = "dwm";
+
+  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   home = {

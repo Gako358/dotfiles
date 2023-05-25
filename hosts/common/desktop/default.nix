@@ -13,6 +13,7 @@ with builtins; {
       type = types.enum [
         "gnome"
         "bspwm"
+        "none"
         "dwm"
         "kde"
         "wsl"

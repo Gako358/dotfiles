@@ -1,8 +1,8 @@
-{ config
-, pkgs
-, host
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
@@ -120,13 +120,10 @@ with builtins; let
        sleep 1 && xsetroot -name "$(volume) $(spacer) $(spacer) $(cpu) $(battery) $(mem) $(brightness) $(spacer) $(disk_rem) $(disk_usage) $(spacer)  $(wlan) $(spacer) $(clock) $(spacer) $(lang)"
      done
   '';
-
-  cfg = config.desktop;
-in
-{
-  config = mkIf (cfg.environment == "dwm") {
+in {
+  config = mkIf (config.desktop.environment == "dwm") {
     systemd.user.services.dwmstatus = {
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = ["graphical-session.target"];
       Service.ExecStart = "${script}";
     };
   };

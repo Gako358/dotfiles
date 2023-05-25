@@ -1,19 +1,18 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
   cfg = config.desktop;
-in
-{
-  config = mkIf (cfg.environment == "dwm") {
+in {
+  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
     services.picom = {
       enable = true;
 
       fade = true;
-      fadeSteps = [ 0.03 0.03 ];
+      fadeSteps = [0.03 0.03];
       fadeDelta = 5;
 
       backend = "glx";

@@ -1,13 +1,12 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
   cfg = config.desktop;
-in
-{
+in {
   config = mkIf (cfg.environment == "bspwm") {
     services.sxhkd = {
       enable = true;

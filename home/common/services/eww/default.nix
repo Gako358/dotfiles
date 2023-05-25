@@ -1,13 +1,12 @@
-{ config
-, pkgs
-, inputs
-, lib
-, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
   dependencies = with pkgs; [
-    #config.wayland.windowManager.hyprland.package
     config.programs.eww.package
     bash
     bc
@@ -38,21 +37,18 @@ with builtins; let
     wlogout
     wofi
   ];
-
   cfg = config.desktop;
-in
-{
-  config = mkIf (cfg.environment == "dwm") {
+in {
+  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
     programs.eww = {
       enable = true;
       # package = inputs.eww.packages.${pkgs.system}.eww-wayland;
       # remove nix files
       configDir = lib.cleanSourceWith {
-        filter = name: _type:
-          let
-            baseName = baseNameOf (toString name);
-          in
-            !(lib.hasSuffix ".nix" baseName);
+        filter = name: _type: let
+          baseName = baseNameOf (toString name);
+        in
+          !(lib.hasSuffix ".nix" baseName);
         src = lib.cleanSource ./.;
       };
     };
@@ -62,14 +58,14 @@ in
         Description = "Eww Daemon";
         # not yet implemented
         # PartOf = ["tray.target"];
-        PartOf = [ "graphical-session.target" ];
+        PartOf = ["graphical-session.target"];
       };
       Service = {
         Environment = "PATH=/run/wrappers/bin:${lib.makeBinPath dependencies}";
         ExecStart = "${config.programs.eww.package}/bin/eww daemon --no-daemonize";
         Restart = "on-failure";
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = ["graphical-session.target"];
     };
   };
 }

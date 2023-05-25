@@ -5,6 +5,9 @@
     ./services
   ];
 
+  # Set desktop environment
+  desktop.environment = "kde";
+
   nixpkgs.config.allowUnfree = true;
 
   home = {

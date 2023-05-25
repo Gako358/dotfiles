@@ -21,6 +21,10 @@ in {
     networking.extraHosts = ''
       104.199.65.124 ap-gew4.spotify.com
     '';
+
+    # Add dconf settings
+    programs.dconf.enable = true;
+
     # Grant slock root access
     # security.wrappers.slock = {
     #   setuid = true;

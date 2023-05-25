@@ -1,14 +1,12 @@
-{ inputs
-, lib
-, config
-, pkgs
-, ...
-}: {
+{pkgs, ...}: {
   imports = [
     ../common
     ./desktop
     ./services
- ];
+  ];
+
+  # Set desktop environment
+  desktop.environment = "dwm";
 
   nixpkgs.config.allowUnfree = true;
 
@@ -17,7 +15,7 @@
     homeDirectory = "/home/merrinx";
   };
 
-  home.packages = with pkgs; [ ];
+  home.packages = with pkgs; [];
 
   # Enable home-manager and git
   programs.home-manager.enable = true;

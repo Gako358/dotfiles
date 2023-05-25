@@ -1,12 +1,13 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 with lib;
 with builtins; let
   weechatSetup = pkgs.weechat.override {
-    configure = { availablePlugins, ... }: {
+    configure = {availablePlugins, ...}: {
       scripts = with pkgs.weechatScripts; [
         wee-slack
       ];
@@ -47,9 +48,8 @@ with builtins; let
     };
   };
   cfg = config.desktop;
-in
-{
-  config = mkIf (cfg.environment == "dwm" || cfg.environment == "gnome") {
+in {
+  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
     home.packages = [
       weechatSetup
     ];

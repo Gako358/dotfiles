@@ -1,8 +1,10 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  lib,
+  pkgs,
+  config,
+  ...
 }:
+with lib;
 with pkgs; let
   rofi-power-menu = writeShellScriptBin "rofi-power-menu" ''
     # This script defines just a mode for rofi instead of being a self-contained
@@ -224,7 +226,6 @@ with pkgs; let
         exit 1
     fi
   '';
-in
-{
-  home.packages = [ rofi-power-menu ];
+in {
+  home.packages = [rofi-power-menu];
 }

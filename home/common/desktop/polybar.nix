@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 with lib;
 with builtins; let
@@ -11,8 +12,7 @@ with builtins; let
     foreground-alt = "#FBF1C7";
   };
   cfg = config.desktop;
-in
-{
+in {
   config = mkIf (cfg.environment == "bspwm") {
     services.polybar = {
       enable = true;
@@ -23,7 +23,7 @@ in
       };
       script = "exec polybar bar-search & polybar bar-left & polybar bar-center & polybar bar-right & polybar bar-power &";
       config = {
-        "settings" = { screenchange-reload = true; };
+        "settings" = {screenchange-reload = true;};
         "color" = {
           background = "#32302F";
           foreground = "#EBDBB2";

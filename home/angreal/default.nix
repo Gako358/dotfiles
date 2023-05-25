@@ -1,12 +1,6 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
-    ../common/services/shell.nix
+    ../common
   ];
 
   nixpkgs.config.allowUnfree = true;
