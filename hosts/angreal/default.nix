@@ -16,12 +16,16 @@
   wsl = {
     enable = true;
     defaultUser = "nixos";
+    nativeSystemd = true;
     docker-desktop.enable = true;
 
     # Behind corporate proxy
     wslConf = {
       network = {
         generateResolvConf = false;
+      };
+      interop = {
+        appendWindowsPath = false;
       };
     };
   };
