@@ -18,6 +18,19 @@
     enable = true;
     userName = "Gako358";
     userEmail = "gako358@outlook.com";
+
+    includes = [
+      {
+        path ="/home/nixos/Projects/workspace/.gitconfig-work";
+        condition = "gitdir:/home/nixos/Projects/workspace/";
+      }
+    ];
+
+    extraConfig = {
+      core = {
+        autocrlf = false;
+      };
+    };
   };
 
   # Nicely reload system units when changing configs
