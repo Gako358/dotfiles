@@ -83,8 +83,6 @@
           {
             # Set desktop environment
             desktop.xsession.enable = true;
-            # Services enabled
-            # services.lock.enable = true;
             # Programs to enable
             programs.teams.enable = true;
             programs.citrix.enable = true;
@@ -120,6 +118,7 @@
             services.lock.enable = true;
             programs.slack.enable = true;
             programs.teams.enable = true;
+            programs.citrix.enable = true;
             programs.vscode.enable = true;
             programs.discord.enable = true;
             services.battery.enable = true;
