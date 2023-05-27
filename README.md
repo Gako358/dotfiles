@@ -5,28 +5,25 @@
 > guarantees that it will work out of the box for anyone but myself. It may also
 > change drastically and without warning.
 
-# NIXOS Configuration
+# My NixOs Configuration
 
-This is my collection of dot files which I use to build my Linux systems and
-control how they are configured.
+Welcome to my compilation of dotfiles, the secret sauce behind the construction and configuration of my Linux systems.
 
-For more information on NixOS the Linux distribution I use and also nix
-the packaging tool and language that most of this repository is writen in
-[Nix](https://nixos.org/)
+For a deeper dive into NixOS, the innovative Linux distribution I use, and Nix, the powerful package management tool and language that this repository is primarily written in, click [Nix](https://nixos.org/).
 
-## Screenshot
+## Sneak Peek
 
 ![screenshot](https://github.com/Gako358/archive/blob/main/images/config/work.png)
 
-> **Neovim:** _My Neovim flake is available:_ [here](https://github.com/Gako358/neovim)
+> **Neovim Users** _My Neovim flake is available:_ [here](https://github.com/Gako358/neovim)
 
-# HowTo
+# How To Install
 
-These dot files can be installed onto a system by 1 of two ways:
+There are two main ways to deploy these dotfiles on a system:
 
-## Already running nixos system
+### On an existing NixOS system
 
-If you have setup a nixos system with a configuration.nix file its possible to switch over to this nix config with
+If you have setup a NixOS system with a configuration.nix file its possible to switch over to this nix config with
 the following commands:
 
 ```shell
@@ -34,9 +31,9 @@ nix-shell
 nixos-rebuild switch --flake .#
 ```
 
-The above assuse your computer name matches one of the configurations in the flake.
+`Note: This assumes your computer name matches one of the configurations in the flake.`
 
-## Structure
+## Repository Structure
 
 - `flake.nix`: Entrypoint for hosts and home configurations. Also exposes a
   devshell for boostrapping (`nix develop` or `nix-shell`).
@@ -65,9 +62,9 @@ The above assuse your computer name matches one of the configurations in the fla
   - `wasm` - wasm develop environment
   - `java` - Java develop environment
 
-## Via install media
+### Installation via Media
 
-You can also install this via the install media in the nix-install repo by doing the following:
+Alternatively, you can install these configurations via the install media from the nix-install repo as follows:
 
 - Boot off the install media.
 - Create the partition schedule and mount it to /mnt
