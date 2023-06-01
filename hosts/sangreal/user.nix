@@ -1,10 +1,4 @@
 {
-  pkgs,
-  lib,
-  config,
-  inputs,
-  ...
-}: {
   users.users = {
     mathoa = {
       isNormalUser = true;

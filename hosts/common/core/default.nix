@@ -14,7 +14,6 @@ with lib; {
     cmatrix
     xdotool
     lazygit
-    openssh
     pstree
     cacert
     unzip

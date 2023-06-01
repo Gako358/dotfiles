@@ -1,9 +1,4 @@
-{ pkgs
-, lib
-, config
-, inputs
-, ...
-}: {
+{
   time.timeZone = "Europe/Oslo";
   i18n.supportedLocales = [
     "en_US.UTF-8/UTF-8"
@@ -15,8 +10,8 @@
     enable = true;
     # Forbid root login through SSH.
     settings = {
-      permitRootLogin = "no";
-      passwordAuthentication = false;
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
     };
   };
 }
