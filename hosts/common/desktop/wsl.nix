@@ -10,7 +10,7 @@ in {
   config = mkIf (cfg.environment == "wsl") {
     services.openssh = {
       enable = true;
-      settings.passwordAuthentication = false;
+      settings.PasswordAuthentication = false;
     };
   };
 }
