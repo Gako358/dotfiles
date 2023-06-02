@@ -1,12 +1,12 @@
 {
-  pkgs,
   config,
+  pkgs,
   lib,
   ...
 }:
 with lib;
 with builtins; let
-  cfg = config.programs.vscode;
+  cfg = config.desktop;
   extensions =
     (with pkgs.vscode-extensions; [
       bbenoist.nix
@@ -90,10 +90,10 @@ with builtins; let
     vscodeExtensions = extensions;
   };
 in {
-  options.programs.vscode.enable = lib.mkEnableOption "vscode";
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = [
-      code-insiders
-    ];
+  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
+    programs.vscode = {
+      enable = true;
+      package = code-insiders;
+    };
   };
 }

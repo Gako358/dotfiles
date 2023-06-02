@@ -86,7 +86,6 @@
             # Programs to enable
             programs.teams.enable = true;
             programs.citrix.enable = true;
-            programs.vscode.enable = true;
             programs.discord.enable = true;
             programs.moonlander.enable = true;
             programs.virt-manager.enable = true;
@@ -119,7 +118,6 @@
             programs.slack.enable = true;
             programs.teams.enable = true;
             programs.citrix.enable = true;
-            programs.vscode.enable = true;
             programs.discord.enable = true;
             services.battery.enable = true;
             programs.virt-manager.enable = true;
@@ -148,7 +146,6 @@
             # Set desktop environment
             desktop.kde.enable = true;
             # Services enabled
-            programs.vscode.enable = true;
             programs.discord.enable = true;
           }
         ];
