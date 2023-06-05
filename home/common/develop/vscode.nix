@@ -11,6 +11,7 @@ with builtins; let
     (with pkgs.vscode-extensions; [
       bbenoist.nix
       vscodevim.vim
+      mkhl.direnv
       rust-lang.rust-analyzer
       ms-azuretools.vscode-docker
       ms-vscode-remote.remote-ssh
@@ -19,8 +20,14 @@ with builtins; let
       {
         name = "copilot-nightly";
         publisher = "GitHub";
-        version = "1.88.135";
-        sha256 = "xDOpr2YyJiVVUMwEHmQqftWKUFEaMx2kCZUhKUWAPHQ=";
+        version = "1.88.141";
+        sha256 = "sIuYqF9f63++7wNSkrBxi5yxMCXz2xlKcpo7hBqxl/w=";
+      }
+      {
+        name = "copilot-chat";
+        publisher = "GitHub";
+        version = "0.1.2023060501";
+        sha256 = "kvN5UCJOqozSA/90COghixLU0dB9VX3M9ZgCTRkkdU0=";
       }
       {
         name = "remote-ssh-edit";
@@ -59,6 +66,12 @@ with builtins; let
         sha256 = "uPYESeOcEIPAKW/JiBWI26qG6K9XtEKPYUmG6YVnIgc=";
       }
       {
+        name = "vscode-java-pack";
+        publisher = "vscjava";
+        version = "0.25.2023052400";
+        sha256 = "9Fboo740U5MfaPDGMbwmoW+Du8iK2t6547olfmKdvgE=";
+      }
+      {
         name = "vscode-java-debug";
         publisher = "vscjava";
         version = "0.35.0";
@@ -82,8 +95,9 @@ with builtins; let
     src = pkgs.fetchurl {
       name = "VSCode_insiders.tar.gz";
       url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-      sha256 = "Ywr+vfJL45tXFR50+0qXiR2hOifAp9ZHQELQgEMnZhI=";
+      sha256 = "YuV3NCAS/MPU4WEueP9FZv/Qc1q6tCbfEV++U3KWRDc=";
     };
+    version = "latest";
   });
   code-insiders = pkgs.vscode-with-extensions.override {
     vscode = insiders;
