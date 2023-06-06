@@ -6,12 +6,16 @@
 }:
 with lib;
 with builtins; let
-  cfg = config.desktop;
+  cfg = config.develop.vscode;
   extensions =
     (with pkgs.vscode-extensions; [
       bbenoist.nix
-      vscodevim.vim
+      kamadorueda.alejandra
       mkhl.direnv
+      vscodevim.vim
+      eamodio.gitlens
+      esbenp.prettier-vscode
+      yzhang.markdown-all-in-one
       rust-lang.rust-analyzer
       ms-azuretools.vscode-docker
       ms-vscode-remote.remote-ssh
@@ -89,13 +93,31 @@ with builtins; let
         version = "1.2.14";
         sha256 = "1j72v6grwasqk34m1jy3d6w3fgrw0dnsv7v17wca8baxrvgqsm6g";
       }
+      {
+        name = "sqltools";
+        publisher = "mtxr";
+        version = "0.27.1";
+        sha256 = "5XhPaxwr0yvIX0wSKDiDm+1iG947s84ULaWpxfpRcAU=";
+      }
+      {
+        name = "vscode-xml";
+        publisher = "redhat";
+        version = "0.25.2023051904";
+        sha256 = "PXux2vqQrV8+nVzLHB1XYP2oKofQNi0jpWTTpfXltHg=";
+      }
+      {
+        name = "markdown-preview-enhanced";
+        publisher = "shd101wyy";
+        version = "0.6.8";
+        sha256 = "9NRaHgtyiZJ0ic6h1B01MWzYhDABAl3Jm2IUPogYWr0=";
+      }
     ];
   insiders = (pkgs.vscode.override {isInsiders = true;}).overrideAttrs (old: rec {
     sourceExecutableName = "code-insiders";
     src = pkgs.fetchurl {
       name = "VSCode_insiders.tar.gz";
       url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-      sha256 = "YuV3NCAS/MPU4WEueP9FZv/Qc1q6tCbfEV++U3KWRDc=";
+      sha256 = "Q8PSDAfGs8AAQeA/PPAdmVzcz1h0iNqbIZp+1c7by7s=";
     };
     version = "latest";
   });
@@ -103,8 +125,18 @@ with builtins; let
     vscode = insiders;
     vscodeExtensions = extensions;
   };
+  code = pkgs.vscode-with-extensions.override {
+    vscodeExtensions = extensions;
+  };
 in {
-  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
+  options.develop.vscode = {
+    enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable vscode";
+    };
+  };
+  config = mkIf (cfg.enable && config.desktop.environment != "wsl") {
     programs.vscode = {
       enable = true;
       package = code-insiders;

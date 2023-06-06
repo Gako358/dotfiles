@@ -5,9 +5,18 @@
 }:
 with lib;
 with builtins; let
-  cfg = config.desktop;
+  cfg = config.services.dunst;
 in {
-  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
+  options = {
+    services.dunst = {
+      enableModule = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable dunst module";
+      };
+    };
+  };
+  config = mkIf (cfg.enableModule && (config.desktop.environment == "dwm" || config.desktop.environment == "bspwm")) {
     services.dunst = {
       enable = true;
       settings = {

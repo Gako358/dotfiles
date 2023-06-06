@@ -5,13 +5,15 @@
 }:
 with lib;
 with builtins; let
-  cfg = config.secrets;
+  cfg = config.services.secrets;
 in {
-  options.secrets = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable keyring services";
+  options.services = {
+    secrets = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable keyring services";
+      };
     };
   };
 

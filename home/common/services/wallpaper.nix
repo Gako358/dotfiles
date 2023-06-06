@@ -12,9 +12,18 @@ with builtins; let
     ]}
     feh --bg-fill /home/merrinx/Sources/archive/images/wallpapers/dark_mountains.jpg
   '';
-  cfg = config.desktop;
+  cfg = config.services.wallpaper;
 in {
-  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
+  options = {
+    services.wallpaper = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable the wallpaper service";
+      };
+    };
+  };
+  config = mkIf (cfg.enable && (config.desktop.environment == "dwm" || config.desktop.environment == "bspwm")) {
     programs.feh.enable = true;
 
     systemd.user.services.wallpaper = {

@@ -47,9 +47,18 @@ with builtins; let
       '';
     };
   };
-  cfg = config.desktop;
+  cfg = config.chat.weechat;
 in {
-  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
+  options = {
+    chat.weechat = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable weechat setup";
+      };
+    };
+  };
+  config = mkIf (cfg.enable && (config.desktop.environment == "dwm" || config.desktop.environment == "bspwm")) {
     home.packages = [
       weechatSetup
     ];
