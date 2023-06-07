@@ -18,6 +18,7 @@
     nix-colors.url = "github:misterio77/nix-colors"; # Color schemes for usage with home-manager
     impermanence.url = "github:riscadoa/impermanence"; # Utilities for opt-in persistance
     nixos-wsl.url = "github:nix-community/nixos-wsl"; # WSL utilities
+    nixos-vscode-server.url = "github:msteen/nixos-vscode-server";
     agenix.url = "github:ryantm/agenix"; # Secrets management
 
     # My Neovim build
@@ -35,6 +36,8 @@
     home-manager,
     flake-utils,
     nur,
+    nixos-wsl,
+    nixos-vscode-server,
     neovim-flake,
     scramgit,
     dwm,
@@ -50,7 +53,6 @@
       "aarch64-darwin"
       "x86_64-darwin"
     ];
-
   in rec {
     # Your custom packages and modifications
     overlays = {
@@ -155,9 +157,11 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/angreal
+          nixos-vscode-server.nixosModules.default
           nixosModules
           {
             # Set neccessary options
+            services.vscode-server.enable = true;
           }
           {nixpkgs.overlays = builtins.attrValues overlays;}
           ({

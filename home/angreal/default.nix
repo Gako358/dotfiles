@@ -21,7 +21,7 @@
 
     includes = [
       {
-        path ="/home/nixos/Projects/workspace/.gitconfig-work";
+        path = "/home/nixos/Projects/workspace/.gitconfig-work";
         condition = "gitdir:/home/nixos/Projects/workspace/";
       }
     ];
