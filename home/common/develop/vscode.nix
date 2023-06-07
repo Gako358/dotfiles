@@ -136,7 +136,7 @@ in {
       description = "Enable vscode";
     };
   };
-  config = mkIf (cfg.enable && config.desktop.environment != "wsl") {
+  config = mkIf (cfg.enable && config.desktop.environment == "dwm") {
     programs.vscode = {
       enable = true;
       package = code-insiders;

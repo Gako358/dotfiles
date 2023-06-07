@@ -1,5 +1,6 @@
 {
   inputs,
+  pkgs,
   lib,
   ...
 }: {
@@ -57,6 +58,7 @@
       keep-derivations = true;
     };
   };
+
   environment.pathsToLink = [
     "/share/nix-direnv"
   ];
