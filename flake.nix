@@ -35,6 +35,7 @@
     home-manager,
     flake-utils,
     nur,
+    nixos-wsl,
     neovim-flake,
     scramgit,
     dwm,
@@ -50,7 +51,6 @@
       "aarch64-darwin"
       "x86_64-darwin"
     ];
-
   in rec {
     # Your custom packages and modifications
     overlays = {

@@ -1,6 +1,6 @@
 {
   imports = [
     ./vscode.nix
-    # ./nix-ld-config.nix
+    ./vscode-server-wsl.nix
   ];
 }
