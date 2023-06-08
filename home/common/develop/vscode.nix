@@ -13,6 +13,7 @@ with builtins; let
       vscodevim.vim
       eamodio.gitlens
       kamadorueda.alejandra
+      dbaeumer.vscode-eslint
       esbenp.prettier-vscode
       rust-lang.rust-analyzer
       yzhang.markdown-all-in-one
@@ -120,6 +121,12 @@ with builtins; let
         publisher = "VisualStudioExptTeam";
         version = "1.2.14";
         sha256 = "1j72v6grwasqk34m1jy3d6w3fgrw0dnsv7v17wca8baxrvgqsm6g";
+      }
+      {
+        name = "vscode-jsp";
+        publisher = "pthorsson";
+        version = "0.0.3";
+        sha256 = "yWhaM72ISePMg6VA7VYTKFxXXHKj0ZOgA3X6nQYXuxk=";
       }
       {
         name = "vscode-java-pack";
