@@ -687,11 +687,11 @@
         "which-key": "which-key"
       },
       "locked": {
-        "lastModified": 1686243348,
-        "narHash": "sha256-GFusJImxyhxnSMwecaV4hU7T5tYbfgr9GJPI97GrJDk=",
+        "lastModified": 1686247132,
+        "narHash": "sha256-67TQ0RqchQlD2K8GXa15x4Y/Pb5p1jexDqi68X3HQv4=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "24db3106483dd7afb7541423cd35343cd6aaacfe",
+        "rev": "a479b9dc4755c3eb2eee963f6273a392b01ce398",
         "type": "github"
       },
       "original": {
