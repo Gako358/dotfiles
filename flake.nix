@@ -18,7 +18,7 @@
     nix-colors.url = "github:misterio77/nix-colors"; # Color schemes for usage with home-manager
     impermanence.url = "github:riscadoa/impermanence"; # Utilities for opt-in persistance
     nixos-wsl.url = "github:nix-community/nixos-wsl"; # WSL utilities
-    nixos-vscode-server.url = "github:msteen/nixos-vscode-server";
+    nixos-vscode-server.url = "github:msteen/nixos-vscode-server"; # VSCode server WSL
     agenix.url = "github:ryantm/agenix"; # Secrets management
 
     # My Neovim build
