@@ -13,6 +13,7 @@ with builtins; let
       vscodevim.vim
       eamodio.gitlens
       kamadorueda.alejandra
+      dbaeumer.vscode-eslint
       esbenp.prettier-vscode
       rust-lang.rust-analyzer
       yzhang.markdown-all-in-one

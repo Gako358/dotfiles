@@ -161,7 +161,10 @@
           nixosModules
           {
             # Set neccessary options
-            services.vscode-server.enable = true;
+            services.vscode-server = {
+              enable = true;
+              installPath = "~/.vscode-server-insiders";
+            };
           }
           {nixpkgs.overlays = builtins.attrValues overlays;}
           ({
