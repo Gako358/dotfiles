@@ -63,6 +63,12 @@ with builtins; let
         sha256 = "151p7hgffw701fd20zhink7b04zll7by9mg0hp7f3k68w9szngzm";
       }
       {
+        name = "vscode-github-actions";
+        publisher = "github";
+        version = "0.25.7";
+        sha256 = "MZrpaWe9PE+S4pRcSxLA417gQL0/oXvnZv+vSrb9nec=";
+      }
+      {
         name = "debug";
         publisher = "webfreak";
         version = "0.25.1";
