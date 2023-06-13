@@ -16,6 +16,7 @@ with builtins; let
       dbaeumer.vscode-eslint
       esbenp.prettier-vscode
       rust-lang.rust-analyzer
+      editorconfig.editorconfig
       yzhang.markdown-all-in-one
       ms-azuretools.vscode-docker
     ])
@@ -206,7 +207,7 @@ with builtins; let
     src = pkgs.fetchurl {
       name = "VSCode_insiders.tar.gz";
       url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-      sha256 = "LJ2JxEToTt9sT3PdxVdNEuCPvjoYj4GQvISylV9XjtQ=";
+      sha256 = "1Hw7/wkNcFEtvCzsld9uieh392kJag9LtHdczjjIaiQ=";
     };
     version = "latest";
   });
