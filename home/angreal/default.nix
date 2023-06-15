@@ -29,6 +29,7 @@
     extraConfig = {
       core = {
         autocrlf = false;
+        fileMode = false;
       };
     };
   };
