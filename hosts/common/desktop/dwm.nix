@@ -11,6 +11,8 @@ in {
   config = mkIf (cfg.environment == "dwm") {
     environment.systemPackages = with pkgs; [
       # GUI Core
+      bitwarden-cli
+      bitwarden
       thunderbird
       firefox
       geany

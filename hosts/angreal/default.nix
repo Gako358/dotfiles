@@ -1,12 +1,12 @@
 {
   inputs,
-  pkgs,
   lib,
   ...
 }: {
   imports = [
     inputs.nixos-wsl.nixosModules.wsl
     ../common
+    ./services
   ];
 
   users.users.nixos = {
