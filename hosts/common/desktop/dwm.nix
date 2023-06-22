@@ -11,8 +11,6 @@ in {
   config = mkIf (cfg.environment == "dwm") {
     environment.systemPackages = with pkgs; [
       # GUI Core
-      bitwarden-cli
-      bitwarden
       thunderbird
       firefox
       geany
@@ -20,7 +18,9 @@ in {
     ];
     # If running dwm
     services.xserver = {
-      windowManager.dwm.enable = true;
+      windowManager.dwm = {
+        enable = true;
+      };
       displayManager = {
         lightdm = {
           enable = true;
@@ -28,6 +28,9 @@ in {
           background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
         };
         defaultSession = "none+dwm";
+        sessionCommands = ''
+          ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
+        '';
       };
     };
   };

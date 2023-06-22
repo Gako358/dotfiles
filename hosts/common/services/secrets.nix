@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   config,
   ...
 }:
@@ -19,9 +20,12 @@ in {
 
   config = mkIf (cfg.enable && config.desktop.environment == "dwm") {
     services = {
+      dbus.packages = [pkgs.gnome.gnome-keyring pkgs.gcr];
       gnome.gnome-keyring = {
         enable = true;
       };
     };
+    # Enable gnome-keyring in PAM
+    security.pam.services.login.enableGnomeKeyring = true;
   };
 }
