@@ -39,7 +39,7 @@ with builtins; let
   ];
   cfg = config.desktop;
 in {
-  config = mkIf (cfg.environment == "dwm" || cfg.environment == "bspwm") {
+  config = mkIf (cfg.environment == "bspwm") {
     programs.eww = {
       enable = true;
       # package = inputs.eww.packages.${pkgs.system}.eww-wayland;

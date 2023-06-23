@@ -150,8 +150,8 @@ with builtins; let
       {
         name = "vscode-spring-boot";
         publisher = "vmware";
-        version = "1.47.2023060604";
-        sha256 = "lRczm3AES6btuyDgvDGUSRI0+YCuQXnFNbN1HYxf5Hc=";
+        version = "1.48.2023062204";
+        sha256 = "jiBfquxRsDZlAB+gcPt+/92RzWkNKsf9KYFUUZ3j0QI=";
       }
       {
         name = "vscode-boot-dev-pack";
@@ -207,7 +207,7 @@ with builtins; let
     src = pkgs.fetchurl {
       name = "VSCode_insiders.tar.gz";
       url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-      sha256 = "cQCNdLumBDTgDBrHoF2DdCCDSZJEC3fiIZPxTDyTfok=";
+      sha256 = "GeIj2ALXvGYasYMD3XRvAh0NCmBDPlILYw2OlrRQcXc=";
     };
     version = "latest";
   });
