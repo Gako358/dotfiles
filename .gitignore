@@ -6,6 +6,7 @@ node_modules
 
 # C extensions
 *.so
+.ccls-cache
 
 # VSCode
 .vscode
