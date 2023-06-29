@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   config,
   ...
 }:
@@ -17,12 +18,16 @@ in {
     };
   };
   config = mkIf (cfg.enable && config.desktop.environment == "dwm") {
+    environment.systemPackages = with pkgs; [
+      docker-compose
+    ];
     virtualisation.docker = {
       enable = true;
       daemon.settings = {
         data-root = "/opt/docker";
       };
     };
+    virtualisation.podman.enable = true;
     virtualisation.libvirtd.enable = true;
   };
 }
