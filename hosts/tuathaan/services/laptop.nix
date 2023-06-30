@@ -1,8 +1,7 @@
-{ inputs
-, lib
-, pkgs
-, config
-, ...
+{
+  lib,
+  pkgs,
+  ...
 }:
 with lib;
 with builtins; {

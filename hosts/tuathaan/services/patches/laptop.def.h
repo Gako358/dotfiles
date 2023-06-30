@@ -73,13 +73,9 @@ const char *spcmd4[] = {"st", "-n", "htop", "-g", "144x46", "-e", "btop", NULL }
 const char *spcmd5[] = {"st", "-n", "weechat", "-g", "172x46", "-e", "weechat", NULL };
 const char *spcmd6[] = {"st", "-n", "ranger", "-g", "172x46", "-e", "ranger", NULL };
 static Sp scratchpads[] = {
-	/* name          cmd  */
-	{"spterm",      spcmd1},
-	{"ncmpcpp",     spcmd2},
-	{"mutt",        spcmd3},
-  {"htop",        spcmd4},
-  {"weechat",     spcmd5},
-  {"ranger",      spcmd6},
+    /* name          cmd  */
+    {"spterm", spcmd1}, {"ncmpcpp", spcmd2}, {"mutt", spcmd3},
+    {"htop", spcmd4},   {"weechat", spcmd5}, {"ranger", spcmd6},
 };
 
 /* tagging */
@@ -99,22 +95,27 @@ static const Rule rules[] = {
      *	WM_CLASS(STRING) = instance, class
      *	WM_NAME(STRING) = title
      */
-    /* class      instance    title       tags mask     iscentered   isfloating   monitor */
-    { "Gimp",         NULL,       NULL,       0,            1,           1,           -1 },
-    { "firefox",      NULL,       NULL,       1,            0,           0,           -1 },
-    { "thunderbird",  NULL,       NULL,       1 << 3,       1,           1,           -1 },
-    { "discord",      NULL,       NULL,       1 << 4,       0,           0,           -1 },
-    { "Slack",        NULL,       NULL,       1 << 4,       0,           0,           -1 },
-    { "eww",          NULL,       NULL,       0,            0,           1,           -1 },
-    { "Pcmanfm",      NULL,       NULL,       0,            0,           1,           -1 },
-    { "Zathura",      NULL,       NULL,       0,            0,           1,           -1 },
-    { "Microsoft Teams - Preview",        NULL,       NULL,       0,       1,           1,           -1 },
-	  { NULL,		  "spterm",		NULL,		SPTAG(0),		0,      1,			 -1 },
-	  { NULL,		  "ncmpcpp",	NULL,		SPTAG(1),		0,      1,			 -1 },
-	  { NULL,		  "mutt",	    NULL,		SPTAG(2),		0,      1,			 -1 },
-    { NULL,		  "htop",	    NULL,		SPTAG(3),		0,      1,			 -1 },
-    { NULL,		  "weechat",	NULL,		SPTAG(4),		0,      1,			 -1 },
-    { NULL,		  "ranger",	  NULL,		SPTAG(5),		0,      1,			 -1 },
+    /* class      instance    title       tags mask     iscentered   isfloating
+       monitor */
+    {"Gimp", NULL, NULL, 0, 1, 1, -1},
+    {"firefox", NULL, NULL, 1, 0, 0, -1},
+    {"thunderbird", NULL, NULL, 1 << 3, 1, 1, -1},
+    {"discord", NULL, NULL, 1 << 4, 0, 0, -1},
+    {"Slack", NULL, NULL, 1 << 4, 0, 0, -1},
+    {"Pcmanfm", NULL, NULL, 0, 0, 1, -1},
+    {"Zathura", NULL, NULL, 0, 0, 1, -1},
+
+    // Teams
+    {"Microsoft Teams - Preview", NULL, NULL, 1 << 4, 0, 0, -1},
+    // Citrix
+    {"Remote Desktop Connection", NULL, NULL, 1 << 2, 0, 1, -1},
+
+    {NULL, "spterm", NULL, SPTAG(0), 0, 1, -1},
+    {NULL, "ncmpcpp", NULL, SPTAG(1), 0, 1, -1},
+    {NULL, "mutt", NULL, SPTAG(2), 0, 1, -1},
+    {NULL, "htop", NULL, SPTAG(3), 0, 1, -1},
+    {NULL, "weechat", NULL, SPTAG(4), 0, 1, -1},
+    {NULL, "ranger", NULL, SPTAG(5), 0, 1, -1},
 };
 
 /* layout(s) */
