@@ -117,11 +117,13 @@
             desktop.xsession.enable = true;
             # Services enabled
             services.lock.enable = true;
+            services.battery.enable = true;
+            # Programs to enable
             programs.slack.enable = true;
             programs.teams.enable = true;
             programs.citrix.enable = true;
             programs.discord.enable = true;
-            services.battery.enable = true;
+            programs.intellij.enable = true;
             programs.virt-manager.enable = true;
           }
           {nixpkgs.overlays = builtins.attrValues overlays;}
