@@ -207,7 +207,7 @@ with builtins; let
     src = pkgs.fetchurl {
       name = "VSCode_insiders.tar.gz";
       url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-      sha256 = "YywfuX7IJ6/GDwHM35/LETWbO2QYl1W5dc2IfEk8Lvo=";
+      sha256 = "KwEwVJ1Vopfw5xSP+FHvvLF2hHb0KAnfYmk2ycxB3Nw=";
     };
     version = "latest";
   });
