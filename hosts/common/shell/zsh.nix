@@ -16,7 +16,7 @@ with lib; let
     dot = "cd ~/Sources/dotfiles";
     doc = "cd ~/Documents/Reports";
     nvim = "cd ~/Projects/neovim";
-    work = "cd ~/Projects/";
+    work = "cd ~/Projects/workspace/";
     www = "cd ~/Projects/wwwsite/";
 
     # Git
