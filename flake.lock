@@ -375,6 +375,22 @@
         "type": "github"
       }
     },
+    "flash": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1688762891,
+        "narHash": "sha256-8oqXMSPLNz8afHUUrgs00bcvgwU9VHJmHdKldpnN9vQ=",
+        "owner": "folke",
+        "repo": "flash.nvim",
+        "rev": "a8da6ff212c1885ecde26af477207742959c67d7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "flash.nvim",
+        "type": "github"
+      }
+    },
     "github-copilot": {
       "flake": false,
       "locked": {
@@ -466,11 +482,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1688853517,
-        "narHash": "sha256-oatIWiJI13an13XOX43pnKMRmqzQOUgF/IVNG73r8nA=",
+        "lastModified": 1688892808,
+        "narHash": "sha256-AeWzyG37EqyHH2C1GmrV9y0ZQ4e7rAs9AUOnw8I4YUI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e15010ee6e9bd356a6746ff9b9f9a9097ee8ddcf",
+        "rev": "b70db52ff06f30e3de7f21b6ea47e75baa0c46f6",
         "type": "github"
       },
       "original": {
@@ -539,22 +555,6 @@
       "original": {
         "owner": "kdheepak",
         "repo": "lazygit.nvim",
-        "type": "github"
-      }
-    },
-    "lightspeed": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1666361611,
-        "narHash": "sha256-P8j8SY6Cvv7zAXfAP3IY7CYj6RC8k+hV3SUbJy69J5k=",
-        "owner": "ggandor",
-        "repo": "lightspeed.nvim",
-        "rev": "299eefa6a9e2d881f1194587c573dad619fdb96f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ggandor",
-        "repo": "lightspeed.nvim",
         "type": "github"
       }
     },
@@ -656,13 +656,13 @@
         "dropbar-nvim": "dropbar-nvim",
         "fidget": "fidget",
         "flake-utils": "flake-utils_3",
+        "flash": "flash",
         "github-copilot": "github-copilot",
         "gitsigns-nvim": "gitsigns-nvim",
         "glow-nvim": "glow-nvim",
         "indent-blankline": "indent-blankline",
         "kommentary": "kommentary",
         "lazygit": "lazygit",
-        "lightspeed": "lightspeed",
         "lsp-signature": "lsp-signature",
         "lspkind": "lspkind",
         "lspsaga": "lspsaga",
@@ -703,11 +703,11 @@
         "which-key": "which-key"
       },
       "locked": {
-        "lastModified": 1688666422,
-        "narHash": "sha256-kcPdmHqKkfso2nLK3/mI2vLxHq+OIBh99g4GcEOIhbE=",
+        "lastModified": 1688905613,
+        "narHash": "sha256-fsZ5lCizAR20jEB1Hzin/foL/GbO8D5NtmWlbObZVUY=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "4fd7dcd6028e852ade5a8721af537b122b92150c",
+        "rev": "b41cfe92d4a6edd4b61383027b1622964d826779",
         "type": "github"
       },
       "original": {
@@ -1038,11 +1038,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1688875498,
-        "narHash": "sha256-fwrd6o3MB3wldJRe+P9swBrk1pTmNITpASwIvv4nkJI=",
+        "lastModified": 1688903082,
+        "narHash": "sha256-2QWulE3HOJf1yQSwfvXIa6+3sjVCQUDNq/JUtar8PC4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "9b8d44b3ab94cfe5e4fe67c6d98ef77acbbb3d4b",
+        "rev": "7efd06a80f3cf076cee154038a192455843e5d11",
         "type": "github"
       },
       "original": {
