@@ -33,16 +33,17 @@
 
   outputs = {
     nixpkgs,
-    home-manager,
-    flake-utils,
-    nur,
+    hardware,
     nixos-wsl,
+    flake-utils,
+    home-manager,
     nixos-vscode-server,
     neovim-flake,
     scramgit,
+    slock,
+    nur,
     dwm,
     st,
-    slock,
     ...
   } @ inputs: let
     forAllSystems = nixpkgs.lib.genAttrs systems;
@@ -86,9 +87,11 @@
             # Set desktop environment
             desktop.xsession.enable = true;
             # Programs to enable
+            programs.slack.enable = true;
             programs.teams.enable = true;
             programs.citrix.enable = true;
             programs.discord.enable = true;
+            programs.intellij.enable = true;
             programs.moonlander.enable = true;
             programs.virt-manager.enable = true;
           }
