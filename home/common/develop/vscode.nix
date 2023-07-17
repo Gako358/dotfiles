@@ -22,10 +22,10 @@ with builtins; let
     ])
     ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
       {
-        name = "copilot-nightly";
+        name = "copilot";
         publisher = "GitHub";
-        version = "1.88.141";
-        sha256 = "sIuYqF9f63++7wNSkrBxi5yxMCXz2xlKcpo7hBqxl/w=";
+        version = "1.96.263";
+        sha256 = "XH76LULYljcmG4Mm3pG2QD4joKoXBHZ9ekbFtoHjt9I=";
       }
       {
         name = "copilot-chat";
