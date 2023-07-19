@@ -15,7 +15,7 @@ with lib; let
     # Locations
     dot = "cd ~/Sources/dotfiles";
     doc = "cd ~/Documents/Reports";
-    nvim = "cd ~/Projects/neovim";
+    neovim = "cd ~/Projects/neovim";
     work = "cd ~/Projects/workspace/";
     www = "cd ~/Projects/wwwsite/";
 
