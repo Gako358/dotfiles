@@ -18,13 +18,13 @@ in {
     };
   };
   config = mkIf (cfg.enable && (config.desktop.environment == "dwm")) {
-    systemd.services.xsetDPMS = {
+    systemd.user.services.xsetDPMS = {
       description = "Setup noblank and dpms";
       after = ["sleep.target"];
       wantedBy = ["multi-user.target"];
       serviceConfig = {
         ExecStart = "${pkgs.xorg.xset}/bin/xset -display :0 s off -dpms";
-        RemainAfterExit = true;
+        RemainAfterExit = "yes";
         TimeoutSec = "5s";
         RestartSec = "5s";
         Restart = "on-failure";
