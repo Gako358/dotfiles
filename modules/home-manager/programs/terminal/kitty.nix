@@ -1,14 +1,13 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
-  cfg = config.terminal.kitty;
-in
-{
-  options.terminal.kitty.enable = mkEnableOption "Kitty terminal emulator";
+  cfg = config.programs.terminal.kitty;
+in {
+  options.programs.terminal.kitty.enable = mkEnableOption "Kitty terminal emulator";
   config = lib.mkIf cfg.enable {
     programs.kitty = {
       enable = true;
@@ -66,4 +65,3 @@ in
     };
   };
 }
-

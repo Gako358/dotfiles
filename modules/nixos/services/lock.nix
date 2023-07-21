@@ -1,12 +1,10 @@
-{ config
-, pkgs
-, lib
-, ...
-}:
-let
-  cfg = config.services.lock;
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  cfg = config.services.lock;
+in {
   options.services.lock.enable = lib.mkEnableOption "lock";
   config = lib.mkIf cfg.enable {
     programs.slock.enable = true;

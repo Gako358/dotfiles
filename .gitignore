@@ -15,6 +15,7 @@ node_modules
 result
 secrets
 *.qcow2
+.direnv/
 
 # Certs
 certs/*.pem

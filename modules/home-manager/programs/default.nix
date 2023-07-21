@@ -1,0 +1,7 @@
+{
+  imports = [
+    ./chat
+    ./develop
+    ./terminal
+  ];
+}

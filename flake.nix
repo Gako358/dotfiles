@@ -77,7 +77,6 @@
       });
 
     nixosConfigurations = {
-      # DESKTOP
       terangreal = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
@@ -89,7 +88,7 @@
             # Programs to enable
             programs.slack.enable = true;
             programs.teams.enable = true;
-            programs.citrix.enable = true;
+            programs.citrix.enable = false;
             programs.discord.enable = true;
             programs.intellij.enable = true;
             programs.moonlander.enable = true;
@@ -109,7 +108,6 @@
           })
         ];
       };
-      # LAPTOP Work
       tuathaan = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
@@ -124,7 +122,7 @@
             # Programs to enable
             programs.slack.enable = true;
             programs.teams.enable = true;
-            programs.citrix.enable = true;
+            programs.citrix.enable = false;
             programs.discord.enable = true;
             programs.intellij.enable = true;
             programs.virt-manager.enable = true;
@@ -143,21 +141,6 @@
           })
         ];
       };
-      # LAPTOP Kid
-      sangreal = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/sangreal
-          nixosModules
-          {
-            # Set desktop environment
-            desktop.kde.enable = true;
-            # Services enabled
-            programs.discord.enable = true;
-          }
-        ];
-      };
-      # WSL
       angreal = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
@@ -191,6 +174,18 @@
         modules = [
           ./home/terangreal
           homeManagerModules
+          {
+            # Development tools
+            programs = {
+              develop.vscode.enable = true;
+              terminal = {
+                # Gnome has default terminal
+                kitty.enable = false;
+                alacritty.enable = false;
+                gnome-terminal.enable = false;
+              };
+            };
+          }
         ];
       };
       "merrinx@tuathaan" = home-manager.lib.homeManagerConfiguration {
@@ -199,14 +194,18 @@
         modules = [
           ./home/tuathaan
           homeManagerModules
-        ];
-      };
-      "mathoa@sangreal" = home-manager.lib.homeManagerConfiguration {
-        pkgs = legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs;};
-        modules = [
-          ./home/sangreal
-          homeManagerModules
+          {
+            # Development tools
+            programs = {
+              develop.vscode.enable = true;
+              terminal = {
+                # Gnome has default terminal
+                kitty.enable = false;
+                alacritty.enable = false;
+                gnome-terminal.enable = false;
+              };
+            };
+          }
         ];
       };
       "nixos@angreal" = home-manager.lib.homeManagerConfiguration {
@@ -215,6 +214,18 @@
         modules = [
           ./home/angreal
           homeManagerModules
+          {
+            # Development tools
+            programs = {
+              develop.vscode.enable = false;
+              terminal = {
+                # Gnome has default terminal
+                kitty.enable = false;
+                alacritty.enable = false;
+                gnome-terminal.enable = false;
+              };
+            };
+          }
         ];
       };
     };

@@ -13,9 +13,9 @@ with builtins; let
     rev = "e5dded6ee6e214fbf14a88f58775334ca5c19571";
     sha256 = "UcO4S0HqabTPu6wnB/fuWWdtKGFmf9fpWRuLUwGHo6o=";
   };
-  cfg = config.develop.vscode-server-wsl;
+  cfg = config.programs.develop.vscode-server-wsl;
 in {
-  options.develop.vscode-server-wsl = {
+  options.programs.develop.vscode-server-wsl = {
     enable = mkOption {
       type = types.bool;
       default = true;

@@ -1,8 +1,8 @@
 {
   imports = [
-    ./services
-    ./desktop
-    ./develop
     ./chat
+    ./desktop
+    ./programs
+    ./services
   ];
 }

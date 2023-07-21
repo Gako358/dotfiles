@@ -1,13 +1,13 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
   cfg = config.services.battery;
-in
-{
+in {
   options.services.battery.enable = lib.mkEnableOption "Enable battery services for laptops";
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [

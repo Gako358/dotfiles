@@ -5,7 +5,7 @@
 > guarantees that it will work out of the box for anyone but myself. It may also
 > change drastically and without warning.
 
-# My NixOs Configuration
+# My NixOS Configuration
 
 Welcome to my compilation of dotfiles, the secret sauce behind the construction and configuration of my Linux systems.
 

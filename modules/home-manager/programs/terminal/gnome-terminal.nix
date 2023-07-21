@@ -1,14 +1,13 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 with lib;
 with builtins; let
-  cfg = config.terminal.gnome-terminal;
-in
-{
-  options.terminal.gnome-terminal.enable = mkEnableOption "Gnome Terminal";
+  cfg = config.programs.terminal.gnome-terminal;
+in {
+  options.programs.terminal.gnome-terminal.enable = mkEnableOption "Gnome Terminal";
   config = lib.mkIf cfg.enable {
     programs.gnome-terminal = {
       enable = true;
@@ -51,4 +50,3 @@ in
     };
   };
 }
-

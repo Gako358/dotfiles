@@ -1,14 +1,13 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
 with builtins; let
-  cfg = config.terminal.alacritty;
+  cfg = config.programs.terminal.alacritty;
 in {
-  options.terminal.alacritty.enable = mkEnableOption "alacritty terminal emulator";
+  options.programs.terminal.alacritty.enable = mkEnableOption "alacritty terminal emulator";
   config = lib.mkIf cfg.enable {
     programs.alacritty = {
       enable = true;

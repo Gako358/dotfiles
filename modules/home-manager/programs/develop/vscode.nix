@@ -6,7 +6,7 @@
 }:
 with lib;
 with builtins; let
-  cfg = config.develop.vscode;
+  cfg = config.programs.develop.vscode;
   extensions =
     (with pkgs.vscode-extensions; [
       bbenoist.nix
@@ -207,7 +207,7 @@ with builtins; let
     src = pkgs.fetchurl {
       name = "VSCode_insiders.tar.gz";
       url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-      sha256 = "jOb2pLuTWhCWtAdtNQGpfi7VP+zN9YZRiSRKuuZwzUA=";
+      sha256 = "NfIkZqXbq6QUeIzV2rDdjqlm9/IWzYW9BKNi1Xl5ZAw=";
     };
     version = "latest";
   });
@@ -219,14 +219,8 @@ with builtins; let
     vscodeExtensions = extensions;
   };
 in {
-  options.develop.vscode = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable vscode";
-    };
-  };
-  config = mkIf (cfg.enable && config.desktop.environment == "dwm") {
+  options.programs.develop.vscode.enable = lib.mkEnableOption "vscode";
+  config = lib.mkIf cfg.enable {
     programs.vscode = {
       enable = true;
       package = code-insiders;
