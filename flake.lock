@@ -192,11 +192,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1689367396,
-        "narHash": "sha256-ygmuBA0yjGysRhftucwK63mxFdjY8XU+LqMGTv4BTy0=",
+        "lastModified": 1690026583,
+        "narHash": "sha256-VuAu1C/J/1L0HRrj1GwkIRPcY4rAPqmSdCw8kG9ksB8=",
         "owner": "gako358",
         "repo": "dwm",
-        "rev": "c99c0b50f92e3fbb419a40edfe5f04673683147d",
+        "rev": "9a469b10faf2bb45bfe033cb7527a6d62948cc49",
         "type": "github"
       },
       "original": {

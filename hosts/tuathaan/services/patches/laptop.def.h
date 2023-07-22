@@ -70,16 +70,20 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = {"st", "-n", "spterm", "-g", "155x46", NULL};
-const char *spcmd2[] = {"st", "-n", "ncmpcpp", "-g", "128x37", "-e", "ncspot",  NULL};
-const char *spcmd3[] = {"st", "-n", "mutt",    "-g", "172x46", "-e", "neomutt", NULL};
-const char *spcmd4[] = {"st", "-n", "htop", "-g", "144x46", "-e", "btop", NULL};
-const char *spcmd5[] = {"st", "-n", "weechat", "-g", "172x46", "-e", "weechat", NULL};
-const char *spcmd6[] = {"st", "-n", "ranger", "-g", "172x46", "-e", "ranger", NULL};
+const char *spcmd1[] = {"st", "-n", "spterm",       "-g", "155x46", NULL};
+const char *spcmd2[] = {"st", "-n", "ncmpcpp",      "-g", "128x37", "-e", "ncspot",     NULL};
+const char *spcmd3[] = {"st", "-n", "mutt",         "-g", "172x46", "-e", "neomutt",    NULL};
+const char *spcmd4[] = {"st", "-n", "htop",         "-g", "144x46", "-e", "btop",       NULL};
+const char *spcmd5[] = {"st", "-n", "weechat",      "-g", "172x46", "-e", "weechat",    NULL};
+const char *spcmd6[] = {"st", "-n", "ranger",       "-g", "172x46", "-e", "ranger",     NULL};
+const char *spcmd7[] = {"st", "-n", "runtermone",   "-g", "155x46", NULL};
+const char *spcmd8[] = {"st", "-n", "runtermtwo",   "-g", "155x46", NULL};
+const char *spcmd9[] = {"st", "-n", "runtermthree", "-g", "155x46", NULL};
 static Sp scratchpads[] = {
     /* name          cmd  */
     {"spterm", spcmd1}, {"ncmpcpp", spcmd2}, {"mutt", spcmd3},
     {"htop", spcmd4},   {"weechat", spcmd5}, {"ranger", spcmd6},
+    {"runtermone", spcmd7}, {"runtermtwo", spcmd8}, {"runtermthree", spcmd9},
 };
 
 /* tagging */
@@ -102,26 +106,29 @@ static const Rule rules[] = {
      */
     /* class      instance    title       tags mask     iscentered   isfloating
        monitor */
-    {"Gimp", NULL, NULL, 0, 1, 1, -1},
-    {"firefox", NULL, NULL, 1, 0, 0, -1},
+    {"Gimp",        NULL, NULL, 0, 1, 1, -1},
+    {"firefox",     NULL, NULL, 1, 0, 0, -1},
     {"thunderbird", NULL, NULL, 1 << 5, 0, 0, -1},
-    {"discord", NULL, NULL, 1 << 6, 0, 0, -1},
-    {"Slack", NULL, NULL, 1 << 5, 0, 0, -1},
-    {"Geany", NULL, NULL, 0, 0, 1, -1},
-    {"Pcmanfm", NULL, NULL, 0, 0, 1, -1},
-    {"Zathura", NULL, NULL, 0, 0, 1, -1},
+    {"discord",     NULL, NULL, 1 << 6, 0, 0, -1},
+    {"Slack",       NULL, NULL, 1 << 5, 0, 0, -1},
+    {"Geany",       NULL, NULL, 0, 0, 1, -1},
+    {"Pcmanfm",     NULL, NULL, 0, 0, 1, -1},
+    {"Zathura",     NULL, NULL, 0, 0, 1, -1},
 
     // Teams
     {"Microsoft Teams - Preview", NULL, NULL, 1 << 6, 0, 0, -1},
     // Citrix
     {"Remote Desktop Connection", NULL, NULL, 1 << 4, 0, 1, -1},
 
-    {NULL, "spterm", NULL, SPTAG(0), 0, 1, -1},
-    {NULL, "ncmpcpp", NULL, SPTAG(1), 0, 1, -1},
-    {NULL, "mutt", NULL, SPTAG(2), 0, 1, -1},
-    {NULL, "htop", NULL, SPTAG(3), 0, 1, -1},
-    {NULL, "weechat", NULL, SPTAG(4), 0, 1, -1},
-    {NULL, "ranger", NULL, SPTAG(5), 0, 1, -1},
+    {NULL, "spterm",        NULL, SPTAG(0), 0, 1, -1},
+    {NULL, "ncmpcpp",       NULL, SPTAG(1), 0, 1, -1},
+    {NULL, "mutt",          NULL, SPTAG(2), 0, 1, -1},
+    {NULL, "htop",          NULL, SPTAG(3), 0, 1, -1},
+    {NULL, "weechat",       NULL, SPTAG(4), 0, 1, -1},
+    {NULL, "ranger",        NULL, SPTAG(5), 0, 1, -1},
+    {NULL, "runtermone",    NULL, SPTAG(6), 0, 1, -1},
+    {NULL, "runtermtwo",    NULL, SPTAG(7), 0, 1, -1},
+    {NULL, "runtermthree",  NULL, SPTAG(8), 0, 1, -1},
 };
 
 /* layout(s) */
@@ -218,6 +225,10 @@ static Key keys[] = {
     {MODKEY | ShiftMask, XK_b, togglescratch, {.ui = 3}},
     {MODKEY | ShiftMask, XK_c, togglescratch, {.ui = 4}},
     {MODKEY, XK_r, togglescratch, {.ui = 5}},
+    // Runtime scratchpads
+    {MODKEY | ShiftMask | ControlMask | Mod1Mask, XK_1, togglescratch, {.ui = 6}},
+    {MODKEY | ShiftMask | ControlMask | Mod1Mask, XK_2, togglescratch, {.ui = 7}},
+    {MODKEY | ShiftMask | ControlMask | Mod1Mask, XK_3, togglescratch, {.ui = 8}},
 
     // toggle stuff
     {MODKEY, XK_b, togglebar, {0}},
