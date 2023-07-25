@@ -122,7 +122,7 @@
             # Programs to enable
             programs.slack.enable = true;
             programs.teams.enable = true;
-            programs.citrix.enable = false;
+            programs.citrix.enable = true;
             programs.discord.enable = true;
             programs.intellij.enable = true;
             programs.virt-manager.enable = true;
