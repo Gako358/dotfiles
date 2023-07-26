@@ -25,10 +25,9 @@ echo "Cleaning up"
 sed -i '21,22s/^#//' .gitignore
 git reset modules/nixos/programs/certs
 
-echo "System updated!, please enter the hostname:"
-read user
+echo "System updated!"
 
-home_name="$user@$flake"
+home_name="merrinx@$flake"
 
 # Update home-manager
 home-manager switch --flake .#$home_name

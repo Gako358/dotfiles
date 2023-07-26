@@ -39,11 +39,11 @@
     "borealis": {
       "flake": false,
       "locked": {
-        "lastModified": 1690317150,
-        "narHash": "sha256-Ne0yrqPWgECzT9wftbTIH3hHR+tD6cxugjQ+ryl7lok=",
+        "lastModified": 1690491399,
+        "narHash": "sha256-WVQ3HOBfr+az8dCSh91cT5ww+4CPvZnDGBO2WLyqOno=",
         "owner": "Gako358",
         "repo": "borealis.nvim",
-        "rev": "c48118f15506d78cf27637c6e4fc5e5a0941783a",
+        "rev": "24fc9ba7116a5b2097ed56a980f35316fd3b44e1",
         "type": "github"
       },
       "original": {
@@ -425,11 +425,11 @@
     },
     "hardware": {
       "locked": {
-        "lastModified": 1689320556,
-        "narHash": "sha256-vODUkZLWFVCvo1KPK3dC2CbXjxa9antEn5ozwlcTr48=",
+        "lastModified": 1690200740,
+        "narHash": "sha256-aRkEXGmCbAGcvDcdh/HB3YN+EvoPoxmJMOaqRZmf6vM=",
         "owner": "nixos",
         "repo": "nixos-hardware",
-        "rev": "d4ea64f2063820120c05f6ba93ee02e6d4671d6b",
+        "rev": "ba9650b14e83b365fb9e731f7d7c803f22d2aecf",
         "type": "github"
       },
       "original": {
@@ -686,11 +686,11 @@
         "which-key": "which-key"
       },
       "locked": {
-        "lastModified": 1690317243,
-        "narHash": "sha256-qK6w6UgA8/wSldfxVzHJEOPgA9ovYk7aGW9XDlhbioM=",
+        "lastModified": 1690491558,
+        "narHash": "sha256-tUTAhTJBrDRgdurLOjDwBU0Xoyy8pZEarxzQMPyXfk0=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "81d75046cc019f9df787f0a86aca26782db15e47",
+        "rev": "58ed835bc245926405a1ae34024139005d5f5eec",
         "type": "github"
       },
       "original": {
