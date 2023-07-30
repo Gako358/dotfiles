@@ -18,8 +18,6 @@ in {
     nixpkgs.overlays = [
       (self: super: let
         extraCerts = [
-          ./certs/citrix-helsenord-no.pem
-          ./certs/citrix-helsenord-no-chain.pem
         ];
       in {
         citrix_workspace = super.citrix_workspace.overrideAttrs (oldAttrs: rec {
