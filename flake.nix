@@ -91,7 +91,6 @@
             programs.citrix.enable = true;
             programs.dbeaver.enable = true;
             programs.discord.enable = true;
-            programs.intellij.enable = true;
             programs.moonlander.enable = true;
             programs.virt-manager.enable = true;
           }
@@ -126,7 +125,6 @@
             programs.citrix.enable = true;
             programs.dbeaver.enable = true;
             programs.discord.enable = true;
-            programs.intellij.enable = true;
             programs.virt-manager.enable = true;
           }
           {nixpkgs.overlays = builtins.attrValues overlays;}
@@ -179,6 +177,7 @@
           {
             # Development tools
             programs = {
+              develop.intellij.enable = true;
               develop.vscode.enable = true;
               terminal = {
                 # Gnome has default terminal
@@ -199,6 +198,7 @@
           {
             # Development tools
             programs = {
+              develop.intellij.enable = true;
               develop.vscode.enable = true;
               terminal = {
                 # Gnome has default terminal
@@ -219,6 +219,7 @@
           {
             # Development tools
             programs = {
+              develop.intellij.enable = false;
               develop.vscode.enable = false;
               terminal = {
                 # Gnome has default terminal
