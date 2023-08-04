@@ -17,7 +17,6 @@ in {
       excludePackages = with pkgs; [
         xterm
       ];
-      videoDrivers = ["amd"];
     };
   };
 }

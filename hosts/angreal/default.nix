@@ -66,6 +66,7 @@
     (self: super: {nix-direnv = super.nix-direnv.override {enableFlakes = true;};})
   ];
 
+  nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   system.stateVersion = "23.05";
 }

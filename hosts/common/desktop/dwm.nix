@@ -28,9 +28,6 @@ in {
           background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
         };
         defaultSession = "none+dwm";
-        sessionCommands = ''
-          ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
-        '';
       };
     };
   };

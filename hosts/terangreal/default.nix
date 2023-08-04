@@ -1,4 +1,9 @@
-{modulesPath, ...}: {
+{
+  pkgs,
+  lib,
+  modulesPath,
+  ...
+}: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ../common
@@ -12,8 +17,16 @@
     ./user.nix
   ];
 
-  # Set desktop environment to "dwm"
+  # Set desktop environment and video drivers
   desktop.environment = "dwm";
+  services.xserver = {
+    videoDrivers = ["amdgpu"];
+    displayManager = {
+      sessionCommands = ''
+        ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
+      '';
+    };
+  };
 
   # Set audio server
   sys.audio.server = "pulse";
