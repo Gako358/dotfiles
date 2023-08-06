@@ -37,6 +37,7 @@ fi
 # Check if the user wants to test the flake
 clear
 echo "For testing flake choose <<test>>"
+echo "Press enter to continue..."
 read test
 if [[ "$test" == "test" ]]
 then

@@ -1,7 +1,0 @@
-{
-  imports = [
-    ./chat
-    ./develop
-    ./terminal
-  ];
-}
