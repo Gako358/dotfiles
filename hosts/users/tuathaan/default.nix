@@ -17,8 +17,6 @@
       conf = ./patches/laptop.def.h;
     })
   ];
-  # Application specific configuration
-  work.citrix.enable = true;
 
   users.users = {
     merrinx = {
@@ -35,7 +33,6 @@
     xserver = {
       videoDrivers = ["intel" "displaylink"];
       displayManager = {
-        # TODO: ${pkgs.xorg.xrandr}/bin/xrandr --output DisplayPort-1 and the rest of arandr output
         # xrandr --setprovideroutputsource 2 0 This is after run xrandr --listproviders to identify the provider
         sessionCommands = ''
           ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all

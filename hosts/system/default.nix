@@ -17,7 +17,6 @@ with lib; {
   imports = [
     ./daemons
     ./desktop
-    ./work
     ./files.nix
     ./fonts.nix
     ./lock.nix

@@ -28,6 +28,7 @@ let
 in [
   ./neofetch
   ./rofi
+  ./citrix.nix
   ./firefox.nix
   ./intellij.nix
   ./git.nix
