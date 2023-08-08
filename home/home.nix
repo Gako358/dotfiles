@@ -11,6 +11,7 @@
     cacert               # ca certificates
     cobang               # qr-code scanner
     cowsay               # cowsay fortune teller with random images
+    dbeaver              # database manager
     dconf2nix            # dconf (gnome) files to nix converter
     docker-compose       # docker manager
     dive                 # explore docker layers
