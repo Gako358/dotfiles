@@ -26,14 +26,17 @@ let
     };
   };
 in [
+  ./browser/chromium.nix
+  ./browser/discord.nix
+  ./browser/firefox.nix
+  ./browser/slack.nix
+  ./browser/teams.nix
   ./neofetch
   ./rofi
   ./citrix.nix
-  ./firefox.nix
   ./intellij.nix
   ./git.nix
   ./network.nix
-  ./vscode.nix
   ./weechat.nix
   more
 ]

@@ -15,7 +15,6 @@
     dconf2nix            # dconf (gnome) files to nix converter
     docker-compose       # docker manager
     dive                 # explore docker layers
-    discord              # messaging client
     drawio               # diagram design
     duf                  # disk usage/free utility
     exa                  # a better `ls`
@@ -41,8 +40,6 @@
     rage                 # encryption tool for secrets management
     ripgrep              # fast grep
     scrot                # screenshot tool
-    slack                # messaging client
-    teams                # messaging client
     tldr                 # summary of a man page
     tree                 # display files in a tree view
     unzip                # unzip files

@@ -106,18 +106,18 @@ static const Rule rules[] = {
      */
     /* class      instance    title       tags mask     iscentered   isfloating
        monitor */
-    {"Gimp",        NULL, NULL, 0, 1, 1, -1},
-    {"firefox",     NULL, NULL, 1, 0, 0,  2},
-    {"thunderbird", NULL, NULL, 1 << 5, 0, 0,  1},
-    {"discord",     NULL, NULL, 1 << 6, 0, 0,  1},
-    {"Slack",       NULL, NULL, 1 << 6, 0, 0,  2},
-    {"Geany",       NULL, NULL, 0, 0, 1, -1},
-    {"Pcmanfm",     NULL, NULL, 0, 0, 1, -1},
-    {"Zathura",     NULL, NULL, 0, 0, 1, -1},
-    {"Wfica",       NULL, NULL, 1 << 4, 0, 0,  2},
+    {"Gimp",                NULL, NULL, 0, 1, 1, -1},
+    {"firefox",             NULL, NULL, 1, 0, 0,  2},
+    {"thunderbird",         NULL, NULL, 1 << 5, 0, 0,  1},
+    {"Geany",               NULL, NULL, 0, 0, 1, -1},
+    {"Pcmanfm",             NULL, NULL, 0, 0, 1, -1},
+    {"Zathura",             NULL, NULL, 0, 0, 1, -1},
+    {"Wfica",               NULL, NULL, 1 << 4, 0, 0,  2},
 
-    // Teams
-    {"Microsoft Teams - Preview", NULL, NULL, 1 << 6, 0, 0,  2},
+    // Chromium Apps
+    {NULL, "teams.live.com",                                NULL, 1 << 4, 0, 0,  2},
+    {NULL, "discord.com__channels_@me",                     NULL, 1 << 6, 0, 0,  1},
+    {NULL, "app.slack.com__client_T04MZPW21RA_C04MUBWKREZ", NULL, 1 << 6, 0, 0,  2},
     // Citrix
     {"Remote Desktop Connection", NULL, NULL, 1 << 4, 0, 1,  2},
 
