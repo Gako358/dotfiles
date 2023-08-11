@@ -6,6 +6,7 @@
   overrideWithGApps = pkg: pkg.overrideAttrs (oldAttrs: {nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [pkgs.wrapGAppsHook];});
   devSDKs = with pkgs; {
     java19 = jdk19;
+    metals = metals;
     node = nodejs;
     yarn = yarn;
   };

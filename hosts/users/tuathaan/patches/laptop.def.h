@@ -115,7 +115,7 @@ static const Rule rules[] = {
     {"Wfica",               NULL, NULL, 1 << 4, 0, 0,  2},
 
     // Chromium Apps
-    {NULL, "teams.live.com",                                NULL, 1 << 4, 0, 0,  2},
+    {NULL, "teams.live.com",                                NULL, 1 << 4, 0, 0,  1},
     {NULL, "discord.com__channels_@me",                     NULL, 1 << 6, 0, 0,  1},
     {NULL, "app.slack.com__client_T04MZPW21RA_C04MUBWKREZ", NULL, 1 << 6, 0, 0,  2},
     // Citrix
