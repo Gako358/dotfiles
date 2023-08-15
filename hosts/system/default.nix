@@ -20,6 +20,7 @@ with lib; {
     ./files.nix
     ./fonts.nix
     ./lock.nix
+    ./nfc.nix
     ./zsh.nix
   ];
 }
