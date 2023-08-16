@@ -119,7 +119,9 @@ static const Rule rules[] = {
     {NULL, "discord.com__channels_@me",                     NULL, 1 << 6, 0, 0,  1},
     {NULL, "app.slack.com__client_T04MZPW21RA_C04MUBWKREZ", NULL, 1 << 6, 0, 0,  2},
     // Citrix
-    {"Remote Desktop Connection", NULL, NULL, 1 << 4, 0, 1,  2},
+    {"Remote Desktop Connection",   NULL, NULL, 1 << 4, 0, 1,  2},
+    // Microsoft Edge
+    {"Microsoft-edge-dev",          NULL, NULL, 1, 0, 0,  1},
 
     {NULL, "spterm",        NULL, SPTAG(0), 0, 1, -1},
     {NULL, "ncmpcpp",       NULL, SPTAG(1), 0, 1, -1},
