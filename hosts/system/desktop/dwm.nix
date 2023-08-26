@@ -25,6 +25,12 @@ in {
         };
         defaultSession = "none+dwm";
       };
+
+      # Exlude the following packages from the Xorg server
+      excludePackages = [
+        pkgs.nano
+        pkgs.xterm
+      ];
     };
     # Enable gnome-keyring in PAM
     security.pam.services.lightdm.enableGnomeKeyring = true;
