@@ -31,7 +31,6 @@ in [
   ./browser/edge.nix
   ./browser/firefox.nix
   ./browser/slack.nix
-  ./browser/teams.nix
   ./neofetch
   ./rofi
   ./citrix.nix

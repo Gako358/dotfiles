@@ -37,6 +37,7 @@
     prettyping           # a nicer ping
     pulsemixer           # pulseaudio mixer
     rage                 # encryption tool for secrets management
+    ranger               # terminal file manager
     ripgrep              # fast grep
     scrot                # screenshot tool
     tldr                 # summary of a man page

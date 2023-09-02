@@ -70,20 +70,16 @@ typedef struct {
   const char *name;
   const void *cmd;
 } Sp;
-const char *spcmd1[] = {"st", "-n", "spterm",       "-g", "155x46", NULL};
-const char *spcmd2[] = {"st", "-n", "ncmpcpp",      "-g", "128x37", "-e", "ncspot",     NULL};
-const char *spcmd3[] = {"st", "-n", "mutt",         "-g", "172x46", "-e", "neomutt",    NULL};
-const char *spcmd4[] = {"st", "-n", "htop",         "-g", "144x46", "-e", "btop",       NULL};
-const char *spcmd5[] = {"st", "-n", "weechat",      "-g", "172x46", "-e", "weechat",    NULL};
-const char *spcmd6[] = {"st", "-n", "ranger",       "-g", "172x46", "-e", "ranger",     NULL};
-const char *spcmd7[] = {"st", "-n", "runtermone",   "-g", "155x46", NULL};
-const char *spcmd8[] = {"st", "-n", "runtermtwo",   "-g", "155x46", NULL};
-const char *spcmd9[] = {"st", "-n", "runtermthree", "-g", "155x46", NULL};
+const char *spcmd1[] = {"st", "-n", "spterm",  "-g", "172x46",                      NULL};
+const char *spcmd2[] = {"st", "-n", "ncmpcpp", "-g", "128x37", "-e", "ncspot",      NULL};
+const char *spcmd3[] = {"st", "-n", "mutt",    "-g", "172x46", "-e", "neomutt",     NULL};
+const char *spcmd4[] = {"st", "-n", "htop",    "-g", "144x46", "-e", "btop",        NULL};
+const char *spcmd5[] = {"st", "-n", "weechat", "-g", "172x46", "-e", "weechat",     NULL};
+const char *spcmd6[] = {"st", "-n", "ranger",  "-g", "172x46", "-e", "ranger",      NULL};
 static Sp scratchpads[] = {
     /* name          cmd  */
     {"spterm", spcmd1}, {"ncmpcpp", spcmd2}, {"mutt", spcmd3},
     {"htop", spcmd4},   {"weechat", spcmd5}, {"ranger", spcmd6},
-    {"runtermone", spcmd7}, {"runtermtwo", spcmd8}, {"runtermthree", spcmd9},
 };
 
 /* tagging */
@@ -115,23 +111,19 @@ static const Rule rules[] = {
     {"Wfica",               NULL, NULL, 1 << 4, 0, 0,  2},
 
     // Chromium Apps
-    {NULL, "teams.live.com",                                NULL, 1 << 4, 0, 0,  1},
     {NULL, "discord.com__channels_@me",                     NULL, 1 << 6, 0, 0,  1},
     {NULL, "app.slack.com__client_T04MZPW21RA_C04MUBWKREZ", NULL, 1 << 6, 0, 0,  2},
-    // Citrix
-    {"Remote Desktop Connection",   NULL, NULL, 1 << 4, 0, 1,  2},
     // Microsoft Edge
-    {"Microsoft-edge-dev",          NULL, NULL, 1, 0, 0,  1},
+    {"Microsoft-edge-dev",                                  NULL, NULL, 1, 0, 0,  1},
+    // Citrix
+    {"Remote Desktop Connection",                           NULL, NULL, 1 << 4, 0, 1,  2},
 
-    {NULL, "spterm",        NULL, SPTAG(0), 0, 1, -1},
-    {NULL, "ncmpcpp",       NULL, SPTAG(1), 0, 1, -1},
-    {NULL, "mutt",          NULL, SPTAG(2), 0, 1, -1},
-    {NULL, "htop",          NULL, SPTAG(3), 0, 1, -1},
-    {NULL, "weechat",       NULL, SPTAG(4), 0, 1, -1},
-    {NULL, "ranger",        NULL, SPTAG(5), 0, 1, -1},
-    {NULL, "runtermone",    NULL, SPTAG(6), 0, 1, -1},
-    {NULL, "runtermtwo",    NULL, SPTAG(7), 0, 1, -1},
-    {NULL, "runtermthree",  NULL, SPTAG(8), 0, 1, -1},
+    {NULL, "spterm",  NULL, SPTAG(0), 0, 1, -1},
+    {NULL, "ncmpcpp", NULL, SPTAG(1), 0, 1, -1},
+    {NULL, "mutt",    NULL, SPTAG(2), 0, 1, -1},
+    {NULL, "htop",    NULL, SPTAG(3), 0, 1, -1},
+    {NULL, "weechat", NULL, SPTAG(4), 0, 1, -1},
+    {NULL, "ranger",  NULL, SPTAG(5), 0, 1, -1},
 };
 
 /* layout(s) */
@@ -222,16 +214,12 @@ static Key keys[] = {
     {MODKEY | ShiftMask, XK_p, spawn, SHCMD("systemctl suspend")},
 
     // scratchpads
-    {MODKEY, XK_grave, togglescratch, {.ui = 0}},
-    {MODKEY | ShiftMask, XK_n, togglescratch, {.ui = 1}},
-    {MODKEY | ShiftMask, XK_m, togglescratch, {.ui = 2}},
-    {MODKEY | ShiftMask, XK_b, togglescratch, {.ui = 3}},
-    {MODKEY | ShiftMask, XK_c, togglescratch, {.ui = 4}},
-    {MODKEY, XK_r, togglescratch, {.ui = 5}},
-    // Runtime scratchpads
-    {MODKEY | ShiftMask | ControlMask | Mod1Mask, XK_1, togglescratch, {.ui = 6}},
-    {MODKEY | ShiftMask | ControlMask | Mod1Mask, XK_2, togglescratch, {.ui = 7}},
-    {MODKEY | ShiftMask | ControlMask | Mod1Mask, XK_3, togglescratch, {.ui = 8}},
+    {MODKEY,                XK_grave, togglescratch,    {.ui = 0}}, // terminal
+    {MODKEY | ShiftMask,    XK_n, togglescratch,        {.ui = 1}}, // btop
+    {MODKEY | ShiftMask,    XK_m, togglescratch,        {.ui = 2}}, // weechat
+    {MODKEY | ShiftMask,    XK_b, togglescratch,        {.ui = 3}}, // ncmpcpp
+    {MODKEY | ShiftMask,    XK_c, togglescratch,        {.ui = 4}}, // cmus
+    {MODKEY,                XK_r, togglescratch,        {.ui = 5}}, // ranger
 
     // toggle stuff
     {MODKEY, XK_b, togglebar, {0}},
