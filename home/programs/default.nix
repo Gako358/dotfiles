@@ -32,6 +32,7 @@ in [
   ./browser/firefox.nix
   ./browser/slack.nix
   ./browser/teams.nix
+  ./config/ranger.nix
   ./neofetch
   ./rofi
   ./citrix.nix
