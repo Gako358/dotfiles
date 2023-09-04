@@ -112,6 +112,7 @@ static const Rule rules[] = {
 
     // Chromium Apps
     {NULL, "discord.com__channels_@me",                     NULL, 1 << 6, 0, 0,  1},
+    {NULL, "teams.live.com",                                NULL, 1 << 4, 0, 0,  1},
     {NULL, "app.slack.com__client_T04MZPW21RA_C04MUBWKREZ", NULL, 1 << 6, 0, 0,  2},
     // Microsoft Edge
     {"Microsoft-edge-dev",                                  NULL, NULL, 1, 0, 0,  1},
