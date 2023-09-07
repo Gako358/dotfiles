@@ -12,6 +12,12 @@ in {
     services.xserver = {
       enable = true;
       libinput.enable = true;
+      serverFlagsSection = ''
+        Option  "StandbyTime" "0"
+        Option  "SuspendTime" "0"
+        Option  "OffTime" "0"
+        Option  "BlankTime" "0"
+      '';
       layout = "us";
       xkbVariant = "";
       windowManager.dwm = {
