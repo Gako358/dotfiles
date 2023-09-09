@@ -5,6 +5,8 @@ let
     };
   };
 in [
+  ./polybar
+  ./screenlocker
   ./background.nix
   ./dunst.nix
   ./picom.nix

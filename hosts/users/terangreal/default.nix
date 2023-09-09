@@ -9,7 +9,7 @@
 
   networking.hostName = "terangreal";
   # Set desktop environment and video drivers
-  desktop.environment = "dwm";
+  desktop.environment = "xmonad";
   users.users = {
     merrinx = {
       isNormalUser = true;

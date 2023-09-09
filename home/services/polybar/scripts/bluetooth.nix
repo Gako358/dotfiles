@@ -1,8 +1,6 @@
-{ pkgs, ...}:
-
-let
-  bctl  = "/run/current-system/sw/bin/bluetoothctl";
-  sctl  = "/run/current-system/sw/bin/systemctl";
+{pkgs, ...}: let
+  bctl = "/run/current-system/sw/bin/bluetoothctl";
+  sctl = "/run/current-system/sw/bin/systemctl";
 in
   pkgs.writeShellScriptBin "bluetooth-ctl" ''
     bluetooth_print() {

@@ -1,9 +1,9 @@
-{ font0 ? 16, font1 ? 18, font2 ? 40, font3 ? 28, font4 ? 7, font5 ? 16 }:
+{ font0 ? 19, font1 ? 25, font2 ? 55, font3 ? 37, font4 ? 11, font5 ? 19 }:
 
 let
   bar = ''
     [bar/main]
-    monitor = ''${env:MONITOR:eDP}
+    monitor = ''${env:MONITOR:DisplayPort-2}
     width = 100%
     height = 48
     radius = 6.0
@@ -33,7 +33,7 @@ let
     ; Text Fonts
     font-0 = Iosevka Nerd Font:style=Medium:size=${toString font0};3
     ; Icons Fonts
-    font-1 = icomoon\-feather:style=Medium:size=${toString font1};3
+    font-1 = icomoon-feather:style=Medium:size=${toString font1};3
     ; Powerline Glyphs
     font-2 = Iosevka Nerd Font:style=Medium:size=${toString font2};3
     ; Larger font size for bar fill icons

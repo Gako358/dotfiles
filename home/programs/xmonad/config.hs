@@ -215,11 +215,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
     , key "Next"          (0, xF86XK_AudioNext              ) $ spawn $ playerctl "next"
     ] ^++^
   keySet "Launchers"
-    [ key "Terminal"      (modm .|. shiftMask  , xK_Return  ) $ spawn (XMonad.terminal conf)
+    [ key "Terminal"      (modm                , xK_Return  ) $ spawn (XMonad.terminal conf)
     , key "Apps (Rofi)"   (modm                , xK_p       ) $ spawn appLauncher
     , key "Calc (Rofi)"   (modm .|. shiftMask  , xK_c       ) $ spawn calcLauncher
     , key "Emojis (Rofi)" (modm .|. shiftMask  , xK_m       ) $ spawn emojiPicker
-    , key "Lock screen"   (modm .|. controlMask, xK_l       ) $ spawn screenLocker
+    , key "Lock screen"   (modm .|. shiftMask  , xK_l       ) $ spawn screenLocker
     ] ^++^
   keySet "Layouts"
     [ key "Next"          (modm              , xK_space     ) $ sendMessage NextLayout
@@ -234,10 +234,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
     ] ^++^
   keySet "Scratchpads"
     [ key "Audacious"       (modm .|. controlMask,  xK_a    ) $ runScratchpadApp audacious
-    , key "bottom"          (modm .|. controlMask,  xK_y    ) $ runScratchpadApp btm
-    , key "Files"           (modm .|. controlMask,  xK_f    ) $ runScratchpadApp nautilus
-    , key "Screen recorder" (modm .|. controlMask,  xK_r    ) $ runScratchpadApp scr
-    , key "Spotify"         (modm .|. controlMask,  xK_s    ) $ runScratchpadApp spotify
+    , key "btop"            (modm .|. controlMask,  xK_y    ) $ runScratchpadApp btm
+    , key "ncspot"          (modm .|. controlMask,  xK_s    ) $ runScratchpadApp ncspot
+    , key "Files"           (modm .|. controlMask,  xK_f    ) $ runScratchpadApp pcmanfm
+    , key "Ranger"          (modm .|. controlMask,  xK_r    ) $ runScratchpadApp ranger
+    , key "Terminal"        (modm,                  xK_grave) $ runScratchpadApp spterm
     ] ^++^
   keySet "Screens" switchScreen ^++^
   keySet "System"
@@ -249,13 +250,13 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
     , key "Disable CapsLock"       (modm             , xK_F9 ) $ spawn "setxkbmap -option ctrl:nocaps"
     ] ^++^
   keySet "Windows"
-    [ key "Close focused"   (modm              , xK_BackSpace) kill
-    , key "Close all in ws" (modm .|. shiftMask, xK_BackSpace) killAll
+    [ key "Close focused"   (modm              , xK_q) kill
+    , key "Close all in ws" (modm              , xK_BackSpace) killAll
     , key "Refresh size"    (modm              , xK_n        ) refresh
     , key "Focus next"      (modm              , xK_j        ) $ windows W.focusDown
     , key "Focus previous"  (modm              , xK_k        ) $ windows W.focusUp
     , key "Focus master"    (modm              , xK_m        ) $ windows W.focusMaster
-    , key "Swap master"     (modm              , xK_Return   ) $ windows W.swapMaster
+    , key "Swap master"     (modm .|. shiftMask, xK_Return   ) $ windows W.swapMaster
     , key "Swap next"       (modm .|. shiftMask, xK_j        ) $ windows W.swapDown
     , key "Swap previous"   (modm .|. shiftMask, xK_k        ) $ windows W.swapUp
     , key "Shrink master"   (modm              , xK_h        ) $ sendMessage Shrink
@@ -339,7 +340,6 @@ myLayout =
     . comLayout
     . devLayout
     . webLayout
-    . demoLayout
     . wrkLayout $ (tiled ||| Mirror tiled ||| column3 ||| full)
    where
      -- default tiling algorithm partitions the screen into two panes
@@ -364,9 +364,8 @@ myLayout =
      -- Per workspace layout
      comLayout = onWorkspace comWs (full ||| tiled)
      devLayout = onWorkspace devWs (column3 ||| full)
-     webLayout = onWorkspace webWs (tiled ||| full)
-     wrkLayout = onWorkspace wrkWs (tiled ||| full)
-     demoLayout = onWorkspace demoWs (grid' ||| full)
+     webLayout = onWorkspace webWs (full ||| tiled)
+     wrkLayout = onWorkspace wrkWs (full ||| tiled)
 
      -- Fullscreen
      fullScreenToggle = mkToggle (single NBFULL)
@@ -399,12 +398,17 @@ data App
   deriving Show
 
 audacious = ClassApp "Audacious"            "audacious"
-btm       = TitleApp "btm"                  "alacritty -t btm -e btm --color gruvbox --default_widget_type proc"
+btm       = TitleApp "btop"                 "alacritty -t btm -e btm --color gruvbox --default_widget_type proc"
+btop      = TitleApp "btop"                 "alacritty -t btop -e btop"
+ncspot    = TitleApp "ncspot"               "alacritty -t ncspot -e ncspot"
+ranger    = TitleApp "ranger"               "alacritty -t ranger -e ranger"
+spterm    = TitleApp "spterm"               "alacritty -t spterm"
 calendar  = ClassApp "Orage"                "orage"
 eog       = NameApp  "eog"                  "eog"
 evince    = ClassApp "Evince"               "evince"
 gimp      = ClassApp "Gimp"                 "gimp"
 nautilus  = ClassApp "Org.gnome.Nautilus"   "nautilus"
+pcmanfm   = ClassApp "Pcmanfm"              "pcmanfm"
 office    = ClassApp "libreoffice-draw"     "libreoffice-draw"
 pavuctrl  = ClassApp "Pavucontrol"          "pavucontrol"
 scr       = ClassApp "SimpleScreenRecorder" "simplescreenrecorder"
@@ -431,10 +435,18 @@ myManageHook = manageApps <+> manageSpawn <+> manageScratchpads
     , match [ audacious
             , eog
             , nautilus
+            , pcmanfm
             , pavuctrl
+            , ncspot
             , scr
             ]                             -?> doCenterFloat
-    , match [ btm, evince, spotify, vlc ] -?> doFullFloat
+    , match [ btm
+            , btop
+            , ranger
+            , spterm
+            , spotify
+            , vlc
+            ]                             -?> doFullFloat
     , resource =? "desktop_window"        -?> doIgnore
     , resource =? "kdesktop"              -?> doIgnore
     , anyOf [ isBrowserDialog
@@ -463,22 +475,28 @@ scratchpadApp app = NS (getAppName app) (getAppCommand app) (isInstance app) def
 
 runScratchpadApp = namedScratchpadAction scratchpads . getAppName
 
-scratchpads = scratchpadApp <$> [ audacious, btm, nautilus, scr, spotify ]
+scratchpads = scratchpadApp <$> [ audacious, btop, pcmanfm, scr, ncspot, spterm, ranger ]
 
 ------------------------------------------------------------------------
 -- Workspaces
 --
+-- webWs = '\62057'
+-- ossWs = '\61715'
+-- devWs = '\61564'
+-- comWs = '\61888'
+-- wrkWs = '\61818'
+-- sxmWs = '\61664'
+-- fbkWs = '\61848'
 webWs = "web"
-ossWs = "oss"
+ossWs = "git"
 devWs = "dev"
 comWs = "com"
 wrkWs = "wrk"
 sxmWs = "sxm"
 fbkWs = "fbk"
-demoWs = "demo"
 
 myWS :: [WorkspaceId]
-myWS = [webWs, ossWs, sxmWs, comWs, wrkWs, fbkWs, devWs, demoWs]
+myWS = [webWs, ossWs, devWs, comWs, wrkWs, sxmWs, fbkWs]
 
 ------------------------------------------------------------------------
 -- Dynamic Projects
@@ -490,40 +508,23 @@ projects =
             , projectStartHook = Just $ spawn "firefox -P 'default'"
             }
   , Project { projectName      = ossWs
-            , projectDirectory = "~/workspace/nix-config"
-            , projectStartHook = Just $ do spawn (terminalWithCommand "neofetch")
-                                           spawn (terminalWithCommand "duf")
+            , projectDirectory = "~/Sources/dotfiles"
+            , projectStartHook = Just $ do spawn (terminalWithCommand "duf")
                                            spawn (terminalWithCommand "nitch")
+                                           spawn (terminalWithCommand "neofetch")
             }
-  , Project { projectName      = sxmWs
-            , projectDirectory = "~/workspace/sxm"
-            , projectStartHook = Just . replicateM_ 2 $ spawn myTerminal
-            }
-  , Project { projectName      = comWs
-            , projectDirectory = "~/"
-            , projectStartHook = Just $ do spawn "telegram-desktop"
-                                           spawn "signal-desktop"
+  , Project { projectName      = devWs
+            , projectDirectory = "~/Projects/workspace"
+            , projectStartHook = Just $ do spawn (terminalWithCommand "duf")
+                                           spawn (terminalWithCommand "nitch")
             }
   , Project { projectName      = wrkWs
             , projectDirectory = "~/"
-            , projectStartHook = Just $ spawn "firefox -P 'sxm'"
+            , projectStartHook = Just $ spawn "microsoft-edge-dev -P 'default'"
             }
-  , Project { projectName      = fbkWs
-            , projectDirectory = "~/workspace/neovim-flake"
-            , projectStartHook = Just . replicateM_ 2 $ spawn myTerminal
-            }
-  , Project { projectName      = devWs
-            , projectDirectory = "~/workspace/trading"
-            , projectStartHook = Just . replicateM_ 8 $ spawn myTerminal
-            }
-  , Project { projectName      = demoWs
+  , Project { projectName      = sxmWs
             , projectDirectory = "~/"
-            , projectStartHook = Just $ do spawn (terminalWithCommand "htop")
-                                           spawn (terminalWithCommand "neofetch")
-                                           spawn (terminalWithCommand "btm")
-                                           spawn (terminalWithCommand "duf")
-                                           spawn (terminalWithCommand "nyancat")
-                                           spawn (terminalWithCommand "ranger --selectfile ~/workspace/nix-config/imgs/amd.jpg")
+            , projectStartHook = Just $ spawn "thunderbird -P 'default'"
             }
   ]
 

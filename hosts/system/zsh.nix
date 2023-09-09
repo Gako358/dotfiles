@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   ...
@@ -29,7 +30,7 @@ with lib; let
     rzsh = "source ~/.zshrc";
   };
 in {
-  config = mkIf (cfg.environment == "dwm") {
+  config = mkIf (config.environment == "dwm") {
     environment.systemPackages = with pkgs; [
       spaceship-prompt
       nix-zsh-completions

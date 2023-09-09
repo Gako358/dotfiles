@@ -33,6 +33,8 @@ in [
   ./browser/slack.nix
   ./browser/teams.nix
   ./config/ranger.nix
+  ./shell/fish
+  ./alacritty.nix
   ./neofetch
   ./rofi
   ./citrix.nix
@@ -40,5 +42,6 @@ in [
   ./git.nix
   ./network.nix
   ./weechat.nix
+  ./xmonad
   more
 ]

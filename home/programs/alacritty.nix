@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  fontSize = 11;
+  fontSize = 9;
 in {
   programs.alacritty = {
     enable = true;
@@ -11,7 +11,7 @@ in {
       };
       colors = {
         primary = {
-          background = "#040404";
+          background = "#282828";
           foreground = "#c5c8c6";
         };
       };

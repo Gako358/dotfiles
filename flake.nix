@@ -28,6 +28,15 @@
     st.url = "github:gako358/st";
     slock.url = "github:gako358/slock";
 
+    # Fish
+    fish-bobthefish-theme = {
+      url = "github:gvolpe/theme-bobthefish";
+      flake = false;
+    };
+    fish-keytool-completions = {
+      url = "github:ckipp01/keytool-fish-completions";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -36,6 +45,8 @@
     flake-utils,
     home-manager,
     neovim-flake,
+    fish-bobthefish-theme,
+    fish-keytool-completions,
     scramgit,
     slock,
     nur,
@@ -52,10 +63,15 @@
       "x86_64-darwin"
     ];
   in rec {
+    fishOverlay = f: p: {
+      inherit fish-bobthefish-theme fish-keytool-completions;
+    };
+
     overlays = {
       default = import ./overlay {inherit inputs;};
       dwm = dwm.overlays.default;
       slock = slock.overlays.default;
+      fish = fishOverlay;
     };
     templates = import ./templates;
     devShells = forAllSystems (system: {

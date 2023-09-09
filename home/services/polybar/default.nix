@@ -1,41 +1,44 @@
-{ config, pkgs, specialArgs, ... }:
-
-let
+{
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
   openCalendar = "${pkgs.xfce.orage}/bin/orage";
 
-  hdmiBar = pkgs.callPackage ./bar.nix { };
+  hdmiBar = pkgs.callPackage ./bar.nix {};
 
   laptopBar = pkgs.callPackage ./bar.nix {
-    font0 = 10;
-    font1 = 12;
-    font2 = 24;
-    font3 = 18;
-    font4 = 5;
-    font5 = 10;
+    font0 = 15;
+    font1 = 17;
+    font2 = 28;
+    font3 = 25;
+    font4 = 9;
+    font5 = 15;
   };
 
-  mainBar = if specialArgs.hidpi then hdmiBar else laptopBar;
+  mainBar = hdmiBar;
 
   openGithub = "${pkgs.firefox-beta-bin}/bin/firefox -new-tab https\\://github.com/notifications";
 
   mypolybar = pkgs.polybar.override {
-    alsaSupport   = true;
+    alsaSupport = true;
     githubSupport = true;
-    mpdSupport    = true;
-    pulseSupport  = true;
+    mpdSupport = true;
+    pulseSupport = true;
   };
 
   # theme adapted from: https://github.com/adi1090x/polybar-themes#-polybar-5
-  bars   = builtins.readFile ./bars.ini;
+  bars = builtins.readFile ./bars.ini;
   colors = builtins.readFile ./colors.ini;
-  mods1  = builtins.readFile ./modules.ini;
-  mods2  = builtins.readFile ./user_modules.ini;
+  mods1 = builtins.readFile ./modules.ini;
+  mods2 = builtins.readFile ./user_modules.ini;
 
   bluetoothScript = pkgs.callPackage ./scripts/bluetooth.nix {};
-  klsScript       = pkgs.callPackage ../../scripts/keyboard-layout-switch.nix { inherit pkgs; };
-  monitorScript   = pkgs.callPackage ./scripts/monitor.nix {};
-  mprisScript     = pkgs.callPackage ./scripts/mpris.nix {};
-  networkScript   = pkgs.callPackage ./scripts/network.nix {};
+  klsScript = pkgs.callPackage ../../scripts/keyboard-layout-switch.nix {inherit pkgs;};
+  monitorScript = pkgs.callPackage ./scripts/monitor.nix {};
+  mprisScript = pkgs.callPackage ./scripts/mpris.nix {};
+  networkScript = pkgs.callPackage ./scripts/network.nix {};
 
   bctl = ''
     [module/bctl]
@@ -49,14 +52,6 @@ let
     [module/clickable-date]
     inherit = module/date
     label = %{A1:${openCalendar}:}%time%%{A}
-  '';
-
-  github = ''
-    [module/clickable-github]
-    inherit = module/github
-    token = ''${file:${../../secrets/github-token}}
-    user = gvolpe
-    label = %{A1:${openGithub}:}  %notifications%%{A}
   '';
 
   keyboard = ''
@@ -87,13 +82,12 @@ let
     tail = true
   '';
 
-  customMods = mainBar + bctl + cal + github + keyboard + mpris + xmonad;
-in
-{
+  customMods = mainBar + bctl + cal + keyboard + mpris + xmonad;
+in {
   home.packages = with pkgs; [
-    font-awesome          # awesome fonts
+    font-awesome # awesome fonts
     material-design-icons # fonts with glyphs
-    xfce.orage            # lightweight calendar
+    xfce.orage # lightweight calendar
   ];
 
   services.polybar = {

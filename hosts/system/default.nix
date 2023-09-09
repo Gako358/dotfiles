@@ -18,7 +18,6 @@ with lib; {
     ./daemons
     ./desktop
     ./files.nix
-    ./fonts.nix
     ./lock.nix
     ./nfc.nix
     ./zsh.nix

@@ -32,7 +32,7 @@ in {
           greeters.enso.enable = true;
           background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
         };
-        defaultSession = "none+dwm";
+        defaultSession = "none+xmonad";
       };
 
       # Exlude the following packages from the Xorg server

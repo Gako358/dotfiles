@@ -1,6 +1,4 @@
-{ pkgs, ...}:
-
-let
+{pkgs, ...}: let
   pctl = "${pkgs.playerctl}/bin/playerctl";
 in
   pkgs.writeShellScriptBin "mpris" ''
