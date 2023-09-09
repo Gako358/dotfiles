@@ -37,7 +37,7 @@ in [
   ./alacritty.nix
   ./neofetch
   ./rofi
-  ./citrix.nix
+  # ./citrix.nix
   ./intellij.nix
   ./git.nix
   ./network.nix

@@ -364,7 +364,7 @@ myLayout =
      -- Per workspace layout
      comLayout = onWorkspace comWs (full ||| tiled)
      devLayout = onWorkspace devWs (column3 ||| full)
-     webLayout = onWorkspace webWs (full ||| tiled)
+     webLayout = onWorkspace webWs (tiled ||| tiled)
      wrkLayout = onWorkspace wrkWs (full ||| tiled)
 
      -- Fullscreen

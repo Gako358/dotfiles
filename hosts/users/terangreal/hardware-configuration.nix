@@ -44,12 +44,12 @@
   };
 
   fileSystems."/arch" = {
-    device = "/dev/disk/by-uuid/a2b994e1-5463-4ae6-a472-aa43c5ed595a";
+    device = "/dev/disk/by-uuid/d3baf4c2-7f25-40d5-a5db-f5947fb60b3f";
     fsType = "ext4";
   };
 
   fileSystems."/opt" = {
-    device = "/dev/disk/by-uuid/8edc5eb4-5fff-4a2e-af14-db40a2c7c35e";
+    device = "/dev/disk/by-uuid/11cbf9ca-0ea9-40b2-9d4c-e51be1ddf179";
     fsType = "xfs";
   };
 
