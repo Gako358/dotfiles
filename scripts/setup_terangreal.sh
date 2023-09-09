@@ -5,7 +5,7 @@ DEVICE2_NAME="/dev/nvme1n1"
 DEVICE3_NAME="/dev/sda"
 DEVICE4_NAME="/dev/sdb"
 
-function create_partitions_desktop {
+function create_partitions {
   # Create partitions for DEVICE1_NAME
   parted --script -a optimal "${DEVICE1_NAME}" mklabel gpt
   parted --script -a optimal "${DEVICE1_NAME}" mkpart efi 0% 512MiB
@@ -32,7 +32,7 @@ function create_partitions_desktop {
   lsblk
 }
 
-function setup_desktop {
+function mount_partitions {
   # Format Partitions
   mkfs.fat -F32 -n EFI "${DEVICE1_NAME}p1"
   mkswap -L SWAP "${DEVICE1_NAME}p2"
@@ -44,8 +44,12 @@ function setup_desktop {
   echo "Partitions formatted"
 
   # Mount partitions
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=root "${DEVICE1_NAME}p3" /mnt
-  btrfs subvolume create /mnt/{root,home,tmp}
+  mount "${DEVICE1_NAME}p3" /mnt
+
+  btrfs subvolume create /mnt/root
+  btrfs subvolume create /mnt/home
+  btrfs subvolume create /mnt/tmp
+
   umount /mnt
   mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=root "${DEVICE1_NAME}p3" /mnt
 
@@ -64,5 +68,5 @@ function setup_desktop {
   echo "Run: nixos-install --flake .#terangreal"
 }
 
-create_partitions_desktop
-setup_desktop
+create_partitions
+mount_partitions
