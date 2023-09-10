@@ -214,6 +214,8 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
     , key "Stop"          (0, xF86XK_AudioStop              ) $ spawn $ playerctl "stop"
     , key "Previous"      (0, xF86XK_AudioPrev              ) $ spawn $ playerctl "previous"
     , key "Next"          (0, xF86XK_AudioNext              ) $ spawn $ playerctl "next"
+    , key "Brightness -"  (0, xF86XK_MonBrightnessDown      ) $ spawn "xbacklight -dec 10"
+    , key "Brightness +"  (0, xF86XK_MonBrightnessUp        ) $ spawn "xbacklight -inc 10"
     ] ^++^
   keySet "Launchers"
     [ key "Terminal"      (modm                , xK_Return  ) $ spawn (XMonad.terminal conf)
@@ -233,13 +235,17 @@ myKeys conf@XConfig {XMonad.modMask = modm} =
   keySet "Projects"
     [ key "Switch prompt" (modm              , xK_o         ) $ switchProjectPrompt projectsTheme
     ] ^++^
+  keySet "Languages"
+    [ key "Norwegian"     (modm .|. controlMask .|. shiftMask, xK_n) $ spawn "setxkbmap no"
+    , key "English"       (modm .|. controlMask .|. shiftMask, xK_u) $ spawn "setxkbmap us"
+    ] ^++^
   keySet "Scratchpads"
-    [ key "Audacious"       (modm .|. controlMask,  xK_a    ) $ runScratchpadApp audacious
-    , key "btop"            (modm .|. controlMask,  xK_y    ) $ runScratchpadApp btm
+    [ key "bottom"          (modm .|. controlMask,  xK_y    ) $ runScratchpadApp btm
     , key "ncspot"          (modm .|. controlMask,  xK_s    ) $ runScratchpadApp ncspot
     , key "Files"           (modm .|. controlMask,  xK_f    ) $ runScratchpadApp pcmanfm
     , key "Ranger"          (modm .|. controlMask,  xK_r    ) $ runScratchpadApp ranger
     , key "Terminal"        (modm,                  xK_grave) $ runScratchpadApp spterm
+    , key "Weechat"         (modm .|. controlMask,  xK_w    ) $ runScratchpadApp weechat
     ] ^++^
   keySet "Screens" switchScreen ^++^
   keySet "System"
@@ -345,7 +351,7 @@ myLayout =
    where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = gapSpaced 10 $ Tall nmaster delta ratio
-     full    = gapSpaced 5 Full
+     full    = gapSpaced 5 $ Full
      column3 = gapSpaced 10 $ ThreeColMid 1 (3/100) (1/2)
      grid'   = gapSpaced 10 $ Grid
 
@@ -398,22 +404,16 @@ data App
   | NameApp AppName AppCommand
   deriving Show
 
-audacious = ClassApp "Audacious"            "audacious"
-btm       = TitleApp "btop"                 "alacritty -t btm -e btm --color gruvbox --default_widget_type proc"
-btop      = TitleApp "btop"                 "alacritty -t btop -e btop"
+btm       = TitleApp "btm"                  "alacritty -t btm -e btm --color gruvbox --default_widget_type proc"
 ncspot    = TitleApp "ncspot"               "alacritty -t ncspot -e ncspot"
 ranger    = TitleApp "ranger"               "alacritty -t ranger -e ranger"
+weechat   = TitleApp "weechat"              "alacritty -t weechat -e weechat"
 spterm    = TitleApp "spterm"               "alacritty -t spterm"
 calendar  = ClassApp "Orage"                "orage"
-eog       = NameApp  "eog"                  "eog"
-evince    = ClassApp "Evince"               "evince"
 gimp      = ClassApp "Gimp"                 "gimp"
-nautilus  = ClassApp "Org.gnome.Nautilus"   "nautilus"
 pcmanfm   = ClassApp "Pcmanfm"              "pcmanfm"
 office    = ClassApp "libreoffice-draw"     "libreoffice-draw"
-pavuctrl  = ClassApp "Pavucontrol"          "pavucontrol"
 scr       = ClassApp "SimpleScreenRecorder" "simplescreenrecorder"
-spotify   = ClassApp "Spotify"              "spotify"
 vlc       = ClassApp "Vlc"                  "vlc"
 
 myManageHook = manageApps <+> manageSpawn <+> manageScratchpads
@@ -435,22 +435,16 @@ myManageHook = manageApps <+> manageSpawn <+> manageScratchpads
   manageApps = composeOne
     [ isInstance calendar                 -?> doCalendarFloat
     , match [ office ]                    -?> doFloat
-    , match [ audacious
-            , eog
-            , nautilus
+    , match [ gimp
             , pcmanfm
-            , pavuctrl
-            , gimp
             , scr
             ]                             -?> doCenterFloat
-    , match [ btm
-            , spotify
-            , vlc
-            ]                             -?> doFullFloat
+    , match [ vlc ]                       -?> doFullFloat
     , match [ ncspot
             , ranger
             ]                             -?> doScratchFloat
-    , match [ btop
+    , match [ btm
+            , weechat
             , spterm
             ]                             -?> doTerminalFloat
     , resource =? "desktop_window"        -?> doIgnore
@@ -481,28 +475,24 @@ scratchpadApp app = NS (getAppName app) (getAppCommand app) (isInstance app) def
 
 runScratchpadApp = namedScratchpadAction scratchpads . getAppName
 
-scratchpads = scratchpadApp <$> [ audacious, btop, pcmanfm, scr, ncspot, spterm, ranger ]
+scratchpads = scratchpadApp <$> [ btm, pcmanfm, scr, ncspot, spterm, ranger, weechat ]
 
 ------------------------------------------------------------------------
 -- Workspaces
 --
--- webWs = '\62057'
--- ossWs = '\61715'
--- devWs = '\61564'
--- comWs = '\61888'
--- wrkWs = '\61818'
--- sxmWs = '\61664'
--- fbkWs = '\61848'
 webWs = "web"
-ossWs = "git"
-devWs = "dev"
-comWs = "com"
+dotWs = "dot"
 wrkWs = "wrk"
-sxmWs = "sxm"
-fbkWs = "fbk"
+devWs = "dev"
+gitWs = "git"
+comWs = "com"
+pstWs = "pst"
+mscWs = "msc"
+chtWs = "cht"
+
 
 myWS :: [WorkspaceId]
-myWS = [webWs, ossWs, devWs, comWs, wrkWs, sxmWs, fbkWs]
+myWS = [webWs, dotWs, wrkWs, devWs, gitWs, comWs, pstWs, mscWs, chtWs]
 
 ------------------------------------------------------------------------
 -- Dynamic Projects
@@ -513,22 +503,20 @@ projects =
             , projectDirectory = "~/"
             , projectStartHook = Just $ spawn "firefox -P 'default'"
             }
-  , Project { projectName      = ossWs
+  , Project { projectName      = dotWs
             , projectDirectory = "~/Sources/dotfiles"
-            , projectStartHook = Just $ do spawn (terminalWithCommand "duf")
-                                           spawn (terminalWithCommand "nitch")
-                                           spawn (terminalWithCommand "neofetch")
-            }
-  , Project { projectName      = devWs
-            , projectDirectory = "~/Projects/workspace"
             , projectStartHook = Just $ do spawn (terminalWithCommand "duf")
                                            spawn (terminalWithCommand "nitch")
             }
   , Project { projectName      = wrkWs
             , projectDirectory = "~/"
-            , projectStartHook = Just $ spawn "microsoft-edge-dev -P 'default'"
+            , projectStartHook = Just $ spawn "microsoft-edge"
             }
-  , Project { projectName      = sxmWs
+  , Project { projectName      = devWs
+            , projectDirectory = "~/Projects"
+            , projectStartHook = Just $ do spawn (terminalWithCommand "nitch")
+            }
+  , Project { projectName      = pstWs
             , projectDirectory = "~/"
             , projectStartHook = Just $ spawn "thunderbird -P 'default'"
             }

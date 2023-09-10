@@ -8,7 +8,7 @@
     acpi                 # battery info
     arandr               # screen layout manager
     asciinema            # record the terminal
-    btop                 # alternative to htop & ytop
+    bottom               # alternative to htop & ytop
     cacert               # ca certificates
     cowsay               # cowsay fortune teller with random images
     dbeaver              # database manager
@@ -23,6 +23,7 @@
     gimp                 # gnu image manipulation program
     glow                 # terminal markdown viewer
     hyperfine            # command-line benchmarking tool
+    jump                 # fast directory navigation
     killall              # kill processes by name
     lazygit              # terminal git ui
     libsecret            # secret management

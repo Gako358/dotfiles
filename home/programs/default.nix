@@ -32,16 +32,15 @@ in [
   ./browser/firefox.nix
   ./browser/slack.nix
   ./browser/teams.nix
-  ./config/ranger.nix
+  ./config
   ./shell/fish
-  ./alacritty.nix
   ./neofetch
   ./rofi
-  # ./citrix.nix
+  ./alacritty.nix
+  ./citrix.nix
   ./intellij.nix
   ./git.nix
   ./network.nix
   ./weechat.nix
-  ./xmonad
   more
 ]

@@ -1,14 +1,14 @@
 {
-  font0 ? 19,
-  font1 ? 25,
-  font2 ? 55,
-  font3 ? 37,
-  font4 ? 15,
-  font5 ? 19,
+  font0 ? 15,
+  font1 ? 19,
+  font2 ? 37,
+  font3 ? 28,
+  font4 ? 9,
+  font5 ? 15,
 }: let
-  bar = ''
-    [bar/main]
-    monitor = ''${env:MONITOR:eDP1}
+  left = ''
+    [bar/DP1]
+    monitor = DP1-3
     width = 100%
     height = 48
     radius = 6.0
@@ -50,27 +50,21 @@
     ;font-5 = "MaterialIcons:size=46;0"
     ;font-6 = Font Awesome 6 Free:style=Solid:pixelsize=28;3
     ;font-5 = Unifont:size=64:antialias=false;1
-  '';
 
-  top = ''
-    [bar/top]
-    inherit = bar/main
-
-    tray-position = center
+    tray-position = none
     modules-left = right-end-top nixos xmonad left-end-bottom right-end-top left-end-top
-    modules-right = left-end-top clickable-keyboard clickable-github temperature clickable-date battery
     enable-ipc = true
   '';
 
-  bottom = ''
-    [bar/bottom]
-    inherit = bar/main
-    bottom = true
+  right = ''
+    [bar/DP2]
+    monitor = DP1-1
+    inherit = bar/DP1
 
     tray-position = none
-    modules-left = right-end-bottom mpris left-end-top cpu memory filesystem
-    modules-right = left-end-bottom wired-network wireless-network pulseaudio left-end-bottom powermenu
+    modules-left = right-end-top nixos xmonad left-end-bottom right-end-top left-end-top
+    modules-right = left-end-bottom clickable-date
     enable-ipc = true
   '';
 in
-  bar + top + bottom
+  left + right

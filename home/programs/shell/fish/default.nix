@@ -34,6 +34,7 @@ in {
     plugins = [custom.theme fenv];
     interactiveShellInit = ''
       eval (direnv hook fish)
+      jump shell fish | source
       any-nix-shell fish --info-right | source
     '';
     shellAliases = {

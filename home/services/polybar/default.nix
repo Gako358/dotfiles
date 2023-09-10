@@ -7,6 +7,7 @@
   openCalendar = "${pkgs.xfce.orage}/bin/orage";
 
   hdmiBar = pkgs.callPackage ./bar.nix {};
+  workBar = pkgs.callPackage ./work.nix {};
 
   laptopBar = pkgs.callPackage ./bar.nix {
     font0 = 10;
@@ -17,9 +18,10 @@
     font5 = 10;
   };
 
-  mainBar = if specialArgs.hidpi then hdmiBar else laptopBar;
-
-  openGithub = "${pkgs.firefox-beta-bin}/bin/firefox -new-tab https\\://github.com/notifications";
+  mainBar =
+    if specialArgs.hidpi
+    then hdmiBar
+    else laptopBar;
 
   mypolybar = pkgs.polybar.override {
     alsaSupport = true;
@@ -82,7 +84,7 @@
     tail = true
   '';
 
-  customMods = mainBar + bctl + cal + keyboard + mpris + xmonad;
+  customMods = mainBar + workBar + bctl + cal + keyboard + mpris + xmonad;
 in {
   home.packages = with pkgs; [
     font-awesome # awesome fonts
@@ -99,11 +101,14 @@ in {
     script = ''
       export MONITOR=$(${monitorScript}/bin/monitor)
       echo "Running polybar on $MONITOR"
+
       export ETH_INTERFACE=$(${networkScript}/bin/check-network eth)
       export WIFI_INTERFACE=$(${networkScript}/bin/check-network wifi)
       echo "Network interfaces $ETH_INTERFACE & $WIFI_INTERFACE"
       polybar top 2>${config.xdg.configHome}/polybar/logs/top.log & disown
       polybar bottom 2>${config.xdg.configHome}/polybar/logs/bottom.log & disown
+      polybar DP1 2>${config.xdg.configHome}/polybar/logs/left.log & disown
+      polybar DP2 2>${config.xdg.configHome}/polybar/logs/right.log & disown
     '';
   };
 }

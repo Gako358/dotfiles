@@ -1,0 +1,6 @@
+{
+  imports = [
+    ./ranger.nix
+    ./xmonad
+  ];
+}
