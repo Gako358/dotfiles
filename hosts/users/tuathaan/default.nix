@@ -10,7 +10,7 @@
 
   networking.hostName = "tuathaan";
   # Set desktop environment and video drivers
-  desktop.environment = "dwm";
+  desktop.environment = "xmonad";
   # Override dwm configuration
   environment.systemPackages = with pkgs; [
     (dwm.override {

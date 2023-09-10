@@ -11,6 +11,6 @@ in
     elif [[ $monitors == *"DisplayPort-2"* ]]; then
       echo "DisplayPort-2"
     else
-      echo "eDP"
+      echo "eDP1"
     fi
   ''

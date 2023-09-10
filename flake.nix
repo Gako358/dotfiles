@@ -23,10 +23,6 @@
     neovim-flake.url = "github:gako358/neovim";
     # Scramgit
     scramgit.url = "github:gako358/scram";
-    # Suckless Tools
-    dwm.url = "github:gako358/dwm";
-    st.url = "github:gako358/st";
-    slock.url = "github:gako358/slock";
 
     # Fish
     fish-bobthefish-theme = {
@@ -48,10 +44,7 @@
     fish-bobthefish-theme,
     fish-keytool-completions,
     scramgit,
-    slock,
     nur,
-    dwm,
-    st,
     ...
   } @ inputs: let
     forAllSystems = nixpkgs.lib.genAttrs systems;
@@ -69,8 +62,6 @@
 
     overlays = {
       default = import ./overlay {inherit inputs;};
-      dwm = dwm.overlays.default;
-      slock = slock.overlays.default;
       fish = fishOverlay;
     };
     templates = import ./templates;
@@ -100,7 +91,6 @@
             environment.systemPackages = [
               neovim-flake.defaultPackage.x86_64-linux
               scramgit.defaultPackage.x86_64-linux
-              st.defaultPackage.x86_64-linux
             ];
           })
         ];
@@ -119,7 +109,6 @@
             environment.systemPackages = [
               neovim-flake.defaultPackage.x86_64-linux
               scramgit.defaultPackage.x86_64-linux
-              st.defaultPackage.x86_64-linux
             ];
           })
         ];
@@ -128,7 +117,10 @@
     homeConfigurations = {
       "merrinx@terangreal" = home-manager.lib.homeManagerConfiguration {
         pkgs = legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs;};
+        extraSpecialArgs = {
+          inherit inputs;
+          hidpi = true;
+        };
         modules = [
           ./home/home.nix
           ./home/users/terangreal
@@ -136,7 +128,10 @@
       };
       "merrinx@tuathaan" = home-manager.lib.homeManagerConfiguration {
         pkgs = legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs;};
+        extraSpecialArgs = {
+          inherit inputs;
+          hidpi = false;
+        };
         modules = [
           ./home/home.nix
           ./home/users/tuathaan

@@ -16,7 +16,7 @@
   '';
 in {
   xresources.properties = {
-    "Xft.dpi" = 180;
+    "Xft.dpi" = 150;
     "Xft.autohint" = 0;
     "Xft.hintstyle" = "hintfull";
     "Xft.hinting" = 1;
