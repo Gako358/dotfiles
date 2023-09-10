@@ -49,6 +49,7 @@ import           XMonad.Hooks.ManageHelpers            ( (-?>)
                                                        , isDialog
                                                        , isFullscreen
                                                        , isInProperty
+                                                       , doRectFloat
                                                        )
 import           XMonad.Hooks.UrgencyHook              ( UrgencyHook(..)
                                                        , withUrgencyHook
@@ -423,30 +424,35 @@ myManageHook = manageApps <+> manageSpawn <+> manageScratchpads
   isSplash            = isInProperty "_NET_WM_WINDOW_TYPE" "_NET_WM_WINDOW_TYPE_SPLASH"
   isRole              = stringProperty "WM_WINDOW_ROLE"
   tileBelow           = insertPosition Below Newer
-  doCalendarFloat   = customFloating (W.RationalRect (11 / 15) (1 / 48) (1 / 4) (1 / 8))
-  manageScratchpads = namedScratchpadManageHook scratchpads
+  doCalendarFloat     = customFloating (W.RationalRect (11 / 15) (1 / 48) (1 / 4) (1 / 8))
+  doTerminalFloat     = doRectFloat(W.RationalRect 0.15 0.15 0.7 0.7) -- (1-0.7) / 2
+  doScratchFloat      = doRectFloat(W.RationalRect 0.25 0.25 0.5 0.5) -- (1-0.5) / 2
+  manageScratchpads   = namedScratchpadManageHook scratchpads
   anyOf :: [Query Bool] -> Query Bool
   anyOf = foldl (<||>) (pure False)
   match :: [App] -> Query Bool
   match = anyOf . fmap isInstance
   manageApps = composeOne
     [ isInstance calendar                 -?> doCalendarFloat
-    , match [ gimp, office ]              -?> doFloat
+    , match [ office ]                    -?> doFloat
     , match [ audacious
             , eog
             , nautilus
             , pcmanfm
             , pavuctrl
-            , ncspot
+            , gimp
             , scr
             ]                             -?> doCenterFloat
     , match [ btm
-            , btop
-            , ranger
-            , spterm
             , spotify
             , vlc
             ]                             -?> doFullFloat
+    , match [ ncspot
+            , ranger
+            ]                             -?> doScratchFloat
+    , match [ btop
+            , spterm
+            ]                             -?> doTerminalFloat
     , resource =? "desktop_window"        -?> doIgnore
     , resource =? "kdesktop"              -?> doIgnore
     , anyOf [ isBrowserDialog

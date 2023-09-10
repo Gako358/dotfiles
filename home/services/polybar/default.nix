@@ -9,15 +9,15 @@
   hdmiBar = pkgs.callPackage ./bar.nix {};
 
   laptopBar = pkgs.callPackage ./bar.nix {
-    font0 = 15;
-    font1 = 17;
-    font2 = 28;
-    font3 = 25;
-    font4 = 9;
-    font5 = 15;
+    font0 = 10;
+    font1 = 13;
+    font2 = 25;
+    font3 = 19;
+    font4 = 5;
+    font5 = 10;
   };
 
-  mainBar = hdmiBar;
+  mainBar = if specialArgs.hidpi then hdmiBar else laptopBar;
 
   openGithub = "${pkgs.firefox-beta-bin}/bin/firefox -new-tab https\\://github.com/notifications";
 
@@ -35,7 +35,7 @@
   mods2 = builtins.readFile ./user_modules.ini;
 
   bluetoothScript = pkgs.callPackage ./scripts/bluetooth.nix {};
-  klsScript = pkgs.callPackage ../../scripts/keyboard-layout-switch.nix {inherit pkgs;};
+  klsScript = pkgs.callPackage ./scripts/keyboard-layout-switch.nix {inherit pkgs;};
   monitorScript = pkgs.callPackage ./scripts/monitor.nix {};
   mprisScript = pkgs.callPackage ./scripts/mpris.nix {};
   networkScript = pkgs.callPackage ./scripts/network.nix {};
