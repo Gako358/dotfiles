@@ -33,10 +33,6 @@ in [
   ./browser/slack.nix
   ./browser/teams.nix
   ./config
-  ./shell/fish
-  ./neofetch
-  ./rofi
-  ./alacritty.nix
   ./citrix.nix
   ./intellij.nix
   ./git.nix

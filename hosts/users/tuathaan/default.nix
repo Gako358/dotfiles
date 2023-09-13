@@ -10,8 +10,11 @@
 
   networking.hostName = "tuathaan";
   # Set desktop environment and video drivers
-  desktop.environment = "xmonad";
+  desktop.environment = "dwm";
   environment.systemPackages = with pkgs; [
+     (dwm.override {
+      conf = ./patches/laptop.def.h;
+    })
     xorg.xbacklight
   ];
 

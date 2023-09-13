@@ -17,9 +17,9 @@ with lib; {
   imports = [
     ./daemons
     ./desktop
+    ./fonts
     ./files.nix
     ./lock.nix
     ./nfc.nix
-    ./zsh.nix
   ];
 }

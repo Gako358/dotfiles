@@ -33,7 +33,6 @@
     nix-index            # locate packages containing certain nixpkgs
     nix-output-monitor   # nom: monitor nix commands
     nyancat              # the famous rainbow cat!
-    multilockscreen      # fast lockscreen based on i3lock
     ouch                 # painless compression and decompression for your terminal
     pavucontrol          # pulseaudio volume control
     paprefs              # pulseaudio preferences

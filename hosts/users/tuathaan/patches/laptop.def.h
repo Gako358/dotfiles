@@ -73,7 +73,7 @@ typedef struct {
 const char *spcmd1[] = {"st", "-n", "spterm",  "-g", "172x46",                      NULL};
 const char *spcmd2[] = {"st", "-n", "ncmpcpp", "-g", "128x37", "-e", "ncspot",      NULL};
 const char *spcmd3[] = {"st", "-n", "mutt",    "-g", "172x46", "-e", "neomutt",     NULL};
-const char *spcmd4[] = {"st", "-n", "htop",    "-g", "144x46", "-e", "btop",        NULL};
+const char *spcmd4[] = {"st", "-n", "htop",    "-g", "144x46", "-e", "btm",         NULL};
 const char *spcmd5[] = {"st", "-n", "weechat", "-g", "172x46", "-e", "weechat",     NULL};
 const char *spcmd6[] = {"st", "-n", "ranger",  "-g", "172x46", "-e", "ranger",      NULL};
 static Sp scratchpads[] = {
@@ -115,7 +115,7 @@ static const Rule rules[] = {
     {NULL, "teams.live.com",                                NULL, 1 << 4, 0, 0,  1},
     {NULL, "app.slack.com__client_T04MZPW21RA_C04MUBWKREZ", NULL, 1 << 6, 0, 0,  2},
     // Microsoft Edge
-    {"Microsoft-edge-dev",                                  NULL, NULL, 1, 0, 0,  1},
+    {"Microsoft-edge",                                      NULL, NULL, 1, 0, 0,  1},
     // Citrix
     {"Remote Desktop Connection",                           NULL, NULL, 1 << 4, 0, 1,  2},
 
