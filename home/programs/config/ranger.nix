@@ -1,8 +1,4 @@
 {
-  pkgs,
-  config,
-  ...
-}: {
   xdg.configFile.rangerConfig = {
     target = "ranger/rc.conf";
     text = ''

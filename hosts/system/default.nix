@@ -18,8 +18,6 @@ with lib; {
     ./daemons
     ./desktop
     ./fonts
-    ./files.nix
-    ./lock.nix
     ./nfc.nix
   ];
 }

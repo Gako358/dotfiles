@@ -1,8 +1,7 @@
 {
   imports = [
-    ./eww
     ./fish
-    ./leftwm
+    #./gnome.nix
     ./neofetch
     ./rofi
     ./ranger.nix

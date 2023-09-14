@@ -59,7 +59,7 @@ in {
       shell.program = "${pkgs.fish}/bin/fish";
       window = {
         decorations = "full";
-        opacity = 0.85;
+        opacity = 0.90;
         padding = {
           x = 5;
           y = 5;
