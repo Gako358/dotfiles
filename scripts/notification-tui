@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+notify() {
+  ARGS=0
+  while read i; do
+    if [ $ARGS -eq 0 ]; then
+      SOURCE="$i"
+      ARGS=1
+    elif [ $ARGS -eq 1 ]; then
+      SUMMARY="$i"
+      ARGS=2
+    elif [ $ARGS -eq 2 ]; then
+      BODY="$i"
+      ARGS=0
+      echo "$SOURCE Notification" | mimic -voice slt_hts&
+      echo "$SOURCE
+$SUMMARY
+$BODY
+---"
+      # echo "ToggleScratchPad Notifications" > $XDG_RUNTIME_DIR/leftwm/command-0.pipe
+      # espeak "${source}. ${summary}. ${body}" &> /dev/null&
+      # echo "${SOURCE}. ${SUMMARY}" | mimic -voice slt_hts
+    fi
+  done
+}
+systemctl --user stop xfce4-notifyd
+tiramisu -s -o '#source
+#summary
+#body' | notify

@@ -33,13 +33,9 @@
   i18n.supportedLocales = [
     "en_US.UTF-8/UTF-8"
   ];
-  users.defaultUserShell = pkgs.fish;
-  programs = {
-    # Add dconf settings
-    dconf.enable = true;
-    # Set fish as the default shell
-    fish.enable = true;
-  };
+
+  # Add dconf settings
+  programs.dconf.enable = true;
   services = {
     blueman.enable = true;
     dbus.enable = true;

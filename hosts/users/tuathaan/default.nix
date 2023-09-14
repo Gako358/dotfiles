@@ -10,7 +10,7 @@
 
   networking.hostName = "tuathaan";
   # Set desktop environment and video drivers
-  desktop.environment = "dwm";
+  desktop.environment = "leftwm";
   environment.systemPackages = with pkgs; [
      (dwm.override {
       conf = ./patches/laptop.def.h;

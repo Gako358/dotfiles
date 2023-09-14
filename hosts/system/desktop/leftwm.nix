@@ -8,7 +8,7 @@ with lib;
 with builtins; let
   cfg = config.desktop;
 in {
-  config = mkIf (cfg.environment == "xmonad") {
+  config = mkIf (cfg.environment == "leftwm") {
     services.xserver = {
       enable = true;
       layout = "us";
@@ -22,17 +22,14 @@ in {
         Option "OffTime"     "0"
       '';
       xkbVariant = "";
-      windowManager.xmonad = {
-        enable = true;
-        enableContribAndExtras = true;
-      };
+      windowManager.leftwm.enable = true;
       displayManager = {
         lightdm = {
           enable = true;
           greeters.enso.enable = true;
           background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
         };
-        defaultSession = "none+xmonad";
+        defaultSession = "none+leftwm";
       };
 
       # Exlude the following packages from the Xorg server
