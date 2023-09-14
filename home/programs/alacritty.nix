@@ -5,8 +5,8 @@
 }: let
   fontSize =
     if specialArgs.hidpi
-    then 9
-    else 7;
+    then 11
+    else 9;
 in {
   programs.alacritty = {
     enable = true;
@@ -58,6 +58,10 @@ in {
       selection.save_to_clipboard = true;
       shell.program = "${pkgs.fish}/bin/fish";
       window = {
+        dimensions = {
+          columns = 145;
+          lines = 73;
+        };
         decorations = "full";
         opacity = 0.90;
         padding = {

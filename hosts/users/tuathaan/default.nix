@@ -5,16 +5,12 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ./battery.nix
   ];
 
   networking.hostName = "tuathaan";
   # Set desktop environment and video drivers
-  desktop.environment = "leftwm";
+  desktop.environment = "gnome";
   environment.systemPackages = with pkgs; [
-     (dwm.override {
-      conf = ./patches/laptop.def.h;
-    })
     xorg.xbacklight
   ];
 

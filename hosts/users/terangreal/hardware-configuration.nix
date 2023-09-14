@@ -43,16 +43,6 @@
     options = ["noatime" "compress=zstd" "ssd"];
   };
 
-  fileSystems."/arch" = {
-    device = "/dev/disk/by-uuid/d3baf4c2-7f25-40d5-a5db-f5947fb60b3f";
-    fsType = "ext4";
-  };
-
-  fileSystems."/opt" = {
-    device = "/dev/disk/by-uuid/11cbf9ca-0ea9-40b2-9d4c-e51be1ddf179";
-    fsType = "xfs";
-  };
-
   fileSystems."/boot/efi" = {
     device = "/dev/nvme0n1p1";
     fsType = "vfat";

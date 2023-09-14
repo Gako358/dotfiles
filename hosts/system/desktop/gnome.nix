@@ -29,7 +29,6 @@
   # Set fish as the default shell
   programs.fish.enable = true;
   # Set default shell to fish global
-  users.defaultUserShell = pkgs.fish;
   # ensure gnome-settings-daemon udev rules are enabled
   services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
   # ensure telepathy is enable

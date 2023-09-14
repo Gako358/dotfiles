@@ -38,6 +38,7 @@ in [
   ./intellij.nix
   ./git.nix
   ./network.nix
+  ./tmux.nix
   ./vscode.nix
   ./weechat.nix
   more

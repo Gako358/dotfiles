@@ -1,7 +1,7 @@
 {
   imports = [
     ./fish
-    #./gnome.nix
+    ./gnome.nix
     ./neofetch
     ./rofi
     ./ranger.nix
