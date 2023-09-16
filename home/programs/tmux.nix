@@ -3,22 +3,33 @@
     enable = true;
     prefix = "C-a"; # set prefix to ctrl + a
     clock24 = true; # 24 hour clock
-    historyLimit = 5000;
+    historyLimit = 100000; # increase history limit
     baseIndex = 1; # start window/pane index at 1
     sensibleOnTop = true; # use tmux-sensible
     disableConfirmationPrompt = true; # i know what i'm doing, kill without prompt
     terminal = "screen-256color";
+    tmuxinator.enable = true;
+    shell = "${pkgs.fish}/bin/fish";
 
     plugins = with pkgs; [
       tmuxPlugins.yank
       tmuxPlugins.resurrect
       {
         plugin = tmuxPlugins.resurrect;
-        extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+        extraConfig = ''
+          set -g @resurrect-capture-pane-contents 'on'
+          resurrect_dir="$HOME/.tmux/resurrect"
+          set -g @resurrect-dir $resurrect_dir
+          set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g" $target | sponge $target'
+        '';
       }
       {
         plugin = tmuxPlugins.continuum;
-        extraConfig = "set -g @continuum-restore 'on'"; # save tmux sessions across reboots
+        extraConfig = "
+          set -g @continuum-restore 'on'
+          set -g @continuum-boot 'on'
+          set -g @continuum-boot-options 'alacritty'
+        "; # save tmux sessions across reboots
       }
     ];
     extraConfig = ''

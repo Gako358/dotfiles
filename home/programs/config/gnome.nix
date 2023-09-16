@@ -29,10 +29,13 @@
         "firefox.desktop"
         "thunderbird.desktop"
         "org.gnome.Nautilus.desktop"
-        "dbeaver.desktop"
         "spotify.desktop"
+        "dbeaver.desktop"
         "code.desktop"
+        "discord.desktop"
         "gimp.desktop"
+        "microsoft-edge.desktop"
+        "slack.desktop"
       ];
     };
     # Dash to panel
