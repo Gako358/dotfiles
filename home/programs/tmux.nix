@@ -18,6 +18,9 @@
         plugin = tmuxPlugins.resurrect;
         extraConfig = ''
           set -g @resurrect-capture-pane-contents 'on'
+          set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-strategy-vim 'session'
+          set -g @resurrect-processes 'ssh vim nvim btm ranger'
           resurrect_dir="$HOME/.tmux/resurrect"
           set -g @resurrect-dir $resurrect_dir
           set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g" $target | sponge $target'

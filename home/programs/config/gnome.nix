@@ -1,14 +1,21 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   home.packages = with pkgs; [
-    gnome.gnome-tweaks
+    gnomeExtensions.battery-indicator-upower
+    gnomeExtensions.caffeine
+    gnomeExtensions.clipboard-indicator
+    gnomeExtensions.dash-to-panel
+    gnomeExtensions.forge
+    gnomeExtensions.just-perfection
     gnomeExtensions.user-themes
     gnomeExtensions.tray-icons-reloaded
     gnomeExtensions.vitals
-    gnomeExtensions.dash-to-panel
     gnomeExtensions.space-bar
-    gnomeExtensions.tiling-assistant
     gnome.dconf-editor
-    gnomeExtensions.caffeine
+    gnomeExtensions.pop-shell
     flat-remix-gnome
   ];
   dconf.settings = {
@@ -17,7 +24,10 @@
       disable-user-extensions = false;
       enabled-extensions = [
         "caffeine@patapon.info"
+        "clipboard-indicator@tudmotu.com"
         "dash-to-panel@jderose9.github.com"
+        "forge@jmmaranan.com"
+        "just-perfection-desktop@just-perfection"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "sound-output-device-chooser@kgshank.net"
         "space-bar@luchrioh"
@@ -38,6 +48,38 @@
         "slack.desktop"
       ];
     };
+
+    "org/gnome/shell/extensions/just-perfection" = {
+      theme = true;
+      activities-button = false;
+      app-menu = true;
+      animation = lib.hm.gvariant.mkUint32 3;
+      clock-menu-position = lib.hm.gvariant.mkUint32 1;
+      clock-menu-position-offset = lib.hm.gvariant.mkUint32 7;
+    };
+
+    "org/gnome/shell/extensions/caffeine" = {
+      enable-fullscreen = true;
+      restore-state = true;
+      show-indicator = true;
+      show-notification = false;
+    };
+
+    "org/gnome/shell/extension/dash-to-panel" = {
+      # Possibly need to set this manually
+      panel-position = ''{"0":"Bottom","1":"Bottom"}'';
+      panel-sizes = ''{"0":55,"1":55}'';
+      panel-element-positions-monitors-sync = true;
+      appicon-margin = lib.hm.gvariant.mkUint32 0;
+      appicon-padding = lib.hm.gvariant.mkUint32 3;
+      dot-position = "TOP";
+      dot-style-focused = "SOLID";
+      dot-style-unfocused = "DOTS";
+      animate-appicon-hover = true;
+      animate-appicon-hover-animation-travel = "{'SIMPLE': 0.14999999999999999, 'RIPPLE': 0.40000000000000002, 'PLANK': 0.0}";
+      isolate-monitors = true;
+    };
+
     # Dash to panel
     # "org/gnome/shell/extensions/dash-to-dock" = {
     #   dock-fixed = true;
@@ -47,10 +89,38 @@
     #   show-show-apps-button = true;
     # };
 
+    "org/gnome/shell/extensions/forge" = {
+      tiling-mode-enabled = true;
+      window-gap-size = lib.hm.gvariant.mkUint32 10;
+      window-gap-size-increment = lib.hm.gvariant.mkUint32 1;
+      window-gap-hidden-on-single = false;
+    };
+
+    "org/gnome/shell/extensions/forge/keybindings" = {
+      # Set active colors manually
+      focus-border-toggle = true;
+      float-always-on-top-enabled = true;
+      window-focus-up = ["<Super>k"];
+      window-focus-down = ["<Super>j"];
+      window-focus-left = ["<Super>h"];
+      window-focus-right = ["<Super>l"];
+      # window-swap-up = ["<Shift><Super>Up"];
+      # window-swap-down = ["<Shift><Super>Down"];
+      # window-swap-left = ["<Shift><Super>Left"];
+      # window-swap-right = ["<Shift><Super>Right"];
+      window-move-up = ["<Shift><Super>k"];
+      window-move-down = ["<Shift><Super>j"];
+      window-move-left = ["<Shift><Super>h"];
+      window-move-right = ["<Shift><Super>l"];
+      window-swap-last-active = ["@as []"];
+      window-toggle-float = ["<Shift><Super>f"];
+    };
+
     # Keybindings
     "org/gnome/settings-daemon/plugins/media-keys" = {
       email = ["<Super>e"];
       www = ["<Super>w"];
+      screensaver = ["<Shift><Super>P"];
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
@@ -94,9 +164,9 @@
       cycle-windows = [];
       cycle-windows-backward = [];
       # Maximize window
-      maximize = ["<Super>Up" "<Super>k"];
+      maximize = ["<Super>Up"];
       # Minimize window
-      minimize = ["<Super>h"];
+      minimize = ["<Super>c"];
       # Move window to workspace 1
       move-to-workspace-1 = ["<Shift><Super>exclam"];
       # Move window to workspace 2
@@ -121,7 +191,7 @@
       # Toggle maximization state
       toggle-maximized = ["<Super>f"];
       # Restore window
-      unmaximize = ["<Super>Down" "<Super>j"];
+      unmaximize = ["<Super>Down"];
     };
     "org/gnome/shell/keybindings" = {
       # Focus the active notification
