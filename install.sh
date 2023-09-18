@@ -22,8 +22,8 @@ if [[ "$flake" == "terangreal" ]]
 then
     # Source your setup script
     source ./scripts/setup_terangreal.sh
-    echo "Copy disk from hardware-configuration.nix"
-    exit 1
+    nixos-install --flake .#$flake
+
 elif [[ "$flake" == "tuathaan" ]]
 then
     # Source your setup script
