@@ -32,7 +32,7 @@
         # xrandr --setprovideroutputsource 2 0 This is after run xrandr --listproviders to identify the provider
         sessionCommands = ''
           ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
-          ${pkgs.xorg.xrandr}/bin/xrandr --output eDP1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP1 --off --output DP1-1 --mode 2560x1440 --pos 4480x0 --rotate normal --output DP1-2 --off --output DP1-3 --mode 2560x1440 --pos 1920x0 --rotate normal --output DP2 --off --output DP3 --off --output DP4 --off --output HDMI1 --off --output VIRTUAL1 --off
+          ${pkgs.xorg.xrandr}/bin/xrandr --output DP-5 --mode 2560x1440 --pos 4480x0 --rotate normal --output DP-7 --mode 2560x1440 --pos 1920x0 --rotate normal --output eDP-1 --primary --mode 1920x1080 --pos 0x360 --rotate normal
         '';
       };
     };
