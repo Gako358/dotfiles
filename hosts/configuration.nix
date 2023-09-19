@@ -8,6 +8,7 @@
   imports = [
     ./system
   ];
+  # NixOS Network Configuration
   networking = {
     networkmanager.enable = true;
     firewall.enable = false;
@@ -16,6 +17,7 @@
       104.199.65.124 ap-gew4.spotify.com
     '';
   };
+  # NixOS enable Flakes
   nix = {
     registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
@@ -23,17 +25,18 @@
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
     };
+    # Weekly garbage collection
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 10d";
     };
   };
+  # Timezone and locale
   time.timeZone = "Europe/Oslo";
   i18n.supportedLocales = [
     "en_US.UTF-8/UTF-8"
   ];
-
   # Add dconf settings
   programs.dconf.enable = true;
   services = {
@@ -42,6 +45,7 @@
     gnome.gnome-keyring = {
       enable = true;
     };
+    # Enable SSH
     openssh = {
       enable = true;
       # Forbid root login through SSH.
@@ -51,8 +55,18 @@
       };
     };
   };
-
+  # Set session variables
+  environment.sessionVariables = {
+    # If cursor is not visible, try to set this to "on".
+    WLR_NO_HARDWARE_CURSORS = "1";
+    # Electron apps use wayland
+    NIXOS_OZONE_WL = "1";
+  };
+  # Electron apps use wayland
+  xdg.portal.enable = true;
+  # Enable hardware support
   hardware = {
+    opengl.enable = true;
     opengl.driSupport = true;
     keyboard.zsa.enable = true;
     bluetooth.enable = true;
@@ -75,6 +89,7 @@
       };
     };
   };
+  # Enable proprietary software
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "23.11";
 }

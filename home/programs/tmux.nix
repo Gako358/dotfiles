@@ -14,25 +14,8 @@
     plugins = with pkgs; [
       tmuxPlugins.yank
       tmuxPlugins.resurrect
-      {
-        plugin = tmuxPlugins.resurrect;
-        extraConfig = ''
-          set -g @resurrect-capture-pane-contents 'on'
-          set -g @resurrect-strategy-nvim 'session'
-          set -g @resurrect-strategy-vim 'session'
-          set -g @resurrect-processes 'ssh vim nvim btm ranger'
-          resurrect_dir="$HOME/.tmux/resurrect"
-          set -g @resurrect-dir $resurrect_dir
-        ''; # set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g" $target | sponge $target'
-      }
-      {
-        plugin = tmuxPlugins.continuum;
-        extraConfig = "
-          set -g @continuum-restore 'on'
-          set -g @continuum-boot 'on'
-          set -g @continuum-boot-options 'alacritty'
-        "; # save tmux sessions across reboots
-      }
+      tmuxPlugins.continuum
+      tmuxPlugins.better-mouse-mode
     ];
     extraConfig = ''
       set -g set-titles on
@@ -41,6 +24,14 @@
       set -g focus-events on
       set -g set-clipboard on
       set -g default-shell ${pkgs.fish}/bin/fish
+
+      set -g @resurrect-strategy-nvim 'session'
+      set -g @resurrect-capture-pane-contents 'on'
+      set -g @continuum-restore 'on'
+
+      resurrect_dir="$HOME/.tmux/resurrect"
+      set -g @resurrect-dir $resurrect_dir
+      set -g @resurrect-hook-post-save-all 'target=$(readlink -f $resurrect_dir/last); sed "s| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g; s|/home/$USER/.nix-profile/bin/||g" $target | sponge $target'
 
       # enable using a mouse
       set -g mouse on

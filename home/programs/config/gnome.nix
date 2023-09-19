@@ -230,6 +230,8 @@
     };
     "org/gnome/desktop/wm/preferences" = {
       workspace-names = ["Main"];
+      "focus-mode" = lib.hm.gvariant.mkValue "mouse";
+      "titlebar-font" = lib.hm.gvariant.mkString "Roboto Bold 11";
     };
   };
 }

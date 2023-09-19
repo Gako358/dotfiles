@@ -3,7 +3,7 @@
     ./fish
     ./gnome.nix
     ./neofetch
-    ./rofi
+    # ./rofi
     ./ranger.nix
   ];
 }
