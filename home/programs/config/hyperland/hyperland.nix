@@ -7,12 +7,9 @@
   idle = "${pkgs.swayidle}/bin/swayidle";
   lock = "${pkgs.swaylock}/bin/swaylock";
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
+
 in {
   wayland.windowManager.hyprland.extraConfig = ''
-    monitor=HDMI-A-1,2560x1440,0x0,1,bitdepth,10
-    monitor=DP-2,2560x1440,2560x0,1,bitdepth,10
-    monitor=,highrr,auto,1
-
     general {
       layout = dwindle
       resize_on_border = true
@@ -23,16 +20,6 @@ in {
       layers_hog_keyboard_focus = true
       disable_splash_rendering = true
       disable_hyprland_logo = true
-    }
-
-    input {
-      kb_layout = us
-      kb_model = pc104
-      follow_mouse = 1
-      touchpad {
-        natural_scroll = yes
-      }
-      sensitivity = 0
     }
 
     binds {
@@ -105,6 +92,9 @@ in {
 
     windowrule = workspace 1, ^(firefox-beta)$
     windowrule = workspace 3, ^(Microsoft-edge)$
+    windowrule = workspace 7, ^(thunderbird)$
+    windowrule = workspace 9, ^(chrome-discord.com__channels_@me-Default)$
+
 
 
     windowrule = float, title:^(ranger)$

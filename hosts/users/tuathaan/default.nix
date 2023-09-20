@@ -9,7 +9,7 @@
 
   networking.hostName = "tuathaan";
   # Set desktop environment and video drivers
-  desktop.environment = "gnome";
+  desktop.environment = "hyperland";
   environment.systemPackages = with pkgs; [
     xorg.xbacklight
   ];
@@ -32,7 +32,6 @@
         # xrandr --setprovideroutputsource 2 0 This is after run xrandr --listproviders to identify the provider
         sessionCommands = ''
           ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
-          ${pkgs.xorg.xrandr}/bin/xrandr --output DP-5 --mode 2560x1440 --pos 4480x0 --rotate normal --output DP-7 --mode 2560x1440 --pos 1920x0 --rotate normal --output eDP-1 --primary --mode 1920x1080 --pos 0x360 --rotate normal
         '';
       };
     };
