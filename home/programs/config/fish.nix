@@ -12,8 +12,6 @@
     set -g theme_color_scheme solarized
   '';
 
-  custom = pkgs.callPackage ./plugins.nix {};
-
   fenv = {
     inherit (pkgs.fishPlugins.foreign-env) src;
     name = "foreign-env";
@@ -31,7 +29,7 @@
 in {
   programs.fish = {
     enable = true;
-    plugins = [custom.theme fenv];
+    plugins = [fenv];
     interactiveShellInit = ''
       eval (direnv hook fish)
       jump shell fish | source
@@ -71,7 +69,4 @@ in {
     };
     shellInit = fishConfig;
   };
-
-  xdg.configFile."fish/completions/keytool.fish".text = custom.completions.keytool;
-  xdg.configFile."fish/functions/fish_prompt.fish".text = custom.prompt;
 }

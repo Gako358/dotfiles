@@ -23,15 +23,6 @@
     neovim-flake.url = "github:gako358/neovim";
     # Scramgit
     scramgit.url = "github:gako358/scram";
-    # Fish
-    fish-bobthefish-theme = {
-      url = "github:gvolpe/theme-bobthefish";
-      flake = false;
-    };
-    fish-keytool-completions = {
-      url = "github:ckipp01/keytool-fish-completions";
-      flake = false;
-    };
   };
 
   outputs = {
@@ -40,8 +31,7 @@
     flake-utils,
     home-manager,
     neovim-flake,
-    fish-bobthefish-theme,
-    fish-keytool-completions,
+    nix-colors,
     scramgit,
     nur,
     ...
@@ -55,13 +45,8 @@
       "x86_64-darwin"
     ];
   in rec {
-    fishOverlay = f: p: {
-      inherit fish-bobthefish-theme fish-keytool-completions;
-    };
-
     overlays = {
       default = import ./overlay {inherit inputs;};
-      fish = fishOverlay;
     };
     templates = import ./templates;
     devShells = forAllSystems (system: {

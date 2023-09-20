@@ -59,8 +59,8 @@ in {
       shell.program = "${pkgs.fish}/bin/fish";
       window = {
         dimensions = {
-          columns = 145;
-          lines = 73;
+          columns = 154;
+          lines = 55;
         };
         decorations = "full";
         opacity = 0.90;

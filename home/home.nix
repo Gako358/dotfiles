@@ -2,12 +2,12 @@
   username = "merrinx";
   homeDirectory = "/home/${username}";
   configHome = "${homeDirectory}/.config";
-
   defaultPkgs = with pkgs; [
     any-nix-shell        # fish support for nix shell
     acpi                 # battery info
     arandr               # screen layout manager
     asciinema            # record the terminal
+    brightnessctl        # control screen brightness
     bottom               # alternative to htop & ytop
     cacert               # ca certificates
     cowsay               # cowsay fortune teller with random images
@@ -23,6 +23,7 @@
     gimp                 # gnu image manipulation program
     glow                 # terminal markdown viewer
     hyperfine            # command-line benchmarking tool
+    imagemagick          # image manipulation
     jump                 # fast directory navigation
     killall              # kill processes by name
     lazygit              # terminal git ui
@@ -31,7 +32,6 @@
     nitch                # minimal system information fetch
     nix-index            # locate packages containing certain nixpkgs
     nix-output-monitor   # nom: monitor nix commands
-    nyancat              # the famous rainbow cat!
     ouch                 # painless compression and decompression for your terminal
     pavucontrol          # pulseaudio volume control
     paprefs              # pulseaudio preferences
@@ -41,20 +41,22 @@
     ranger               # terminal file manager
     ripgrep              # fast grep
     scrot                # screenshot tool
-    spotify              # music streaming
+    slurp                # select a region in a wayland compositor
+    ncspot               # music streaming
     tldr                 # summary of a man page
     tree                 # display files in a tree view
     unzip                # unzip files
     virt-manager         # virtual machine manager
     wally-cli            # ErgoDox EZ keyboard layout manager
+    wayshot              # screenshot tool
     wgetpaste            # paste to pastebin
+    wl-gammactl          # wayland gamma control
+    wl-clipboard         # wayland clipboard manager
     xarchiver            # archive manager
     xclip                # command-line interface to X selections
-    xdotool              # command-line X11 automation tool
     zathura              # document viewer
     zip                  # zip files
   ];
-
 in {
   programs.home-manager.enable = true;
   imports = builtins.concatMap import [
@@ -63,14 +65,10 @@ in {
     ./services
     ./themes
   ];
-
   xdg = {
     inherit configHome;
     enable = true;
   };
-
-  # Default services
-  services.pasystray.enable = true;   # pulseaudio system tray
 
   home = {
     inherit username homeDirectory;

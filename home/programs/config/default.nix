@@ -1,9 +1,12 @@
 {
   imports = [
-    ./fish
-    ./gnome.nix
+    ./hyperland
     ./neofetch
-    # ./rofi
+    ./rofi
+    ./fish.nix
     ./ranger.nix
+    ./starship.nix
+    ./swaylock.nix
+    ./waybar.nix
   ];
 }

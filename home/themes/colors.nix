@@ -1,26 +1,25 @@
 {
-  # More schemes at: https://github.com/atpotts/base16-nix/blob/master/schemes.json
-  scheme = {
-    # https://github.com/reyemxela/base16-helios-scheme
-    helios = {
-      scheme = "Helios";
-      author = "Alex Meyer (https://github.com/reyemxela)";
-      base00 = "1d2021"; # ----
-      base01 = "383c3e"; # ---
-      base02 = "53585b"; # --
-      base03 = "6f7579"; # -
-      base04 = "cdcdcd"; # +
-      base05 = "d5d5d5"; # ++
-      base06 = "dddddd"; # +++
-      base07 = "e5e5e5"; # ++++
-      base08 = "d72638"; # red
-      base09 = "eb8413"; # orange
-      base0A = "f19d1a"; # yellow
-      base0B = "88b92d"; # green
-      base0C = "1ba595"; # aqua/cyan
-      base0D = "1e8bac"; # blue
-      base0E = "be4264"; # purple
-      base0F = "c85e0d"; # brown
+  colorScheme = {
+    slug = "borealis";
+    name = "Borealis";
+    author = "MerrinX";
+    colors = {
+      base00 = "282c34";
+      base01 = "353b45";
+      base02 = "3E2D5C";
+      base03 = "545862";
+      base04 = "565c64";
+      base05 = "abb2bf";
+      base06 = "b6bdca";
+      base07 = "c8ccd4";
+      base08 = "e06c75";
+      base09 = "d19a66";
+      base0A = "e5c07b";
+      base0B = "98c379";
+      base0C = "56b6c2";
+      base0D = "61afef";
+      base0E = "c678dd";
+      base0F = "be5046";
     };
   };
 }

@@ -37,6 +37,7 @@
   i18n.supportedLocales = [
     "en_US.UTF-8/UTF-8"
   ];
+  console.useXkbConfig = true;
   # Add dconf settings
   programs.dconf.enable = true;
   services = {
@@ -54,16 +55,21 @@
         PasswordAuthentication = false;
       };
     };
+    # Enable pipewire
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
   };
-  # Set session variables
-  environment.sessionVariables = {
-    # If cursor is not visible, try to set this to "on".
-    WLR_NO_HARDWARE_CURSORS = "1";
-    # Electron apps use wayland
-    NIXOS_OZONE_WL = "1";
+  sound.enable = true;
+  security = {
+    rtkit.enable = true;
+    # Enable swaylock password authentication
+    pam.services.swaylock = {};
   };
-  # Electron apps use wayland
-  xdg.portal.enable = true;
+
   # Enable hardware support
   hardware = {
     opengl.enable = true;
@@ -72,11 +78,7 @@
     bluetooth.enable = true;
     # Enable braodcom chip for bluetooth
     enableAllFirmware = true;
-    pulseaudio = {
-      enable = true;
-      support32Bit = true;
-      package = pkgs.pulseaudioFull;
-    };
+    pulseaudio.enable = false;
   };
   # Enable virtualisation and docker support
   virtualisation = {
