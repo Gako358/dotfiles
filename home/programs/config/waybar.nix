@@ -7,15 +7,12 @@
   # Dependencies
   cat = "${pkgs.coreutils}/bin/cat";
   cut = "${pkgs.coreutils}/bin/cut";
-  find = "${pkgs.findutils}/bin/find";
   grep = "${pkgs.gnugrep}/bin/grep";
-  pgrep = "${pkgs.procps}/bin/pgrep";
   tail = "${pkgs.coreutils}/bin/tail";
   wc = "${pkgs.coreutils}/bin/wc";
   xargs = "${pkgs.findutils}/bin/xargs";
 
   jq = "${pkgs.jq}/bin/jq";
-  gamemoded = "${pkgs.gamemode}/bin/gamemoded";
   systemctl = "${pkgs.systemd}/bin/systemctl";
   journalctl = "${pkgs.systemd}/bin/journalctl";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
@@ -74,18 +71,19 @@ in {
           ];
 
         modules-center = [
-          "pulseaudio"
           "battery"
+          "pulseaudio"
+          "xbacklight"
           "clock"
-          "custom/unread-mail"
           "custom/gpg-agent"
+          "cpu"
+          "memory"
         ];
 
         modules-right = [
+          "hyprland/language"
           "network"
-          "custom/gamemode"
           "tray"
-          "custom/hostname"
         ];
 
         clock = {
@@ -107,13 +105,6 @@ in {
             default = ["" "" ""];
           };
           on-click = pavucontrol;
-        };
-        idle_inhibitor = {
-          format = "{icon}";
-          format-icons = {
-            activated = "󰒳";
-            deactivated = "󰒲";
-          };
         };
         battery = {
           bat = "BAT0";
@@ -138,41 +129,50 @@ in {
             Down: {bandwidthDownBits}'';
           on-click = "";
         };
+        cpu = {
+          interval = 10;
+          format = " {usage}%";
+          max-length = 10;
+          on-click = "alacritty --title btop -e sh -c 'btop'";
+        };
+        memory = {
+          interval = 30;
+          format = " {}%";
+          max-length = 10;
+          tooltip = true;
+          tooltip-format = "Memory - {used:0.1f}GB used";
+          on-click = "alacritty --title btop -e sh -c 'btop'";
+        };
+        temperature = {
+          thermal-zone = 1;
+          format = " {temperatureC}°C";
+          critical-threshold = 70;
+          format-critical = "󰝩 {temperatureC}°C";
+          on-click = "alacritty --title btop -e sh -c 'btop'";
+        };
+        xbacklight = {
+          device = "intel_backlight";
+          on-scroll-up = "light -A 5";
+          on-scroll-down = "light -U 5";
+          format = "{icon} {percent}%";
+          format-icons = ["󰃝" "󰃞" "󰃟" "󰃠"];
+        };
+        "hyprland/language" = {
+          format = "󰌌 {}";
+          format-en = "US";
+          format-no = "NO";
+          on-click = "hyprctl switchxkblayout $SET_KB next";
+        };
         "custom/menu" = {
           return-type = "json";
           exec = jsonOutput "menu" {
             text = "";
             tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
           };
-          on-click = "${rofi} -S drun -x 10 -y 10 -W 25% -H 60%";
+          on-click = "${rofi} -show drun -x 10 -y 10 -W 25% -H 60%";
         };
         "custom/hostname" = {
           exec = "echo $USER@$HOSTNAME";
-        };
-        "custom/unread-mail" = {
-          interval = 5;
-          return-type = "json";
-          exec = jsonOutput "unread-mail" {
-            pre = ''
-              count=$(${find} ~/Mail/*/Inbox/new -type f | ${wc} -l)
-              if ${pgrep} mbsync &>/dev/null; then
-                status="syncing"
-              else if [ "$count" == "0" ]; then
-                status="read"
-              else
-                status="unread"
-              fi
-              fi
-            '';
-            text = "$count";
-            alt = "$status";
-          };
-          format = "{icon}  ({})";
-          format-icons = {
-            "read" = "󰇯";
-            "unread" = "󰇮";
-            "syncing" = "󰁪";
-          };
         };
         "custom/gpg-agent" = {
           interval = 2;
@@ -191,15 +191,6 @@ in {
             "unlocked" = "";
           };
           on-click = "";
-        };
-        "custom/gamemode" = {
-          exec-if = "${gamemoded} --status | ${grep} 'is active' -q";
-          interval = 2;
-          return-type = "json";
-          exec = jsonOutput "gamemode" {
-            tooltip = "Gamemode is active";
-          };
-          format = " ";
         };
         "custom/gammastep" = {
           interval = 5;
@@ -307,14 +298,14 @@ in {
         }
 
         window#waybar.top {
-          opacity: 0.95;
+          opacity: 0.90;
           padding: 0;
           background-color: #282c34;
           border: 2px solid #56b6c2;
           border-radius: 10px;
         }
         window#waybar.bottom {
-          opacity: 0.90;
+          opacity: 0.85;
           background-color: #282c34;
           border: 2px solid #56b6c2;
           border-radius: 10px;
@@ -371,8 +362,30 @@ in {
         #custom-currentplayer {
           padding-right: 0;
         }
+        #custom-gpg-agent {
+          color: #e5c07b;
+          padding-left: 10px;
+        }
+        #cpu {
+          color: #61afef;
+          margin-left: 37px;
+        }
+        #memory {
+          color: #61afef;
+        }
         #tray {
           color: #abb2bf;
+        }
+        #pulseaudio {
+          color: #c678dd;
+          margin-right: 10px;
+        }
+        #xbacklight {
+          color: #c678dd;
+          margin-right: 28px;
+        }
+        #hyprland-language {
+          margin-right: 10px;
         }
       '';
   };

@@ -3,8 +3,9 @@
     enable = true;
     package = pkgs.swaylock-effects;
     settings = {
-      effect-blur = "20x3";
+      effect-blur = "10x2";
       fade-in = 0.1;
+      clock = true;
 
       font = "JetBrainsMono Nerd Font";
       font-size = 15;

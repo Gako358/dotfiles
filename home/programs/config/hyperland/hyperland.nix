@@ -5,7 +5,9 @@
   TERTIARY = "CTRL";
 
   idle = "${pkgs.swayidle}/bin/swayidle";
+  grimshot = "${pkgs.sway-contrib.grimshot}/bin/grimshot";
   lock = "${pkgs.swaylock}/bin/swaylock";
+  swappy = "${pkgs.swappy}/bin/swappy";
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
 
 in {
@@ -92,6 +94,7 @@ in {
 
     windowrule = workspace 1, ^(firefox-beta)$
     windowrule = workspace 3, ^(Microsoft-edge)$
+    windowrule = workspace 5, ^(Wfica)$
     windowrule = workspace 7, ^(thunderbird)$
     windowrule = workspace 9, ^(chrome-discord.com__channels_@me-Default)$
 
@@ -110,6 +113,9 @@ in {
 
     # Lockscreen
     bind = ${mainMod} ${SECONDARY}, L, exec, swaylock -f -c 000000
+
+    # Screenshot
+    bind = ${mainMod} ${SECONDARY}, P, exec, ${grimshot} --notify save area - | ${swappy} -f -
 
     # Scratchpads
     bind = ${mainMod} ${SECONDARY}, T, movetoworkspace, special

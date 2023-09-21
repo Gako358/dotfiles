@@ -22,6 +22,7 @@
     geany                # text editor
     gimp                 # gnu image manipulation program
     glow                 # terminal markdown viewer
+    grim                 # screenshot tool
     hyperfine            # command-line benchmarking tool
     imagemagick          # image manipulation
     jump                 # fast directory navigation
@@ -56,6 +57,10 @@
     xclip                # command-line interface to X selections
     zathura              # document viewer
     zip                  # zip files
+
+
+    # Hyprland specific
+    sway-contrib.grimshot
   ];
 in {
   programs.home-manager.enable = true;
