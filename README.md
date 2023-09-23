@@ -7,13 +7,11 @@
 
 # My NixOS Configuration
 
-Welcome to my compilation of dotfiles, the secret sauce behind the construction and configuration of my Linux systems.
-
-For a deeper dive into NixOS, the innovative Linux distribution I use, and Nix, the powerful package management tool and language that this repository is primarily written in, click [Nix](https://nixos.org/).
+Welcome to my compilation of dotfiles, the secret sauce behind the construction and configuration of my Linux systems. For a deeper dive into NixOS, the innovative Linux distribution I use, and Nix, the powerful package management tool and language that this repository is primarily written in, click [Nix](https://nixos.org/).
 
 ## Sneak Peek
 
-![screenshot](https://github.com/Gako358/archive/blob/main/images/config/work.png)
+![screenshot](https://github.com/Gako358/archive/blob/main/images/config/main.png)
 
 > **Neovim Users** _My Neovim flake is available:_ [here](https://github.com/Gako358/neovim)
 

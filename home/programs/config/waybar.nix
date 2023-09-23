@@ -1,24 +1,35 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
+  opacity = "0";
+  palette = {
+    font = "RobotoMono Nerd Font";
+    fontsize = "12";
+    primary_accent = "cba6f7";
+    secondary_accent = "89b4fa";
+    tertiary_accent = "f5f5f5";
+    background = "282c34";
+    cursor = "Numix-Cursor";
+
+    primary_accent_hex = "cba6f7";
+    secondary_accent_hex = "89b4fa";
+    tertiary_accent_hex = "f5f5f5";
+    primary_background_hex = "11111B";
+    secondary_background_hex = "1b1b2b";
+    tertiary_background_hex = "21252b";
+
+    primary_accent_rgba = "rgba(203,166,247,${opacity})";
+    secondary_accent_rgba = "rgba(137,180,250,${opacity})";
+    tertiary_accent_rgba = "rgba(245,245,245,${opacity})";
+    primary_background_rgba = "rgba(40, 44, 52,${opacity})";
+    secondary_background_rgba = "rgba(59, 63, 76,${opacity})";
+    tertiary_background_rgba = "rgba(33, 37, 43,${opacity})";
+  };
   # Dependencies
-  cat = "${pkgs.coreutils}/bin/cat";
   cut = "${pkgs.coreutils}/bin/cut";
-  grep = "${pkgs.gnugrep}/bin/grep";
-  tail = "${pkgs.coreutils}/bin/tail";
   wc = "${pkgs.coreutils}/bin/wc";
-  xargs = "${pkgs.findutils}/bin/xargs";
 
   jq = "${pkgs.jq}/bin/jq";
-  systemctl = "${pkgs.systemd}/bin/systemctl";
-  journalctl = "${pkgs.systemd}/bin/journalctl";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   playerctld = "${pkgs.playerctl}/bin/playerctld";
-  pavucontrol = "${pkgs.pavucontrol}/bin/pavucontrol";
-  rofi = "${pkgs.rofi}/bin/rofi";
 
   # Function to simplify making waybar outputs
   jsonOutput = name: {
@@ -46,347 +57,375 @@ in {
       mesonFlags = (oa.mesonFlags or []) ++ ["-Dexperimental=true"];
     });
     systemd.enable = true;
-    settings = {
-      primary = {
-        mode = "dock";
-        layer = "top";
-        height = 40;
-        margin = "6";
-        position = "top";
-        modules-left =
-          [
-            "custom/menu"
-          ]
-          ++ (lib.optionals config.wayland.windowManager.sway.enable [
-            "sway/workspaces"
-            "sway/mode"
-          ])
-          ++ (lib.optionals config.wayland.windowManager.hyprland.enable [
-            "hyprland/workspaces"
-            "hyprland/submap"
-          ])
-          ++ [
-            "custom/currentplayer"
-            "custom/player"
-          ];
-
-        modules-center = [
-          "battery"
-          "pulseaudio"
-          "xbacklight"
-          "clock"
-          "custom/gpg-agent"
-          "cpu"
-          "memory"
-        ];
-
-        modules-right = [
-          "hyprland/language"
-          "network"
-          "tray"
-        ];
-
-        clock = {
-          interval = 1;
-          format = "{:%d/%m %H:%M:%S}";
-          format-alt = "{:%Y-%m-%d %H:%M:%S %z}";
-          on-click-left = "mode";
-          tooltip-format = ''
-            <big>{:%Y %B}</big>
-            <tt><small>{calendar}</small></tt>'';
-        };
-        pulseaudio = {
-          format = "{icon}  {volume}%";
-          format-muted = "   0%";
-          format-icons = {
-            headphone = "󰋋";
-            headset = "󰋎";
-            portable = "";
-            default = ["" "" ""];
-          };
-          on-click = pavucontrol;
-        };
-        battery = {
-          bat = "BAT0";
-          interval = 10;
-          format-icons = ["󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
-          format = "{icon} {capacity}%";
-          format-charging = "󰂄 {capacity}%";
-          onclick = "";
-        };
-        "sway/window" = {
-          max-length = 20;
-        };
-        network = {
-          interval = 3;
-          format-wifi = "   {essid}";
-          format-ethernet = "󰈁 Connected";
-          format-disconnected = "";
-          tooltip-format = ''
-            {ifname}
-            {ipaddr}/{cidr}
-            Up: {bandwidthUpBits}
-            Down: {bandwidthDownBits}'';
-          on-click = "";
-        };
-        cpu = {
-          interval = 10;
-          format = " {usage}%";
-          max-length = 10;
-          on-click = "alacritty --title btop -e sh -c 'btop'";
-        };
-        memory = {
-          interval = 30;
-          format = " {}%";
-          max-length = 10;
-          tooltip = true;
-          tooltip-format = "Memory - {used:0.1f}GB used";
-          on-click = "alacritty --title btop -e sh -c 'btop'";
-        };
-        temperature = {
-          thermal-zone = 1;
-          format = " {temperatureC}°C";
-          critical-threshold = 70;
-          format-critical = "󰝩 {temperatureC}°C";
-          on-click = "alacritty --title btop -e sh -c 'btop'";
-        };
-        xbacklight = {
-          device = "intel_backlight";
-          on-scroll-up = "light -A 5";
-          on-scroll-down = "light -U 5";
-          format = "{icon} {percent}%";
-          format-icons = ["󰃝" "󰃞" "󰃟" "󰃠"];
-        };
-        "hyprland/language" = {
-          format = "󰌌 {}";
-          format-en = "US";
-          format-no = "NO";
-          on-click = "hyprctl switchxkblayout $SET_KB next";
-        };
-        "custom/menu" = {
-          return-type = "json";
-          exec = jsonOutput "menu" {
-            text = "";
-            tooltip = ''$(${cat} /etc/os-release | ${grep} PRETTY_NAME | ${cut} -d '"' -f2)'';
-          };
-          on-click = "${rofi} -show drun -x 10 -y 10 -W 25% -H 60%";
-        };
-        "custom/hostname" = {
-          exec = "echo $USER@$HOSTNAME";
-        };
-        "custom/gpg-agent" = {
-          interval = 2;
-          return-type = "json";
-          exec = let
-            gpgCmds = import ../../cli/gpg-commands.nix {inherit pkgs;};
-          in
-            jsonOutput "gpg-agent" {
-              pre = ''status=$(${gpgCmds.isUnlocked} && echo "unlocked" || echo "locked")'';
-              alt = "$status";
-              tooltip = "GPG is $status";
-            };
-          format = "{icon}";
-          format-icons = {
-            "locked" = "";
-            "unlocked" = "";
-          };
-          on-click = "";
-        };
-        "custom/gammastep" = {
-          interval = 5;
-          return-type = "json";
-          exec = jsonOutput "gammastep" {
-            pre = ''
-              if unit_status="$(${systemctl} --user is-active gammastep)"; then
-                status="$unit_status ($(${journalctl} --user -u gammastep.service -g 'Period: ' | ${tail} -1 | ${cut} -d ':' -f6 | ${xargs}))"
-              else
-                status="$unit_status"
-              fi
-            '';
-            alt = "\${status:-inactive}";
-            tooltip = "Gammastep is $status";
-          };
-          format = "{icon}";
-          format-icons = {
-            "activating" = "󰁪 ";
-            "deactivating" = "󰁪 ";
-            "inactive" = "? ";
-            "active (Night)" = " ";
-            "active (Nighttime)" = " ";
-            "active (Transition (Night)" = " ";
-            "active (Transition (Nighttime)" = " ";
-            "active (Day)" = " ";
-            "active (Daytime)" = " ";
-            "active (Transition (Day)" = " ";
-            "active (Transition (Daytime)" = " ";
-          };
-          on-click = "${systemctl} --user is-active gammastep && ${systemctl} --user stop gammastep || ${systemctl} --user start gammastep";
-        };
-        "custom/currentplayer" = {
-          interval = 2;
-          return-type = "json";
-          exec = jsonOutput "currentplayer" {
-            pre = ''
-              player="$(${playerctl} status -f "{{playerName}}" 2>/dev/null || echo "No player active" | ${cut} -d '.' -f1)"
-              count="$(${playerctl} -l | ${wc} -l)"
-              if ((count > 1)); then
-                more=" +$((count - 1))"
-              else
-                more=""
-              fi
-            '';
-            alt = "$player";
-            tooltip = "$player ($count available)";
-            text = "$more";
-          };
-          format = "{icon}{}";
-          format-icons = {
-            "No player active" = " ";
-            "Celluloid" = "󰎁 ";
-            "spotify" = "󰓇 ";
-            "ncspot" = "󰓇 ";
-            "qutebrowser" = "󰖟 ";
-            "firefox" = " ";
-            "discord" = " 󰙯 ";
-            "sublimemusic" = " ";
-            "kdeconnect" = "󰄡 ";
-            "chromium" = " ";
-          };
-          on-click = "${playerctld} shift";
-          on-click-right = "${playerctld} unshift";
-        };
-        "custom/player" = {
-          exec-if = "${playerctl} status";
-          exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' '';
-          return-type = "json";
-          interval = 2;
-          max-length = 30;
-          format = "{icon} {}";
-          format-icons = {
-            "Playing" = "󰐊";
-            "Paused" = "󰏤 ";
-            "Stopped" = "󰓛";
-          };
-          on-click = "${playerctl} play-pause";
+    settings.mainBar = {
+      position = "top";
+      layer = "top";
+      height = 37;
+      margin-top = 0;
+      margin-bottom = 0;
+      margin-left = 0;
+      margin-right = 0;
+      modules-left = [
+        "custom/launcher"
+        "custom/playerctl#backward"
+        "custom/playerctl#play"
+        "custom/playerctl#foward"
+        "custom/playerlabel"
+      ];
+      modules-center = [
+        "cava#left"
+        "hyprland/workspaces"
+        "cava#right"
+      ];
+      modules-right = [
+        "tray"
+        "cpu"
+        "battery"
+        "memory"
+        "pulseaudio"
+        "network"
+        "clock"
+      ];
+      clock = {
+        format = " {:%a, %d %b, %I:%M %p}";
+        tooltip = "true";
+        tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+        format-alt = " {:%d/%m}";
+      };
+      "wlr/workspaces" = {
+        active-only = false;
+        all-outputs = false;
+        disable-scroll = false;
+        on-scroll-up = "hyprctl dispatch workspace e-1";
+        on-scroll-down = "hyprctl dispatch workspace e+1";
+        format = "{name}";
+        on-click = "activate";
+        format-icons = {
+          urgent = "";
+          active = "";
+          default = "";
+          sort-by-number = true;
         };
       };
+      "cava#left" = {
+        framerate = 60;
+        autosens = 1;
+        bars = 18;
+        lower_cutoff_freq = 50;
+        higher_cutoff_freq = 10000;
+        method = "pipewire";
+        source = "auto";
+        stereo = true;
+        reverse = false;
+        bar_delimiter = 0;
+        monstercat = false;
+        waves = false;
+        input_delay = 2;
+        format-icons = [
+          "<span foreground='#${palette.primary_accent}'>▁</span>"
+          "<span foreground='#${palette.primary_accent}'>▂</span>"
+          "<span foreground='#${palette.primary_accent}'>▃</span>"
+          "<span foreground='#${palette.primary_accent}'>▄</span>"
+          "<span foreground='#${palette.secondary_accent}'>▅</span>"
+          "<span foreground='#${palette.secondary_accent}'>▆</span>"
+          "<span foreground='#${palette.secondary_accent}'>▇</span>"
+          "<span foreground='#${palette.secondary_accent}'>█</span>"
+        ];
+      };
+      "cava#right" = {
+        framerate = 60;
+        autosens = 1;
+        bars = 18;
+        lower_cutoff_freq = 50;
+        higher_cutoff_freq = 10000;
+        method = "pipewire";
+        source = "auto";
+        stereo = true;
+        reverse = false;
+        bar_delimiter = 0;
+        monstercat = false;
+        waves = false;
+        input_delay = 2;
+        format-icons = [
+          "<span foreground='#${palette.primary_accent}'>▁</span>"
+          "<span foreground='#${palette.primary_accent}'>▂</span>"
+          "<span foreground='#${palette.primary_accent}'>▃</span>"
+          "<span foreground='#${palette.primary_accent}'>▄</span>"
+          "<span foreground='#${palette.secondary_accent}'>▅</span>"
+          "<span foreground='#${palette.secondary_accent}'>▆</span>"
+          "<span foreground='#${palette.secondary_accent}'>▇</span>"
+          "<span foreground='#${palette.secondary_accent}'>█</span>"
+        ];
+      };
+      "custom/playerctl#backward" = {
+        format = "󰙣 ";
+        on-click = "${playerctl} previous";
+        on-scroll-up = "${playerctl} volume .05+";
+        on-scroll-down = "${playerctl} volume .05-";
+      };
+      "custom/playerctl#play" = {
+        format = "{icon}";
+        return-type = "json";
+        exec = "${playerctl} -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F";
+        on-click = "${playerctl} play-pause";
+        on-scroll-up = "${playerctl} volume .05+";
+        on-scroll-down = "${playerctl} volume .05-";
+        format-icons = {
+          Playing = "<span>󰏥 </span>";
+          Paused = "<span> </span>";
+          Stopped = "<span> </span>";
+        };
+      };
+      "custom/playerctl#foward" = {
+        format = "󰙡 ";
+        on-click = "${playerctl} next";
+        on-scroll-up = "${playerctl} volume .05+";
+        on-scroll-down = "${playerctl} volume .05-";
+      };
+      "custom/playerlabel" = {
+        format = "<span>󰎈 {} 󰎈</span>";
+        return-type = "json";
+        max-length = 40;
+        exec = "${playerctl} -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F";
+        on-click = "";
+      };
+      "custom/currentplayer" = {
+        interval = 2;
+        return-type = "json";
+        exec = jsonOutput "currentplayer" {
+          pre = ''
+            player="$(${playerctl} status -f "{{playerName}}" 2>/dev/null || echo "No player active" | ${cut} -d '.' -f1)"
+            count="$(${playerctl} -l | ${wc} -l)"
+            if ((count > 1)); then
+              more=" +$((count - 1))"
+            else
+              more=""
+            fi
+          '';
+          alt = "$player";
+          tooltip = "$player ($count available)";
+          text = "$more";
+        };
+        format = "{icon}{}";
+        format-icons = {
+          "No player active" = " ";
+          "Celluloid" = "󰎁 ";
+          "spotify" = "󰓇 ";
+          "ncspot" = "󰓇 ";
+          "qutebrowser" = "󰖟 ";
+          "firefox" = " ";
+          "discord" = " 󰙯 ";
+          "sublimemusic" = " ";
+          "kdeconnect" = "󰄡 ";
+          "chromium" = " ";
+        };
+        on-click = "${playerctld} shift";
+        on-click-right = "${playerctld} unshift";
+      };
+      "custom/player" = {
+        exec-if = "${playerctl} status";
+        exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' '';
+        return-type = "json";
+        interval = 2;
+        max-length = 30;
+        format = "{icon} {}";
+        format-icons = {
+          "Playing" = "󰐊";
+          "Paused" = "󰏤 ";
+          "Stopped" = "󰓛";
+        };
+        on-click = "${playerctl} play-pause";
+      };
+      battery = {
+        states = {
+          good = 95;
+          warning = 30;
+          critical = 15;
+        };
+        format = "{icon}  {capacity}%";
+        format-charging = "  {capacity}%";
+        format-plugged = " {capacity}% ";
+        format-alt = "{icon} {time}";
+        format-icons = ["" "" "" "" ""];
+      };
+      "hyprland/language" = {
+        format = "󰌌 {}";
+        format-en = "US";
+        format-no = "NO";
+        on-click = "hyprctl switchxkblayout $SET_KB next";
+      };
+      memory = {
+        format = "󰍛 {}%";
+        format-alt = "󰍛 {used}/{total} GiB";
+        interval = 5;
+      };
+      cpu = {
+        format = "󰻠 {usage}%";
+        format-alt = "󰻠 {avg_frequency} GHz";
+        interval = 5;
+      };
+      network = {
+        format-wifi = "  {signalStrength}%";
+        format-ethernet = "󰈀 100% ";
+        tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
+        format-linked = "{ifname} (No IP)";
+        format-disconnected = "󰖪 0% ";
+      };
+      tray = {
+        icon-size = 20;
+        spacing = 8;
+      };
+      pulseaudio = {
+        format = "{icon} {volume}%";
+        format-muted = "󰝟";
+        format-icons = {
+          default = ["󰕿" "󰖀" "󰕾"];
+        };
+        # on-scroll-up= "bash ~/.scripts/volume up";
+        # on-scroll-down= "bash ~/.scripts/volume down";
+        scroll-step = 5;
+        on-click = "pavucontrol";
+      };
+      "custom/randwall" = {
+        format = "󰏘";
+        # on-click= "bash $HOME/.config/hypr/randwall.sh";
+        # on-click-right= "bash $HOME/.config/hypr/wall.sh";
+      };
+      "custom/launcher" = {
+        format = "";
+        # on-click= "bash $HOME/.config/rofi/launcher.sh";
+        # on-click-right= "bash $HOME/.config/rofi/run.sh";
+        tooltip = "false";
+      };
     };
-    # Cheatsheet:
-    # x -> all sides
-    # x y -> vertical, horizontal
-    # x y z -> top, horizontal, bottom
-    # w x y z -> top, right, bottom, left
-    style = let
-      inherit (config.colorscheme) colors;
-    in
-      /*
-      css
-      */
-      ''
-        * {
-          font-family: "JetBrainsMono Nerd Font";
-          font-size: 12pt;
-          padding: 0 8px;
-        }
+    style = ''
+      * {
+          border: none;
+          border-radius: 0px;
+          font-family: ${palette.font};
+          font-size: 14px;
+          min-height: 0;
+      }
 
-        .modules-right {
-          margin-right: -15px;
-        }
+      window#waybar {
+          background: ${palette.primary_background_rgba};
+      }
 
-        .modules-left {
-          margin-left: -15px;
-        }
+      #cava.left, #cava.right {
+          background: #${palette.tertiary_background_hex};
+          margin: 5px;
+          padding: 8px 16px;
+          color: #${palette.primary_accent};
+      }
+      #cava.left {
+          border-radius: 24px 10px 24px 10px;
+      }
+      #cava.right {
+          border-radius: 10px 24px 10px 24px;
+      }
+      #workspaces {
+          background: #${palette.tertiary_background_hex};
+          margin: 5px 5px;
+          padding: 8px 5px;
+          border-radius: 16px;
+          color: #${palette.primary_accent}
+      }
+      #workspaces button {
+          padding: 0px 5px;
+          margin: 0px 3px;
+          border-radius: 16px;
+          background: ${palette.primary_background_rgba};
+          transition: all 0.3s ease-in-out;
+      }
 
-        window#waybar.top {
-          opacity: 0.90;
-          padding: 0;
-          background-color: #282c34;
-          border: 2px solid #56b6c2;
-          border-radius: 10px;
-        }
-        window#waybar.bottom {
-          opacity: 0.85;
-          background-color: #282c34;
-          border: 2px solid #56b6c2;
-          border-radius: 10px;
-        }
+      #workspaces button.active {
+          background-color: #${palette.secondary_accent};
+          color: #${palette.background};
+          border-radius: 16px;
+          min-width: 50px;
+          background-size: 400% 400%;
+          transition: all 0.3s ease-in-out;
+      }
 
-        window#waybar {
-          color: #abb2bf;
-        }
+      #workspaces button:hover {
+          background-color: #${palette.tertiary_accent};
+          color: #${palette.background};
+          border-radius: 16px;
+          min-width: 50px;
+          background-size: 400% 400%;
+      }
 
-        #workspaces button {
-          background-color: #353b45;
-          color: #abb2bf;
-          padding: 5px 1px;
-          margin: 3px 0;
-        }
-        #workspaces button.hidden {
-          background-color: #282c34;
-          color: #565c64;
-        }
-        #workspaces button.focused,
-        #workspaces button.active {
-          background-color: #e5c07b;
-          color: #282c34;
-        }
+      #tray, #pulseaudio, #network, #battery, #cpu, #memory,
+      #custom-playerctl.backward, #custom-playerctl.play, #custom-playerctl.foward{
+          background: #${palette.tertiary_background_hex};
+          font-weight: bold;
+          margin: 5px 0px;
+      }
+      #tray, #pulseaudio, #network, #battery, #cpu, #memory {
+          color: #${palette.tertiary_accent};
+          border-radius: 10px 24px 10px 24px;
+          padding: 0 20px;
+          margin-left: 7px;
+      }
+      #clock {
+          color: #${palette.tertiary_accent};
+          background: #${palette.tertiary_background_hex};
+          border-radius: 0px 0px 0px 40px;
+          padding: 10px 10px 15px 25px;
+          margin-left: 7px;
+          font-weight: bold;
+          font-size: 16px;
+      }
+      #custom-launcher {
+          color: #${palette.secondary_accent};
+          background: #${palette.tertiary_background_hex};
+          border-radius: 0px 0px 40px 0px;
+          margin: 0px;
+          padding: 0px 35px 0px 15px;
+          font-size: 28px;
+      }
 
-        #clock {
-          background-color: #56b6c2;
-          color: #282c34;
+      #custom-playerctl.backward, #custom-playerctl.play, #custom-playerctl.foward {
+          background: #${palette.tertiary_background_hex};
+          font-size: 22px;
+      }
+      #custom-playerctl.backward:hover, #custom-playerctl.play:hover, #custom-playerctl.foward:hover{
+          color: #${palette.tertiary_accent};
+      }
+      #custom-playerctl.backward {
+          color: #${palette.primary_accent};
+          border-radius: 24px 0px 0px 10px;
+          padding-left: 16px;
+          margin-left: 7px;
+      }
+      #custom-playerctl.play {
+          color: #${palette.secondary_accent};
+          padding: 0 5px;
+      }
+      #custom-playerctl.foward {
+          color: #${palette.primary_accent};
+          border-radius: 0px 10px 24px 0px;
+          padding-right: 12px;
+          margin-right: 7px
+      }
+      #custom-playerlabel, #custom-currentplayer, #custom-player{
+          background: #${palette.tertiary_background_hex};
+          color: #${palette.tertiary_accent};
+          padding: 0 20px;
+          border-radius: 24px 10px 24px 10px;
+          margin: 5px 0;
+          font-weight: bold;
+      }
+      #window{
+          background: #${palette.tertiary_background_hex};
           padding-left: 15px;
           padding-right: 15px;
-          margin-top: 0;
-          margin-bottom: 0;
-          border-radius: 10px;
-        }
-
-        #custom-menu {
-          background-color: #56b6c2;
-          color: #282c34;
-          padding-left: 15px;
-          padding-right: 22px;
-          margin: 0;
-          border-radius: 10px;
-        }
-        #custom-hostname {
-          background-color: #56b6c2;
-          color: #282c34;
-          padding-left: 15px;
-          padding-right: 18px;
-          margin-right: 0;
-          margin-top: 0;
-          margin-bottom: 0;
-          border-radius: 10px;
-        }
-        #custom-currentplayer {
-          padding-right: 0;
-        }
-        #custom-gpg-agent {
-          color: #e5c07b;
-          padding-left: 10px;
-        }
-        #cpu {
-          color: #61afef;
-          margin-left: 37px;
-        }
-        #memory {
-          color: #61afef;
-        }
-        #tray {
-          color: #abb2bf;
-        }
-        #pulseaudio {
-          color: #c678dd;
-          margin-right: 10px;
-        }
-        #xbacklight {
-          color: #c678dd;
-          margin-right: 28px;
-        }
-        #hyprland-language {
-          margin-right: 10px;
-        }
-      '';
+          border-radius: 16px;
+          margin-top: 5px;
+          margin-bottom: 5px;
+          font-weight: normal;
+          font-style: normal;
+      }
+    '';
   };
 }
