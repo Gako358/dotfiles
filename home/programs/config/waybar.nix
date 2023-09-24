@@ -28,6 +28,7 @@
   wc = "${pkgs.coreutils}/bin/wc";
 
   jq = "${pkgs.jq}/bin/jq";
+  eww = "${pkgs.eww-wayland}/bin/eww";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   playerctld = "${pkgs.playerctl}/bin/playerctld";
 
@@ -222,20 +223,6 @@ in {
         on-click = "${playerctld} shift";
         on-click-right = "${playerctld} unshift";
       };
-      "custom/player" = {
-        exec-if = "${playerctl} status";
-        exec = ''${playerctl} metadata --format '{"text": "{{title}} - {{artist}}", "alt": "{{status}}", "tooltip": "{{title}} - {{artist}} ({{album}})"}' '';
-        return-type = "json";
-        interval = 2;
-        max-length = 30;
-        format = "{icon} {}";
-        format-icons = {
-          "Playing" = "󰐊";
-          "Paused" = "󰏤 ";
-          "Stopped" = "󰓛";
-        };
-        on-click = "${playerctl} play-pause";
-      };
       battery = {
         states = {
           good = 95;
@@ -281,20 +268,12 @@ in {
         format-icons = {
           default = ["󰕿" "󰖀" "󰕾"];
         };
-        # on-scroll-up= "bash ~/.scripts/volume up";
-        # on-scroll-down= "bash ~/.scripts/volume down";
         scroll-step = 5;
         on-click = "pavucontrol";
       };
-      "custom/randwall" = {
-        format = "󰏘";
-        # on-click= "bash $HOME/.config/hypr/randwall.sh";
-        # on-click-right= "bash $HOME/.config/hypr/wall.sh";
-      };
       "custom/launcher" = {
         format = "";
-        # on-click= "bash $HOME/.config/rofi/launcher.sh";
-        # on-click-right= "bash $HOME/.config/rofi/run.sh";
+        on-click = "${eww} open --toggle menu --screen 0";
         tooltip = "false";
       };
     };
@@ -408,7 +387,7 @@ in {
           padding-right: 12px;
           margin-right: 7px
       }
-      #custom-playerlabel, #custom-currentplayer, #custom-player{
+      #custom-playerlabel, #custom-currentplayer{
           background: #${palette.tertiary_background_hex};
           color: #${palette.tertiary_accent};
           padding: 0 20px;

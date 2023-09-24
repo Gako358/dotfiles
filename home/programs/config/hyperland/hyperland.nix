@@ -4,12 +4,15 @@
   SECONDARY = "SHIFT";
   TERTIARY = "CTRL";
 
+  # Dependencies
   idle = "${pkgs.swayidle}/bin/swayidle";
   grimshot = "${pkgs.sway-contrib.grimshot}/bin/grimshot";
   lock = "${pkgs.swaylock}/bin/swaylock";
   swappy = "${pkgs.swappy}/bin/swappy";
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
-
+  wofi = "${pkgs.wofi}/bin/wofi";
+  terminal = "${pkgs.alacritty}/bin/alacritty";
+  eww = "${pkgs.eww-wayland}/bin/eww";
 in {
   wayland.windowManager.hyprland.extraConfig = ''
     general {
@@ -42,6 +45,7 @@ in {
     }
 
     exec-once = ${wallpaper}
+    exec-once= ${eww} daemon
 
     # Auto lock
     exec ${idle} -w \
@@ -59,8 +63,8 @@ in {
 
       blur {
         enabled = true
-        size = 10
-        passes = 3
+        size = 8
+        passes = 4
         new_optimizations = on
         noise = 0.01
         contrast = 0.9
@@ -80,6 +84,7 @@ in {
 
     # Window rules
     windowrule = float, ^(Rofi)$
+    windowrule = float, ^(eww)$
     windowrule = float, ^(Gimp-2.10)$
     windowrule = float, ^(org.gnome.Calculator)$
     windowrule = float, ^(org.gnome.Calendar)$
@@ -103,16 +108,17 @@ in {
     windowrule = float, title:^(ranger)$
     windowrule = float, title:^(spotify)$
     windowrule = float, title:^(btop)$
+    windowrule = float, title:^(org.kde.kdeconnect-settings)$
 
     # Launchers
-    bind = ${mainMod}, Return, exec, alacritty
-    bind = ${mainMod}, D, exec, rofi -show drun -show-icon
-    bind = ${mainMod}, R, exec, alacritty -t ranger -e ranger
-    bind = ${mainMod}, N, exec, alacritty -t spotify -e ncspot
-    bind = ${mainMod}, B, exec, alacritty -t btop -e btm
+    bind = ${mainMod}, Return, exec, ${terminal}
+    bind = ${mainMod}, D, exec, ${wofi} --show drun
+    bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
+    bind = ${mainMod}, N, exec, ${terminal} -t spotify -e ncspot
+    bind = ${mainMod}, B, exec, ${terminal} -t btop -e btm
 
     # Lockscreen
-    bind = ${mainMod} ${SECONDARY}, L, exec, swaylock -f -c 000000
+    bind = ${mainMod} ${SECONDARY}, L, exec, ${lock} -f -c 000000
 
     # Screenshot
     bind = ${mainMod} ${SECONDARY}, P, exec, ${grimshot} --notify save area - | ${swappy} -f -

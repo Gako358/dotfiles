@@ -54,6 +54,19 @@ sudo nixos-rebuild switch --flake .#$flake
 clear
 echo "System updated!"
 echo "Updating home-manager..."
+
+echo "Remove old generations...?"
+echo "1. Yes, 2. No"
+read hmgen
+
+# Run a garbage collection
+if [[ "$hmgen" == "1" ]]
+then
+    home-manager expire-generations "-5 days"
+    continue
+else
+    continue
+fi
 home_name="merrinx@$flake"
 
 # Update home-manager

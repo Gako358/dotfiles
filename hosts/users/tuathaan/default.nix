@@ -10,10 +10,6 @@
   networking.hostName = "tuathaan";
   # Set desktop environment and video drivers
   desktop.environment = "hyperland";
-  environment.systemPackages = with pkgs; [
-    xorg.xbacklight
-  ];
-
   users.users = {
     merrinx = {
       isNormalUser = true;

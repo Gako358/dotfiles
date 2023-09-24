@@ -31,11 +31,11 @@ in [
   ./browser/edge.nix
   ./browser/firefox.nix
   ./browser/slack.nix
-  ./browser/teams.nix
   ./config
   ./alacritty.nix
   ./citrix.nix
   ./intellij.nix
+  ./kdeconnect.nix
   ./git.nix
   ./network.nix
   ./tmux.nix

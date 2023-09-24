@@ -19,6 +19,7 @@
     duf                  # disk usage/free utility
     eza                  # a better `ls`
     fd                   # "find" for files
+    filezilla            # ftp client
     geany                # text editor
     gimp                 # gnu image manipulation program
     glow                 # terminal markdown viewer
@@ -58,7 +59,6 @@
     zathura              # document viewer
     zip                  # zip files
 
-
     # Hyprland specific
     sway-contrib.grimshot
   ];
@@ -78,11 +78,8 @@ in {
   home = {
     inherit username homeDirectory;
     stateVersion = "23.11";
-
     packages = defaultPkgs;
-
     sessionVariables = {
-      DISPLAY = ":0";
       EDITOR = "nvim";
     };
   };

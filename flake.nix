@@ -19,6 +19,12 @@
     impermanence.url = "github:riscadoa/impermanence"; # Utilities for opt-in persistance
     agenix.url = "github:ryantm/agenix"; # Secrets management
 
+    # Window manager
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # My Neovim build
     neovim-flake.url = "github:gako358/neovim";
     # Scramgit
@@ -26,93 +32,75 @@
   };
 
   outputs = {
+    self,
     nixpkgs,
     hardware,
     flake-utils,
     home-manager,
     neovim-flake,
-    nix-colors,
     scramgit,
-    nur,
     ...
   } @ inputs: let
-    forAllSystems = nixpkgs.lib.genAttrs systems;
-    systems = [
-      "aarch64-linux"
-      "i686-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
-  in rec {
-    overlays = {
-      default = import ./overlay {inherit inputs;};
-    };
-    templates = import ./templates;
-    devShells = forAllSystems (system: {
-      default = legacyPackages.${system}.callPackage ./shell.nix {};
-    });
-
-    legacyPackages = forAllSystems (system:
-      import inputs.nixpkgs {
+    inherit (self) outputs;
+    lib = nixpkgs.lib // home-manager.lib;
+    systems = ["x86_64-linux" "aarch64-linux"];
+    forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
+    pkgsFor = lib.genAttrs systems (system:
+      import nixpkgs {
         inherit system;
-        overlays = builtins.attrValues overlays;
         config.allowUnfree = true;
       });
+  in {
+    inherit lib;
+    overlays = {
+      default = import ./overlay {inherit inputs outputs;};
+    };
+    templates = import ./templates;
+    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
 
     nixosConfigurations = {
-      terangreal = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
+      terangreal = lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/configuration.nix
           ./hosts/users/terangreal
-          {nixpkgs.overlays = builtins.attrValues overlays;}
-          ({
-            config,
-            pkgs,
-            ...
-          }: {
-            environment.systemPackages = [
-              neovim-flake.defaultPackage.x86_64-linux
-              scramgit.defaultPackage.x86_64-linux
-            ];
-          })
         ];
       };
-      tuathaan = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
+      tuathaan = lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/configuration.nix
           ./hosts/users/tuathaan
-          {nixpkgs.overlays = builtins.attrValues overlays;}
-          ({
-            config,
-            pkgs,
-            ...
-          }: {
-            environment.systemPackages = [
-              neovim-flake.defaultPackage.x86_64-linux
-              scramgit.defaultPackage.x86_64-linux
-            ];
-          })
+          # {nixpkgs.overlays = builtins.attrValues overlays;}
+          # ({
+          #   config,
+          #   pkgs,
+          #   ...
+          # }: {
+          #   environment.systemPackages = [
+          #     neovim-flake.defaultPackage.x86_64-linux
+          #     scramgit.defaultPackage.x86_64-linux
+          #   ];
+          # })
         ];
       };
     };
     homeConfigurations = {
-      "merrinx@terangreal" = home-manager.lib.homeManagerConfiguration {
-        pkgs = legacyPackages.x86_64-linux;
+      "merrinx@terangreal" = lib.homeManagerConfiguration {
+        pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {
-          inherit inputs;
+          inherit inputs outputs;
           hidpi = true;
         };
         modules = [
           ./home/home.nix
         ];
       };
-      "merrinx@tuathaan" = home-manager.lib.homeManagerConfiguration {
-        pkgs = legacyPackages.x86_64-linux;
+      "merrinx@tuathaan" = lib.homeManagerConfiguration {
+        pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {
-          inherit inputs;
+          inherit inputs outputs;
           hidpi = false;
         };
         modules = [

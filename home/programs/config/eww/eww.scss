@@ -1,0 +1,33 @@
+.parent {
+  border-radius: 10px;
+  padding: 10px;
+}
+.header {
+  font-weight: bold;
+  font-size: large;
+}
+.title {
+  margin-right: 50px;
+  margin-left: 1px;
+}
+.button {
+  margin: 10px; // increased from 2px
+  background-color: #333;
+  border-radius: 10px;
+  padding: 8px 20px 8px 20px; // increased padding for top, right, bottom, and left
+  font-size: 37px; // increased from 25px
+  transition: all 0.2s ease;
+}
+.button:hover {
+  background-color: #222;
+}
+.button:active {
+  background-color: #111;
+}
+.exit:hover {
+  color: #f66;
+}
+.exit,
+.button {
+  transition: all 0.2s ease;
+}

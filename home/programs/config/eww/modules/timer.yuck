@@ -1,0 +1,13 @@
+(defwindow timer-window
+  :stacking "overlay"
+  :exclusive "false"
+  :focusable true
+  :geometry (geometry :anchor "center")
+  (box :class "parent"
+       :space-evenly "true"
+       :orientation "v"
+    (label :class "clock" :text (format-time "%H:%M:%S"))
+    (button :class "timer-start"
+            :onclick "${EWW_CMD} exec ./../scripts/timer.sh $(echo 'Enter Timer Duration in seconds:' | wofi --dmenu)"
+            (label :text "Start Timer"))
+    (label :class "timer-countdown" :text "(timer-countdown)")))

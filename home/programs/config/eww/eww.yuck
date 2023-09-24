@@ -1,0 +1,34 @@
+(include "./modules/hover.yuck")
+(include "./modules/timer.yuck")
+
+(defwindow menu
+  :exclusive "false"
+  :stacking "overlay"
+  :focusable false
+  :geometry (geometry :x 19 :y 15 :anchor "top left")
+  (hover :window "menu"
+    (menu)))
+
+(defwidget menu []
+  (box :class "parent"
+       :space-evenly "false"
+       :orientation "h"
+    (box :class "body"
+         :space-evenly "false"
+         :orientation "h"
+      (button :class "button"
+              :vexpand "false"
+              :onclick "${EWW_CMD} open --toggle menu && exec hyprctl dispatch exit"
+        (label :text "󰍃"))
+      (button :class "button"
+              :vexpand "false"
+              :onclick "${EWW_CMD} open --toggle menu && exec systemctl suspend"
+        (label :text "󰒲"))
+      (button :class "button"
+              :vexpand "false"
+              :onclick "exec systemctl reboot"
+        (label :text ""))
+      (button :class "button"
+              :hexpand "false"
+              :onclick "poweroff"
+        (label :text "⏻")))))

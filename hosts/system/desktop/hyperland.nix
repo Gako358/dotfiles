@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   pkgs,
   lib,
   ...
@@ -9,16 +10,6 @@ with builtins; let
   cfg = config.desktop;
 in {
   config = mkIf (cfg.environment == "hyperland") {
-    services.xserver = {
-      enable = true;
-      libinput.enable = true;
-      layout = "us";
-      xkbVariant = "";
-      displayManager.gdm = {
-        enable = true;
-        wayland = true;
-      };
-    };
     # Set session variables
     environment.sessionVariables = {
       # If cursor is not visible, try to set this to "on".
@@ -26,10 +17,16 @@ in {
       # Electron apps use wayland
       NIXOS_OZONE_WL = "1";
     };
-    programs.hyprland = {
+    programs.fish = {
       enable = true;
-      xwayland.enable = true;
+      vendor = {
+        completions.enable = true;
+        config.enable = true;
+        functions.enable = true;
+      };
     };
+    # Set default shell to fish global
+    users.defaultUserShell = pkgs.fish;
 
     xdg.portal = {
       enable = true;
@@ -45,13 +42,17 @@ in {
       polkit.enable = true;
     };
 
-    environment.systemPackages = with pkgs.gnome; [
+    environment.systemPackages = with pkgs; [
       pkgs.glib
-      gnome-calendar
-      gnome-boxes
-      gnome-system-monitor
-      gnome-control-center
-      gnome-weather
+      gnome.gnome-calendar
+      gnome.gnome-boxes
+      gnome.gnome-system-monitor
+      gnome.gnome-weather
+      gnome.nautilus
+
+      # Neovim and Git build with system
+      inputs.neovim-flake.defaultPackage.${pkgs.system}
+      inputs.scramgit.defaultPackage.${pkgs.system}
     ];
 
     systemd = {

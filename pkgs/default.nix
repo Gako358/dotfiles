@@ -1,4 +1,4 @@
 # When you add custom packages, list them here
-{pkgs}: {
-  # example = pkgs.callPackage ./example { };
+{pkgs ? import <nixpkgs> {}}: rec {
+  pass-wofi = pkgs.callPackage ./pass-wofi {};
 }
