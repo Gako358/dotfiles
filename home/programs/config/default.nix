@@ -1,9 +1,9 @@
 {
   imports = [
-    ./eww.nix
     ./hyperland
     ./neofetch
     ./wofi
+    ./eww.nix
     ./fish.nix
     ./mako.nix
     ./ranger.nix

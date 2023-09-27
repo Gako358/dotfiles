@@ -96,6 +96,7 @@ in {
     windowrule = float, ^(xdg-desktop-portal-gnome)$
     windowrule = float, ^(transmission-gtk)$
     windowrule = float, ^(chrome-teams.live.com__-Default)$
+    windowrule = float, ^(org.kde.kdeconnect-settings)$
 
     windowrule = workspace 1, ^(firefox-beta)$
     windowrule = workspace 3, ^(Microsoft-edge)$
@@ -108,7 +109,6 @@ in {
     windowrule = float, title:^(ranger)$
     windowrule = float, title:^(spotify)$
     windowrule = float, title:^(btop)$
-    windowrule = float, title:^(org.kde.kdeconnect-settings)$
 
     # Launchers
     bind = ${mainMod}, Return, exec, ${terminal}

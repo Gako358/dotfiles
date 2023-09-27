@@ -17,16 +17,6 @@ in {
       # Electron apps use wayland
       NIXOS_OZONE_WL = "1";
     };
-    programs.fish = {
-      enable = true;
-      vendor = {
-        completions.enable = true;
-        config.enable = true;
-        functions.enable = true;
-      };
-    };
-    # Set default shell to fish global
-    users.defaultUserShell = pkgs.fish;
 
     xdg.portal = {
       enable = true;
@@ -48,7 +38,6 @@ in {
       gnome.gnome-boxes
       gnome.gnome-system-monitor
       gnome.gnome-weather
-      gnome.nautilus
 
       # Neovim and Git build with system
       inputs.neovim-flake.defaultPackage.${pkgs.system}

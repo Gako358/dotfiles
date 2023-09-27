@@ -5,7 +5,6 @@ let
     };
   };
 in [
-  ./dunst.nix
   ./secret.nix
   more
 ]
