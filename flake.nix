@@ -72,17 +72,6 @@
         modules = [
           ./hosts/configuration.nix
           ./hosts/users/tuathaan
-          # {nixpkgs.overlays = builtins.attrValues overlays;}
-          # ({
-          #   config,
-          #   pkgs,
-          #   ...
-          # }: {
-          #   environment.systemPackages = [
-          #     neovim-flake.defaultPackage.x86_64-linux
-          #     scramgit.defaultPackage.x86_64-linux
-          #   ];
-          # })
         ];
       };
     };

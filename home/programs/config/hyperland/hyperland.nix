@@ -88,6 +88,7 @@ in {
     windowrule = float, ^(Gimp-2.10)$
     windowrule = float, ^(org.gnome.Calculator)$
     windowrule = float, ^(org.gnome.Calendar)$
+    windowrule = float, ^(gnome-system-monitor)$
     windowrule = float, ^(pavucontrol)$
     windowrule = float, ^(nm-connection-editor)$
     windowrule = float, ^(Color Picker)$

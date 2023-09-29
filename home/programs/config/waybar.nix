@@ -29,6 +29,8 @@
 
   jq = "${pkgs.jq}/bin/jq";
   eww = "${pkgs.eww-wayland}/bin/eww";
+  calendar = "${pkgs.gnome.gnome-calendar}/bin/gnome-calendar";
+  system = "${pkgs.gnome.gnome-system-monitor}/bin/gnome-system-monitor";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   playerctld = "${pkgs.playerctl}/bin/playerctld";
 
@@ -92,6 +94,7 @@ in {
         tooltip = "true";
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         format-alt = " {:%d/%m}";
+        on-click = "${calendar}";
       };
       "wlr/workspaces" = {
         active-only = false;
@@ -244,11 +247,13 @@ in {
       memory = {
         format = "󰍛 {}%";
         format-alt = "󰍛 {used}/{total} GiB";
+        on-click = "${system}";
         interval = 5;
       };
       cpu = {
         format = "󰻠 {usage}%";
         format-alt = "󰻠 {avg_frequency} GHz";
+        on-click = "${system}";
         interval = 5;
       };
       network = {
@@ -273,7 +278,7 @@ in {
       };
       "custom/launcher" = {
         format = "";
-        on-click = "${eww} open --toggle menu --screen 0";
+        on-click = "${eww} open-many --toggle player_side time_side sliders_side sys_side";
         tooltip = "false";
       };
     };

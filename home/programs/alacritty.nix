@@ -63,7 +63,7 @@ in {
           lines = 55;
         };
         decorations = "full";
-        opacity = 0.73;
+        opacity = 0.82;
         padding = {
           x = 5;
           y = 5;

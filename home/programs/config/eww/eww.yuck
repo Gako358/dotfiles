@@ -1,34 +1,83 @@
 (include "./modules/hover.yuck")
 (include "./modules/timer.yuck")
 
-(defwindow menu
-  :exclusive "false"
-  :stacking "overlay"
-  :focusable false
-  :geometry (geometry :x 19 :y 15 :anchor "top left")
-  (hover :window "menu"
-    (menu)))
+(defwidget player_side []
+  (box :orientation "h" :space-evenly "false"
+          (box :class "musicart-side" :style "background-image: url('${art}');" {art})
+    (box :class "musicstuff-side" :orientation "v" :space-evenly "false"
+            (box :class "musicinfo-side" "${music}${music}")
+      (box :orientation "h" :halign "center" :class "musicbtn-side" :space-evenly "false"
+        (button :onclick "playerctl previous" "")
+         (button :class "pause-play-side" :onclick "playerctl play-pause")
+        (button :onclick "playerctl next" "")))))
+(defwidget time_side []
+  (box :orientation "v" :space-evenly "false"
+    (box :orientation "h" :class "time-side" :space-evenly "true"
+      (box :class "hour-side" {hour})
+      (box :class "minute-side" {min}))
+    (box :class "day-side" {day})))
+(defwidget sliders_side []
+  (box :orientation "v" :space-evenly "false" :class "sliders-side"
+    (box :orientation "h" :class "slider-vol-side" :space-evenly "false"
+      (box :class "label-vol-side" " ")
+      (scale :min 0 :max 101 :value {volume} :onchange "amixer -D pulse sset Master {}%"))
+    (box :orientation "h" :class "slider-bright-side" :space-evenly "false"
+      (box :class "label-bright-side" " ")
+      (scale :min 0 :max 101 :value {bright} :onchange "brightnessctl s {}%"))
+    (box :orientation "h" :class "slider-ram-side" :space-evenly "false"
+      (box :class "label-ram-side" " ")
+      (scale :min 0 :active "false" :max 101 :value {ram-used}))
+    (box :orientation "h" :class "slider-battery-side" :space-evenly "false"
+      (box :class "label-battery-side" {bat-icon})
+      (scale :min 0 :active "false" :max 101 :value {battery-remaining}))))
+(defwidget sys_side []
+  (box :orientation "v" :space-evenly "false"
+    (button :class "search-side" :onclick "${EWW_CMD} open --toggle menu && exec wofi --show drun" "  Search...")
+    (box :orientation "h" :halign "center" :class "sysbtn" :space-evenly "true"
+      (button :class "shutdown-side" :onclick "${EWW_CMD} open --toggle menu && exec shutdown now" "")
+      (button :class "reboot-side" :onclick "${EWW_CMD} open --toggle menu && exec reboot" "")
+      (button :class "lock-side" :onclick "${EWW_CMD} open --toggle menu && exec swaylock -f -c 000000" "")
+      (button :class "suspend-side" :onclick "${EWW_CMD} open --toggle menu && exec systemctl suspend" "")
+      (button :class "logout-side" :onclick "${EWW_CMD} open --toggle menu && exec hyprctl dispatch exit" ""))))
 
-(defwidget menu []
-  (box :class "parent"
-       :space-evenly "false"
-       :orientation "h"
-    (box :class "body"
-         :space-evenly "false"
-         :orientation "h"
-      (button :class "button"
-              :vexpand "false"
-              :onclick "${EWW_CMD} open --toggle menu && exec hyprctl dispatch exit"
-        (label :text "󰍃"))
-      (button :class "button"
-              :vexpand "false"
-              :onclick "${EWW_CMD} open --toggle menu && exec systemctl suspend"
-        (label :text "󰒲"))
-      (button :class "button"
-              :vexpand "false"
-              :onclick "exec systemctl reboot"
-        (label :text ""))
-      (button :class "button"
-              :hexpand "false"
-              :onclick "poweroff"
-        (label :text "⏻")))))
+;; Music vars
+(defpoll music :interval "10h"  "~/.config/eww/scripts/gettitle")
+(defpoll art :interval "10h"  "~/.config/eww/scripts/getart")
+(defpoll volume :interval "16ms"  "~/.config/eww/scripts/getvol")
+(defpoll bright :interval "16ms"  "~/.config/eww/scripts/getbri")
+
+;; Date vars
+(defpoll number_day :interval "5h"  "date \"+%d\"")
+(defpoll month :interval "10h"  "date \"+%b\"")
+(defpoll min :interval "10s"  "date \"+%M\"")
+(defpoll hour :interval "10s"  "date \"+%H\"")
+(defpoll day :interval "15h"  "~/.config/eww/scripts/getday")
+(defpoll month_full :interval "15h"  "date \"+%B\"")
+(defpoll year_full :interval "15h"  "date \"+%Y\"")
+
+;; Your Name (not the anime movie, sadly)
+(defpoll whoami :interval "50h" "whoami")
+
+;; Big brain RAM vars
+(defpoll ram-used :interval "1s"  "~/.config/eww/scripts/getram")
+
+;; Battery charge vars
+(defpoll battery-remaining :interval "5s"  "cat /sys/class/power_supply/BAT0/capacity")
+(defpoll bat-icon :interval "5s"  "~/.config/eww/scripts/battery.sh")
+
+(defwindow time_side
+    :monitor 0
+	:geometry (geometry :x "10px" :y "45px" :width "300px" :height "135px")
+		(time_side))
+(defwindow player_side
+    :monitor 0
+	:geometry (geometry :x "10px" :y "185px" :width "300px" :height "122px")
+		(player_side))
+(defwindow sliders_side
+    :monitor 0
+	:geometry (geometry :x "10px" :y "312px" :width "300px" :height "205px")
+		(sliders_side))
+(defwindow sys_side
+    :monitor 0
+	:geometry (geometry :x "10px" :y "522px" :width "300px" :height "153px")
+		(sys_side))
