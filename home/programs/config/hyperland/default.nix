@@ -4,10 +4,12 @@
   ...
 }: {
   imports = [
+    ./binds.nix
     ./hyperland.nix
     ./hyprpaper.nix
     ./layout.nix
     ./monitors.nix
+    ./rules.nix
     ./systemd-fixes.nix
     ./tty.nix
   ];
@@ -16,6 +18,7 @@
     enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     systemdIntegration = true;
+    xwayland.enable = true;
   };
 
   # Fake a tray, so apps can start

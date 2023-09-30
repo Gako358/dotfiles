@@ -60,7 +60,7 @@ in {
       window = {
         dimensions = {
           columns = 154;
-          lines = 55;
+          lines = 37;
         };
         decorations = "full";
         opacity = 0.82;

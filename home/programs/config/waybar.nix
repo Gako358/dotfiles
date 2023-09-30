@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  specialArgs,
+  ...
+}: let
   opacity = "0";
   palette = {
     font = "RobotoMono Nerd Font";
@@ -80,15 +84,25 @@ in {
         "hyprland/workspaces"
         "cava#right"
       ];
-      modules-right = [
-        "tray"
-        "cpu"
-        "battery"
-        "memory"
-        "pulseaudio"
-        "network"
-        "clock"
-      ];
+      modules-right =
+        if specialArgs.hidpi
+        then [
+          "tray"
+          "cpu"
+          "memory"
+          "pulseaudio"
+          "network"
+          "clock"
+        ]
+        else [
+          "tray"
+          "cpu"
+          "battery"
+          "memory"
+          "pulseaudio"
+          "network"
+          "clock"
+        ];
       clock = {
         format = " {:%a, %d %b, %I:%M %p}";
         tooltip = "true";

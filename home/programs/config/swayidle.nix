@@ -18,8 +18,8 @@
 
   suspendDelay =
     if specialArgs.hidpi
-    then 60 * 60
-    else 10 * 60;
+    then 180 * 60
+    else 30 * 60;
   screenDelay = 20; # 20 seconds
   micMute = 10; # 10 seconds
 
