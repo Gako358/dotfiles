@@ -31,6 +31,11 @@
       dates = "weekly";
       options = "--delete-older-than 10d";
     };
+    # Enable optimisation
+    optimise = {
+      automatic = true;
+      dates = ["weekly"];
+    };
   };
   # Timezone and locale
   time.timeZone = "Europe/Oslo";
