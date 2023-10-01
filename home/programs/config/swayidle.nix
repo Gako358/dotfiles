@@ -66,10 +66,11 @@ in {
         timeout = screenDelay;
         command = "${hyprctl} dispatch dpms off";
         resumeCommand = "${hyprctl} dispatch dpms on";
-      })
-      ++ (afterLockTimeout {
-        timeout = suspendDelay;
-        command = suspendCommand;
+        # Waiting for suspend fix in hyprland
+        # })
+        # ++ (afterLockTimeout {
+        #   timeout = suspendDelay;
+        #   command = suspendCommand;
       });
   };
 }
