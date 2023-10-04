@@ -613,11 +613,11 @@
         "which-key": "which-key"
       },
       "locked": {
-        "lastModified": 1695474657,
-        "narHash": "sha256-uhurYIFMjDeMxO0hDk9WhJw6FjyHJrQaIYeYQ3pim0I=",
+        "lastModified": 1696346757,
+        "narHash": "sha256-5jEaN9MGR2GHhsJVZboC2+eyFN3SS9CbqFXWkhkWA5M=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "f413bdaf961de1e8016658c8e14babddf8155aee",
+        "rev": "71ad24b84b4b9d28880cfdea1104b81d2b0c9c1d",
         "type": "github"
       },
       "original": {
@@ -1008,11 +1008,11 @@
     "nvim-metals": {
       "flake": false,
       "locked": {
-        "lastModified": 1685694923,
-        "narHash": "sha256-08Bj03Pgey2eUGJwDRa78lX7vq0zMPfi0yEnVugiDLs=",
+        "lastModified": 1695038791,
+        "narHash": "sha256-lREhB6Obo3YWsOYFVn7Z0ckiF8hUSWbBxCPZOGgm9Jw=",
         "owner": "scalameta",
         "repo": "nvim-metals",
-        "rev": "1b9053139342ed9ab47b29e5a1076fcbd971a565",
+        "rev": "f41c14ae8500ceccb71e6695574b67881f0b5a93",
         "type": "github"
       },
       "original": {
