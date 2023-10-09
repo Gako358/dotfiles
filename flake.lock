@@ -613,11 +613,11 @@
         "which-key": "which-key"
       },
       "locked": {
-        "lastModified": 1696836757,
-        "narHash": "sha256-aSf0ZQZxporY5p1RR4mZi/FHWyUciXmFrW61oczzvnM=",
+        "lastModified": 1696873083,
+        "narHash": "sha256-J0QP3gT7Ky8M9/PJBeifb+XsunhPZ0Df7lKBhiE8LMg=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "11f592f3b44d215c8624397d45c2804bf91af84c",
+        "rev": "fc008e3bbe2838a686c2bf9d299fc583fe053dc1",
         "type": "github"
       },
       "original": {
