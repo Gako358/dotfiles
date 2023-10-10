@@ -36,7 +36,9 @@ in {
     }
 
     exec-once = ${wallpaper}
-    exec-once= ${eww} daemon
+    exec-once = ${eww} daemon
+    exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+    exec-once = "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 
     # Auto lock
     exec ${idle} -w \
