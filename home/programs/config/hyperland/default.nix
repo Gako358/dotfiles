@@ -18,8 +18,11 @@
     enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     systemd.enable = true;
-    xwayland.enable = true;
   };
+
+  home.packages = [
+    inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
+  ];
 
   # Fake a tray, so apps can start
   systemd.user.targets.tray = {

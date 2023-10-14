@@ -10,17 +10,20 @@ with builtins; let
   cfg = config.desktop;
 in {
   config = mkIf (cfg.environment == "hyperland") {
+    programs = {
+      hyprland.enable = true;
+    };
+
     # Set session variables
-    environment.sessionVariables = {
+    environment.variables = {
       # If cursor is not visible, try to set this to "on".
       WLR_NO_HARDWARE_CURSORS = "1";
+      NIXOS_OZONE_WL = "1";
     };
 
     xdg.portal = {
       enable = true;
       extraPortals = with pkgs; [
-        xdg-desktop-portal-hyprland
-        xdg-desktop-portal-gnome
         xdg-desktop-portal-gtk
       ];
     };
