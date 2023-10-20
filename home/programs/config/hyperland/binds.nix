@@ -30,7 +30,7 @@ in {
     bind = ${mainMod}, grave, togglespecialworkspace
 
     # Bindings
-    bind = ${mainMod} ${SECONDARY}, Q, exit
+    bind = ${mainMod} ${SECONDARY} ${TERTIARY}, Q, exit
     bind = ${mainMod}, Q, killactive
     bind = ${mainMod}, F, togglefloating
     bind = ${mainMod}, G, fullscreen
