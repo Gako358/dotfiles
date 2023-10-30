@@ -15,6 +15,7 @@
     gnomeExtensions.vitals
     gnomeExtensions.space-bar
     gnome.dconf-editor
+    gnome.gnome-tweaks
     gnomeExtensions.pop-shell
     flat-remix-gnome
   ];
