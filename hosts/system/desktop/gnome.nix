@@ -1,7 +1,8 @@
 {
+  config,
+  inputs,
   pkgs,
   lib,
-  config,
   ...
 }:
 with lib;
@@ -20,6 +21,13 @@ in {
       };
       desktopManager.gnome.enable = true;
     };
+    
+    environment.systemPackages = with pkgs; [
+      # Neovim and Git build with system
+      inputs.neovim-flake.defaultPackage.${pkgs.system}
+      inputs.scramgit.defaultPackage.${pkgs.system}
+    ];
+    
     # Set session variables
     environment.sessionVariables = {
       # If cursor is not visible, try to set this to "on".
@@ -29,6 +37,7 @@ in {
     };
     # Electron apps use wayland
     xdg.portal.enable = true;
+    
     environment.gnome.excludePackages =
       (with pkgs; [
         gnome-photos
@@ -38,14 +47,13 @@ in {
         gnome-music
         gnome-contacts
         simple-scan
-        epiphany # web browser
-        geary # email reader
-        evince # document viewer
-        totem # video player
-        tali # poker game
-        iagno # go game
-        hitori # sudoku game
-        atomix # puzzle game
+        epiphany      # web browser
+        geary         # email reader
+        totem         # video player
+        tali          # poker game
+        iagno         # go game
+        hitori        # sudoku game
+        atomix        # puzzle game
       ]);
 
     # Set fish as the default shell

@@ -44,7 +44,7 @@
     ripgrep              # fast grep
     scrot                # screenshot tool
     slurp                # select a region in a wayland compositor
-    ncspot               # music streaming
+    spotify              # music streaming
     tldr                 # summary of a man page
     tree                 # display files in a tree view
     unzip                # unzip files
@@ -56,11 +56,7 @@
     wl-clipboard         # wayland clipboard manager
     xarchiver            # archive manager
     xclip                # command-line interface to X selections
-    zathura              # document viewer
     zip                  # zip files
-
-    # Hyprland specific
-    sway-contrib.grimshot
   ];
 in {
   programs.home-manager.enable = true;

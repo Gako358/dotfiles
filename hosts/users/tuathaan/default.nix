@@ -9,7 +9,7 @@
 
   networking.hostName = "tuathaan";
   # Set desktop environment and video drivers
-  desktop.environment = "hyperland";
+  desktop.environment = "gnome";
   users.users = {
     merrinx = {
       isNormalUser = true;

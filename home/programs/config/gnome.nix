@@ -8,7 +8,6 @@
     gnomeExtensions.caffeine
     gnomeExtensions.clipboard-indicator
     gnomeExtensions.dash-to-panel
-    gnomeExtensions.forge
     gnomeExtensions.just-perfection
     gnomeExtensions.user-themes
     gnomeExtensions.tray-icons-reloaded
@@ -27,7 +26,6 @@
         "caffeine@patapon.info"
         "clipboard-indicator@tudmotu.com"
         "dash-to-panel@jderose9.github.com"
-        "forge@jmmaranan.com"
         "just-perfection-desktop@just-perfection"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "sound-output-device-chooser@kgshank.net"
@@ -37,7 +35,7 @@
         "Vitals@CoreCoding.com"
       ];
       favorite-apps = [
-        "firefox.desktop"
+        "firefox-beta.desktop"
         "thunderbird.desktop"
         "org.gnome.Nautilus.desktop"
         "spotify.desktop"
@@ -79,42 +77,6 @@
       animate-appicon-hover = true;
       animate-appicon-hover-animation-travel = "{'SIMPLE': 0.14999999999999999, 'RIPPLE': 0.40000000000000002, 'PLANK': 0.0}";
       isolate-monitors = true;
-    };
-
-    # Dash to panel
-    # "org/gnome/shell/extensions/dash-to-dock" = {
-    #   dock-fixed = true;
-    #   # Disable keyboard shortcuts to activate apps
-    #   hot-keys = false;
-    #   # Hide "Show Applications" button
-    #   show-show-apps-button = true;
-    # };
-
-    "org/gnome/shell/extensions/forge" = {
-      tiling-mode-enabled = true;
-      window-gap-size = lib.hm.gvariant.mkUint32 10;
-      window-gap-size-increment = lib.hm.gvariant.mkUint32 1;
-      window-gap-hidden-on-single = false;
-    };
-
-    "org/gnome/shell/extensions/forge/keybindings" = {
-      # Set active colors manually
-      focus-border-toggle = true;
-      float-always-on-top-enabled = true;
-      window-focus-up = ["<Super>k"];
-      window-focus-down = ["<Super>j"];
-      window-focus-left = ["<Super>h"];
-      window-focus-right = ["<Super>l"];
-      # window-swap-up = ["<Shift><Super>Up"];
-      # window-swap-down = ["<Shift><Super>Down"];
-      # window-swap-left = ["<Shift><Super>Left"];
-      # window-swap-right = ["<Shift><Super>Right"];
-      window-move-up = ["<Shift><Super>k"];
-      window-move-down = ["<Shift><Super>j"];
-      window-move-left = ["<Shift><Super>h"];
-      window-move-right = ["<Shift><Super>l"];
-      window-swap-last-active = ["@as []"];
-      window-toggle-float = ["<Shift><Super>f"];
     };
 
     # Keybindings
