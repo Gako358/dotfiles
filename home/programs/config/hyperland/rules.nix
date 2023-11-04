@@ -19,9 +19,10 @@
 
     windowrule = workspace 1, ^(firefox-beta)$
     windowrule = workspace 3, ^(Microsoft-edge)$
+    windowrule = workspace 3, ^(thunderbird)$
+    windowrule = workspace 3, title:^(app.slack.com_/client/T04MZPW21RA/C04MUBWKREZ)$
     windowrule = workspace 5, ^(Wfica)$
-    windowrule = workspace 7, ^(thunderbird)$
-    windowrule = workspace 9, ^(chrome-discord.com__channels_@me-Default)$
+    windowrule = workspace 9, title:^(discord.com_/channels/@me)$
 
     windowrule = float, title:^(ranger)$
     windowrule = float, title:^(spotify)$
