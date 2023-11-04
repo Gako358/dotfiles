@@ -9,7 +9,7 @@
 
   networking.hostName = "terangreal";
   # Set desktop environment and video drivers
-  desktop.environment = "gnome";
+  desktop.environment = "hyprland";
   users.users = {
     merrinx = {
       isNormalUser = true;

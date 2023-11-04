@@ -9,7 +9,7 @@ with builtins; {
   options.desktop = {
     environment = mkOption {
       type = types.enum [
-        "hyperland"
+        "hyprland"
         "gnome"
         "none"
         "dwm"
