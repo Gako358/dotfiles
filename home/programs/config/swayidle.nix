@@ -13,8 +13,8 @@
   isLocked = "${pgrep} -x ${swaylock}";
   lockTime =
     if specialArgs.hidpi
-    then 30 * 60
-    else 10 * 60;
+    then 60 * 60
+    else 20 * 60;
 
   suspendDelay =
     if specialArgs.hidpi
