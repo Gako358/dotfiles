@@ -7,7 +7,6 @@
   devSDKs = with pkgs; {
     java19 = jdk19;
     scala = dotty;
-    metals = metals;
     node = nodejs;
     yarn = yarn;
   };
