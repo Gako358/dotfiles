@@ -31,6 +31,9 @@
       dates = "weekly";
       options = "--delete-older-than 10d";
     };
+    # Trusted users
+    settings.trusted-users = ["root" "merrinx" "@wheel"];
+
     # Enable optimisation
     optimise = {
       automatic = true;
