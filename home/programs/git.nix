@@ -61,6 +61,13 @@ in {
       ];
       userEmail = "gako358@outlook.com";
       userName = "merrinx";
+
+      includes = [
+        {
+          path = "~/Projects/workspace/.gitconfig-work";
+          condition = "gitdir:~/Projects/workspace/";
+        }
+      ];
     }
     // (pkgs.sxm.git or {});
 }
