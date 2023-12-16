@@ -5,7 +5,7 @@
 }: let
   fontSize =
     if specialArgs.hidpi
-    then 12
+    then 11
     else 11;
 in {
   programs.alacritty = {
