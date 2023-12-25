@@ -1,6 +1,47 @@
 #!/usr/bin/env bash
 
 set -ex
+
+
+# Test system
+clear
+echo "Please enter the flake:"
+echo "Choose from: 1: terangreal, 2: tuathaan"
+# Get flake input from the user
+read flake
+if [[ "$flake" == "1" ]]
+then
+    flake="terangreal"
+elif [[ "$flake" == "2" ]]
+then
+    flake="tuathaan"
+else
+    echo "Invalid input!"
+    echo "Use 1 or 2..."
+    exit 1
+fi
+
+home_name="merrinx@$flake"
+
+echo "Do you want to test the system or home-manager?"
+echo "1. System, 2. Home-manager, 3. Both, 4. None"
+read test
+
+if [[ "$test" == "1" ]]; then
+    nixos-rebuild build --flake .#$flake
+    exit 0
+elif [[ "$test" == "2" ]]; then
+    home-manager build --flake .#$home_name
+    exit 0
+elif [[ "$test" == "3" ]]; then
+    nixos-rebuild build --flake .#$flake
+    home-manager build --flake .#$home_name
+    exit 0
+else
+    continue
+fi
+
+clear
 echo "Run a garbage collection?"
 echo "1. Yes, 2. No"
 read gc
@@ -15,38 +56,6 @@ else
 fi
 
 git pull
-
-# Get flake input from the user
-clear
-echo "Please enter the flake:"
-echo "Choose from: 1: terangreal, 2: tuathaan"
-
-read flake
-if [[ "$flake" == "1" ]]
-then
-    flake="terangreal"
-elif [[ "$flake" == "2" ]]
-then
-    flake="tuathaan"
-else
-    echo "Invalid input!"
-    echo "Use 1 or 2..."
-    exit 1
-fi
-
-# Check if the user wants to test the flake
-clear
-echo "For testing flake choose <<test>>"
-echo "Press enter to continue..."
-read test
-if [[ "$test" == "test" ]]
-then
-    echo "Testing flake..."
-    sudo nixos-rebuild build --flake .#$flake
-    exit 0
-else
-    continue
-fi
 
 # Run the nixos-rebuild command
 sudo nixos-rebuild switch --flake .#$flake
@@ -67,7 +76,6 @@ then
 else
     continue
 fi
-home_name="merrinx@$flake"
 
 # Update home-manager
 home-manager switch --flake .#$home_name
