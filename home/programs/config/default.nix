@@ -3,6 +3,7 @@
     ./hyperland
     ./neofetch
     ./wofi
+    ./emacs.nix
     ./eww.nix
     ./fish.nix
     ./mako.nix
