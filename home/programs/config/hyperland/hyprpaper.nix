@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/xmastux.jpg";
+  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/xmas-girl.png";
 in {
   home.packages = with pkgs; [
     hyprpaper
