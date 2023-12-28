@@ -203,7 +203,11 @@ in
       (require 'flycheck)
       (global-flycheck-mode) ; Enable flycheck
 
+      ;; Set keybindings for moving between windows
+      (global-set-key (kbd "C-h") 'windmove-left)
+      (global-set-key (kbd "C-j") 'windmove-down)
       (global-set-key (kbd "C-k") 'windmove-up)
+      (global-set-key (kbd "C-l") 'windmove-right)
 
       ;; Which Key
       (require 'which-key)

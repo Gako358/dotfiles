@@ -17,7 +17,6 @@
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [
           copilot-vim
-          telescope-nvim
         ];
       };
     };
