@@ -21,13 +21,11 @@ in {
       };
       desktopManager.gnome.enable = true;
     };
-    
+
     environment.systemPackages = with pkgs; [
-      # Neovim and Git build with system
-      inputs.neovim-flake.defaultPackage.${pkgs.system}
       inputs.scramgit.defaultPackage.${pkgs.system}
     ];
-    
+
     # Set session variables
     environment.sessionVariables = {
       # If cursor is not visible, try to set this to "on".
@@ -37,7 +35,7 @@ in {
     };
     # Electron apps use wayland
     xdg.portal.enable = true;
-    
+
     environment.gnome.excludePackages =
       (with pkgs; [
         gnome-photos

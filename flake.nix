@@ -29,8 +29,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # My Neovim build
-    neovim-flake.url = "github:gako358/neovim";
     # Scramgit
     scramgit.url = "github:gako358/scram";
   };
@@ -41,7 +39,6 @@
     hardware,
     flake-utils,
     home-manager,
-    neovim-flake,
     scramgit,
     ...
   } @ inputs: let

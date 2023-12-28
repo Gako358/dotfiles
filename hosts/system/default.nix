@@ -19,6 +19,7 @@ with lib; {
     ./desktop
     ./fonts
     ./nfc.nix
+    ./neovim.nix
     ./shell.nix
   ];
 }

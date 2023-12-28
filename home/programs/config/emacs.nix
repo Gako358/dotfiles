@@ -1,10 +1,12 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   # Emacs Copilot Installation Definition
   emacsCopilotSrc = builtins.fetchGit {
     url = "https://github.com/zerolfx/copilot.el.git";
     rev = "421703f5dd5218ec2a3aa23ddf09d5f13e5014c2";
   };
-in {
+in
+{
   programs.emacs = {
     enable = true;
     extraPackages = epkgs:
@@ -148,7 +150,6 @@ in {
         "t" 'vterm
         "p" 'projectile-command-map
         "/" 'magit-status
-        "xf" 'xml-pretty-print
 
         ;; Org Keybindings
         "oa" 'org-agenda
@@ -162,6 +163,7 @@ in {
         "lwa" 'lsp-ui-peek-find-implementation
         "lwh" 'lsp-ui-doc-glance
         "lwe" 'lsp-treemacs-errors-list
+        "lxf" 'xml-pretty-print
         "lf" 'lsp-format-buffer
         "lr" 'lsp-rename
         "lR" 'lsp-workspace-restart
@@ -250,6 +252,20 @@ in {
       (require 'blacken)
       (add-hook 'python-mode-hook #'lsp-deferred)
 
+      ;; Enable SQL
+      (require 'sql)
+
+      (defun upcase-sql-keywords ()
+        (interactive)
+        (save-excursion
+          (dolist (keywords sql-mode-postgres-font-lock-keywords)
+            (goto-char (point-min))
+            (while (re-search-forward (car keywords) nil t)
+              (goto-char (+ 1 (match-beginning 0)))
+              (when (eql font-lock-keyword-face (face-at-point))
+                (backward-char)
+                (upcase-word 1)
+                (forward-char))))))
 
       ;; Javascript Environment
       (helm-mode +1)

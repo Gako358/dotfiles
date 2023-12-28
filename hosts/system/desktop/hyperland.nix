@@ -50,8 +50,6 @@ in {
       gnome.gnome-system-monitor
       gnome.gnome-weather
 
-      # Neovim and Git build with system
-      inputs.neovim-flake.defaultPackage.${pkgs.system}
       inputs.scramgit.defaultPackage.${pkgs.system}
     ];
 
