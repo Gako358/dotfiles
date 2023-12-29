@@ -324,6 +324,10 @@ in
       (add-hook 'java-mode-hook #'dap-mode)
       (add-hook 'java-mode-hook #'flycheck-mode)
 
+      ;; Enable JDTLS instead of using npm to install
+      ;; Need to set the path in the repo flakes.nix file
+      ;; (setq lsp-java-server-install-dir (getenv "JDTLS_PATH"))
+
       ;; Enable Javascript
       (require 'web-mode)
       (require 'vue-mode)
