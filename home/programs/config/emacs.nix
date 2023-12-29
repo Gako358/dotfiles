@@ -31,6 +31,7 @@ in
         all-the-icons # A package for inserting developer icons
         all-the-icons-dired # Shows icons for each file in dired mode
         all-the-icons-ivy-rich # More friendly display transformer for ivy
+        counsel # Various completion functions using Ivy
         dired-single # Reuse the dired buffer
         direnv # Environment switcher for Emacs
         docker # Docker integration
@@ -54,6 +55,7 @@ in
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
         org-pomodoro # Pomodoro technique implementation
+        org-present # A simple org-mode presentation tool
         org-roam # A note-taking tool based on the principles of networked thought
         org-roam-ui # A graphical user interface for org-roam
         ox-hugo # Org exporter to Hugo
@@ -77,7 +79,6 @@ in
         # Language Server
         dap-mode # Debug Adapter Protocol mode
         ccls # C/C++/ObjC language server
-        helm-lsp # Helm UI for the Language Server Protocol
         lsp-java # Java
         lsp-pyright # Python language server
         lsp-metals # Scala language server
@@ -89,8 +90,9 @@ in
         # Programming language packages.
         blacken # Black formatter for Python
         company # Modular text completion framework
-        helm-xref # Helm UI for xref
+        company-box # A company front-end with icons
         json-mode # Major mode for editing JSON files
+        markdown-mode # Major mode for editing Markdown files
         nix-mode # Nix integration
         python-mode # Major mode for editing Python files
         rustic # Rust development environment
@@ -99,9 +101,6 @@ in
         vue-mode # Major mode for editing Vue.js files
         yaml-mode # Major mode for editing YAML files
         yasnippet # Template system for Emacs
-
-        # User interface packages.
-        counsel # Various completion functions using Ivy
       ];
     extraConfig = ''
       ;; General Settings
@@ -151,7 +150,12 @@ in
 
         ;; Org Keybindings
         "oa" 'org-agenda
-        "oc" 'org-capture
+        "orl" 'org-roam-buffer-toggle
+        "orf" 'org-roam-node-find
+        "ori" 'org-roam-node-insert
+        "ors" 'org-roam-db-sync
+        "orr" 'org-roam-ui-mode
+        "opl" 'org-present
 
         ;; LSP Keybindings
         "lws" 'lsp-ui-sideline-mode
@@ -222,11 +226,42 @@ in
       (ivy-mode 1)
       (setq ivy-use-virtual-buffers t)
       (setq ivy-count-format "(%d/%d) ")
-      (global-set-key (kbd "C-s") 'swiper)
-      (global-set-key (kbd "C-c C-r") 'ivy-resume)
-      (global-set-key (kbd "<f6>") 'ivy-resume)
-      (global-set-key (kbd "M-x") 'counsel-M-x)
-      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+
+      ;; Org Roam
+      (require 'org-roam)
+      (setq org-roam-v2-ack t)
+      (setq org-roam-directory "~/Documents/Notes")
+      (setq org-roam-db-location "~/Documents/Notes/org-roam.db")
+      (setq org-roam-completion-everywhere t)
+
+      ;; Org Roam UI
+      (require 'org-roam-ui)
+      (setq org-roam-ui-sync-theme t)
+      (setq org-roam-ui-follow t)
+      (setq org-roam-ui-update-on-save t)
+      (setq org-roam-ui-open-on-start t)
+
+      ;; Org Present
+      (require 'org-present)
+      (add-hook 'org-present-mode-hook
+                (lambda ()
+                  (org-present-big)
+                  (org-display-inline-images)
+                  (org-present-hide-cursor)
+                  (org-present-read-only)))
+      (add-hook 'org-present-mode-quit-hook
+                (lambda ()
+                  (org-present-small)
+                  (org-remove-inline-images)
+                  (org-present-show-cursor)
+                  (org-present-read-write)))
+
+      ;; Org Pomodoro
+      (require 'org-pomodoro)
+      (setq org-pomodoro-length 25)
+      (setq org-pomodoro-short-break-length 5)
+      (setq org-pomodoro-long-break-length 15)
+      (setq org-pomodoro-manual-break t)
 
       ;; Projectile
       (setq projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1)))
@@ -271,11 +306,10 @@ in
       (require 'dap-java)
       (add-hook 'java-mode-hook #'lsp-deferred)
       (add-hook 'java-mode-hook #'dap-mode)
+      (add-hook 'java-mode-hook #'flycheck-mode)
 
       ;; Enable Javascript
-      (helm-mode +1)
       (require 'web-mode)
-      (require 'helm-xref)
       (require 'vue-mode)
       (require 'json-mode)
       (require 'dap-chrome)
@@ -286,6 +320,10 @@ in
       ;; Enable Json
       (require 'json-mode)
       (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
+
+      ;; Enable Markdown
+      (require 'markdown-mode)
+      (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
       ;; Enable Nix
       (require 'nix-mode)
@@ -318,6 +356,8 @@ in
 
       ;; Enable SQL
       (require 'sql)
+      (add-hook 'sql-mode-hook #'lsp-deferred)
+      (add-hook 'sql-mode-hook #'flycheck-mode)
 
       (defun upcase-sql-keywords ()
         (interactive)
@@ -338,9 +378,13 @@ in
           (add-to-list 'load-path scala-ts-mode-dir)
           (require 'scala-ts-mode)))
 
-      (require 'lsp-metals)
+      (defun setup-scala-mode ()
+             (require 'lsp-metals)
+             (add-hook 'before-save-hook 'lsp-format-buffer))
+
       (require 'scala-mode)
       (add-hook 'scala-mode-hook #'lsp-metals-bootstrapped)
+      (add-hook 'scala-mode-hook #'setup-scala-mode)
 
       ;; Enable SBT
       (require 'sbt-mode)
@@ -351,6 +395,7 @@ in
       ;; Enable LSP-TailwindCSS
       (require 'lsp-tailwindcss)
       (add-hook 'css-mode-hook #'lsp-deferred)
+      (add-hook 'css-mode-hook #'flycheck-mode)
 
       ;; Xml Pretty Print
       (defun xml-pretty-print (beg end &optional arg)
@@ -364,8 +409,17 @@ in
       (setq rustic-lsp-server 'rust-analyzer)
       (add-hook 'rustic-mode-hook #'lsp-deferred)
 
+      ;; Enable Completion
       (require 'company)
-      (setq company-backends '(company-capf))
+      (require 'company-box)
+      (defun setup-company-mode ()
+             (yas-minor-mode-on)
+             (company-box-mode 1))
+
+      (add-hook 'company-mode-hook 'setup-company-mode)
+      (add-hook 'after-init-hook 'global-company-mode)
+      (setq company-idle-delay 0.2)
+      (setq company-tooltip-align-annotations t)
 
       ;; Direnv Configuration
       (direnv-mode)
