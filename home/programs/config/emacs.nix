@@ -95,6 +95,7 @@ in
         rustic # Rust development environment
         sbt-mode # Major mode for editing SBT files
         scala-mode # Major mode for editing Scala files
+        tide # TypeScript Interactive Development Environment
         vue-mode # Major mode for editing Vue.js files
         yaml-mode # Major mode for editing YAML files
         yasnippet # Template system for Emacs
@@ -149,8 +150,6 @@ in
         "t" 'vterm
         "p" 'projectile-command-map
         "/" 'magit-status
-
-        "wg" 'writegood-mode
 
         ;; Org Keybindings
         "oa" 'org-agenda
@@ -305,6 +304,19 @@ in
       (require 'lsp-ui)
       (add-hook 'lsp-mode-hook 'lsp-ui-mode)
 
+      ;; Enable CCLS
+      (require 'ccls)
+      (setq ccls-executable "/run/current-system/sw/bin/ccls")
+      (setq ccls-initialization-options '(:cache (:directory "/tmp/ccls-cache")))
+      (setq ccls-sem-highlight-method 'font-lock)
+      (setq ccls-args '("--log-file=/tmp/ccls.log"))
+      (setq ccls-extra-init-params '(:completion (:detailedLabel t)))
+      (setq ccls-cache-dir "/tmp/ccls-cache")
+      (add-hook 'c-mode-hook #'lsp-deferred)
+      (add-hook 'c-mode-hook #'flycheck-mode)
+      (add-hook 'c++-mode-hook #'lsp-deferred)
+      (add-hook 'c++-mode-hook #'flycheck-mode)
+
       ;; Enable Java
       (require 'lsp-java)
       (require 'dap-java)
@@ -316,10 +328,20 @@ in
       (require 'web-mode)
       (require 'vue-mode)
       (require 'json-mode)
-      (require 'dap-chrome)
       (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
       (add-hook 'vue-mode-hook #'lsp-deferred)
       (flycheck-add-mode 'javascript-eslint 'web-mode)
+
+      (defun setup-tide-mode ()
+             (interactive)
+             (tide-setup)
+             (flycheck-mode +1)
+             (setq flycheck-check-syntax-automatically '(save mode-enabled))
+             (eldoc-mode +1)
+             (tide-hl-identifier-mode +1))
+
+      (add-hook 'before-save-hook 'tide-format-before-save)
+      (add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
 
       ;; Enable Json
       (require 'json-mode)
@@ -464,4 +486,6 @@ in
 
   home.file."./.emacs.d/emacsCopilot".source = emacsCopilotSrc;
   home.file."./.emacs.d/scala-ts-mode".source = scalaTsModeSrc;
+
+  services.emacs.enable = true;
 }
