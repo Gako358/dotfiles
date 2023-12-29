@@ -64,13 +64,10 @@ in
         projectile # Project Interaction Library for Emacs
         protobuf-mode # Major mode for editing protocol buffers
         simple-httpd # A simple HTTP server
+        vterm # Fully-featured terminal emulator
         websocket # WebSocket client and server
         web-mode # Major mode for editing web templates
         writegood-mode # A minor mode to aid in finding common writing problems
-
-        # Terminal
-        vterm # Fully-featured terminal emulator
-        multi-vterm # Manage multiple vterm buffers
 
         # Theme
         doom-modeline # A fancy and fast mode-line
@@ -117,7 +114,12 @@ in
 
       ;; Package Specific Settings
 
+      ;; Yas Snippets
       (yas-global-mode 1) ; Enable YASnippet
+
+      ;; Writegood Mode
+      (require 'writegood-mode)
+      (add-hook 'text-mode-hook 'writegood-mode)
 
       ;; Function to kill all buffers except the current one
       (defun kill-all-buffers-except-current ()
@@ -147,6 +149,8 @@ in
         "t" 'vterm
         "p" 'projectile-command-map
         "/" 'magit-status
+
+        "wg" 'writegood-mode
 
         ;; Org Keybindings
         "oa" 'org-agenda
