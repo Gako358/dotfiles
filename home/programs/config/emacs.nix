@@ -96,6 +96,7 @@ in
         sbt-mode # Major mode for editing SBT files
         scala-mode # Major mode for editing Scala files
         tide # TypeScript Interactive Development Environment
+        typescript-mode # Major mode for editing TypeScript files
         vue-mode # Major mode for editing Vue.js files
         yaml-mode # Major mode for editing YAML files
         yasnippet # Template system for Emacs
@@ -211,6 +212,9 @@ in
         "jrtc" 'dap-java-run-test-class
         "jdtc" 'dap-java-debug-test-class)
 
+        ;; Python Keybindings
+        "pf" 'blacken-buffer
+
       ;; Flycheck
       (require 'flycheck)
       (global-flycheck-mode) ; Enable flycheck
@@ -299,6 +303,7 @@ in
       ;; LSP Mode
       (require 'lsp-mode)
       (add-hook 'prog-mode-hook #'lsp-deferred)
+      (setq lsp-headerline-breadcrumb-enable nil)
 
       ;; Enable LSP-UI
       (require 'lsp-ui)
@@ -383,6 +388,8 @@ in
       (require 'lsp-pyright)
       (require 'blacken)
       (add-hook 'python-mode-hook #'lsp-deferred)
+      (add-hook 'pythn-mode-hook #'python-black-on-save-mode-enable-dwim)
+      (add-hook 'python-mode-hook #'flycheck-mode)
 
       ;; Enable SQL
       (require 'sql)
@@ -427,7 +434,19 @@ in
       (add-hook 'css-mode-hook #'lsp-deferred)
       (add-hook 'css-mode-hook #'flycheck-mode)
 
+      ;; Enable Typescript
+      (require 'typescript-mode)
+      (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+      (add-hook 'typescript-mode-hook #'lsp-deferred)
+      (add-hook 'typescript-mode-hook #'flycheck-mode)
+      (add-hook 'typescript-mode-hook #'setup-tide-mode)
+
       ;; Xml Pretty Print
+      (require 'nxml-mode)
+      (add-hook 'nxml-mode-hook
+                (lambda ()
+                  (define-key nxml-mode-map (kbd "C-c C-f") 'xml-pretty-print)))
+
       (defun xml-pretty-print (beg end &optional arg)
         "Reformat the region between BEG and END.
         With optional ARG, also auto-fill."
