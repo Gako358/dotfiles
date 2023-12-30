@@ -33,70 +33,76 @@
     scramgit.url = "github:gako358/scram";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    hardware,
-    flake-utils,
-    home-manager,
-    scramgit,
-    ...
-  } @ inputs: let
-    inherit (self) outputs;
-    lib = nixpkgs.lib // home-manager.lib;
-    systems = ["x86_64-linux" "aarch64-linux"];
-    forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
-    pkgsFor = lib.genAttrs systems (system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
+  outputs =
+    { self
+    , nixpkgs
+    , hardware
+    , flake-utils
+    , home-manager
+    , scramgit
+    , ...
+    } @ inputs:
+    let
+      inherit (self) outputs;
+      lib = nixpkgs.lib // home-manager.lib;
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
+      pkgsFor = lib.genAttrs systems (system:
+        import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        });
+    in
+    {
+      inherit lib;
+      overlays = {
+        default = import ./overlay { inherit inputs outputs; };
+      };
+      templates = import ./templates;
+      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
+      devShells = forEachSystem (pkgs: import ./shell.nix {
+        inherit pkgs;
+        buildInputs = with pkgs; [
+        ];
       });
-  in {
-    inherit lib;
-    overlays = {
-      default = import ./overlay {inherit inputs outputs;};
-    };
-    templates = import ./templates;
-    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
-    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
 
-    nixosConfigurations = {
-      terangreal = lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        modules = [
-          ./hosts/configuration.nix
-          ./hosts/users/terangreal
-        ];
+      nixosConfigurations = {
+        terangreal = lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+            ./hosts/configuration.nix
+            ./hosts/users/terangreal
+          ];
+        };
+        tuathaan = lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+            ./hosts/configuration.nix
+            ./hosts/users/tuathaan
+          ];
+        };
       };
-      tuathaan = lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        modules = [
-          ./hosts/configuration.nix
-          ./hosts/users/tuathaan
-        ];
+      homeConfigurations = {
+        "merrinx@terangreal" = lib.homeManagerConfiguration {
+          pkgs = pkgsFor.x86_64-linux;
+          extraSpecialArgs = {
+            inherit inputs outputs;
+            hidpi = true;
+          };
+          modules = [
+            ./home/home.nix
+          ];
+        };
+        "merrinx@tuathaan" = lib.homeManagerConfiguration {
+          pkgs = pkgsFor.x86_64-linux;
+          extraSpecialArgs = {
+            inherit inputs outputs;
+            hidpi = false;
+          };
+          modules = [
+            ./home/home.nix
+          ];
+        };
       };
     };
-    homeConfigurations = {
-      "merrinx@terangreal" = lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {
-          inherit inputs outputs;
-          hidpi = true;
-        };
-        modules = [
-          ./home/home.nix
-        ];
-      };
-      "merrinx@tuathaan" = lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {
-          inherit inputs outputs;
-          hidpi = false;
-        };
-        modules = [
-          ./home/home.nix
-        ];
-      };
-    };
-  };
 }

@@ -6,12 +6,6 @@ let
     rev = "421703f5dd5218ec2a3aa23ddf09d5f13e5014c2";
   };
 
-  # Scala TS Mode Installation Definition
-  scalaTsModeSrc = builtins.fetchGit {
-    url = "https://github.com/KaranAhlawat/scala-ts-mode.git";
-    rev = "cbfab189842ce564d9514f1b65a72b0af0d51438";
-  };
-
 in
 {
   programs.emacs = {
@@ -60,6 +54,7 @@ in
         org-roam-ui # A graphical user interface for org-roam
         ox-hugo # Org exporter to Hugo
         password-store # Password manager
+        pdf-tools # Emacs support library for PDF files
         pretty-mode # Redisplay parts of the buffer as pretty symbols
         projectile # Project Interaction Library for Emacs
         protobuf-mode # Major mode for editing protocol buffers
@@ -169,8 +164,9 @@ in
         "lwa" 'lsp-ui-peek-find-implementation
         "lwh" 'lsp-ui-doc-glance
         "lwe" 'lsp-treemacs-errors-list
-        "lxf" 'xml-pretty-print
         "lf" 'lsp-format-buffer
+        "lpf" 'blacken-buffer
+        "lxf" 'xml-pretty-print
         "lr" 'lsp-rename
         "lR" 'lsp-workspace-restart
         "la" 'lsp-execute-code-action
@@ -211,9 +207,6 @@ in
         "jdtm" 'dap-java-debug-test-method
         "jrtc" 'dap-java-run-test-class
         "jdtc" 'dap-java-debug-test-class)
-
-        ;; Python Keybindings
-        "pf" 'blacken-buffer
 
       ;; Flycheck
       (require 'flycheck)
@@ -269,6 +262,16 @@ in
       (setq org-pomodoro-short-break-length 5)
       (setq org-pomodoro-long-break-length 15)
       (setq org-pomodoro-manual-break t)
+
+      ;; Pdf Tools
+      (require 'pdf-tools)
+      (pdf-tools-install)
+      (setq-default pdf-view-display-size 'fit-page)
+      (setq pdf-annot-activate-created-annotations t)
+      (add-hook 'pdf-view-mode-hook
+        (lambda ()
+          (when (bound-and-true-p display-line-numbers-mode)
+            (display-line-numbers-mode -1))))
 
       ;; Projectile
       (setq projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1)))
@@ -409,12 +412,6 @@ in
                 (forward-char))))))
 
       ;; Enable Scala
-      (let ((scala-ts-mode-dir "~/.emacs.d/scala-ts-mode")
-            (scala-ts-mode-file "~/.emacs.d/scala-ts-mode/scala-ts-mode.el"))
-        (when (file-exists-p scala-ts-mode-file)
-          (add-to-list 'load-path scala-ts-mode-dir)
-          (require 'scala-ts-mode)))
-
       (defun setup-scala-mode ()
              (require 'lsp-metals)
              (add-hook 'before-save-hook 'lsp-format-buffer))
@@ -443,15 +440,27 @@ in
 
       ;; Xml Pretty Print
       (require 'nxml-mode)
-      (add-hook 'nxml-mode-hook
-                (lambda ()
-                  (define-key nxml-mode-map (kbd "C-c C-f") 'xml-pretty-print)))
+      (defun xml-pretty-print ()
+        (interactive)
+        (save-excursion
+          (shell-command-on-region (point-min) (point-max)
+                                   "xmllint --format --encode utf-8 -"
+                                   (buffer-name) t)
+          (nxml-mode)
+          (indent-region begin end)))
 
-      (defun xml-pretty-print (beg end &optional arg)
-        "Reformat the region between BEG and END.
-        With optional ARG, also auto-fill."
-        (interactive "*r\nP")
-        (shell-command-on-region beg end "xmllint --format -" t t))
+      (defun setup-xml ()
+             (require 'sideshow)
+             (add-to-list 'hs-special-modes-alist
+                          '(nxml-mode
+                            "<!--\\|<[^/>]*[^/]>"
+                            "-->\\|</[^/>]*[^/]>"
+                            "<!--"
+                            'nxml-forward-element
+                            nil))
+              (hs-minor-mode 1))
+
+      (add-hook 'nxml-mode-hook #'setup-xml)
 
       ;; Enable Rustic
       (require 'rustic)
@@ -471,6 +480,7 @@ in
       (setq company-tooltip-align-annotations t)
 
       ;; Direnv Configuration
+      (require 'direnv)
       (direnv-mode)
 
       ;; EditorConfig
@@ -504,11 +514,11 @@ in
   };
 
   home.packages = with pkgs; [
+    # Needed LSP Packages...
+    # Sick I know, should be build into emacs
     rnix-lsp
   ];
 
   home.file."./.emacs.d/emacsCopilot".source = emacsCopilotSrc;
-  home.file."./.emacs.d/scala-ts-mode".source = scalaTsModeSrc;
-
   services.emacs.enable = true;
 }
