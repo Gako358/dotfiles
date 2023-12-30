@@ -146,15 +146,21 @@ in
         "t" 'vterm
         "p" 'projectile-command-map
         "/" 'magit-status
+        "gc" 'comment-or-uncomment-region
 
         ;; Org Keybindings
         "oa" 'org-agenda
+        "os" 'org-schedule
+        "od" 'org-deadline
+        "of" 'org-agenda-file-to-front
+        "ot" 'org-insert-todo-heading
         "orl" 'org-roam-buffer-toggle
         "orf" 'org-roam-node-find
         "ori" 'org-roam-node-insert
         "ors" 'org-roam-db-sync
         "orr" 'org-roam-ui-mode
         "opl" 'org-present
+        "opq" 'org-present-quit
 
         ;; LSP Keybindings
         "lws" 'lsp-ui-sideline-mode
@@ -226,6 +232,53 @@ in
       (ivy-mode 1)
       (setq ivy-use-virtual-buffers t)
       (setq ivy-count-format "(%d/%d) ")
+
+      ;; Org Agenda
+      (defun +org-init-org-directory ()
+        (unless org-directory
+          (setq-default org-directory "~/Documents/org/"))
+        (unless org-id-locations-file
+          (setq org-id-locations-file (expand-file-name ".orgids" org-directory))))
+
+      (defun +org-init-agenda-h ()
+        (unless org-agenda-files
+          (setq-default org-agenda-files (list org-directory)))
+        (setq-default
+         org-agenda-deadline-faces
+         '((1.001 . error)
+           (1.0 . org-warning)
+           (0.5 . org-upcoming-deadline)
+           (0.0 . org-upcoming-distant-deadline))
+         org-agenda-window-setup 'current-window
+         org-agenda-skip-unavailable-files t
+         org-agenda-span 10
+         org-agenda-start-on-weekday nil
+         org-agenda-start-day "-3d"
+         org-agenda-inhibit-startup t))
+
+
+      (defun +org-init-appearance-h ()
+        "Configures the UI for `org-mode'."
+        (setq org-indirect-buffer-display 'current-window
+              org-eldoc-breadcrumb-separator " → "
+              org-enforce-todo-dependencies t
+              org-entities-user
+              '(("flat"  "\\flat" nil "" "" "266D" "♭")
+                ("sharp" "\\sharp" nil "" "" "266F" "♯"))
+              org-fontify-done-headline t
+              org-fontify-quote-and-verse-blocks t
+              org-fontify-whole-heading-line t
+              org-hide-leading-stars t
+              org-image-actual-width nil
+              org-imenu-depth 6
+              org-priority-faces
+              '((?A . error)
+                (?B . warning)
+                (?C . success))
+              org-startup-indented t
+              org-tags-column 0
+              org-use-sub-superscripts '{}
+              org-startup-folded nil))
 
       ;; Org Roam
       (require 'org-roam)
@@ -321,39 +374,21 @@ in
       (setq ccls-extra-init-params '(:completion (:detailedLabel t)))
       (setq ccls-cache-dir "/tmp/ccls-cache")
       (add-hook 'c-mode-hook #'lsp-deferred)
-      (add-hook 'c-mode-hook #'flycheck-mode)
       (add-hook 'c++-mode-hook #'lsp-deferred)
-      (add-hook 'c++-mode-hook #'flycheck-mode)
 
       ;; Enable Java
       (require 'lsp-java)
       (require 'dap-java)
       (add-hook 'java-mode-hook #'lsp-deferred)
       (add-hook 'java-mode-hook #'dap-mode)
-      (add-hook 'java-mode-hook #'flycheck-mode)
-
-      ;; Enable JDTLS instead of using npm to install
-      ;; Need to set the path in the repo flakes.nix file
-      ;; (setq lsp-java-server-install-dir (getenv "JDTLS_PATH"))
 
       ;; Enable Javascript
       (require 'web-mode)
       (require 'vue-mode)
-      (require 'json-mode)
       (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
       (add-hook 'vue-mode-hook #'lsp-deferred)
       (flycheck-add-mode 'javascript-eslint 'web-mode)
-
-      (defun setup-tide-mode ()
-             (interactive)
-             (tide-setup)
-             (flycheck-mode +1)
-             (setq flycheck-check-syntax-automatically '(save mode-enabled))
-             (eldoc-mode +1)
-             (tide-hl-identifier-mode +1))
-
       (add-hook 'before-save-hook 'tide-format-before-save)
-      (add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
 
       ;; Enable Json
       (require 'json-mode)
@@ -391,13 +426,10 @@ in
       (require 'lsp-pyright)
       (require 'blacken)
       (add-hook 'python-mode-hook #'lsp-deferred)
-      (add-hook 'pythn-mode-hook #'python-black-on-save-mode-enable-dwim)
-      (add-hook 'python-mode-hook #'flycheck-mode)
 
       ;; Enable SQL
       (require 'sql)
       (add-hook 'sql-mode-hook #'lsp-deferred)
-      (add-hook 'sql-mode-hook #'flycheck-mode)
 
       (defun upcase-sql-keywords ()
         (interactive)
@@ -429,13 +461,18 @@ in
       ;; Enable LSP-TailwindCSS
       (require 'lsp-tailwindcss)
       (add-hook 'css-mode-hook #'lsp-deferred)
-      (add-hook 'css-mode-hook #'flycheck-mode)
 
       ;; Enable Typescript
       (require 'typescript-mode)
+      (defun setup-tide-mode ()
+             (interactive)
+             (tide-setup)
+             (setq flycheck-check-syntax-automatically '(save mode-enabled))
+             (eldoc-mode +1)
+             (tide-hl-identifier-mode +1))
+
       (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
       (add-hook 'typescript-mode-hook #'lsp-deferred)
-      (add-hook 'typescript-mode-hook #'flycheck-mode)
       (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
       ;; Xml Pretty Print
