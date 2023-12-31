@@ -84,6 +84,7 @@ in
         company # Modular text completion framework
         company-box # A company front-end with icons
         json-mode # Major mode for editing JSON files
+        js2-mode # Improved JavaScript editing mode
         markdown-mode # Major mode for editing Markdown files
         nix-mode # Nix integration
         python-mode # Major mode for editing Python files
@@ -223,6 +224,41 @@ in
       (global-set-key (kbd "C-j") 'windmove-down)
       (global-set-key (kbd "C-k") 'windmove-up)
       (global-set-key (kbd "C-l") 'windmove-right)
+
+      ;; Set Keybindings for moving text up and down
+      (defun move-text-internal (arg)
+        (cond
+         ((and mark-active transient-mark-mode)
+          (if (> (point) (mark))
+              (exchange-point-and-mark))
+          (let ((column (current-column))
+                (text (delete-and-extract-region (point) (mark))))
+            (forward-line arg)
+            (move-to-column column t)
+            (set-mark (point))
+            (insert text)
+            (exchange-point-and-mark)
+            (setq deactivate-mark nil)))
+         (t
+          (beginning-of-line)
+          (when (or (> arg 0) (not (bobp)))
+            (forward-line)
+            (when (or (< arg 0) (not (eobp)))
+              (transpose-lines arg))
+            (forward-line -1)))))
+
+      (defun move-text-down (arg)
+        "Move region (transient-mark-mode active) or current line arg lines down."
+        (interactive "*p")
+        (move-text-internal arg))
+
+      (defun move-text-up (arg)
+        "Move region (transient-mark-mode active) or current line arg lines up."
+        (interactive "*p")
+        (move-text-internal (- arg)))
+
+      (global-set-key (kbd "S-<up>") 'move-text-up)
+      (global-set-key (kbd "S-<down>") 'move-text-down)
 
       ;; Which Key
       (require 'which-key)
@@ -376,6 +412,11 @@ in
       (add-hook 'c-mode-hook #'lsp-deferred)
       (add-hook 'c++-mode-hook #'lsp-deferred)
 
+      ;; Enable Docker
+      (require 'docker)
+      (require 'dockerfile-mode)
+      (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+
       ;; Enable Java
       (require 'lsp-java)
       (require 'dap-java)
@@ -383,12 +424,12 @@ in
       (add-hook 'java-mode-hook #'dap-mode)
 
       ;; Enable Javascript
-      (require 'web-mode)
-      (require 'vue-mode)
-      (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
-      (add-hook 'vue-mode-hook #'lsp-deferred)
-      (flycheck-add-mode 'javascript-eslint 'web-mode)
-      (add-hook 'before-save-hook 'tide-format-before-save)
+      (require 'js2-mode)
+      (setq js-indent-level 2)
+      (setq js2-mode-show-parse-errors nil)
+      (setq js2-mode-show-strict-warnings nil)
+      (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+      (add-hook 'js2-mode-hook #'lsp-deferred)
 
       ;; Enable Json
       (require 'json-mode)
@@ -403,6 +444,8 @@ in
       (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
 
       ;; Web-mode configurations
+      (require 'web-mode)
+      (flycheck-add-mode 'javascript-eslint 'web-mode)
       (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
       (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
       (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
@@ -472,8 +515,15 @@ in
              (tide-hl-identifier-mode +1))
 
       (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+      (flycheck-add-mode 'typescript-tslint 'typescript-mode)
       (add-hook 'typescript-mode-hook #'lsp-deferred)
       (add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+      ;; Enable Vue
+      (require 'vue-mode)
+      (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
+      (add-hook 'vue-mode-hook #'lsp-deferred)
 
       ;; Xml Pretty Print
       (require 'nxml-mode)
