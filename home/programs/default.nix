@@ -34,7 +34,7 @@ in [
   ./browser/teams.nix
   ./config
   ./alacritty.nix
-  # ./citrix.nix
+  ./citrix.nix
   ./kdeconnect.nix
   ./git.nix
   ./network.nix
