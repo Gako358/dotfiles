@@ -4,6 +4,7 @@
     ./neofetch
     ./wofi
     ./emacs.nix
+    ./email.nix
     ./eww.nix
     ./fish.nix
     ./mako.nix

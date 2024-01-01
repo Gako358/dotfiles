@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   # Emacs Copilot Installation Definition
   emacsCopilotSrc = builtins.fetchGit {
@@ -45,6 +45,7 @@ in
         ligature # Ligature support for Emacs
         magit # A Git porcelain inside Emacs
         nerd-icons # Nerd icons for Emacs
+        notmuch # A fast mail indexer and mail reader
         ob-http # HTTP request in org-mode
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
@@ -139,6 +140,7 @@ in
         "b" 'ivy-switch-buffer
         "f" 'counsel-find-file
         "F" 'counsel-git-grep
+        "m" 'notmuch
         "k" 'kill-buffer
         "q" 'kill-all-buffers-except-current
         "w" 'save-buffer
@@ -215,6 +217,10 @@ in
         "jrtc" 'dap-java-run-test-class
         "jdtc" 'dap-java-debug-test-class)
 
+      (evil-leader/set-key-for-mode 'notmuch-mode
+        "u" '+notmuch/update
+        "d" '+notmuch/search-delete)
+
       ;; Flycheck
       (require 'flycheck)
       (global-flycheck-mode) ; Enable flycheck
@@ -259,6 +265,69 @@ in
 
       (global-set-key (kbd "S-<up>") 'move-text-up)
       (global-set-key (kbd "S-<down>") 'move-text-down)
+
+      ;; Notmuch Configuration
+      (require 'notmuch)
+      (add-hook 'notmuch-message-mode-hook #'turn-off-auto-fill)
+
+      (defvar +notmuch-delete-tags '("+trash" "-inbox" "-unread"))
+        "Tags applied to mark emails for deletion."
+
+      (defun +notmuch/search-delete ()
+        "Mark all selected emails for deletion."
+        (interactive)
+        (notmuch-search-tag +notmuch-delete-tags)
+        (notmuch-tree-next-message))
+
+      (defun +notmuch/update ()
+        "Sync notmuch emails with server."
+        (interactive)
+        (let ((compilation-buffer-name-function (lambda (_) (format "*notmuch update*"))))
+          (with-current-buffer (compile (+notmuch-get-sync-command))
+          (add-hook
+            'compilation-finish-functions
+            (lambda (buf status)
+              (if (equal status "finished\n")
+                  (progn
+                    (delete-windows-on buf)
+                    (bury-buffer buf)
+                    (notmuch-refresh-all-buffers)
+                    (message "Notmuch sync successful"))
+                (user-error "Failed to sync notmuch data")))
+            nil
+            'local))))
+
+      (setq notmuch-multipart/alternative-discouraged '("text/x-amp-html" "text/plain" "text/html"))
+      (setq notmuch-search-oldest-first nil)
+      (setq notmuch-hello-thousands-separator ",")
+      (setq notmuch-archive-tags (list "-inbox" "+archived"))
+      (setq notmuch-mua-cite-function (quote message-cite-original-without-signature))
+      (setq notmuch-saved-searches
+        (quote
+          ((:name "Personal Inbox" :query "tag:inbox and folder:prvAcc" :key "p" :search-type tree)
+            (:name "Work Inbox" :query "tag:inbox and folder:gitAcc" :key "w" :search-type tree)
+            (:name "Flagged" :query "tag:flagged" :key "f" :search-type tree)
+            (:name "Drafts" :query "tag:draft" :key "d")
+            (:name "Recent" :query "date:7d.." :key "r" :search-type tree)
+            (:name "All Mail" :query "*" :key "a" :search-type tree))))
+
+      (setq notmuch-tagging-keys
+        (quote
+          (("a" notmuch-archive-tags "Archive")
+            ("u" notmuch-show-mark-read-tags "Mark read")
+            ("f" ("+flagged") "Flag")
+            ("s" ("+spam" "-inbox") "Mark as spam")
+            ("d" ("+deleted" "-inbox") "Delete")
+            ("w" ("-inbox" "+waiting_for") "Waiting For"))))
+
+      ;; Sending mail with MSMTP
+      (setq sendmail-program "msmtp"
+        message-send-mail-function 'message-send-mail-with-sendmail
+        message-kill-buffer-on-exit t
+        message-directory "~/Documents/mails"
+        message-sendmail-envelope-from 'header
+        mail-envelope-from 'header
+        mail-specify-envelope-from t)
 
       ;; Which Key
       (require 'which-key)
