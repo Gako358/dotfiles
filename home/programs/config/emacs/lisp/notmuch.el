@@ -56,8 +56,8 @@
 (setq notmuch-saved-searches
       (quote
        (
-        (:name "Personal Inbox" :query "tag:inbox and folder:prvAcc" :key "p" :search-type tree)
-        (:name "Work Inbox" :query "tag:inbox and folder:gitAcc" :key "w" :search-type tree)
+        (:name "Personal Inbox" :query "tag:inbox and folder:personal" :key "p" :search-type tree)
+        (:name "Work Inbox" :query "tag:inbox and folder:work" :key "w" :search-type tree)
         (:name "Flagged" :query "tag:flagged" :key "f" :search-type tree)
         (:name "Drafts" :query "tag:draft" :key "d")
         (:name "Recent" :query "date:7d.." :key "r" :search-type tree)

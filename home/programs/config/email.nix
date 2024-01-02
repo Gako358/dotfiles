@@ -5,7 +5,6 @@ let
     folder=$(basename $(pwd))
     tags="+inbox -unread"
 
-    notmuch new
     notmuch tag $tags -- folder:$folder/*
 
     echo "Delete discarded drafts..."
@@ -37,6 +36,15 @@ let
     +spam -inbox -- folder:/Spam/
     -inbox -- tag:sent and tag:inbox
     EOF
+
+    echo "Move personal emails out of prvAcc..."
+    notmuch search --output=files -- tag:personal and folder:/prvAcc/ | xargs -I {} mv {} /personal
+
+    echo "Move work emails out of gitAcc..."
+    notmuch search --output=files -- tag:work and folder:/gitAcc/ | xargs -I {} mv {} /work
+
+    echo "Move spam emails out of Spam..."
+    notmuch search --output=files -- tag:spam and folder:/Spam/ | xargs -I {} mv {} /Spam
   '';
 
 in
@@ -109,5 +117,21 @@ in
   services.mbsync = {
     enable = true;
     frequency = "*:0/5";
+  };
+
+  systemd.user.services.notmuch = {
+    Unit = { Description = "notmuch new"; };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.notmuch}/bin/notmuch new";
+    };
+  };
+
+  systemd.user.timers.notmuch = {
+    Unit = { Description = "notmuch sync"; };
+    Timer = {
+      OnCalendar = "*:0/5";
+      Unit = "notmuch.service";
+    };
   };
 }
