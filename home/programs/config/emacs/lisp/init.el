@@ -53,6 +53,28 @@
 (require 'flycheck)
 (global-flycheck-mode) ; Enable flycheck
 
+;; Split window right using ctrl + shift + l
+(defun split-window-right-and-move-there-dammit
+    ()
+  "Split window right and move there."
+  (interactive)
+  (split-window-right)
+  (windmove-right))
+
+(global-set-key
+ (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
+
+;; Split window below using ctrl + shift + j
+(defun split-window-below-and-move-there-dammit
+    ()
+  "Split window below and move there."
+  (interactive)
+  (split-window-below)
+  (windmove-down))
+
+(global-set-key
+ (kbd "C-S-j") 'split-window-below-and-move-there-dammit)
+
 ;;Setkeybindingsformovingbetweenwindows
 (global-set-key
  (kbd "C-h") 'windmove-left)
@@ -122,5 +144,13 @@
  (kbd "S-<up>") 'move-text-up)
 (global-set-key
  (kbd "S-<down>") 'move-text-down)
+
+;; Switch between buffers
+(global-set-key
+ (kbd "C-<tab>") 'previous-buffer)
+
+;; Improve performance
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
 
 ;;; init.el ends here

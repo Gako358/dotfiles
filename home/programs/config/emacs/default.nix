@@ -27,6 +27,7 @@ in
         all-the-icons-dired # Shows icons for each file in dired mode
         all-the-icons-ivy-rich # More friendly display transformer for ivy
         counsel # Various completion functions using Ivy
+        counsel-projectile # Ivy integration for Projectile
         dired-single # Reuse the dired buffer
         direnv # Environment switcher for Emacs
         docker # Docker integration

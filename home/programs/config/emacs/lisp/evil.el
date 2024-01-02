@@ -23,9 +23,11 @@
   "x"'counsel-M-x
   "d"'dired
   "t"'vterm
-  "p"'projectile-command-map
-  "/"'magit-status
+  "pp"'projectile-command-map
+  "ps"'counsel-projectile-switch-project
+  "pf"'counsel-projectile-find-file
   "gc"'comment-or-uncomment-region
+  "/"'magit-status
 
   ;;OrgKeybindings
   "oa"'org-agenda

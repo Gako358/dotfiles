@@ -20,9 +20,9 @@
           (define-key copilot-completion-map
                       (kbd "C-p") 'copilot-accept-completion)
           (define-key copilot-mode-map
-                      (kbd "C-j") #'copilot-next-completion)
+                      (kbd "<next>") #'copilot-next-completion
           (define-key copilot-mode-map
-                      (kbd "C-k") #'copilot-previous-completion))
+                      (kbd "<prior>") #'copilot-previous-completion)))
       ;; If there's an error, print a message (you can also log or take other actions)
       (error
        (message "Failed to load copilot: %s" err)))))
