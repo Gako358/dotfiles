@@ -5,6 +5,9 @@
 (require 'evil)
 (evil-mode 1)
 
+;; Make evil-mode up/down operate in screen lines instead of logical lines
+(evil-collection-init '(calendar dired magit org org-roam))
+
 ;;Settheleaderkeytospace
 (global-evil-leader-mode)
 (evil-leader/set-leader "<SPC>")

@@ -1,23 +1,5 @@
 { pkgs, config, ... }:
 let
-  # Import lisp config
-  coreConfig = builtins.readFile ./lisp/core.el;
-  evilConfig = builtins.readFile ./lisp/evil.el;
-  notmuchConfig = builtins.readFile ./lisp/notmuch.el;
-  whichConfig = builtins.readFile ./lisp/which.el;
-  ivyConfig = builtins.readFile ./lisp/ivy.el;
-  orgConfig = builtins.readFile ./lisp/org.el;
-  pdfConfig = builtins.readFile ./lisp/pdftool.el;
-  projectileConfig = builtins.readFile ./lisp/projectile.el;
-  copilotConfig = builtins.readFile ./lisp/copilot.el;
-  dapConfig = builtins.readFile ./lisp/dap.el;
-  lspConfig = builtins.readFile ./lisp/lsp.el;
-  companyConfig = builtins.readFile ./lisp/company.el;
-  direnvConfig = builtins.readFile ./lisp/direnv.el;
-  editorConfig = builtins.readFile ./lisp/editorconfig.el;
-  vtermConfig = builtins.readFile ./lisp/vterm.el;
-  nerdConfig = builtins.readFile ./lisp/nerd.el;
-  themeConfig = builtins.readFile ./lisp/theme.el;
 
   # Emacs Copilot Installation Definition
   emacsCopilotSrc = builtins.fetchGit {
@@ -117,25 +99,7 @@ in
         yaml-mode # Major mode for editing YAML files
         yasnippet # Template system for Emacs
       ];
-    extraConfig = ''
-      ${coreConfig}
-      ${evilConfig}
-      ${notmuchConfig}
-      ${whichConfig}
-      ${ivyConfig}
-      ${orgConfig}
-      ${pdfConfig}
-      ${projectileConfig}
-      ${copilotConfig}
-      ${dapConfig}
-      ${lspConfig}
-      ${companyConfig}
-      ${direnvConfig}
-      ${editorConfig}
-      ${vtermConfig}
-      ${nerdConfig}
-      ${themeConfig}
-    '';
+    extraConfig = builtins.readFile ./lisp/init.el;
   };
 
   home.packages = with pkgs; [
