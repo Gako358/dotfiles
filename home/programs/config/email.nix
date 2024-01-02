@@ -105,4 +105,9 @@ in
     hooks.preNew = "${preNewHook}/bin/notmuch-pre-new";
     hooks.postNew = "${postNewHook}/bin/notmuch-post-new";
   };
+
+  services.mbsync = {
+    enable = true;
+    frequency = "*:0/5";
+  };
 }

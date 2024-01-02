@@ -23,6 +23,7 @@
   "x"'counsel-M-x
   "d"'dired
   "t"'vterm
+  "s"'tabspaces-command-map
   "pp"'projectile-command-map
   "ps"'counsel-projectile-switch-project
   "pf"'counsel-projectile-find-file

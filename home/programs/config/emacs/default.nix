@@ -39,6 +39,8 @@ in
         eshell-prompt-extras # Display extra information and color for your eshell prompt
         flycheck # On-the-fly syntax checking
         ghub # Minuscule client library for the Github API
+        git-gutter # Show git diff in the fringe
+        git-gutter-fringe # Fringe version of git-gutter.el
         hydra # Make bindings that stick around
         ivy # A generic completion mechanism
         ivy-posframe # Display ivy in a posframe
@@ -62,6 +64,7 @@ in
         projectile # Project Interaction Library for Emacs
         protobuf-mode # Major mode for editing protocol buffers
         simple-httpd # A simple HTTP server
+        tabspaces # Display tab characters as spaces
         vterm # Fully-featured terminal emulator
         websocket # WebSocket client and server
         web-mode # Major mode for editing web templates

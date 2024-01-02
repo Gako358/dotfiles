@@ -8,6 +8,7 @@
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/editorconfig.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/eglot.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/evil.el")
+(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/git.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/ivy.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/nerd.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/notmuch.el")

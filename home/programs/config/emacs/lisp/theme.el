@@ -21,6 +21,19 @@
 (setq doom-modeline-github-interval
       (* 10 60))
 
+;; Tabspaces
+(require 'tabspaces)
+(setq tabspaces-use-filtered-buffers-as-default t)
+(setq tabspaces-default-tab "Default")
+(setq tabspaces-remove-to-default t)
+(setq tabspaces-include-buffers '("*scratch*"))
+(setq tabspaces-initialize-project-with-todo t)
+(setq tabspaces-todo-file-name "project-todo.org")
+
+;;Tabspaces sessions
+(setq tabspaces-session t)
+(setq tabspaces-session-auto-restore t)
+
 ;; Font
 (add-hook 'after-make-frame-functions
           (lambda (f)
