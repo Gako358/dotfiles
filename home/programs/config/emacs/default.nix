@@ -64,27 +64,18 @@ in
         vterm # Fully-featured terminal emulator
         websocket # WebSocket client and server
         web-mode # Major mode for editing web templates
-        writegood-mode # A minor mode to aid in finding common writing problems
 
         # Theme
         doom-modeline # A fancy and fast mode-line
         doom-themes # An opinionated pack of modern color-themes
 
-        # Language Server
-        dap-mode # Debug Adapter Protocol mode
-        ccls # C/C++/ObjC language server
-        lsp-java # Java
-        lsp-pyright # Python language server
-        lsp-metals # Scala language server
-        lsp-treemacs # Treemacs integration f
-        lsp-tailwindcss # Tailwind CSS support for lsp-mode
-        lsp-mode # An implementation of the Language Server Protocol
-        lsp-ui # UI integrations for lsp-mode
-
         # Programming language packages.
         blacken # Black formatter for Python
+        ccls # C/C++/ObjC language server
         company # Modular text completion framework
         company-box # A company front-end with icons
+        company-quickhelp # Documentation popup for Company
+        eglot-java # Java support for eglot
         json-mode # Major mode for editing JSON files
         js2-mode # Improved JavaScript editing mode
         markdown-mode # Major mode for editing Markdown files
@@ -97,7 +88,6 @@ in
         typescript-mode # Major mode for editing TypeScript files
         vue-mode # Major mode for editing Vue.js files
         yaml-mode # Major mode for editing YAML files
-        yasnippet # Template system for Emacs
       ];
     extraConfig = builtins.readFile ./lisp/init.el;
   };

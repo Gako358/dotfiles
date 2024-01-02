@@ -1,14 +1,9 @@
-;;; lsp.el --- Language Server Protocol
+;;; eglot.el --- Language Server Protocol
 ;;; Commentary:
 ;;; Code:
 
-;; LSP Mode
-(require 'lsp-mode)
-(setq lsp-headerline-breadcrumb-enable nil)
-
-;; Enable LSP-UI
-(require 'lsp-ui)
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;; Enable Eglot
+(require 'eglot)
 
 ;; Enable CCLS
 (require 'ccls)
@@ -23,8 +18,8 @@
       (:completion
        (:detailedLabel t)))
 (setq ccls-cache-dir "/tmp/ccls-cache")
-(add-hook 'c-mode-hook #'lsp-deferred)
-(add-hook 'c++-mode-hook #'lsp-deferred)
+(add-hook 'c-mode-hook #'eglot-ensure)
+(add-hook 'c++-mode-hook #'eglot-ensure)
 
 ;; Enable Docker
 (require 'docker)
@@ -33,19 +28,19 @@
              ("Dockerfile\\'" . dockerfile-mode))
 
 ;; Enable Java
-(require 'lsp-java)
-(require 'dap-java)
-(add-hook 'java-mode-hook #'lsp-deferred)
-(add-hook 'java-mode-hook #'dap-mode)
+(require 'eglot-java)
+(add-hook 'java-mode-hook #'eglot-java-mode)
+(add-to-list 'auto-mode-alist '
+             ("\\.java\\'" . java-mode))
 
 ;; Enable Javascript
 (require 'js2-mode)
 (setq js-indent-level 2)
 (setq js2-mode-show-parse-errors nil)
 (setq js2-mode-show-strict-warnings nil)
+(add-hook 'js2-mode-hook #'eglot-ensure)
 (add-to-list 'auto-mode-alist '
              ("\\.js\\'" . js2-mode))
-(add-hook 'js2-mode-hook #'lsp-deferred)
 
 ;; Enable Json
 (require 'json-mode)
@@ -59,13 +54,12 @@
 
 ;; Enable Nix
 (require 'nix-mode)
-(add-hook 'nix-mode-hook #'lsp-deferred)
+(add-hook 'nix-mode-hook #'eglot-ensure)
 (add-to-list 'auto-mode-alist '
              ("\\.nix\\'" . nix-mode))
 
 ;; Web-mode configurations
 (require 'web-mode)
-(flycheck-add-mode 'javascript-eslint 'web-mode)
 (add-to-list 'auto-mode-alist '
              ("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '
@@ -95,13 +89,12 @@
 
 ;; Enable Python
 (require 'python-mode)
-(require 'lsp-pyright)
 (require 'blacken)
-(add-hook 'python-mode-hook #'lsp-deferred)
+(add-hook 'python-mode-hook #'eglot-ensure)
 
 ;; Enable SQL
 (require 'sql)
-(add-hook 'sql-mode-hook #'lsp-deferred)
+(add-hook 'sql-mode-hook #'eglot-ensure)
 
 (defun upcase-sql-keywords
     ()
@@ -126,27 +119,20 @@
           (forward-char))))))
 
 ;; Enable Scala
-(defun setup-scala-mode
-    ()
-  "Setup Scala mode."
-  (require 'lsp-metals)
-  (add-hook 'before-save-hook 'lsp-format-buffer))
-
 (require 'scala-mode)
-(add-hook 'scala-mode-hook #'lsp-metals-bootstrapped)
-(add-hook 'scala-mode-hook #'setup-scala-mode)
+(add-hook 'scala-mode-hook #'eglot-ensure)
+(add-to-list 'auto-mode-alist '
+             ("\\.scala\\'" . scala-mode))
 
 ;; Enable SBT
 (require 'sbt-mode)
-
 (setq sbt:program-options '
       ("-Dsbt.supershell=false"))
 (add-to-list 'auto-mode-alist '
              ("\\.s\\(cala\\|bt\\)$" . scala-mode))
 
-;; Enable LSP-TailwindCSS
-(require 'lsp-tailwindcss)
-(add-hook 'css-mode-hook #'lsp-deferred)
+;; Enable TailwindCSS
+(add-hook 'css-mode-hook #'eglot-ensure)
 
 ;; Enable Typescript
 (require 'typescript-mode)
@@ -164,15 +150,14 @@
              ("\\.ts\\'" . typescript-mode))
 (add-to-list 'auto-mode-alist '
              ("\\.tsx\\'" . typescript-mode))
-(flycheck-add-mode 'typescript-tslint 'typescript-mode)
-(add-hook 'typescript-mode-hook #'lsp-deferred)
+(add-hook 'typescript-mode-hook #'eglot-ensure)
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 ;; Enable Vue
 (require 'vue-mode)
 (add-to-list 'auto-mode-alist '
              ("\\.vue\\'" . vue-mode))
-(add-hook 'vue-mode-hook #'lsp-deferred)
+(add-hook 'vue-mode-hook #'eglot-ensure)
 
 ;; Xml Pretty Print
 (require 'nxml-mode)
@@ -207,7 +192,8 @@
 
 ;; Enable Rustic
 (require 'rustic)
-(setq rustic-lsp-server 'rust-analyzer)
-(add-hook 'rustic-mode-hook #'lsp-deferred)
+(add-hook 'rustic-mode-hook #'eglot-ensure)
+(add-to-list 'auto-mode-alist '
+             ("\\.rs\\'" . rustic-mode))
 
-;;; lsp.el ends here
+;;; eglot.el ends here

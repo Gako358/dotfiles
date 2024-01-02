@@ -4,12 +4,11 @@
 
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/company.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/copilot.el")
-(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/dap.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/direnv.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/editorconfig.el")
+(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/eglot.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/evil.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/ivy.el")
-(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/lsp.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/nerd.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/notmuch.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/org.el")
@@ -26,17 +25,12 @@
 (scroll-bar-mode -1) ; Disable the scroll bar
 (tab-bar-mode -1) ; Disable the tab bar
 (setq-default indent-tabs-mode nil) ; Use spaces instead of tabs
+(setq make-backup-files nil) ; Disable backup files
+(setq auto-save-default nil) ; Disable auto save
 
 ;;Enablerelativelinenumbers
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode t)
-
-;;YasSnippets
-(yas-global-mode 1) ; Enable YASnippet
-
-;;WritegoodMode
-(require 'writegood-mode)
-(add-hook 'text-mode-hook 'writegood-mode)
 
 ;;Functiontokillallbuffersexceptthecurrentone
 (defun kill-all-buffers-except-current
