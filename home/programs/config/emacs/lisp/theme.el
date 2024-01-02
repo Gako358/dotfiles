@@ -22,9 +22,10 @@
       (* 10 60))
 
 ;; Font
-;; Bug! Font not loading for company mode
-;;(add-hook 'after-make-frame-functions (lambda (f) (set-frame-font "Iosevka Nerd Font 11" nil t)))
-;;(with-eval-after-load 'company
-;;      (set-face-attribute 'company-tooltip nil :font "Iosevka Nerd Font 11"))
+(add-hook 'after-make-frame-functions
+          (lambda (f)
+            (with-selected-frame f
+              (set-frame-font "Iosevka Nerd Font 11" nil t)
+              (set-face-attribute 'company-tooltip nil :font "Iosevka Nerd Font 11" :height 100))))
 
 ;;; theme.el ends here
