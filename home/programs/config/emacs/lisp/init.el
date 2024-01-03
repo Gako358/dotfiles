@@ -86,6 +86,12 @@
 (global-set-key
  (kbd "C-l") 'windmove-right)
 
+;; Set keybindings for resizing windows
+(global-set-key
+ (kbd "C-S-h") 'shrink-window-horizontally)
+(global-set-key
+ (kbd "C-S-k") 'shrink-window)
+
 ;;SetKeybindingsformovingtextupanddown
 (defun move-text-internal
     (arg)

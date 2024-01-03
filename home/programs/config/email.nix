@@ -4,30 +4,9 @@ let
   preNewHook = pkgs.writeShellScriptBin "notmuch-pre-new" ''
     folder=$(basename $(pwd))
     tags="+inbox -unread"
-
-    notmuch tag $tags -- folder:$folder/*
-
-    echo "Delete discarded drafts..."
-    notmuch search --output=files --format=text0 -- tag:deleted and tag:draft | xargs -0 rm -fv
-
-    echo "Delete old discarded messages..."
-    notmuch search --output=files --format=text0 -- tag:deleted date:..6w | xargs -0 rm -fv
-    notmuch search --output=files --format=text0 -- tag:spam date:..3w | xargs -0 rm -fv
-
-    echo "Move deleted messages out of inbox..."
-    notmuch search --output=files -- tag:deleted and folder:$folder/Inbox | xargs -I {} mv {} $folder/Trash
-
-    echo "Move spam messages out of inbox..."
-    notmuch search --output=files -- tag:spam and folder:$folder/Inbox | xargs -I {} mv {} $folder/Spam
-
-    echo "Move archived messages out of inbox..."
-    notmuch search --output=files -- -tag:inbox and folder:$folder/Inbox | xargs -I {} mv {} $folder/Archive
-
-    echo "Move non-spam out of spam folder..."
-    notmuch search --output=files -- not tag:spam and folder:$folder/Spam | xargs -I {} mv {} $folder/Inbox
   '';
 
-  postNewHook = pkgs.writeShellScriptBin "notmuch-post-new" ''
+  postnewHook = pkgs.writeShellScriptBin "notmuch-post-new" ''
     echo "Hello from $0"
 
     notmuch tag --batch <<EOF
@@ -36,15 +15,6 @@ let
     +spam -inbox -- folder:/Spam/
     -inbox -- tag:sent and tag:inbox
     EOF
-
-    echo "Move personal emails out of prvAcc..."
-    notmuch search --output=files -- tag:personal and folder:/prvAcc/ | xargs -I {} mv {} /personal
-
-    echo "Move work emails out of gitAcc..."
-    notmuch search --output=files -- tag:work and folder:/gitAcc/ | xargs -I {} mv {} /work
-
-    echo "Move spam emails out of Spam..."
-    notmuch search --output=files -- tag:spam and folder:/Spam/ | xargs -I {} mv {} /Spam
   '';
 
 in
@@ -111,27 +81,36 @@ in
   programs.notmuch = {
     enable = true;
     hooks.preNew = "${preNewHook}/bin/notmuch-pre-new";
-    hooks.postNew = "${postNewHook}/bin/notmuch-post-new";
+    hooks.postNew = "${postnewHook}/bin/notmuch-post-new";
   };
 
   services.mbsync = {
     enable = true;
-    frequency = "*:0/5";
+    frequency = "*:0/3";
   };
+  home.packages = with pkgs; [
+    notmuch
+    isync
+  ];
 
-  systemd.user.services.notmuch = {
-    Unit = { Description = "notmuch new"; };
-    Service = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.notmuch}/bin/notmuch new";
+  systemd.user = {
+    services = {
+      notmuch = {
+        Unit = { description = "notmuch job"; };
+        Service = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.notmuch}/bin/notmuch new";
+        };
+      };
     };
-  };
-
-  systemd.user.timers.notmuch = {
-    Unit = { Description = "notmuch sync"; };
-    Timer = {
-      OnCalendar = "*:0/5";
-      Unit = "notmuch.service";
+    timers = {
+      notmuch = {
+        Unit = { description = "notmuch timer"; };
+        Timer = {
+          OnCalendar = "*:0/4";
+          Unit = "notmuch.service";
+        };
+      };
     };
   };
 }
