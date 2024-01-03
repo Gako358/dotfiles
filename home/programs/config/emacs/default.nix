@@ -64,7 +64,6 @@ in
         projectile # Project Interaction Library for Emacs
         protobuf-mode # Major mode for editing protocol buffers
         simple-httpd # A simple HTTP server
-        tabspaces # Display tab characters as spaces
         vterm # Fully-featured terminal emulator
         websocket # WebSocket client and server
         web-mode # Major mode for editing web templates

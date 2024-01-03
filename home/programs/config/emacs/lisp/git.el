@@ -8,8 +8,23 @@
 (add-hook 'prog-mode-hook 'git-gutter-mode)
 (setq git-gutter:update-interval 0.05)
 
-(define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
-(define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
-(define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom)
+;; git-gutter-fringe
+(defconst fringe-size '8 "Default fringe width")
+
+;; standardize fringe width
+(fringe-mode fringe-size)
+(push `(left-fringe  . ,fringe-size) default-frame-alist)
+(push `(right-fringe . ,fringe-size) default-frame-alist)
+
+;; colored fringe "bars"
+(define-fringe-bitmap 'git-gutter-fr:added
+  [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+  nil nil 'center)
+(define-fringe-bitmap 'git-gutter-fr:modified
+  [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+  nil nil 'center)
+(define-fringe-bitmap 'git-gutter-fr:deleted
+  [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+  nil nil 'center)
 
 ;;; git.el ends here
