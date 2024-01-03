@@ -16,8 +16,8 @@
   "f"'counsel-find-file
   "F"'counsel-rg
   "i"'indent-region
-  "m"'notmuch
   "k"'kill-buffer
+  "m"'notmuch
   "q"'kill-all-buffers-except-current
   "w"'save-buffer
   "x"'counsel-M-x

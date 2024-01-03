@@ -54,7 +54,28 @@
 (require 'flycheck)
 (global-flycheck-mode) ; Enable flycheck
 
-;; Split window right using ctrl + shift + l
+(defun open-vterm
+    ()
+  "Open vterm in a new window to the right."
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (vterm))
+
+(global-set-key
+ (kbd "C-S-t") 'open-vterm)
+
+(defun open-notmuch
+    ()
+  "Open notmuch in a new window to the right."
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (notmuch))
+
+(global-set-key
+ (kbd "C-S-m") 'open-notmuch)
+
 (defun split-window-right-and-move-there-dammit
     ()
   "Split window right and move there."
@@ -74,7 +95,6 @@
 (global-set-key
  (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
 
-;; Split window below using ctrl + shift + j
 (defun split-window-below-and-move-there-dammit
     ()
   "Split window below and move there."
