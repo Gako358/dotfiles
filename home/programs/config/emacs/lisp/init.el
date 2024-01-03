@@ -62,8 +62,17 @@
   (split-window-right)
   (windmove-right))
 
+(defun split-window-left-and-move-there-dammit
+    ()
+  "Split window left and move there."
+  (interactive)
+  (split-window-left)
+  (windmove-left))
+
 (global-set-key
  (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
+(global-set-key
+ (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
 
 ;; Split window below using ctrl + shift + j
 (defun split-window-below-and-move-there-dammit
@@ -86,11 +95,15 @@
 (global-set-key
  (kbd "C-l") 'windmove-right)
 
-;; Set keybindings for resizing windows
+;; Set keybindings for resizing windows using Shift and arrow keys
 (global-set-key
- (kbd "C-S-h") 'shrink-window-horizontally)
+ (kbd "C-S-<left>") 'shrink-window-horizontally)
 (global-set-key
- (kbd "C-S-k") 'shrink-window)
+ (kbd "C-S-<right>") 'enlarge-window-horizontally)
+(global-set-key
+ (kbd "C-S-<down>") 'shrink-window)
+(global-set-key
+ (kbd "C-S-<up>") 'enlarge-window)
 
 ;;SetKeybindingsformovingtextupanddown
 (defun move-text-internal
