@@ -1,4 +1,4 @@
-;;; projectile.el --- Projectile configuration
+;;; project.el --- Projectile configuration
 ;;; Commentary:
 ;;; Code:
 
@@ -16,4 +16,4 @@
        ("~/Projects/workspace/" . 1)))
 
 
-;;; projectile.el ends here
+;;; project.el ends here

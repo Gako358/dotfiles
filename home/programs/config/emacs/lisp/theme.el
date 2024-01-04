@@ -4,8 +4,9 @@
 
 ;; Doom Themes
 (require 'doom-themes)
-(load-theme 'doom-one t)
 (require 'doom-modeline)
+
+(load-theme 'doom-one t)
 (doom-modeline-mode 1)
 (setq doom-modeline-icon t)
 (setq doom-modeline-major-mode-icon t)
@@ -27,5 +28,18 @@
             (with-selected-frame f
               (set-frame-font "Iosevka Nerd Font 11" nil t)
               (set-face-attribute 'company-tooltip nil :font "Iosevka Nerd Font 11" :height 100))))
+
+;; Nerd-icons
+(require 'all-the-icons)
+(require 'all-the-icons-dired)
+(require 'all-the-icons-ivy-rich)
+(require 'nerd-icons)
+
+;; Ivy Rich
+(ivy-rich-mode 1)
+(setq ivy-rich-path-style 'abbrev)
+
+;; nerd-icons
+(nerd-icons-install-fonts)
 
 ;;; theme.el ends here

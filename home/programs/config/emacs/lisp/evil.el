@@ -18,16 +18,24 @@
   "i"'indent-region
   "k"'kill-buffer
   "m"'notmuch
-  "q"'kill-all-buffers-except-current
+  "q"'kill-buffer-and-window
   "w"'save-buffer
   "x"'counsel-M-x
   "d"'dired
   "t"'vterm
-  "pp"'projectile-command-map
-  "ps"'counsel-projectile-switch-project
+
+  ;;ProjectKeybindings
+  "pp"'counsel-projectile-switch-project
+  "pb"'projectile-switch-to-buffer
+  "pc"'projectile-cleanup-known-projects
   "pf"'counsel-projectile-find-file
-  "gc"'comment-or-uncomment-region
+  "pt"'project-eshell
+
+  ;;GitKeybindings
   "/"'magit-status
+  "gc"'comment-or-uncomment-region
+  "gl"'magit-blame-addition
+  "gb"'blamer-mode
 
   ;;OrgKeybindings
   "oa"'org-agenda

@@ -10,11 +10,11 @@
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/evil.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/git.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/ivy.el")
-(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/nerd.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/notmuch.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/org.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/pdftool.el")
-(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/projectile.el")
+(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/project.el")
+(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/sql.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/theme.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/vterm.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/which.el")
@@ -64,6 +64,17 @@
 
 (global-set-key
  (kbd "C-S-t") 'open-vterm)
+
+(defun open-eshell-below
+    ()
+  "Open eshell in a new window below."
+  (interactive)
+  (split-window-below)
+  (windmove-down)
+  (project-eshell))
+
+(global-set-key
+ (kbd "C-S-b") 'open-eshell-below)
 
 (defun open-notmuch
     ()

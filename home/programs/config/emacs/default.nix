@@ -26,6 +26,7 @@ in
         all-the-icons # A package for inserting developer icons
         all-the-icons-dired # Shows icons for each file in dired mode
         all-the-icons-ivy-rich # More friendly display transformer for ivy
+        blamer # Show git blame information in the fringe
         counsel # Various completion functions using Ivy
         counsel-projectile # Ivy integration for Projectile
         dired-single # Reuse the dired buffer
@@ -53,6 +54,7 @@ in
         ob-http # HTTP request in org-mode
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
+        org-modern # A modern org-mode distribution
         org-pomodoro # Pomodoro technique implementation
         org-present # A simple org-mode presentation tool
         org-roam # A note-taking tool based on the principles of networked thought
