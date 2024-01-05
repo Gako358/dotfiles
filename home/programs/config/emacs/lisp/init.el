@@ -4,6 +4,7 @@
 
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/company.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/copilot.el")
+(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/dash.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/direnv.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/editorconfig.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/eglot.el")
@@ -20,7 +21,6 @@
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/which.el")
 
 ;;GeneralSettings
-(setq inhibit-startup-message t) ; Disable startup message
 (menu-bar-mode -1) ; Disable the menu bar
 (tool-bar-mode -1) ; Disable the toolbar
 (scroll-bar-mode -1) ; Disable the scroll bar

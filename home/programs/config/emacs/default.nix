@@ -29,6 +29,7 @@ in
         blamer # Show git blame information in the fringe
         counsel # Various completion functions using Ivy
         counsel-projectile # Ivy integration for Projectile
+        dashboard # A startup screen extracted from Spacemacs
         dired-single # Reuse the dired buffer
         direnv # Environment switcher for Emacs
         docker # Docker integration
