@@ -6,6 +6,9 @@
 (require 'git-gutter-fringe)
 (require 'blamer)
 
+(with-eval-after-load 'magit
+  (require 'forge))
+
 (add-hook 'prog-mode-hook 'git-gutter-mode)
 (setq git-gutter:update-interval 0.05)
 

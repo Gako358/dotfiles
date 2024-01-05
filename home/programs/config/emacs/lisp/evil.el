@@ -41,6 +41,7 @@
   "oa"'org-agenda
   "os"'org-schedule
   "od"'org-deadline
+  "oi"'org-insert-structure-template
   "of"'org-agenda-file-to-front
   "ot"'org-insert-todo-heading
   "orl"'org-roam-buffer-toggle

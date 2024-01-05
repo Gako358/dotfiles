@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   gitConfig = {
     core = {
       editor = "emacs";
@@ -19,15 +20,17 @@
       "https://github.com/".insteadOf = "gh:";
       "ssh://git@github.com".pushInsteadOf = "gh:";
     };
+    github.user = "gako358";
   };
 
   rg = "${pkgs.ripgrep}/bin/rg";
-in {
+in
+{
   home.packages = with pkgs.gitAndTools; [
-    diff-so-fancy   # git diff with colors
-    git-crypt       # git files encryption
-    hub             # github command-line client
-    tig             # diff and commit view
+    diff-so-fancy # git diff with colors
+    git-crypt # git files encryption
+    hub # github command-line client
+    tig # diff and commit view
   ];
 
   programs.git =
@@ -54,10 +57,10 @@ in {
         "*.metals.sbt"
         "*metals.sbt"
         "*.direnv"
-        "*.envrc"         # there is lorri, nix-direnv & simple direnv; let people decide
-        "*hie.yaml"       # ghcide files
-        "*.mill-version"  # used by metals
-        "*.jvmopts"       # should be local to every project
+        "*.envrc" # there is lorri, nix-direnv & simple direnv; let people decide
+        "*hie.yaml" # ghcide files
+        "*.mill-version" # used by metals
+        "*.jvmopts" # should be local to every project
       ];
       userEmail = "gako358@outlook.com";
       userName = "merrinx";
@@ -69,5 +72,5 @@ in {
         }
       ];
     }
-    // (pkgs.sxm.git or {});
+    // (pkgs.sxm.git or { });
 }

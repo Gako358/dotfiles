@@ -40,6 +40,7 @@ in
         emojify # Display emojis in Emacs
         eshell-prompt-extras # Display extra information and color for your eshell prompt
         flycheck # On-the-fly syntax checking
+        forge # Work with Git forges from the comfort of Magit
         ghub # Minuscule client library for the Github API
         git-gutter # Show git diff in the fringe
         git-gutter-fringe # Fringe version of git-gutter.el
