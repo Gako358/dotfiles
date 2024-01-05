@@ -54,39 +54,6 @@
 (require 'flycheck)
 (global-flycheck-mode) ; Enable flycheck
 
-(defun open-vterm
-    ()
-  "Open vterm in a new window to the right."
-  (interactive)
-  (split-window-right)
-  (windmove-right)
-  (vterm))
-
-(global-set-key
- (kbd "C-S-t") 'open-vterm)
-
-(defun open-eshell-below
-    ()
-  "Open eshell in a new window below."
-  (interactive)
-  (split-window-below)
-  (windmove-down)
-  (project-eshell))
-
-(global-set-key
- (kbd "C-S-b") 'open-eshell-below)
-
-(defun open-notmuch
-    ()
-  "Open notmuch in a new window to the right."
-  (interactive)
-  (split-window-right)
-  (windmove-right)
-  (notmuch))
-
-(global-set-key
- (kbd "C-S-m") 'open-notmuch)
-
 (defun split-window-right-and-move-there-dammit
     ()
   "Split window right and move there."

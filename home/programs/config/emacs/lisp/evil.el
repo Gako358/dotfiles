@@ -22,7 +22,6 @@
   "w"'save-buffer
   "x"'counsel-M-x
   "d"'dired
-  "t"'vterm
 
   ;;ProjectKeybindings
   "pp"'counsel-projectile-switch-project
@@ -30,6 +29,12 @@
   "pc"'projectile-cleanup-known-projects
   "pf"'counsel-projectile-find-file
   "pt"'project-eshell
+
+  ;;VtermKeybindings
+  "tt"'vterm
+  "tm"'multi-vterm
+  "tn"'multi-vterm-next
+  "tp"'multi-vterm-prev
 
   ;;GitKeybindings
   "/"'magit-status

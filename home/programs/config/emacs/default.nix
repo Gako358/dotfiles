@@ -69,6 +69,7 @@ in
         protobuf-mode # Major mode for editing protocol buffers
         simple-httpd # A simple HTTP server
         vterm # Fully-featured terminal emulator
+        multi-vterm # Multiple vterm buffers
         websocket # WebSocket client and server
         web-mode # Major mode for editing web templates
 

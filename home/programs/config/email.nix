@@ -3,6 +3,7 @@ let
 
   preNewHook = pkgs.writeShellScriptBin "notmuch-pre-new" ''
     folder=$(basename $(pwd))
+    ${pkgs.isync}/bin/mbsync -a
     tags="+inbox -unread"
   '';
 
@@ -92,25 +93,4 @@ in
     notmuch
     isync
   ];
-
-  systemd.user = {
-    services = {
-      notmuch = {
-        Unit = { description = "notmuch job"; };
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.notmuch}/bin/notmuch new";
-        };
-      };
-    };
-    timers = {
-      notmuch = {
-        Unit = { description = "notmuch timer"; };
-        Timer = {
-          OnCalendar = "*:0/4";
-          Unit = "notmuch.service";
-        };
-      };
-    };
-  };
 }

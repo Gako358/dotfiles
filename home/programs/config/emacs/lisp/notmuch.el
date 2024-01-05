@@ -17,33 +17,30 @@
   (notmuch-search-tag +notmuch-delete-tags)
   (notmuch-tree-next-message))
 
-(defun +notmuch/update
+(defun +notmuch/open
     ()
-  "Sync notmuch emails with server."
+  "Open notmuch."
   (interactive)
-  (let
-      (
-       (compilation-buffer-name-function
-        (lambda
-          (_)
-          (format "*notmuch update*"))))
-    (with-current-buffer
-        (compile
-         (+notmuch-get-sync-command))
-      (add-hook
-       'compilation-finish-functions
-       (lambda
-         (buf status)
-         (if
-             (equal status "finished\n")
-             (progn
-               (delete-windows-on buf)
-               (bury-buffer buf)
-               (notmuch-refresh-all-buffers)
-               (message "Notmuch sync successful"))
-           (user-error "Failed to sync notmuch data")))
-       nil
-       'local))))
+  (shell-command "notmuch new")
+  (notmuch))
+
+(global-set-key
+ (kbd "C-S-m") '+notmuch/open)
+
+;; Run notmuch new every 5 minutes and notify if there are new emails
+(defun +notmuch/notify
+    ()
+  "Notify if there are new emails."
+  (interactive)
+  (shell-command "notmuch new")
+  (let ((count (string-to-number (shell-command-to-string "notmuch count tag:unread"))))
+    (if (> count 0)
+        (notifications-notify
+         :title "New Mail for you, you idiot...!"
+         :body (format "You have %d unread emails." count)
+         :urgency 'critical))))
+
+(run-with-timer 0 300 '+notmuch/notify)
 
 (setq notmuch-multipart/alternative-discouraged '
       ("text/x-amp-html" "text/plain" "text/html"))
