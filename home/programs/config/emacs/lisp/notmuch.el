@@ -6,16 +6,21 @@
 (require 'notmuch)
 (add-hook 'notmuch-message-mode-hook #'turn-off-auto-fill)
 
-(defvar +notmuch-delete-tags '
-  ("+trash" "-inbox" "-unread"))
-"Tags applied to mark emails for deletion."
+(setq notmuch-message-delete-tags '("-inbox" "-unread" "+archived"))
+(defun +notmuch/search-message-delete (go-next)
+  "Delete message and go to next message if GO-NEXT is non-nil."
+  (notmuch-search-tag notmuch-message-deleted-tags)
+  (if (eq 'up go-next)
+      (notmuch-search-previous-thread)
+    (notmuch-search-next-thread)))
 
-(defun +notmuch/search-delete
-    ()
-  "Mark all selected emails for deletion."
+(defun +notmuch/search-message-delete-down ()
+  "Delete message and go to next message."
   (interactive)
-  (notmuch-search-tag +notmuch-delete-tags)
-  (notmuch-tree-next-message))
+  (+notmuch/search-message-delete down))
+
+;; add a keybinding for deleting messages in search mode
+(define-key notmuch-search-mode-map "d" '+notmuch/search-message-delete-down)
 
 (defun +notmuch/open
     ()
