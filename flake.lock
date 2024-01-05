@@ -350,11 +350,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1703973218,
-        "narHash": "sha256-YOjEFHVHqx9QIfg3ObhzIaBcYs+mTdRLx7PP4pHTCxM=",
+        "lastModified": 1704443443,
+        "narHash": "sha256-m5LhTd9RMZjNI1BWZY9EU8L9mllqBmt1LxHrJtwbKFA=",
         "owner": "gako358",
         "repo": "scram",
-        "rev": "278e01592f5b4141026d40c6aeb34468f6449166",
+        "rev": "f3573661b39a5ce69c16f5bcf798ecf8df4e7e1a",
         "type": "github"
       },
       "original": {
