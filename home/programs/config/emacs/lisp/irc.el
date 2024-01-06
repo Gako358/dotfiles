@@ -8,6 +8,10 @@
  erc-user-full-name "Knut Oien"
  erc-rename-buffers t
  erc-interperate-mirc-color t
+ erc-default-nick-colors '("blue" "green" "yellow"
+                           "gray" "brown" "red"
+                           "purple" "white" "cyan")
+
  erc-hide-list '("JOIN" "PART" "QUIT")
  erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#nixos" "#java"))
  erc-quit-reason (lambda (s) (concat "I'm off to " s "!"))
