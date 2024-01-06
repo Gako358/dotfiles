@@ -8,7 +8,6 @@
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/direnv.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/editorconfig.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/eglot.el")
-(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/evil.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/git.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/ivy.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/irc.el")
@@ -33,23 +32,6 @@
 ;;Enablerelativelinenumbers
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode t)
-
-;;Functiontokillallbuffersexceptthecurrentone
-(defun kill-all-buffers-except-current
-    ()
-  "Ask for confirmation before killing all buffers except the current one."
-  (interactive)
-  (if
-      (yes-or-no-p "Really kill all buffers except the current one? ")
-      (let
-          (
-           (current-buffer
-            (current-buffer)))
-        (mapc 'kill-buffer
-              (delq current-buffer
-                    (buffer-list)))
-        (delete-other-windows))))
-
 
 ;;Flycheck
 (require 'flycheck)
@@ -167,6 +149,36 @@
 ;; Switch between buffers
 (global-set-key
  (kbd "C-<tab>") 'previous-buffer)
+
+(require 'highlight-thing)
+(global-highlight-thing-mode)
+(setq
+ highlight-thing-delay-seconds 0.5
+ highlight-thing-case-sensitive-p t
+ highlight-thing-ignore-list '("False" "True" "None"))
+
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+;; Evil
+(require 'evil)
+(evil-mode 1)
+(evil-collection-init '(calendar dired magit org org-roam))
+
+;;Settheleaderkeytospace
+(global-evil-leader-mode)
+(evil-leader/set-leader "<SPC>")
+(evil-leader/set-key
+  "b"'ivy-switch-buffer
+  "d"'dired
+  "e"'erc-track-switch-buffer-other-window
+  "f"'counsel-find-file
+  "F"'counsel-rg
+  "i"'indent-region
+  "k"'kill-buffer
+  "m"'notmuch
+  "q"'kill-buffer-and-window
+  "u"'undo-tree-visualize)
 
 ;; Improve performance
 (setq gc-cons-threshold 100000000)

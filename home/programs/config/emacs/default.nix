@@ -44,6 +44,7 @@ in
         ghub # Minuscule client library for the Github API
         git-gutter # Show git diff in the fringe
         git-gutter-fringe # Fringe version of git-gutter.el
+        highlight-thing # Highlight the current line, the current symbol, and more
         hydra # Make bindings that stick around
         ivy # A generic completion mechanism
         ivy-posframe # Display ivy in a posframe
@@ -67,11 +68,14 @@ in
         pretty-mode # Redisplay parts of the buffer as pretty symbols
         projectile # Project Interaction Library for Emacs
         protobuf-mode # Major mode for editing protocol buffers
+        rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
         simple-httpd # A simple HTTP server
+        undo-tree # Treat undo history as a tree
         vterm # Fully-featured terminal emulator
         multi-vterm # Multiple vterm buffers
         websocket # WebSocket client and server
         web-mode # Major mode for editing web templates
+        whitespace-cleanup-mode # Intelligently call whitespace-cleanup on save
 
         # Theme
         doom-modeline # A minimal and modern mode-line

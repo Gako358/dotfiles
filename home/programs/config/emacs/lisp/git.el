@@ -35,5 +35,11 @@
 (setq blamer-idle-time 0.3)
 (setq blamer-min-offset 70)
 
+(evil-leader/set-key
+  ;;GitKeybindings
+  "/"'magit-status
+  "gc"'comment-or-uncomment-region
+  "gl"'magit-blame-addition
+  "gb"'blamer-mode)
 
 ;;; git.el ends here

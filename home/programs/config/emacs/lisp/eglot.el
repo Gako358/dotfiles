@@ -5,6 +5,17 @@
 ;; Enable Eglot
 (require 'eglot)
 
+(evil-leader/set-key
+  "lf" 'eglot-format-buffer
+  "lr" 'eglot-rename
+  "lgd" 'xref-find-definitions
+  "lgr" 'xref-find-references
+  "lga" 'eglot-code-actions
+  "lgt" 'eglot-find-typeDefinition
+  "lgh" 'eglot-inlay-hints-mode
+  "lgo" 'eglot-code-action-organize-imports
+  "lgq" 'eglot-code-action-quickfix)
+
 ;; Enable CCLS
 (require 'ccls)
 (setq ccls-executable "/run/current-system/sw/bin/ccls")
@@ -32,6 +43,15 @@
 (add-hook 'java-mode-hook #'eglot-java-mode)
 (add-to-list 'auto-mode-alist '
              ("\\.java\\'" . java-mode))
+
+(evil-leader/set-key-for-mode 'java-mode
+  "n" 'eglot-java-project-new
+  "b" 'eglot-java-project-build-refresh
+  "f" 'eglot-java-file-new
+  "m" 'eglot-java-run-main
+  "t" 'eglot-java-run-test
+  "ul" 'eglot-java-upgrade-lsp-server
+  "uj" 'eglot-java-upgrade-junit-jar)
 
 ;; Enable Javascript
 (require 'js2-mode)
@@ -190,10 +210,29 @@
 
 (add-hook 'nxml-mode-hook #'setup-xml)
 
+;; Enable Rainbow Delimiters
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
 ;; Enable Rustic
 (require 'rustic)
 (add-hook 'rustic-mode-hook #'eglot-ensure)
 (add-to-list 'auto-mode-alist '
              ("\\.rs\\'" . rustic-mode))
+
+(evil-leader/set-key-for-mode 'rustic-mode
+  "b" 'rustic-cargo-build
+  "c" 'rustic-cargo-check
+  "r" 'rustic-cargo-run
+  "t" 'rustic-cargo-test)
+
+;; Enable Whitespace
+(require 'whitespace)
+(require 'whitespace-cleanup-mode)
+
+(evil-leader/set-key
+  ;;WhitespaceKeybindings
+  "ws" 'whitespace-mode
+  "wc" 'whitespace-cleanup-mode)
 
 ;;; eglot.el ends here

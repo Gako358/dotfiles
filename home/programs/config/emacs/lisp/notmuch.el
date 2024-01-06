@@ -6,6 +6,10 @@
 (require 'notmuch)
 (add-hook 'notmuch-message-mode-hook #'turn-off-auto-fill)
 
+(evil-leader/set-key-for-mode 'notmuch-mode
+  "u"'+notmuch/update
+  "d"'+notmuch/search-delete)
+
 (setq notmuch-message-delete-tags '("-inbox" "-unread" "+archived"))
 (defun +notmuch/search-message-delete (go-next)
   "Delete message and go to next message if GO-NEXT is non-nil."

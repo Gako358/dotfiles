@@ -100,4 +100,19 @@
 (setq org-pomodoro-long-break-length 15)
 (setq org-pomodoro-manual-break t)
 
+(evil-leader/set-key
+  "oa"'org-agenda
+  "os"'org-schedule
+  "od"'org-deadline
+  "oi"'org-insert-structure-template
+  "of"'org-agenda-file-to-front
+  "ot"'org-insert-todo-heading
+  "orl"'org-roam-buffer-toggle
+  "orf"'org-roam-node-find
+  "ori"'org-roam-node-insert
+  "ors"'org-roam-db-sync
+  "orr"'org-roam-ui-mode
+  "opl"'org-present
+  "opq"'org-present-quit)
+
 ;;; org.el ends here
