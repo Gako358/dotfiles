@@ -159,9 +159,14 @@
 
 (require 'undo-tree)
 (global-undo-tree-mode)
+(setq
+ undo-tree-visualizer-timestamps t
+ undo-tree-visualizer-diff t
+ undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
 
 ;; Evil
 (require 'evil)
+(setq evil-want-keybinding nil)
 (evil-mode 1)
 (evil-collection-init '(calendar dired magit org org-roam))
 
