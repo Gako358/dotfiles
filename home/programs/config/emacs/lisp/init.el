@@ -11,6 +11,7 @@
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/evil.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/git.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/ivy.el")
+(load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/irc.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/notmuch.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/org.el")
 (load-file "~/Sources/dotfiles/home/programs/config/emacs/lisp/pdftool.el")

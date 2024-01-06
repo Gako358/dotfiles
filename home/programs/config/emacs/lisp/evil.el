@@ -13,6 +13,8 @@
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
   "b"'ivy-switch-buffer
+  "d"'dired
+  "e"'erc-track-switch-buffer-other-window
   "f"'counsel-find-file
   "F"'counsel-rg
   "i"'indent-region
@@ -21,7 +23,6 @@
   "q"'kill-buffer-and-window
   "w"'save-buffer
   "x"'counsel-M-x
-  "d"'dired
 
   ;;ProjectKeybindings
   "pp"'counsel-projectile-switch-project

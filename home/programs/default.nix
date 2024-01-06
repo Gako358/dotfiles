@@ -39,6 +39,5 @@ in [
   ./git.nix
   ./network.nix
   ./vscode.nix
-  ./weechat.nix
   more
 ]

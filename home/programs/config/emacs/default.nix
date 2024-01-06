@@ -37,6 +37,7 @@ in
         elfeed # An extensible web feed reader
         eldoc # Show function arglist or variable docstring in echo area
         emojify # Display emojis in Emacs
+        erc # An IRC client for Emacs
         eshell-prompt-extras # Display extra information and color for your eshell prompt
         flycheck # On-the-fly syntax checking
         forge # Work with Git forges from the comfort of Magit
