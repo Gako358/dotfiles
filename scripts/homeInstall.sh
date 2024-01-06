@@ -28,5 +28,8 @@ fi
 
 home_name="merrinx@$flake"
 
+# Delete fish config before initializing home-manager
+rm -rf ~/.config/fish/config.fish
+
 # Install Home-manager
 nix run github:nix-community/home-manager#home-manager -- switch --flake .#$home_name;

@@ -22,7 +22,6 @@ in
         general # Provides a more convenient way to define keybindings
         which-key # Displays available keybindings in popup
 
-        # Optional packages.
         all-the-icons # A package for inserting developer icons
         all-the-icons-dired # Shows icons for each file in dired mode
         all-the-icons-ivy-rich # More friendly display transformer for ivy
@@ -74,7 +73,7 @@ in
         web-mode # Major mode for editing web templates
 
         # Theme
-        doom-modeline # A fancy and fast mode-line
+        doom-modeline # A minimal and modern mode-line
         doom-themes # An opinionated pack of modern color-themes
 
         # Programming language packages.
