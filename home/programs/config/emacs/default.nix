@@ -26,6 +26,9 @@ in
         all-the-icons-dired # Shows icons for each file in dired mode
         all-the-icons-ivy-rich # More friendly display transformer for ivy
         blamer # Show git blame information in the fringe
+        company # Modular text completion framework
+        company-box # A company front-end with icons
+        company-quickhelp # Documentation popup for Company
         counsel # Various completion functions using Ivy
         counsel-projectile # Ivy integration for Projectile
         dashboard # A startup screen extracted from Spacemacs
@@ -74,23 +77,12 @@ in
 
         # Programming language packages.
         blacken # Black formatter for Python
-        ccls # C/C++/ObjC language server
-        company # Modular text completion framework
-        company-box # A company front-end with icons
-        company-quickhelp # Documentation popup for Company
         eglot-java # Java support for eglot
-        json-mode # Major mode for editing JSON files
-        js2-mode # Improved JavaScript editing mode
-        markdown-mode # Major mode for editing Markdown files
         nix-mode # Nix integration
         python-mode # Major mode for editing Python files
         rustic # Rust development environment
         sbt-mode # Major mode for editing SBT files
         scala-mode # Major mode for editing Scala files
-        tide # TypeScript Interactive Development Environment
-        typescript-mode # Major mode for editing TypeScript files
-        vue-mode # Major mode for editing Vue.js files
-        yaml-mode # Major mode for editing YAML files
       ];
     extraConfig = builtins.readFile ./lisp/init.el;
   };
