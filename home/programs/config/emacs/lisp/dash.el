@@ -2,18 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Defvar all the dashboard variables
-(defvar dashboard-startup-banner
-  "Startup banner for dashboard.")
-(defvar dashboard-banner-logo-title
-  "Banner logo title for dashboard.")
-(defvar dashboard-set-file-icons
-  "Set file icons for dashboard.")
-(defvar dashboard-center-content
-  "Center content for dashboard.")
-(defvar dashboard-items
-  "Items for dashboard.")
-
+;; Dashboard Configuration
 (use-package dashboard
   :ensure t
   :config

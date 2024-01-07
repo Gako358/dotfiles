@@ -51,13 +51,12 @@
                      (when (bound-and-true-p display-line-numbers-mode)
                        (display-line-numbers-mode -1)))))
 
-;; Whitespace
-(use-package whitespace
-  :config
-  (evil-leader/set-key
-    "ws" 'whitespace-mode
-    "wc" 'whitespace-cleanup-mode))
+;; Rainbow Delimiters
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
+;; Whitespace
+(use-package whitespace)
 (use-package whitespace-cleanup-mode)
 
 ;;; editor.el ends here

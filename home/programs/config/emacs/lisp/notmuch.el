@@ -6,10 +6,6 @@
   :init
   (add-hook 'notmuch-message-mode-hook #'turn-off-auto-fill)
   :config
-  (evil-leader/set-key-for-mode 'notmuch-mode
-    "u" '+notmuch/update
-    "d" '+notmuch/search-delete)
-
   (setq notmuch-message-delete-tags '("-inbox" "-unread" "+archived"))
 
   (defun +notmuch/search-message-delete (go-next)

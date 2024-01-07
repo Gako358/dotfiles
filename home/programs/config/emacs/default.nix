@@ -36,16 +36,13 @@ in
         editorconfig # EditorConfig Emacs Plugin
         elfeed # An extensible web feed reader
         eldoc # Show function arglist or variable docstring in echo area
-        emojify # Display emojis in Emacs
         erc # An IRC client for Emacs
-        eshell-prompt-extras # Display extra information and color for your eshell prompt
         flycheck # On-the-fly syntax checking
         forge # Work with Git forges from the comfort of Magit
         ghub # Minuscule client library for the Github API
         git-gutter # Show git diff in the fringe
         git-gutter-fringe # Fringe version of git-gutter.el
         highlight-thing # Highlight the current line, the current symbol, and more
-        hydra # Make bindings that stick around
         ivy # A generic completion mechanism
         ivy-posframe # Display ivy in a posframe
         ivy-prescient # Better sorting and filtering for ivy
@@ -54,7 +51,6 @@ in
         magit # A Git porcelain inside Emacs
         nerd-icons # Nerd icons for Emacs
         notmuch # A fast mail indexer and mail reader
-        ob-http # HTTP request in org-mode
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
         org-modern # A modern org-mode distribution
@@ -62,18 +58,13 @@ in
         org-present # A simple org-mode presentation tool
         org-roam # A note-taking tool based on the principles of networked thought
         org-roam-ui # A graphical user interface for org-roam
-        ox-hugo # Org exporter to Hugo
-        password-store # Password manager
         pdf-tools # Emacs support library for PDF files
-        pretty-mode # Redisplay parts of the buffer as pretty symbols
         projectile # Project Interaction Library for Emacs
-        protobuf-mode # Major mode for editing protocol buffers
         rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
         simple-httpd # A simple HTTP server
         undo-tree # Treat undo history as a tree
         vterm # Fully-featured terminal emulator
         multi-vterm # Multiple vterm buffers
-        websocket # WebSocket client and server
         web-mode # Major mode for editing web templates
         whitespace-cleanup-mode # Intelligently call whitespace-cleanup on save
 

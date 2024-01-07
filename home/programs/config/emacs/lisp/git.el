@@ -32,13 +32,4 @@
 (use-package forge
   :after magit)
 
-(use-package evil-leader
-  :config
-  (evil-leader/set-key
-    ;;GitKeybindings
-    "/" 'magit-status
-    "gc" 'comment-or-uncomment-region
-    "gl" 'magit-blame-addition
-    "gb" 'blamer-mode))
-
 ;;; git.el ends here

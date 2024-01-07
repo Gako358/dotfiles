@@ -18,11 +18,4 @@
   :config
   (counsel-projectile-mode))
 
-(evil-leader/set-key
-  "pp" 'counsel-projectile-switch-project
-  "pb" 'projectile-switch-to-buffer
-  "pc" 'projectile-cleanup-known-projects
-  "pf" 'counsel-projectile-find-file
-  "pt" 'projectile-run-eshell)
-
 ;;; project.el ends here
