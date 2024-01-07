@@ -2,117 +2,89 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Org Agenda
-(defun +org-init-org-directory
-    ()
-  "Set `org-directory' to `~/Documents/org/'."
-  (unless org-directory
-    (setq-default org-directory "~/Documents/org/"))
-  (unless org-id-locations-file
-    (setq org-id-locations-file
-          (expand-file-name ".orgids" org-directory))))
+(use-package org
+  :init
+  (setq org-directory (or org-directory "~/Documents/org/")
+        org-id-locations-file (expand-file-name ".orgids" org-directory)
+        org-agenda-files (list org-directory)
+        org-agenda-deadline-faces '((1.001 . error)
+                                    (1.0 . org-warning)
+                                    (0.5 . org-upcoming-deadline)
+                                    (0.0 . org-upcoming-distant-deadline))
+        org-agenda-window-setup 'current-window
+        org-agenda-skip-unavailable-files t
+        org-agenda-span 10
+        org-agenda-start-on-weekday nil
+        org-agenda-start-day "-3d"
+        org-agenda-inhibit-startup t
+        org-indirect-buffer-display 'current-window
+        org-eldoc-breadcrumb-separator " → "
+        org-enforce-todo-dependencies t
+        org-entities-user '(("flat"  "\\flat" nil "" "" "266D" "♭")
+                            ("sharp" "\\sharp" nil "" "" "266F" "♯"))
+        org-fontify-done-headline t
+        org-fontify-quote-and-verse-blocks t
+        org-fontify-whole-heading-line t
+        org-hide-leading-stars t
+        org-image-actual-width nil
+        org-imenu-depth 6
+        org-priority-faces '((?A . error)
+                             (?B . warning)
+                             (?C . success))
+        org-startup-indented t
+        org-tags-column 0
+        org-use-sub-superscripts '{}
+        org-startup-folded nil))
 
-(defun +org-init-agenda-h
-    ()
-  "Configures the UI for `org-agenda'."
-  (unless org-agenda-files
-    (setq-default org-agenda-files
-                  (list org-directory)))
-  (setq-default
-   org-agenda-deadline-faces
-   '
-   (
-    (1.001 . error)
-    (1.0 . org-warning)
-    (0.5 . org-upcoming-deadline)
-    (0.0 . org-upcoming-distant-deadline))
-   org-agenda-window-setup'current-window
-   org-agenda-skip-unavailable-filest
-   org-agenda-span10
-   org-agenda-start-on-weekdaynil
-   org-agenda-start-day"-3d"
-   org-agenda-inhibit-startupt))
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t
+        org-roam-directory "~/Documents/Notes"
+        org-roam-db-location "~/Documents/Notes/org-roam.db"
+        org-roam-completion-everywhere t))
 
+(use-package org-roam-ui
+  :init
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
 
-(defun +org-init-appearance-h
-    ()
-  "Configures the UI for `org-mode'."
-  (setq org-indirect-buffer-display 'current-window
-        org-eldoc-breadcrumb-separator" → "
-        org-enforce-todo-dependenciest
-        org-entities-user
-        '
-        (
-         ("flat"  "\\flat" nil "" "" "266D" "♭")
-         ("sharp" "\\sharp" nil "" "" "266F" "♯"))
-        org-fontify-done-headlinet
-        org-fontify-quote-and-verse-blockst
-        org-fontify-whole-heading-linet
-        org-hide-leading-starst
-        org-image-actual-widthnil
-        org-imenu-depth6
-        org-priority-faces
-        '
-        (
-         (?A . error)
-         (?B . warning)
-         (?C . success))
-        org-startup-indentedt
-        org-tags-column0
-        org-use-sub-superscripts'{}
-        org-startup-foldednil))
+(use-package org-present
+  :init
+  (add-hook 'org-present-mode-hook
+            (lambda ()
+              (org-present-big)
+              (org-display-inline-images)
+              (org-present-hide-cursor)
+              (org-present-read-only)))
+  (add-hook 'org-present-mode-quit-hook
+            (lambda ()
+              (org-present-small)
+              (org-remove-inline-images)
+              (org-present-show-cursor)
+              (org-present-read-write))))
 
-;; Org Roam
-(require 'org-roam)
-(setq org-roam-v2-ack t)
-(setq org-roam-directory "~/Documents/Notes")
-(setq org-roam-db-location "~/Documents/Notes/org-roam.db")
-(setq org-roam-completion-everywhere t)
-
-;; Org Roam UI
-(require 'org-roam-ui)
-(setq org-roam-ui-sync-theme t)
-(setq org-roam-ui-follow t)
-(setq org-roam-ui-update-on-save t)
-(setq org-roam-ui-open-on-start t)
-
-;; Org Present
-(require 'org-present)
-(add-hook 'org-present-mode-hook
-          (lambda
-            ()
-            (org-present-big)
-            (org-display-inline-images)
-            (org-present-hide-cursor)
-            (org-present-read-only)))
-(add-hook 'org-present-mode-quit-hook
-          (lambda
-            ()
-            (org-present-small)
-            (org-remove-inline-images)
-            (org-present-show-cursor)
-            (org-present-read-write)))
-
-;; Org Pomodoro
-(require 'org-pomodoro)
-(setq org-pomodoro-length 25)
-(setq org-pomodoro-short-break-length 5)
-(setq org-pomodoro-long-break-length 15)
-(setq org-pomodoro-manual-break t)
+(use-package org-pomodoro
+  :init
+  (setq org-pomodoro-length 25
+        org-pomodoro-short-break-length 5
+        org-pomodoro-long-break-length 15
+        org-pomodoro-manual-break t))
 
 (evil-leader/set-key
-  "oa"'org-agenda
-  "os"'org-schedule
-  "od"'org-deadline
-  "oi"'org-insert-structure-template
-  "of"'org-agenda-file-to-front
-  "ot"'org-insert-todo-heading
-  "orl"'org-roam-buffer-toggle
-  "orf"'org-roam-node-find
-  "ori"'org-roam-node-insert
-  "ors"'org-roam-db-sync
-  "orr"'org-roam-ui-mode
-  "opl"'org-present
-  "opq"'org-present-quit)
+  "oa" 'org-agenda
+  "os" 'org-schedule
+  "od" 'org-deadline
+  "oi" 'org-insert-structure-template
+  "of" 'org-agenda-file-to-front
+  "ot" 'org-insert-todo-heading
+  "orl" 'org-roam-buffer-toggle
+  "orf" 'org-roam-node-find
+  "ori" 'org-roam-node-insert
+  "ors" 'org-roam-db-sync
+  "orr" 'org-roam-ui-mode
+  "opl" 'org-present
+  "opq" 'org-present-quit)
 
 ;;; org.el ends here

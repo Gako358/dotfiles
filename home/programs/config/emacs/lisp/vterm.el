@@ -2,20 +2,23 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'vterm)
-(require 'multi-vterm)
+(use-package vterm
+  :ensure t)
 
-(global-set-key
- (kbd "C-S-t") 'multi-vterm-project)
+(use-package multi-vterm
+  :ensure t
+  :bind (("C-S-t" . multi-vterm-project)
+         ("C-S-b" . multi-vterm-dedicated-toggle))
+  :config
+  (setq multi-vterm-dedicated-window-height 37))
 
-(global-set-key
- (kbd "C-S-b") 'multi-vterm-dedicated-toggle)
-(setq multi-vterm-dedicated-window-height 37)
-
-(evil-leader/set-key
-  "tt"'vterm
-  "tm"'multi-vterm
-  "tn"'multi-vterm-next
-  "tp"'multi-vterm-prev)
+(use-package evil-leader
+  :ensure t
+  :config
+  (evil-leader/set-key
+    "tt" 'vterm
+    "tm" 'multi-vterm
+    "tn" 'multi-vterm-next
+    "tp" 'multi-vterm-prev))
 
 ;;; vterm.el ends here

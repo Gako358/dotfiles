@@ -2,6 +2,18 @@
 ;;; Commentary:
 ;;; Code:
 
+;; Defvar all the dashboard variables
+(defvar dashboard-startup-banner
+  "Startup banner for dashboard.")
+(defvar dashboard-banner-logo-title
+  "Banner logo title for dashboard.")
+(defvar dashboard-set-file-icons
+  "Set file icons for dashboard.")
+(defvar dashboard-center-content
+  "Center content for dashboard.")
+(defvar dashboard-items
+  "Items for dashboard.")
+
 (use-package dashboard
   :ensure t
   :config
@@ -15,6 +27,6 @@
                           (agenda . 5))
         initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   :init
-  (dashboard-setup-startup-hook))
+  :hook (after-init . dashboard-setup-startup-hook))
 
 ;;; dash.el ends here
