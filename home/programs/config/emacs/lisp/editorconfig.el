@@ -3,7 +3,10 @@
 ;;; Code:
 
 ;; EditorConfig
-(require 'editorconfig)
-(editorconfig-mode 1)
+(use-package editorconfig
+  :ensure t
+  :diminish editorconfig-mode
+  :config
+  (editorconfig-mode 1))
 
 ;;; editorconfig.el ends here
