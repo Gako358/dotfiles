@@ -23,17 +23,10 @@
   (setq ccls-args '("--log-file=/tmp/ccls.log"))
   (setq ccls-extra-init-params '(:completion (:detailedLabel t)))
   (setq ccls-cache-dir "/tmp/ccls-cache")
-  (add-hook 'c-mode-hook #'eglot-ensure)
-  (add-hook 'c++-mode-hook #'eglot-ensure))
-
-(use-package docker
-  :config
-  (require 'dockerfile-mode)
-  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+  :hook ((c-mode c++-mode) . eglot-ensure))
 
 (use-package eglot-java
   :config
-  (add-hook 'java-mode-hook #'eglot-java-mode)
   (add-to-list 'auto-mode-alist '("\\.java\\'" . java-mode))
   (evil-leader/set-key-for-mode 'java-mode
     "n" 'eglot-java-project-new
@@ -42,29 +35,20 @@
     "m" 'eglot-java-run-main
     "t" 'eglot-java-run-test
     "ul" 'eglot-java-upgrade-lsp-server
-    "uj" 'eglot-java-upgrade-junit-jar))
+    "uj" 'eglot-java-upgrade-junit-jar)
+  :hook (java-mode . eglot-java-mode))
 
 (use-package js2-mode
   :config
   (setq js-indent-level 2)
   (setq js2-mode-show-parse-errors nil)
   (setq js2-mode-show-strict-warnings nil)
-  (add-hook 'js2-mode-hook #'eglot-ensure)
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
+  :hook (js2-mode . eglot-ensure)
+  :mode "\\.js\\'")
 
-(use-package json-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode)))
-
-(use-package markdown-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)))
-
-;; Nix
 (use-package nix-mode
-  :config
-  (add-hook 'nix-mode-hook #'eglot-ensure)
-  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode)))
+  :hook (nix-mode . eglot-ensure)
+  :mode "\\.nix\\'")
 
 ;; Web-mode
 (use-package web-mode
@@ -89,74 +73,63 @@
 
 ;; Python
 (use-package python-mode
-  :config
-  (add-hook 'python-mode-hook #'eglot-ensure))
+  :hook (python-mode . eglot-ensure))
 
 (use-package blacken)
 
 ;; SQL
-(use-package sql
-  :config
-  (add-hook 'sql-mode-hook #'eglot-ensure))
-
-;; Scala
-(use-package scala-mode
-  :config
-  (add-hook 'scala-mode-hook #'eglot-ensure)
-  (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode)))
-
-;; SBT
-(use-package sbt-mode
-  :config
-  (setq sbt:program-options '("-Dsbt.supershell=false"))
-  (add-to-list 'auto-mode-alist '("\\.s\\(cala\\|bt\\)$" . scala-mode)))
-
-;; TailwindCSS
-(use-package css-mode
-  :config
-  (add-hook 'css-mode-hook #'eglot-ensure))
-
-;; Typescript
-(use-package typescript-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
-  (add-hook 'typescript-mode-hook #'eglot-ensure)
-  (add-hook 'typescript-mode-hook #'setup-tide-mode))
-
-;; Vue
-(use-package vue-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode))
-  (add-hook 'vue-mode-hook #'eglot-ensure))
-
-;; XML
-(use-package nxml-mode
-  :config
-  (add-hook 'nxml-mode-hook #'setup-xml))
-
 (use-package sql
   :ensure t
   :config
   (setq sql-mysql-login-params
         '((user :default "root")
           (server :default "localhost")
-          (port :default 3306))))
+          (port :default 3306)))
+  :hook (sql-mode . eglot-ensure))
+
+;; Scala
+(use-package scala-mode
+  :hook (scala-mode . eglot-ensure)
+  :mode "\\.scala\\'")
+
+;; SBT
+(use-package sbt-mode
+  :config
+  (setq sbt:program-options '("-Dsbt.supershell=false"))
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+;; TailwindCSS
+(use-package css-mode
+  :hook (css-mode . eglot-ensure))
+
+;; Typescript
+(use-package typescript-mode
+  :hook ((typescript-mode . eglot-ensure)
+         (typescript-mode . setup-tide-mode))
+  :mode ("\\.ts\\'" "\\.tsx\\'"))
+
+;; Vue
+(use-package vue-mode
+  :hook (vue-mode . eglot-ensure)
+  :mode "\\.vue\\'")
+
+;; XML
+(use-package nxml-mode
+  :hook (nxml-mode . setup-xml))
 
 ;; Rainbow Delimiters
 (use-package rainbow-delimiters
-  :config
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; Rustic
 (use-package rustic
+  :hook (rustic-mode . eglot-ensure)
   :config
-  (add-hook 'rustic-mode-hook #'eglot-ensure)
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
   (evil-leader/set-key-for-mode 'rustic-mode
     "b" 'rustic-cargo-build
     "c" 'rustic-cargo-check
     "r" 'rustic-cargo-run
-    "t" 'rustic-cargo-test))
+    "t" 'rustic-cargo-test)
+  :mode "\\.rs\\'")
 
 ;;; eglot.el ends here

@@ -4,8 +4,7 @@
 
 ;; Git gutter configuration
 (use-package git-gutter
-  :init
-  (add-hook 'prog-mode-hook 'git-gutter-mode)
+  :hook (prog-mode . git-gutter-mode)
   :custom
   (git-gutter:update-interval 0.05))
 
