@@ -429,10 +429,6 @@ Using own created web mode, for vue, typescript and tailwind.
 
   (add-to-list 'eglot-server-programs
                `(tailwindcss-mode . ("tailwindcss-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
-
-  (use-package nxml-mode
-    :hook (nxml-mode . eglot-ensure)
-    :mode "\\.xml\\'")
 #+end_src
 
 * Git
