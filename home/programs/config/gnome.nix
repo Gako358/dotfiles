@@ -132,8 +132,8 @@
       # Switch to workspace 4
       switch-to-workspace-4 = ["<Super>4"];
       # Switch windows
-      switch-windows = ["<Super>t"];
-      switch-windows-backward = ["<Super>n"];
+      switch-windows = ["<Super>j"];
+      switch-windows-backward = ["<Super>k"];
       # Toggle fullscreen mode
       toggle-fullscreen = [];
       # Toggle maximization state
