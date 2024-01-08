@@ -6,26 +6,17 @@
     any-nix-shell        # fish support for nix shell
     acpi                 # battery info
     arandr               # screen layout manager
-    asciinema            # record the terminal
     brightnessctl        # control screen brightness
     bottom               # alternative to htop & ytop
     cacert               # ca certificates
-    cowsay               # cowsay fortune teller with random images
     dbeaver              # database manager
     dconf2nix            # dconf (gnome) files to nix converter
     docker-compose       # docker manager
     dive                 # explore docker layers
-    drawio               # diagram design
     duf                  # disk usage/free utility
     eza                  # a better `ls`
     fd                   # "find" for files
-    filezilla            # ftp client
-    geany                # text editor
     gimp                 # gnu image manipulation program
-    glow                 # terminal markdown viewer
-    grim                 # screenshot tool
-    hyperfine            # command-line benchmarking tool
-    imagemagick          # image manipulation
     jump                 # fast directory navigation
     killall              # kill processes by name
     lazygit              # terminal git ui
@@ -49,14 +40,8 @@
     tree                 # display files in a tree view
     unzip                # unzip files
     virt-manager         # virtual machine manager
-    wally-cli            # ErgoDox EZ keyboard layout manager
-    wayshot              # screenshot tool
     wgetpaste            # paste to pastebin
-    wl-gammactl          # wayland gamma control
-    wl-clipboard         # wayland clipboard manager
     xarchiver            # archive manager
-    xclip                # command-line interface to X selections
-    zathura              # document viewer
     zip                  # zip files
   ];
 in {
