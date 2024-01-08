@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# Get the amixer volume and print it to stdout.
-amixer -D pulse sget Master | awk -F"[][]" '/dB/ { print $2 }' | sed 's/%//g'
-
