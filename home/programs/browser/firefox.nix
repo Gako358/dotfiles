@@ -4,6 +4,7 @@
 }:
 let
   inherit (specialArgs) hidpi;
+  mailClient = pkgs.thunderbird;
 
   dpiSettings = {
     "layout.css.devPixelsPerPx" =
@@ -35,4 +36,5 @@ in
       };
     };
   };
+  home.packages = [ mailClient ];
 }

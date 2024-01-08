@@ -11,9 +11,9 @@
     gnomeExtensions.just-perfection
     gnomeExtensions.user-themes
     gnomeExtensions.tray-icons-reloaded
+    gnomeExtensions.space-bar
     gnome.dconf-editor
     gnome.gnome-tweaks
-    gnomeExtensions.pop-shell
     flat-remix-gnome
   ];
   dconf.settings = {
@@ -27,7 +27,7 @@
         "just-perfection-desktop@just-perfection"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "sound-output-device-chooser@kgshank.net"
-        "tiling-assistant@leleat-on-github"
+        "space-bar@luchrioh"
         "trayIconsReloaded@selfmade.pl"
       ];
       favorite-apps = [
@@ -38,7 +38,6 @@
         "dbeaver.desktop"
         "code.desktop"
         "discord.desktop"
-        "gimp.desktop"
         "microsoft-edge.desktop"
         "slack.desktop"
       ];
@@ -89,18 +88,8 @@
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<super>return";
-      command = "alacritty";
+      command = "emacsclient";
       name = "open-terminal";
-    };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-      binding = "<shift><super>r";
-      command = "alacritty -e ranger";
-      name = "Ranger";
-    };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
-      binding = "<shift><super>b";
-      command = "alacritty -e btm";
-      name = "Btop";
     };
 
     # Windows
@@ -143,8 +132,8 @@
       # Switch to workspace 4
       switch-to-workspace-4 = ["<Super>4"];
       # Switch windows
-      switch-windows = ["<Super>Tab"];
-      switch-windows-backward = ["<Shift><Super>Tab"];
+      switch-windows = ["<Super>t"];
+      switch-windows-backward = ["<Super>n"];
       # Toggle fullscreen mode
       toggle-fullscreen = [];
       # Toggle maximization state
@@ -178,7 +167,7 @@
       # Show all applications
       toggle-application-view = [];
       # Show the notification list
-      toggle-message-tray = ["<Super>n"];
+      toggle-message-tray = ["<Super>m"];
       # Show the overview
       toggle-overview = [];
     };
