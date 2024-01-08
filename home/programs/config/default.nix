@@ -4,7 +4,7 @@
     ./neofetch
     ./email.nix
     ./fish.nix
-    ./ranger.nix
+    ./gnome.nix
     ./starship.nix
   ];
 }

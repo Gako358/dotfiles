@@ -156,14 +156,6 @@ Other that that i use emacs keys.
       "c" 'rustic-cargo-check
       "r" 'rustic-cargo-run
       "t" 'rustic-cargo-test))
-
-  (use-package evil-org
-    :demand t
-    :after (org evil-leader)
-    :config
-    (progn
-      (add-hook 'org-mode-hook 'evil-org-mode)))
-
 #+end_src
 
 * Completion
