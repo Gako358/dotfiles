@@ -11,8 +11,6 @@
     gnomeExtensions.just-perfection
     gnomeExtensions.user-themes
     gnomeExtensions.tray-icons-reloaded
-    gnomeExtensions.vitals
-    gnomeExtensions.space-bar
     gnome.dconf-editor
     gnome.gnome-tweaks
     gnomeExtensions.pop-shell
@@ -29,13 +27,11 @@
         "just-perfection-desktop@just-perfection"
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "sound-output-device-chooser@kgshank.net"
-        "space-bar@luchrioh"
         "tiling-assistant@leleat-on-github"
         "trayIconsReloaded@selfmade.pl"
-        "Vitals@CoreCoding.com"
       ];
       favorite-apps = [
-        "firefox-beta.desktop"
+        "firefox.desktop"
         "thunderbird.desktop"
         "org.gnome.Nautilus.desktop"
         "spotify.desktop"

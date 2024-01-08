@@ -26,16 +26,12 @@ let
     };
   };
 in [
-  ./browser/chromium.nix
   ./browser/discord.nix
   ./browser/edge.nix
   ./browser/firefox.nix
   ./browser/slack.nix
-  ./browser/teams.nix
   ./config
-  ./alacritty.nix
   ./citrix.nix
-  ./kdeconnect.nix
   ./git.nix
   ./network.nix
   ./vscode.nix

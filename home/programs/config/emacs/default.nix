@@ -34,6 +34,7 @@ in
         dashboard # A startup screen extracted from Spacemacs
         dired-single # Reuse the dired buffer
         direnv # Environment switcher for Emacs
+        dmenu # A dynamic menu for X
         docker # Docker integration
         dockerfile-mode # Major mode for editing Dockerfiles
         editorconfig # EditorConfig Emacs Plugin
@@ -64,6 +65,7 @@ in
         pdf-tools # Emacs support library for PDF files
         projectile # Project Interaction Library for Emacs
         rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
+        rainbow-mode # Colorize color names in buffers
         simple-httpd # A simple HTTP server
         undo-tree # Treat undo history as a tree
         vterm # Fully-featured terminal emulator
@@ -84,7 +86,7 @@ in
         sbt-mode # Major mode for editing SBT files
         scala-mode # Major mode for editing Scala files
       ];
-    extraConfig = builtins.readFile ./lisp/init.el;
+    extraConfig = builtins.readFile ./init.el;
   };
 
   home.packages = with pkgs; [

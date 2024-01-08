@@ -31,7 +31,6 @@
     lazygit              # terminal git ui
     libsecret            # secret management
     ncdu                 # disk space info (a better du)
-    ncspot               # ncurses spotify client
     nitch                # minimal system information fetch
     nix-index            # locate packages containing certain nixpkgs
     nix-output-monitor   # nom: monitor nix commands
@@ -45,6 +44,7 @@
     ripgrep              # fast grep
     scrot                # screenshot tool
     slurp                # select a region in a wayland compositor
+    spotify              # music streaming
     tldr                 # summary of a man page
     tree                 # display files in a tree view
     unzip                # unzip files
@@ -58,9 +58,6 @@
     xclip                # command-line interface to X selections
     zathura              # document viewer
     zip                  # zip files
-
-    # Hyprland specific
-    sway-contrib.grimshot
   ];
 in {
   programs.home-manager.enable = true;

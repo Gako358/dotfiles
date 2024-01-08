@@ -1,0 +1,786 @@
+#+STARTUP: overview
+#+TITLE: MerrinX Config
+#+CREATOR: Merrinx
+#+LANGUAGE: en
+
+* Installation
+Git clone https://github.com/gako358/dotfiles.git.
+The configuration is setup using NixOS, check README.
+
+
+* General Settings
+#+begin_src emacs-lisp
+  (menu-bar-mode -1) ; Disable the menu bar
+  (tool-bar-mode -1) ; Disable the toolbar
+  (scroll-bar-mode -1) ; Disable the scroll bar
+  (tab-bar-mode -1) ; Disable the tab bar
+  (setq-default indent-tabs-mode nil) ; Use spaces instead of tabs
+  (global-display-line-numbers-mode t) ;; Show line numbers
+  (setq
+   make-backup-files nil ; Disable backup files
+   auto-save-default nil ; Disable auto save
+   display-line-numbers-type 'relative
+   gc-cons-threshold 100000000 ;; 100mb
+   read-process-output-max (* 1024 1024)) ;; 1mb
+
+  (setq locale-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+
+  (setq ring-bell-function 'ignore)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  (use-package async
+    :ensure t
+    :init (dired-async-mode 1))
+
+  ;; Direnv Configuration
+  (require 'direnv)
+  (direnv-mode 1)
+#+end_src
+
+* Dmenu
+Now since we can open any program inside emacs, we also need a menu to search and start
+any application. For this we can use =dmenu=. Dmenu is suckless utility. But here we
+using a melpa package of dmenu which allow dmenu inside emacs. Inside emacs using dmenu
+for finding programs is pretty quick. I have bind =s-SPC= to open dmenu which make
+it more quicker.
+
+#+begin_src emacs-lisp
+  (use-package dmenu
+    :ensure t
+    :bind
+    ("s-SPC" . 'dmenu))
+#+end_src
+
+* Reloading Config
+Closing and opening emacs again after some quick changes in config is pain, especially when you are using emacs as a window manager. So here I bind a key ==C-c r== to do it quickly without closing ==emacs==.
+
+#+begin_src emacs-lisp
+  (defun config-reload ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+end_src
+
+* Evil Keybinding
+For keybinding I am using mostly evil.
+There are some functions that are made, that is binded to my keyboard.
+Other that that i use emacs keys.
+#+begin_src emacs-lisp
+  (use-package evil
+    :init
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1)
+    (evil-collection-init '(calendar dired magit org org-roam)))
+
+  (use-package evil-leader
+    :demand t
+    :config
+    (global-evil-leader-mode)
+    (evil-leader/set-leader "<SPC>")
+    (evil-leader/set-key
+      "b" 'ivy-switch-buffer
+      "d" 'dired
+      "e" 'erc-track-switch-buffer-other-window
+      "f" 'counsel-find-file
+      "F" 'counsel-rg
+      "i" 'indent-region
+      "k" 'kill-buffer
+      "m" 'notmuch
+      "q" 'kill-buffer-and-window
+      "u" 'undo-tree-visualize
+
+      ;;GitKeybindings
+      "/" 'magit-status
+      "gc" 'comment-or-uncomment-region
+      "gl" 'magit-blame-addition
+      "gb" 'blamer-mode
+
+      ;; Projectile
+      "pp" 'counsel-projectile-switch-project
+      "pb" 'projectile-switch-to-buffer
+      "pc" 'projectile-cleanup-known-projects
+      "pf" 'counsel-projectile-find-file
+      "pt" 'projectile-run-eshell
+
+      ;; Eglot
+      "lf" 'eglot-format-buffer
+      "lr" 'eglot-rename
+      "lgd" 'xref-find-definitions
+      "lgr" 'xref-find-references
+      "lga" 'eglot-code-actions
+      "lgt" 'eglot-find-typeDefinition
+      "lgh" 'eglot-inlay-hints-mode
+      "lgo" 'eglot-code-action-organize-imports
+      "lgq" 'eglot-code-action-quickfix
+
+      "oa" 'org-agenda
+      "os" 'org-schedule
+      "od" 'org-deadline
+      "oi" 'org-insert-structure-template
+      "of" 'org-agenda-file-to-front
+      "ot" 'org-insert-todo-heading
+      "orl" 'org-roam-buffer-toggle
+      "orf" 'org-roam-node-find
+      "ori" 'org-roam-node-insert
+      "ors" 'org-roam-db-sync
+      "orr" 'org-roam-ui-mode
+      "opl" 'org-present
+      "opq" 'org-present-quit
+
+      "tt" 'vterm
+      "tm" 'multi-vterm
+      "tn" 'multi-vterm-next
+      "tp" 'multi-vterm-prev
+
+      "ws" 'whitespace-mode
+      "wc" 'whitespace-cleanup-mode)
+
+    ;; Java-specific keybindings
+    (evil-leader/set-key-for-mode 'java-moDe
+      "jn" 'eglot-java-project-new
+      "jb" 'eglot-java-project-build-refresh
+      "jf" 'eglot-java-file-new
+      "jm" 'eglot-java-run-main
+      "jt" 'eglot-java-run-test
+      "jul" 'eglot-java-upgrade-lsp-server
+      "juj" 'eglot-java-upgrade-junit-jar)
+
+    ;; Rust-specific keybindings
+    (evil-leader/set-key-for-mode 'rustic-mode
+      "b" 'rustic-cargo-build
+      "c" 'rustic-cargo-check
+      "r" 'rustic-cargo-run
+      "t" 'rustic-cargo-test))
+
+  (use-package evil-org
+    :demand t
+    :after (org evil-leader)
+    :config
+    (progn
+      (add-hook 'org-mode-hook 'evil-org-mode)))
+
+#+end_src
+
+* Completion
+Using company for code completion.
+
+#+begin_src emacs-lisp
+  (use-package company
+    :demand t
+    :config
+    (setq
+     company-backends '(company-capf company-files company-dabbrev)
+     company-idle-delay 0.1)
+    :init
+    :hook (after-init . global-company-mode))
+
+  (use-package company-box
+    :demand t
+    :config
+    (setq
+     company-box-icons-alist 'company-box-icons-all-the-icons
+     company-box-backends-colors nil
+     company-box-show-single-candidate t
+     company-box-max-candidates 50
+     company-box-doc-delay 0.1
+     company-box-enable-icon t
+     company-box-scrollbar t)
+    :hook (company-mode . company-box-mode))
+
+  (use-package company-quickhelp
+    :demand t
+    :config
+    (setq company-quickhelp-delay 0.1)
+    :after company
+    :init
+    :hook (company-mode . company-quickhelp-mode))
+#+end_src
+
+* Copilot
+Code completion from Copilot, using the Nvim binary.
+Using Nix to fetch the package for me, and make it available in the
+symlinked .emacs.d in home.
+
+#+begin_src emacs-lisp
+  (let
+      (
+       (copilot-dir "~/.emacs.d/emacsCopilot")
+       (copilot-file "~/.emacs.d/emacsCopilot/copilot.el"))
+    ;; Check if the copilot.el file exists
+    (when
+        (file-exists-p copilot-file)
+      ;; Add the directory to the load-path
+      (add-to-list 'load-path copilot-dir)
+      ;; Try to load the copilot module and catch any errors
+      (condition-case err
+          (progn
+            (require 'copilot)
+            (add-hook 'prog-mode-hook 'copilot-mode)
+            (define-key copilot-completion-map
+                        (kbd "C-p") 'copilot-accept-completion)
+            (define-key copilot-mode-map
+                        (kbd "<C-S-n>") 'copilot-next-completion
+                        (define-key copilot-mode-map
+                                    (kbd "<C-S-p>") 'copilot-previous-completion)))
+        ;; If there's an error, print a message (you can also log or take other actions)
+        (error
+         (message "Failed to load copilot: %s" err)))))
+#+end_src
+
+* Appearance
+Using dashboard and doom-theme with modeline.
+
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (setq dashboard-startup-banner 'logo
+          dashboard-banner-logo-title "Welcome back Master"
+          dashboard-set-file-icons t
+          dashboard-center-content t
+          dashboard-items '((recents  . 5)
+                            (bookmarks . 5)
+                            (projects . 5)
+                            (agenda . 5))
+          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+    :init
+    :hook (after-init . dashboard-setup-startup-hook))
+
+  (use-package doom-themes
+    :ensure t
+    :config
+    (load-theme 'doom-one t)
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t))
+
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1)
+    :config
+    (setq doom-modeline-height 35
+          doom-modeline-bar-width 3
+          doom-modeline-buffer-file-name-style 'truncate-with-project
+          doom-modeline-buffer-encoding nil
+          doom-modeline-buffer-modification-icon nil
+          doom-modeline-buffer-state-icon nil
+          doom-modeline-icon t
+          doom-modeline-major-mode-icon t
+          doom-modeline-minor-modes nil
+          doom-modeline-persp-name nil
+          doom-modeline-eglot t
+          doom-modeline-github nil
+          doom-modeline-github-interval (* 30 60)))
+
+  (use-package all-the-icons
+    :ensure t)
+
+  (use-package all-the-icons-dired
+    :ensure t
+    :hook (dired-mode . all-the-icons-dired-mode))
+
+  (use-package all-the-icons-ivy-rich
+    :ensure t
+    :init (all-the-icons-ivy-rich-mode 1))
+
+  (use-package nerd-icons
+    :ensure t
+    :config
+    (setq nerd-icons-font-family "Iosevka Nerd Font"))
+
+  (add-hook 'after-make-frame-functions
+            (lambda (f)
+              (with-selected-frame f
+                (set-frame-font "Iosevka Nerd Font 11" nil t)
+                (set-face-attribute 'mode-line nil :font "Iosevka Nerd Font 12" :height 100)
+                (set-face-attribute 'company-tooltip nil :font "Iosevka Nerd Font 11" :height 100))))
+#+end_src
+
+* Editor
+A compilation of different packages I use.
+
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :config
+    (global-flycheck-mode)) ; Enable flycheck
+
+  (use-package highlight-thing
+    :config
+    (global-highlight-thing-mode)
+    :custom
+    (highlight-thing-delay-seconds 0.5)
+    (highlight-thing-case-sensitive-p t)
+    (highlight-thing-ignore-list '("False" "True" "None")))
+
+  (use-package ivy
+    :init
+    (ivy-mode 1)
+    :custom
+    (ivy-use-virtual-buffers t)
+    (ivy-count-format "(%d/%d) "))
+
+  (use-package undo-tree
+    :config
+    (global-undo-tree-mode)
+    :custom
+    (undo-tree-visualizer-timestamps t)
+    (undo-tree-visualizer-diff t)
+    (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo"))))
+
+  (use-package editorconfig
+    :ensure t
+    :diminish editorconfig-mode
+    :config
+    (editorconfig-mode 1))
+
+  (use-package pdf-tools
+    :ensure t
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-page)
+    (setq pdf-annot-activate-created-annotations t)
+    :hook
+    (pdf-view-mode . (lambda ()
+                       (when (bound-and-true-p display-line-numbers-mode)
+                         (display-line-numbers-mode -1)))))
+
+  (use-package rainbow-mode
+    :ensure t
+    :init (add-hook 'prog-mode-hook 'rainbow-mode))
+
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+  (use-package whitespace)
+  (use-package whitespace-cleanup-mode)
+#+end_src
+
+* Eglot LSP
+Using Eglot, emacs builtinn LSP client.
+Setup using:
+- Java
+- Nix
+- Python
+- Rust
+- SBT and Scala
+- SQL
+
+Using own created web mode, for vue, typescript and tailwind.
+
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure t
+    :config
+    (setq eglot-autoshutdown t))
+
+  (use-package eglot-java
+    :hook (java-mode . eglot-java-mode)
+    :mode ("\\.java\\'" . java-mode))
+
+  (use-package nix-mode
+    :hook (nix-mode . eglot-ensure)
+    :mode "\\.nix\\'")
+
+  (use-package blacken)
+  (use-package python-mode
+    :hook (python-mode . eglot-ensure))
+
+  (use-package rustic
+    :after eglot
+    :hook (rustic-mode . eglot-ensure)
+    :mode "\\.rs\\'")
+
+  (use-package sbt-mode
+    :config
+    (setq sbt:program-options '("-Dsbt.supershell=false"))
+    :mode "\\.s\\(cala\\|bt\\)$")
+
+  (use-package scala-mode
+    :hook (scala-mode . eglot-ensure)
+    :mode "\\.scala\\'")
+
+  (use-package sql
+    :after eglot
+    :hook (sql-mode . eglot-ensure)
+    :mode "\\.sql\\'")
+
+  (defun vue-eglot-init-options ()
+    (let ((tsdk-path (expand-file-name
+                      "lib"
+                      (shell-command-to-string "npm list --global --parseable typescript | head -n1 | tr -d \"\n\""))))
+      `(:typescript (:tsdk ,tsdk-path
+                           :languageFeatures (:completion
+                                              (:defaultTagNameCase "both"
+                                                                   :defaultAttrNameCase "kebabCase"
+                                                                   :getDocumentNameCasesRequest nil
+                                                                   :getDocumentSelectionRequest nil)
+                                              :diagnostics
+                                              (:getDocumentVersionRequest nil))
+                           :documentFeatures (:documentFormatting
+                                              (:defaultPrintWidth 100
+                                                                  :getDocumentPrintWidthRequest nil)
+                                              :documentSymbol t
+                                              :documentColor t)))))
+
+  (add-to-list 'eglot-server-programs
+               `(vue-mode . ("vue-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
+
+  (add-to-list 'eglot-server-programs
+               `(typescript-mode . ("typescript-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
+
+  (add-to-list 'eglot-server-programs
+               `(js-mode . ("typescript-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
+
+  (add-to-list 'eglot-server-programs
+               `(tailwindcss-mode . ("tailwindcss-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
+
+  (use-package nxml-mode
+    :hook (nxml-mode . eglot-ensure)
+    :mode "\\.xml\\'")
+#+end_src
+
+* Git
+Using magit with forge, creates the best environment for working with
+Git inside emacs, the only thing missing here is a way to approve PR.
+For forge, create a file called ~/.authinfo with the following:
+
+- machine api.github.com login gako358^forge password ==secret-token==
+
+#+begin_src emacs-lisp
+  (use-package git-gutter
+    :hook (prog-mode . git-gutter-mode)
+    :custom
+    (git-gutter:update-interval 0.05))
+
+  (use-package git-gutter-fringe
+    :after git-gutter
+    :config
+    (fringe-mode '(8 . 8))
+    (define-fringe-bitmap 'git-gutter-fr:added
+      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+      nil nil 'center)
+    (define-fringe-bitmap 'git-gutter-fr:modified
+      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+      nil nil 'center)
+    (define-fringe-bitmap 'git-gutter-fr:deleted
+      [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+      nil nil 'center))
+
+  (use-package blamer
+    :custom
+    (blamer-idle-time 0.3)
+    (blamer-min-offset 70))
+
+  (use-package forge
+    :after magit)
+#+end_src
+
+* IRC
+I use IRC both for work and private, having a IRC client
+inside of emacs makes life easy.
+
+#+begin_src emacs-lisp
+  (use-package erc
+    :init
+    (setq
+     erc-nick "merrinx"
+     erc-user-full-name "Knut Oien"
+     erc-rename-buffers t
+     erc-interperate-mirc-color t
+     erc-default-nick-colors '("blue" "green" "yellow"
+                               "gray" "brown" "red"
+                               "purple" "white" "cyan")
+     erc-hide-list '("JOIN" "PART" "QUIT")
+     erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#nixos" "#java"))
+     erc-quit-reason (lambda (s) (concat "I'm off to " s "!"))
+     erc-modules
+     '(autoaway autojoin button completion fill irccontrols keep-place
+                list match menu move-to-prompt netsplit networks noncommands
+                readonly ring stamp track))
+    :config
+    (defun +erc/connect ()
+      (interactive)
+      (erc-tls :server "irc.libera.chat" :port 6697 :nick erc-nick))
+
+    (defun +erc/start ()
+      (interactive)
+      (+erc/connect))
+
+    (defun +erc/persp ()
+      (interactive)
+      (+erc/start)
+      (persp-switch "irc"))
+
+    (defun +erc/quit ()
+      (interactive)
+      (erc-quit-server "I'm off to bed!")
+      (persp-kill "irc")
+      (persp-switch "main"))
+
+    (global-set-key (kbd "C-S-i") '+erc/persp)
+    (global-set-key (kbd "C-S-q") '+erc/quit))
+
+  (setq doom-modeline-irc t)
+  (setq doom-modeline-irc-stylize 'identity)
+#+end_src
+
+* Keybindings for keyboard
+Keys that I have binded to my keyboard for easy navigation in emacs
+
+#+begin_src emacs-lisp
+  (defun split-window-right-and-move-there-dammit ()
+    (interactive)
+    (split-window-right)
+    (windmove-right))
+
+  (defun split-window-left-and-move-there-dammit ()
+    (interactive)
+    (split-window-left)
+    (windmove-left))
+
+  (defun split-window-below-and-move-there-dammit ()
+    (interactive)
+    (split-window-below)
+    (windmove-down))
+
+  (defun move-text-internal (arg)
+    (cond
+     ((and mark-active transient-mark-mode)
+      (if (> (point) (mark))
+          (exchange-point-and-mark))
+      (let ((column (current-column))
+            (text (delete-and-extract-region (point) (mark))))
+        (forward-line arg)
+        (move-to-column column t)
+        (set-mark (point))
+        (insert text)
+        (exchange-point-and-mark)
+        (setq deactivate-mark nil)))
+     (t
+      (beginning-of-line)
+      (when (or (> arg 0) (not (bobp)))
+        (forward-line)
+        (when (or (< arg 0) (not (eobp)))
+          (transpose-lines arg))
+        (forward-line -1)))))
+
+  (defun move-text-down (arg)
+    (interactive "*p")
+    (move-text-internal arg))
+
+  (defun move-text-up (arg)
+    (interactive "*p")
+    (move-text-internal (- arg)))
+
+  (global-set-key (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
+  (global-set-key (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
+  (global-set-key (kbd "C-S-j") 'split-window-below-and-move-there-dammit)
+  (global-set-key (kbd "C-S-<right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "C-S-<left>") 'shrink-window-horizontally)
+  (global-set-key (kbd "C-S-<down>") 'shrink-window)
+  (global-set-key (kbd "C-S-<up>") 'enlarge-window)
+  (global-set-key (kbd "C-h") 'windmove-left)
+  (global-set-key (kbd "C-j") 'windmove-down)
+  (global-set-key (kbd "C-k") 'windmove-up)
+  (global-set-key (kbd "C-l") 'windmove-right)
+  (global-set-key (kbd "S-<up>") 'move-text-up)
+  (global-set-key (kbd "S-<down>") 'move-text-down)
+  (global-set-key (kbd "C-<tab>") 'previous-buffer)
+
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode))
+#+end_src
+
+* EMAIL Client
+Use mbsync setup using Nix, and notmuch to fetch
+my mail and index it.
+
+#+begin_src emacs-lisp
+  (use-package notmuch
+    :init
+    (add-hook 'notmuch-message-mode-hook #'turn-off-auto-fill)
+    :config
+    (setq notmuch-message-delete-tags '("-inbox" "-unread" "+archived"))
+
+    (defun +notmuch/search-message-delete (go-next)
+      "Delete message and go to next message if GO-NEXT is non-nil."
+      (notmuch-search-tag notmuch-message-deleted-tags)
+      (if (eq 'up go-next)
+          (notmuch-search-previous-thread)
+        (notmuch-search-next-thread)))
+
+    (defun +notmuch/search-message-delete-down ()
+      "Delete message and go to next message."
+      (interactive)
+      (+notmuch/search-message-delete 'down))
+
+    ;; add a keybinding for deleting messages in search mode
+    (define-key notmuch-search-mode-map "d" '+notmuch/search-message-delete-down)
+
+    (defun +notmuch/open ()
+      "Open notmuch."
+      (interactive)
+      (shell-command "notmuch new")
+      (notmuch))
+
+    (global-set-key (kbd "C-S-m") '+notmuch/open)
+
+    ;; Run notmuch new every 5 minutes and notify if there are new emails
+    (defun +notmuch/notify ()
+      "Notify if there are new emails."
+      (interactive)
+      (shell-command "notmuch new")
+      (let ((count (string-to-number (shell-command-to-string "notmuch count tag:unread"))))
+        (if (> count 0)
+            (notifications-notify
+             :title "New Mail for you, you idiot...!"
+             :body (format "You have %d unread emails." count)
+             :urgency 'critical))))
+
+    ;; (run-with-timer 0 300 '+notmuch/notify)
+
+    (setq notmuch-multipart/alternative-discouraged '("text/x-amp-html" "text/plain" "text/html"))
+    (setq notmuch-search-oldest-first nil)
+    (setq notmuch-hello-thousands-separator ",")
+    (setq notmuch-archive-tags (list "-inbox" "+archived"))
+    (setq notmuch-mua-cite-function 'message-cite-original-without-signature)
+    (setq notmuch-saved-searches
+          '((:name "Personal Inbox" :query "tag:inbox and tag:personal" :key "p" :search-type tree)
+            (:name "Work Inbox" :query "tag:inbox and tag:work" :key "w" :search-type tree)
+            (:name "Flagged" :query "tag:flagged" :key "f" :search-type tree)
+            (:name "Drafts" :query "tag:draft" :key "d")
+            (:name "Recent" :query "date:7d.." :key "r" :search-type tree)
+            (:name "All Mail" :query "*" :key "a" :search-type tree)))
+
+    (setq notmuch-tagging-keys
+          '(("a" notmuch-archive-tags "Archive")
+            ("u" notmuch-show-mark-read-tags "Mark read")
+            ("f" ("+flagged") "Flag")
+            ("s" ("+spam" "-inbox") "Mark as spam")
+            ("d" ("+deleted" "-inbox") "Delete")
+            ("w" ("-inbox" "+waiting_for") "Waiting For"))))
+#+end_src
+
+* ORG Mode
+One of the best features of emacs, that i know way to little
+about yet...
+
+#+begin_src emacs-lisp
+  (use-package org
+    :init
+    (setq org-directory (or org-directory "~/Documents/org/")
+          org-id-locations-file (expand-file-name ".orgids" org-directory)
+          org-agenda-files (list org-directory)
+          org-agenda-deadline-faces '((1.001 . error)
+                                      (1.0 . org-warning)
+                                      (0.5 . org-upcoming-deadline)
+                                      (0.0 . org-upcoming-distant-deadline))
+          org-agenda-window-setup 'current-window
+          org-agenda-skip-unavailable-files t
+          org-agenda-span 10
+          org-agenda-start-on-weekday nil
+          org-agenda-start-day "-3d"
+          org-agenda-inhibit-startup t
+          org-indirect-buffer-display 'current-window
+          org-eldoc-breadcrumb-separator " → "
+          org-enforce-todo-dependencies t
+          org-entities-user '(("flat"  "\\flat" nil "" "" "266D" "♭")
+                              ("sharp" "\\sharp" nil "" "" "266F" "♯"))
+          org-ellipsis " "
+          org-src-fontify-natively t
+          org-src-tab-acts-natively t
+          org-confirm-babel-evaluate nil
+          org-export-with-smart-quotes t
+          org-src-window-setup 'current-window
+          org-fontify-done-headline t
+          org-fontify-quote-and-verse-blocks t
+          org-fontify-whole-heading-line t
+          org-hide-leading-stars t
+          org-image-actual-width nil
+          org-imenu-depth 6
+          org-priority-faces '((?A . error)
+                               (?B . warning)
+                               (?C . success))
+          org-startup-indented t
+          org-tags-column 0
+          org-use-sub-superscripts '{}
+          org-startup-folded nil))
+
+  (add-hook 'org-mode-hook 'org-indent-mode)
+  (use-package org-roam
+    :init
+    (setq org-roam-v2-ack t
+          org-roam-directory "~/Documents/Notes"
+          org-roam-db-location "~/Documents/Notes/org-roam.db"
+          org-roam-completion-everywhere t))
+
+  (use-package org-roam-ui
+    :init
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+  (use-package org-present
+    :hook ((org-present-mode . (lambda ()
+                                 (org-present-big)
+                                 (org-display-inline-images)
+                                 (org-present-hide-cursor)
+                                 (org-present-read-only)))
+           (org-present-mode-quit . (lambda ()
+                                      (org-present-small)
+                                      (org-remove-inline-images)
+                                      (org-present-show-cursor)
+                                      (org-present-read-write))))
+    )
+
+  (use-package org-pomodoro
+    :init
+    (setq org-pomodoro-length 25
+          org-pomodoro-short-break-length 5
+          org-pomodoro-long-break-length 15
+          org-pomodoro-manual-break t))
+
+#+end_src
+
+* Projects
+Projectile is the goto project package to use with emacs.
+Easy to use and setup, easy use of buffers.
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :init
+    (projectile-mode +1)
+    :config
+    (setq projectile-enable-caching t
+          projectile-completion-system 'ivy
+          projectile-indexing-method 'alien
+          projectile-sort-order 'recently-active
+          projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1))))
+
+  (use-package counsel-projectile
+    :after projectile
+    :config
+    (counsel-projectile-mode))
+#+end_src
+
+* Terminal
+
+#+begin_src emacs-lisp
+  (use-package vterm
+    :ensure t)
+
+  (use-package multi-vterm
+    :ensure t
+    :bind (("C-S-t" . multi-vterm-project)
+           ("C-S-b" . multi-vterm-dedicated-toggle))
+    :config
+    (setq multi-vterm-dedicated-window-height 37))
+#+end_src
