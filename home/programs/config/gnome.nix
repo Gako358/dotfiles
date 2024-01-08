@@ -35,11 +35,11 @@
         "thunderbird.desktop"
         "org.gnome.Nautilus.desktop"
         "spotify.desktop"
+        "emacsclient.desktop"
         "dbeaver.desktop"
         "code.desktop"
-        "discord.desktop"
         "microsoft-edge.desktop"
-        "slack.desktop"
+        "kgx.desktop"
       ];
     };
 
@@ -88,7 +88,7 @@
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<super>return";
-      command = "emacsclient";
+      command = "kgx";
       name = "open-terminal";
     };
 

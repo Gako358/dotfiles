@@ -1,9 +1,8 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  ...
+{ config
+, inputs
+, lib
+, pkgs
+, ...
 }: {
   imports = [
     ./system
@@ -19,7 +18,7 @@
   };
   # NixOS enable Flakes
   nix = {
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       experimental-features = "nix-command flakes";
@@ -32,12 +31,12 @@
       options = "--delete-older-than 10d";
     };
     # Trusted users
-    settings.trusted-users = ["root" "merrinx" "@wheel"];
+    settings.trusted-users = [ "root" "merrinx" "@wheel" ];
 
     # Enable optimisation
     optimise = {
       automatic = true;
-      dates = ["weekly"];
+      dates = [ "weekly" ];
     };
   };
   # Timezone and locale
@@ -50,7 +49,7 @@
   programs.dconf.enable = true;
   services = {
     blueman.enable = true;
-    dbus.packages = [pkgs.gnome.gnome-keyring pkgs.gcr];
+    dbus.packages = [ pkgs.gnome.gnome-keyring pkgs.gcr ];
     gnome.gnome-keyring = {
       enable = true;
     };
@@ -107,8 +106,6 @@
   sound.enable = true;
   security = {
     rtkit.enable = true;
-    # Enable swaylock password authentication
-    pam.services.swaylock = {};
   };
 
   # Enable hardware support

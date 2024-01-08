@@ -24,7 +24,7 @@ fi
 home_name="merrinx@$flake"
 
 echo "Do you want to test the system or home-manager?"
-echo "1. System, 2. Home-manager, 3. Both, 4. None"
+echo "1. System, 2. Home-manager, 3. Both or 4. None"
 read test
 
 if [[ "$test" == "1" ]]; then
@@ -71,7 +71,7 @@ read hmgen
 # Run a garbage collection
 if [[ "$hmgen" == "1" ]]
 then
-    home-manager expire-generations "-5 days"
+    home-manager expire-generations "-3 days"
     continue
 else
     continue

@@ -31,9 +31,6 @@
     source-code-pro
     source-sans-pro
     unifont
-    #vistafonts
-    #vistafonts-chs
-    #vistafonts-cht
     font-awesome
   ];
 }
