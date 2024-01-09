@@ -395,40 +395,14 @@ Using own created web mode, for vue, typescript and tailwind.
     :hook (scala-mode . eglot-ensure)
     :mode "\\.scala\\'")
 
-  (use-package sql
-    :after eglot
-    :hook (sql-mode . eglot-ensure)
-    :mode "\\.sql\\'")
+  (setq major-mode-remap-alist
+        '((bash-mode . bash-ts-mode)
+          (css-mode . css-ts-mode)
+          (json-mode . js-ts-mode)
+          (js2-mode . js-ts-mode)
+          (typescript-mode . typescript-ts-mode)))
 
-  (defun vue-eglot-init-options ()
-    (let ((tsdk-path (expand-file-name
-                      "lib"
-                      (shell-command-to-string "npm list --global --parseable typescript | head -n1 | tr -d \"\n\""))))
-      `(:typescript (:tsdk ,tsdk-path
-                           :languageFeatures (:completion
-                                              (:defaultTagNameCase "both"
-                                                                   :defaultAttrNameCase "kebabCase"
-                                                                   :getDocumentNameCasesRequest nil
-                                                                   :getDocumentSelectionRequest nil)
-                                              :diagnostics
-                                              (:getDocumentVersionRequest nil))
-                           :documentFeatures (:documentFormatting
-                                              (:defaultPrintWidth 100
-                                                                  :getDocumentPrintWidthRequest nil)
-                                              :documentSymbol t
-                                              :documentColor t)))))
-
-  (add-to-list 'eglot-server-programs
-               `(vue-mode . ("vue-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
-
-  (add-to-list 'eglot-server-programs
-               `(typescript-mode . ("typescript-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
-
-  (add-to-list 'eglot-server-programs
-               `(js-mode . ("typescript-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
-
-  (add-to-list 'eglot-server-programs
-               `(tailwindcss-mode . ("tailwindcss-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
+  (setq treesit-font-lock-level 4)
 #+end_src
 
 * Git

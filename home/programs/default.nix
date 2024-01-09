@@ -30,6 +30,7 @@ in [
   ./browser/edge.nix
   ./browser/firefox.nix
   ./browser/slack.nix
+  ./browser/teams.nix
   ./config
   ./citrix.nix
   ./git.nix
