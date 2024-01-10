@@ -478,6 +478,12 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     (interactive "*p")
     (move-text-internal (- arg)))
 
+  (defun move-right-and-open-todo ()
+    (interactive)
+    (split-window-right)
+    (windmove-right)
+    (find-file "~/Documents/org/todo.org"))
+
   (global-set-key (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
   (global-set-key (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
   (global-set-key (kbd "C-S-j") 'split-window-below-and-move-there-dammit)
@@ -492,6 +498,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "S-<up>") 'move-text-up)
   (global-set-key (kbd "S-<down>") 'move-text-down)
   (global-set-key (kbd "C-<tab>") 'previous-buffer)
+  (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
 
   (use-package which-key
     :ensure t
@@ -639,4 +646,12 @@ Easy to use and setup, easy use of buffers.
           web-mode-script-padding 2
           web-mode-style-padding 2
           web-mode-code-indent-offset 2))
+#+end_src
+
+* Yaml-Mode
+
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :ensure t
+    :mode (("\\.\\(yml\\|yaml\\)\\'" . yaml-mode)))
 #+end_src
