@@ -85,7 +85,6 @@ Other that that i use emacs keys.
     (evil-leader/set-key
       "b" 'ivy-switch-buffer
       "d" 'dired
-      "e" 'erc-track-switch-buffer-other-window
       "f" 'counsel-find-file
       "F" 'counsel-rg
       "i" 'indent-region
@@ -429,55 +428,6 @@ For forge, create a file called ~/.authinfo with the following:
 
   (use-package forge
     :after magit)
-#+end_src
-
-* IRC
-I use IRC both for work and private, having a IRC client
-inside of emacs makes life easy.
-
-#+begin_src emacs-lisp
-  (use-package erc
-    :init
-    (setq
-     erc-nick "merrinx"
-     erc-user-full-name "Knut Oien"
-     erc-rename-buffers t
-     erc-interperate-mirc-color t
-     erc-default-nick-colors '("blue" "green" "yellow"
-                               "gray" "brown" "red"
-                               "purple" "white" "cyan")
-     erc-hide-list '("JOIN" "PART" "QUIT")
-     erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#nixos" "#java"))
-     erc-quit-reason (lambda (s) (concat "I'm off to " s "!"))
-     erc-modules
-     '(autoaway autojoin button completion fill irccontrols keep-place
-                list match menu move-to-prompt netsplit networks noncommands
-                readonly ring stamp track))
-    :config
-    (defun +erc/connect ()
-      (interactive)
-      (erc-tls :server "irc.libera.chat" :port 6697 :nick erc-nick))
-
-    (defun +erc/start ()
-      (interactive)
-      (+erc/connect))
-
-    (defun +erc/persp ()
-      (interactive)
-      (+erc/start)
-      (persp-switch "irc"))
-
-    (defun +erc/quit ()
-      (interactive)
-      (erc-quit-server "I'm off to bed!")
-      (persp-kill "irc")
-      (persp-switch "main"))
-
-    (global-set-key (kbd "C-S-i") '+erc/persp)
-    (global-set-key (kbd "C-S-q") '+erc/quit))
-
-  (setq doom-modeline-irc t)
-  (setq doom-modeline-irc-stylize 'identity)
 #+end_src
 
 * Keybindings for keyboard
