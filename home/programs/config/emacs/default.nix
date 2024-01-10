@@ -54,7 +54,6 @@ in
         ligature # Ligature support for Emacs
         magit # A Git porcelain inside Emacs
         nerd-icons # Nerd icons for Emacs
-        notmuch # A fast mail indexer and mail reader
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
         org-modern # A modern org-mode distribution
@@ -67,7 +66,6 @@ in
         rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
         rainbow-mode # Colorize color names in buffers
         simple-httpd # A simple HTTP server
-        undo-tree # Treat undo history as a tree
         vterm # Fully-featured terminal emulator
         multi-vterm # Multiple vterm buffers
         web-mode # Major mode for editing web templates
