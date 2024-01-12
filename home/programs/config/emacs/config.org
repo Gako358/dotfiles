@@ -107,8 +107,8 @@ Other that that i use emacs keys.
       ;; Eglot
       "lf" 'eglot-format-buffer
       "lr" 'eglot-rename
-      "lgd" 'xref-find-definitions
-      "lgr" 'xref-find-references
+      "gd" 'xref-find-definitions
+      "gr" 'xref-find-references
       "lga" 'eglot-code-actions
       "lgt" 'eglot-find-typeDefinition
       "lgh" 'eglot-inlay-hints-mode
@@ -116,23 +116,13 @@ Other that that i use emacs keys.
       "lgq" 'eglot-code-action-quickfix
 
       "oa" 'org-agenda
-      "os" 'org-schedule
-      "od" 'org-deadline
-      "oi" 'org-insert-structure-template
       "of" 'org-agenda-file-to-front
-      "ot" 'org-insert-todo-heading
-      "orl" 'org-roam-buffer-toggle
       "orf" 'org-roam-node-find
       "ori" 'org-roam-node-insert
       "ors" 'org-roam-db-sync
       "orr" 'org-roam-ui-mode
       "opl" 'org-present
       "opq" 'org-present-quit
-
-      "tt" 'vterm
-      "tm" 'multi-vterm
-      "tn" 'multi-vterm-next
-      "tp" 'multi-vterm-prev
 
       "ws" 'whitespace-mode
       "wc" 'whitespace-cleanup-mode)
@@ -143,9 +133,7 @@ Other that that i use emacs keys.
       "jb" 'eglot-java-project-build-refresh
       "jf" 'eglot-java-file-new
       "jm" 'eglot-java-run-main
-      "jt" 'eglot-java-run-test
-      "jul" 'eglot-java-upgrade-lsp-server
-      "juj" 'eglot-java-upgrade-junit-jar)
+      "jt" 'eglot-java-run-test)
 
     ;; Rust-specific keybindings
     (evil-leader/set-key-for-mode 'rustic-mode
@@ -484,6 +472,18 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     (windmove-right)
     (find-file "~/Documents/org/todo.org"))
 
+  (defun move-right-and-open-config ()
+    (interactive)
+    (split-window-right)
+    (windmove-right)
+    (find-file "~/Sources/dotfiles/home/programs/config/emacs/config.org"))
+
+  (defun move-right-and-open-dotfiles ()
+    (interactive)
+    (split-window-right)
+    (windmove-right)
+    (find-file "~/Sources/dotfiles/flake.nix"))
+
   (global-set-key (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
   (global-set-key (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
   (global-set-key (kbd "C-S-j") 'split-window-below-and-move-there-dammit)
@@ -499,6 +499,8 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "S-<down>") 'move-text-down)
   (global-set-key (kbd "C-<tab>") 'previous-buffer)
   (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
+  (global-set-key (kbd "C-S-c") 'move-right-and-open-config)
+  (global-set-key (kbd "C-S-d") 'move-right-and-open-dotfiles)
 
   (use-package which-key
     :ensure t
