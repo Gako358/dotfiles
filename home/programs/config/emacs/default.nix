@@ -72,8 +72,7 @@ in
         whitespace-cleanup-mode # Intelligently call whitespace-cleanup on save
 
         # Theme
-        doom-modeline # A minimal and modern mode-line
-        doom-themes # An opinionated pack of modern color-themes
+        kaolin-themes # A low contrast color theme for Emacs
 
         # Programming language packages.
         blacken # Black formatter for Python

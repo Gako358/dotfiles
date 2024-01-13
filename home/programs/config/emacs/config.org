@@ -210,7 +210,7 @@ symlinked .emacs.d in home.
 #+end_src
 
 * Appearance
-Using dashboard and doom-theme with modeline.
+Using dashboard and kaolin-theme with modeline.
 
 #+begin_src emacs-lisp
   (use-package dashboard
@@ -228,30 +228,17 @@ Using dashboard and doom-theme with modeline.
     :init
     :hook (after-init . dashboard-setup-startup-hook))
 
-  (use-package doom-themes
-    :ensure t
+  (use-package kaolin-themes
     :config
-    (load-theme 'doom-one t)
-    (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t))
+    (load-theme 'kaolin-ocean t))
 
-  (use-package doom-modeline
+  (use-package mood-line
     :ensure t
-    :init (doom-modeline-mode 1)
+    :custom-face
     :config
-    (setq doom-modeline-height 35
-          doom-modeline-bar-width 3
-          doom-modeline-buffer-file-name-style 'truncate-with-project
-          doom-modeline-buffer-encoding nil
-          doom-modeline-buffer-modification-icon nil
-          doom-modeline-buffer-state-icon nil
-          doom-modeline-icon t
-          doom-modeline-major-mode-icon t
-          doom-modeline-minor-modes nil
-          doom-modeline-persp-name nil
-          doom-modeline-eglot t
-          doom-modeline-github nil
-          doom-modeline-github-interval (* 30 60)))
+    (mood-line-mode)
+    :custom
+    (mood-line-gpyph-alist mood-line-glyphs-unicode))
 
   (use-package all-the-icons
     :ensure t)
