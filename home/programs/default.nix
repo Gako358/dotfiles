@@ -26,6 +26,7 @@ let
     };
   };
 in [
+  ./browser/chromium.nix
   ./browser/discord.nix
   ./browser/edge.nix
   ./browser/firefox.nix

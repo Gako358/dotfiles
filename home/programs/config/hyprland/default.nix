@@ -1,7 +1,6 @@
-{
-  pkgs,
-  inputs,
-  ...
+{ pkgs
+, inputs
+, ...
 }: {
   imports = [
     ./binds.nix
@@ -17,6 +16,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
+
   };
 
   home.packages = [
@@ -27,7 +27,7 @@
   systemd.user.targets.tray = {
     Unit = {
       Description = "Home Manager System Tray";
-      Requires = ["graphical-session-pre.target"];
+      Requires = [ "graphical-session-pre.target" ];
     };
   };
 }

@@ -8,7 +8,11 @@
     inputs.hyprland.nixosModules.default
   ];
   programs = {
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    };
+    xwayland.enable = true;
   };
 
   # Set session variables
@@ -18,9 +22,10 @@
       XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "Hyprland";
-      NIXOS_OZONE_WL = "1";
     };
     sessionVariables = {
+      MOZ_ENABLE_WAYLAND = "1";
+      NIXOS_OZONE_WL = "1";
       T_QPA_PLATFORM = "wayland";
       GDK_BACKEND = "wayland";
     };
@@ -35,6 +40,7 @@
     };
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-wlr
     ];
   };
 
