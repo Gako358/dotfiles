@@ -1,0 +1,17 @@
+lowercaseKeywords: false
+connections:
+  - alias: dsn_mysql
+    driver: mysql
+    dataSourceName: root:password@tcp(localhost:3306)/
+  - alias: individual_mysql
+    driver: mysql
+    proto: tcp
+    user: root
+    passwd: password
+    host: localhost
+    port: 3306
+    dbname: dbname
+    params:
+      autocommit: "true"
+      tls: skip-verify
+

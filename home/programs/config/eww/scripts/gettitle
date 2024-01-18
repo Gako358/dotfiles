@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Get the title of the current som playing on playerctl
+
+title=$(playerctl metadata title)
+
+if [[ -z "$title" ]]; then
+    echo "No title"
+else
+    echo "$title"
+fi

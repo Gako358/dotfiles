@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Get the artist of the currently playing song in playerctl
+# and print it to stdout.
+
+artist=$(playerctl metadata artist)
+
+if [[ -z "$artist" ]]; then
+    echo "No artist"
+else
+    echo "$artist"
+fi
