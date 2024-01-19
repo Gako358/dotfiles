@@ -4,7 +4,7 @@
 }: {
   imports = [
     ./binds.nix
-    ./hyperland.nix
+    ./hyprland.nix
     ./hyprpaper.nix
     ./layout.nix
     ./monitors.nix
