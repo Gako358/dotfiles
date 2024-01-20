@@ -17,7 +17,6 @@ with lib; {
     ./fonts.nix
     ./hyprland.nix
     ./nfc.nix
-    ./neovim.nix
     ./shell.nix
   ];
 }
