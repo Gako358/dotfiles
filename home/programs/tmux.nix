@@ -163,12 +163,14 @@ in {
       bind -n M-Up select-pane -U
       bind -n M-Down select-pane -D
 
-      # Shift arrow to switch windows
-      bind -n S-Left  previous-window
-      bind -n S-Right next-window
+      # Split windows
+      bind-key v split-window -h
+      bind-key x split-window
+
+      bind-key M-p switch-client -l
+      bind-key M-n switch-client -n
 
       bind f set-option -g status
-
       unbind -T copy-mode MouseDragEnd1Pane
       bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "wl-copy"
       bind-key -T copy-mode-vi v send-keys -X begin-selection
