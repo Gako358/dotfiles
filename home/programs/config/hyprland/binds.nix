@@ -18,6 +18,7 @@ in
     bind = ${mainMod}, Return, exec, ${terminal}
     bind = ${mainMod}, D, exec, ${wofi} --show drun
     bind = ${mainMod}, B, exec, ${terminal} -t btop -e btm
+    bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
 
     # Lockscreen
     bind = ${mainMod} ${SECONDARY}, L, exec, ${lock} -f -c 000000
