@@ -55,6 +55,7 @@
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
 
       windowrule = float, title:^(Spotify Premium)$
+      windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
     '';
 }
