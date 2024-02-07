@@ -317,7 +317,6 @@
         "flake-utils": "flake-utils_2",
         "nil": "nil",
         "nixpkgs": "nixpkgs_3",
-        "plugins-borealis": "plugins-borealis",
         "plugins-cmp-buffer": "plugins-cmp-buffer",
         "plugins-cmp-dap": "plugins-cmp-dap",
         "plugins-cmp-nvim-lsp": "plugins-cmp-nvim-lsp",
@@ -353,17 +352,18 @@
         "plugins-sqls-nvim": "plugins-sqls-nvim",
         "plugins-telescope": "plugins-telescope",
         "plugins-todo-comments": "plugins-todo-comments",
+        "plugins-tokyonight": "plugins-tokyonight",
         "plugins-trouble": "plugins-trouble",
         "plugins-vim-vsnip": "plugins-vim-vsnip",
         "plugins-which-key": "plugins-which-key",
         "rnix-lsp": "rnix-lsp"
       },
       "locked": {
-        "lastModified": 1707042877,
-        "narHash": "sha256-PKENQNe6WfLbq39d4Iy5zz0ik0M19vk6eDttSka353Q=",
+        "lastModified": 1707290776,
+        "narHash": "sha256-984ODXph3EvKMAfdquQRHJNepAnLlDSaIDmL+EfV7tY=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "eab6f538d9811a5f45ba1156d10e6373a03eb643",
+        "rev": "2517e31154d18a7bd447fdd132cf9ed4fa75cff6",
         "type": "github"
       },
       "original": {
@@ -540,22 +540,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "NUR",
-        "type": "github"
-      }
-    },
-    "plugins-borealis": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1693501569,
-        "narHash": "sha256-sQ+BkdON6AhU1VzGbc7bPvnM4rADcORXIoCDB5g0K20=",
-        "owner": "Gako358",
-        "repo": "borealis.nvim",
-        "rev": "b1983094db715000959f41887beece71e48ce04a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Gako358",
-        "repo": "borealis.nvim",
         "type": "github"
       }
     },
@@ -1116,6 +1100,22 @@
       "original": {
         "owner": "folke",
         "repo": "todo-comments.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-tokyonight": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1706697570,
+        "narHash": "sha256-mzCdcf7FINhhVLUIPv/eLohm4qMG9ndRJ5H4sFU2vO0=",
+        "owner": "folke",
+        "repo": "tokyonight.nvim",
+        "rev": "610179f7f12db3d08540b6cc61434db2eaecbcff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "tokyonight.nvim",
         "type": "github"
       }
     },
