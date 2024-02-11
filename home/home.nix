@@ -17,6 +17,7 @@
     eza                  # a better `ls`
     fd                   # "find" for files
     gimp                 # gnu image manipulation program
+    github-copilot-cli   # github copilot cli
     jump                 # fast directory navigation
     killall              # kill processes by name
     lazygit              # terminal git ui
