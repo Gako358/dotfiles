@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   gitConfig = {
     core = {
       editor = "nvim";
@@ -24,8 +23,7 @@ let
   };
 
   rg = "${pkgs.ripgrep}/bin/rg";
-in
-{
+in {
   home.packages = with pkgs.gitAndTools; [
     diff-so-fancy # git diff with colors
     git-crypt # git files encryption
@@ -40,6 +38,7 @@ in
         amend = "commit --amend -m";
         fixup = "!f(){ git reset --soft HEAD~\${1} && git commit --amend -C HEAD; };f";
         loc = "!f(){ git ls-files | ${rg} \"\\.\${1}\" | xargs wc -l; };f"; # lines of code
+        staash = "stash --all";
         br = "branch";
         co = "checkout";
         st = "status";
@@ -72,5 +71,5 @@ in
         }
       ];
     }
-    // (pkgs.sxm.git or { });
+    // (pkgs.sxm.git or {});
 }
