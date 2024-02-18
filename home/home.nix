@@ -10,6 +10,7 @@
     brightnessctl               # control screen brightness
     bottom                      # alternative to htop & ytop
     cacert                      # ca certificates
+    cmatrix                     # matrix screensaver
     dbeaver                     # database manager
     dconf2nix                   # dconf (gnome) files to nix converter
     docker-compose              # docker manager
