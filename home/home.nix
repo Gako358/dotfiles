@@ -31,6 +31,7 @@
     ouch                        # painless compression and decompression for your terminal
     pavucontrol                 # pulseaudio volume control
     paprefs                     # pulseaudio preferences
+    pcmanfm                     # file manager
     prettyping                  # a nicer ping
     pulsemixer                  # pulseaudio mixer
     rage                        # encryption tool for secrets management

@@ -41,6 +41,7 @@
       windowrule = float, ^(nm-connection-editor)$
       windowrule = float, ^(Color Picker)$
       windowrule = float, ^(Network)$
+      windowrule = float, ^(pcmanfm)$
       windowrule = float, ^(xdg-desktop-portal)$
       windowrule = float, ^(xdg-desktop-portal-gnome)$
       windowrule = float, ^(transmission-gtk)$
