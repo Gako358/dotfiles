@@ -32,7 +32,7 @@
   wc = "${pkgs.coreutils}/bin/wc";
 
   jq = "${pkgs.jq}/bin/jq";
-  eww = "${pkgs.eww-wayland}/bin/eww";
+  eww = "${pkgs.eww}/bin/eww";
   calendar = "${pkgs.gnome.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome.gnome-system-monitor}/bin/gnome-system-monitor";
   playerctl = "${pkgs.playerctl}/bin/playerctl";

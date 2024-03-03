@@ -1,6 +1,6 @@
 {pkgs, ...}: let
   # Dependencies
-  eww = "${pkgs.eww-wayland}/bin/eww";
+  eww = "${pkgs.eww}/bin/eww";
   idle = "${pkgs.swayidle}/bin/swayidle";
   lock = "${pkgs.swaylock}/bin/swaylock";
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";

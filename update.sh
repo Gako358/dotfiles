@@ -44,7 +44,7 @@ fi
 git pull
 
 # Run a garbage collection
-nix-collect-garbage
+# nix-collect-garbage
 
 # Run the nixos-rebuild command
 sudo nixos-rebuild switch --flake .#$flake
