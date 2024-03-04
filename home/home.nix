@@ -43,7 +43,6 @@
     tldr                        # summary of a man page
     tree                        # display files in a tree view
     unzip                       # unzip files
-    virt-manager                # virtual machine manager
     wayshot                     # screenshot tool for wayland
     wgetpaste                   # paste to pastebin
     wl-gammactl                 # wayland gamma control
@@ -67,6 +66,13 @@ in {
   xdg = {
     inherit configHome;
     enable = true;
+  };
+
+  dconf.settings = {
+    "org/virt-manager/virt-manager/connections" = {
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
+    };
   };
 
   home = {
