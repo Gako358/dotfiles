@@ -34,7 +34,6 @@ in [
   ./browser/teams.nix
   ./config
   ./alacritty.nix
-  ./citrix.nix
   ./intellij.nix
   ./git.nix
   ./network.nix

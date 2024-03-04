@@ -1,8 +1,9 @@
-{ config
-, inputs
-, lib
-, pkgs
-, ...
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
 }: {
   imports = [
     ./system
@@ -18,7 +19,7 @@
   };
   # NixOS enable Flakes
   nix = {
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       experimental-features = "nix-command flakes";
@@ -31,12 +32,12 @@
       options = "--delete-older-than 10d";
     };
     # Trusted users
-    settings.trusted-users = [ "root" "merrinx" "@wheel" ];
+    settings.trusted-users = ["root" "merrinx" "@wheel"];
 
     # Enable optimisation
     optimise = {
       automatic = true;
-      dates = [ "weekly" ];
+      dates = ["weekly"];
     };
   };
   # Timezone and locale
@@ -45,11 +46,13 @@
     "en_US.UTF-8/UTF-8"
   ];
   console.useXkbConfig = true;
-  # Add dconf settings
-  programs.dconf.enable = true;
+  programs = {
+    dconf.enable = true;
+    virt-manager.enable = true;
+  };
   services = {
     blueman.enable = true;
-    dbus.packages = [ pkgs.gnome.gnome-keyring pkgs.gcr ];
+    dbus.packages = [pkgs.gnome.gnome-keyring pkgs.gcr];
     gnome.gnome-keyring = {
       enable = true;
     };
@@ -106,7 +109,7 @@
   sound.enable = true;
   security = {
     rtkit.enable = true;
-    pam.services.swaylock = { };
+    pam.services.swaylock = {};
   };
 
   # Enable hardware support
@@ -122,7 +125,16 @@
   # Enable virtualisation and docker support
   virtualisation = {
     podman.enable = true;
-    libvirtd.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu = {
+        package = pkgs.qemu_kvm;
+        swtpm.enable = true;
+        ovmf.enable = true;
+        ovmf.packages = [pkgs.OVMFFull.fd];
+      };
+    };
+    spiceUSBRedirection.enable = true;
     docker = {
       enable = true;
       daemon.settings = {
@@ -130,6 +142,15 @@
       };
     };
   };
+  # Packages for virtualisation
+  environment.systemPackages = with pkgs; [
+    spice
+    spice-gtk
+    spice-protocol
+    virt-viewer
+    virtio-win
+    win-spice
+  ];
   # Set default shell to fish global
   users.defaultUserShell = pkgs.fish;
   # Enable proprietary software
