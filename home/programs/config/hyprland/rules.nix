@@ -49,8 +49,8 @@
 
       windowrule = workspace 1, ^(firefox)$
       windowrule = workspace 3, ^(microsoft-edge)$
+      windowrule = workspace 3, ^(chrome-teams.live.com__-Default)$
       windowrule = workspace 5, ^(Wfica)$
-      windowrule = workspace 6, ^(chrome-teams.live.com__-Default)$
       windowrule = workspace 7, ^(thunderbird)$
       windowrule = workspace 8, title:^(app.slack.com_/client/T04MZPW21RA/C04MUBWKREZ)$
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
