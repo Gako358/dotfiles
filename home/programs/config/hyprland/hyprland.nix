@@ -1,8 +1,6 @@
 {pkgs, ...}: let
   # Dependencies
   eww = "${pkgs.eww}/bin/eww";
-  idle = "${pkgs.swayidle}/bin/swayidle";
-  lock = "${pkgs.swaylock}/bin/swaylock";
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
 in {
   wayland.windowManager.hyprland.extraConfig = ''
@@ -39,13 +37,6 @@ in {
     exec-once = ${eww} daemon
     exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     exec-once = "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-
-    # Auto lock
-    exec ${idle} -w \
-      timeout 120 '${lock} -f' \
-      timeout 180 'swaymsg "output * dpms off"' \
-        resume 'swaymsg "output * dpms on"' \
-      before-sleep '${lock} -f'
 
     decoration {
       drop_shadow = yes
