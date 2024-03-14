@@ -37,6 +37,7 @@
     rage                        # encryption tool for secrets management
     ranger                      # terminal file manager
     ripgrep                     # fast grep
+    rnote                       # terminal note taking
     scrot                       # screenshot tool
     slurp                       # select a region in a wayland compositor
     spotify                     # music streaming
