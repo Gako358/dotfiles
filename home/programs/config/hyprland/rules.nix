@@ -31,6 +31,8 @@
       windowrule = float, title:^(Spotify Premium)$
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
+
+      windowrule = opacity 0.84 override 0.64 override, ^(Alacritty)$
     ''
     else ''
       windowrule = float, ^(Rofi)$
@@ -61,5 +63,7 @@
       windowrule = float, title:^(Spotify Premium)$
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
+
+      windowrule = opacity 0.73 override 0.64 override, ^(Alacritty)$
     '';
 }
