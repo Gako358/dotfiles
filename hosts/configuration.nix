@@ -53,6 +53,7 @@
   services = {
     blueman.enable = true;
     dbus.packages = [pkgs.gnome.gnome-keyring pkgs.gcr];
+    spice-vdagentd.enable = true;
     gnome.gnome-keyring = {
       enable = true;
     };
