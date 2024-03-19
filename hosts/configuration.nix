@@ -46,14 +46,11 @@
     "en_US.UTF-8/UTF-8"
   ];
   console.useXkbConfig = true;
-  programs = {
-    dconf.enable = true;
-    virt-manager.enable = true;
-  };
+  programs.dconf.enable = true;
+
   services = {
     blueman.enable = true;
     dbus.packages = [pkgs.gnome.gnome-keyring pkgs.gcr];
-    spice-vdagentd.enable = true;
     gnome.gnome-keyring = {
       enable = true;
     };
@@ -74,38 +71,6 @@
       pulse.enable = true;
       wireplumber.enable = true;
     };
-    udev.packages = [
-      (pkgs.writeTextFile {
-        name = "wally_udev";
-        text = ''
-          # Rules for Oryx web flashing and live training
-          KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", MODE="0664", GROUP="plugdev"
-          KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0664", GROUP="plugdev"
-
-          # Legacy rules for live training over webusb (Not needed for firmware v21+)
-            # Rule for all ZSA keyboards
-            SUBSYSTEM=="usb", ATTR{idVendor}=="3297", GROUP="plugdev"
-            # Rule for the Moonlander
-            SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1969", GROUP="plugdev"
-            # Rule for the Ergodox EZ
-            SUBSYSTEM=="usb", ATTR{idVendor}=="feed", ATTR{idProduct}=="1307", GROUP="plugdev"
-            # Rule for the Planck EZ
-            SUBSYSTEM=="usb", ATTR{idVendor}=="feed", ATTR{idProduct}=="6060", GROUP="plugdev"
-
-          # Wally Flashing rules for the Ergodox EZ
-          ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", ENV{ID_MM_DEVICE_IGNORE}="1"
-          ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789A]?", ENV{MTP_NO_PROBE}="1"
-          SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789ABCD]?", MODE:="0666"
-          KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:="0666"
-
-          # Keymapp / Wally Flashing rules for the Moonlander and Planck EZ
-          SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666", SYMLINK+="stm32_dfu"
-          # Keymapp Flashing rules for the Voyager
-          SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
-        '';
-        destination = "/etc/udev/rules.d/50-zsa.rules";
-      })
-    ];
   };
   sound.enable = true;
   security = {
@@ -123,35 +88,6 @@
     enableAllFirmware = true;
     pulseaudio.enable = false;
   };
-  # Enable virtualisation and docker support
-  virtualisation = {
-    podman.enable = true;
-    libvirtd = {
-      enable = true;
-      qemu = {
-        package = pkgs.qemu_kvm;
-        swtpm.enable = true;
-        ovmf.enable = true;
-        ovmf.packages = [pkgs.OVMFFull.fd];
-      };
-    };
-    spiceUSBRedirection.enable = true;
-    docker = {
-      enable = true;
-      daemon.settings = {
-        data-root = "/opt/docker";
-      };
-    };
-  };
-  # Packages for virtualisation
-  environment.systemPackages = with pkgs; [
-    spice
-    spice-gtk
-    spice-protocol
-    virt-viewer
-    virtio-win
-    win-spice
-  ];
   # Set default shell to fish global
   users.defaultUserShell = pkgs.fish;
   # Enable proprietary software

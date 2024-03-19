@@ -1,6 +1,7 @@
-{ pkgs
-, lib
-, ...
+{
+  pkgs,
+  lib,
+  ...
 }:
 with lib; {
   # Core pakages for system
@@ -14,9 +15,12 @@ with lib; {
   ];
 
   imports = [
+    ./docker.nix
     ./fonts.nix
     ./hyprland.nix
     ./nfc.nix
     ./shell.nix
+    ./qemu.nix
+    ./wally.nix
   ];
 }

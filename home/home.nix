@@ -13,7 +13,6 @@
     cmatrix                     # matrix screensaver
     dbeaver                     # database manager
     dconf2nix                   # dconf (gnome) files to nix converter
-    docker-compose              # docker manager
     dive                        # explore docker layers
     duf                         # disk usage/free utility
     eza                         # a better `ls`
