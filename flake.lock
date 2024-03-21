@@ -418,11 +418,11 @@
         "rnix-lsp": "rnix-lsp"
       },
       "locked": {
-        "lastModified": 1707290776,
-        "narHash": "sha256-984ODXph3EvKMAfdquQRHJNepAnLlDSaIDmL+EfV7tY=",
+        "lastModified": 1711010917,
+        "narHash": "sha256-Ip0Uf7owKB0Kr2wwVQlt+Vd2/oTTpQRu53xQdTer/68=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "2517e31154d18a7bd447fdd132cf9ed4fa75cff6",
+        "rev": "0e077b835c176ad0dc508e25c42f3558a2ff391a",
         "type": "github"
       },
       "original": {
