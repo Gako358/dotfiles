@@ -1,8 +1,11 @@
 {
+  specialArgs,
   inputs,
   pkgs,
   ...
-}: {
+}:
+if !specialArgs.hidpi
+then {
   imports = [
     inputs.hyprland.nixosModules.default
   ];
@@ -11,7 +14,6 @@
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     };
-    xwayland.enable = true;
   };
 
   # Set session variables
@@ -40,7 +42,6 @@
     };
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-wlr
     ];
   };
 
@@ -88,3 +89,4 @@
     };
   };
 }
+else {}

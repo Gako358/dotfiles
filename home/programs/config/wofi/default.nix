@@ -1,9 +1,10 @@
 {
-  config,
   pkgs,
-  lib,
+  specialArgs,
   ...
-}: let
+}:
+if !specialArgs.hidpi
+then let
   opacity = "1";
   palette = {
     font = "RobotoMono Nerd Font";
@@ -78,3 +79,4 @@ in {
     '';
   };
 }
+else {}

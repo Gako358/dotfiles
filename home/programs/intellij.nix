@@ -14,4 +14,3 @@
 in {
   home.packages = [intellij];
 }
-

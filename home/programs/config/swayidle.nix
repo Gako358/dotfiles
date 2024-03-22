@@ -1,25 +1,18 @@
 {
   pkgs,
   config,
-  specialArgs ? {hidpi = false;},
+  specialArgs,
   ...
-}: let
+}:
+if !specialArgs.hidpi
+then let
   swaylock = "${config.programs.swaylock.package}/bin/swaylock";
   pgrep = "${pkgs.procps}/bin/pgrep";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   hyprctl = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl";
-  suspendCommand = "${pkgs.systemd}/bin/systemctl suspend";
 
   isLocked = "${pgrep} -x ${swaylock}";
-  lockTime =
-    if specialArgs.hidpi
-    then 60 * 60
-    else 20 * 60;
-
-  suspendDelay =
-    if specialArgs.hidpi
-    then 180 * 60
-    else 30 * 60;
+  lockTime = 20 * 60;
   screenDelay = 20; # 20 seconds
   micMute = 10; # 10 seconds
 
@@ -66,11 +59,7 @@ in {
         timeout = screenDelay;
         command = "${hyprctl} dispatch dpms off";
         resumeCommand = "${hyprctl} dispatch dpms on";
-        # Waiting for suspend fix in hyprland
-        # })
-        # ++ (afterLockTimeout {
-        #   timeout = suspendDelay;
-        #   command = suspendCommand;
       });
   };
 }
+else {}

@@ -35,10 +35,8 @@ in [
   ./config
   ./alacritty.nix
   ./citrix.nix
-  ./intellij.nix
   ./git.nix
   ./network.nix
   ./vscode.nix
-  ./tmux.nix
   more
 ]

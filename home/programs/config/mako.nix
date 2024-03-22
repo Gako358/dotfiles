@@ -1,4 +1,10 @@
-{config, ...}: let
+{
+  config,
+  specialArgs,
+  ...
+}:
+if !specialArgs.hidpi
+then let
   palette = {
     background = "282c34";
     secondary_accent = "89b4fa";
@@ -21,3 +27,4 @@ in {
     layer = "overlay";
   };
 }
+else {}

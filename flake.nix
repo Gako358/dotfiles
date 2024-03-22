@@ -71,14 +71,20 @@
 
     nixosConfigurations = {
       terangreal = lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {
+          inherit inputs outputs;
+          hidpi = true;
+        };
         modules = [
           ./hosts/configuration.nix
           ./hosts/users/terangreal
         ];
       };
       tuathaan = lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {
+          inherit inputs outputs;
+          hidpi = false;
+        };
         modules = [
           ./hosts/configuration.nix
           ./hosts/users/tuathaan

@@ -2,11 +2,10 @@
   pkgs,
   specialArgs,
   ...
-}: let
-  fontSize =
-    if specialArgs.hidpi
-    then 11
-    else 11;
+}:
+if !specialArgs.hidpi
+then let
+  fontSize = 11;
 in {
   programs.alacritty = {
     enable = true;
@@ -54,3 +53,4 @@ in {
     };
   };
 }
+else {}
