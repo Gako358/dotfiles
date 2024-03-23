@@ -8,6 +8,82 @@ Git clone https://github.com/gako358/dotfiles.git.
 The configuration is setup using NixOS, check README.
 
 
+* Appearance
+Using dashboard and doom-theme with modeline.
+
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (setq dashboard-startup-banner 'logo
+          dashboard-banner-logo-title "Welcome back Master"
+          dashboard-set-file-icons t
+          dashboard-center-content t
+          dashboard-items '((recents  . 5)
+                            (bookmarks . 5)
+                            (projects . 5)
+                            (agenda . 5))
+          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+    :init
+    :hook (after-init . dashboard-setup-startup-hook))
+
+  (use-package kaolin-themes
+    :config
+    (setq kaolin-ocean-alt-bg t)
+    (setq kaolin-themes-italic-comments t
+          kaolin-themes-hl-line-colored t
+          kaolin-themes-git-gutter-solid t)
+    (load-theme 'kaolin-ocean t))
+
+  (use-package mood-line
+    :ensure t
+    :custom-face
+    :config
+    (mood-line-mode)
+    :custom
+    (mood-line-gpyph-alist mood-line-glyphs-unicode))
+
+  (set-frame-parameter (selected-frame) 'alpha '(91 . 55))
+  (add-to-list 'default-frame-alist '(alpha . (91 . 55)))
+
+  (defun toggle-transparency ()
+    (interactive)
+    (let ((alpha (frame-parameter nil 'alpha)))
+      (set-frame-parameter
+       nil 'alpha
+       (if (eql (cond ((numberp alpha) alpha)
+                      ((numberp (cdr alpha)) (cdr alpha))
+                      ((numberp (cadr alpha)) (cadr alpha)))
+                100)
+           '(91 . 55) '(100 . 100)))))
+  (global-set-key (kbd "C-S-s") 'toggle-transparency)
+
+  (use-package all-the-icons
+    :ensure t)
+
+  (use-package all-the-icons-dired
+    :ensure t
+    :hook (dired-mode . all-the-icons-dired-mode))
+
+  (use-package all-the-icons-ivy-rich
+    :ensure t
+    :init (all-the-icons-ivy-rich-mode 1))
+
+  (use-package nerd-icons
+    :ensure t
+    :config
+    (setq nerd-icons-font-family "Iosevka Nerd Font"))
+
+  (add-hook 'after-make-frame-functions
+            (lambda (f)
+              (with-selected-frame f
+                (set-frame-font "Iosevka Nerd Font 11" nil t)
+                (set-face-attribute 'mode-line nil :font "Iosevka Nerd Font 12" :height 100)
+                (set-face-attribute 'company-tooltip nil :font "Iosevka Nerd Font 11" :height 100))))
+
+  (add-to-list 'default-frame-alist '(height . 64))
+  (add-to-list 'default-frame-alist '(width . 370))
+#+end_src
 * General Settings
 #+begin_src emacs-lisp
   (menu-bar-mode -1) ; Disable the menu bar
@@ -39,17 +115,13 @@ The configuration is setup using NixOS, check README.
   ;; Direnv Configuration
   (require 'direnv)
   (direnv-mode 1)
-#+end_src
 
-* Reloading Config
-Closing and opening emacs again after some quick changes in config is pain, especially when you are using emacs as a window manager. So here I bind a key ==C-c r== to do it quickly without closing ==emacs==.
-
-#+begin_src emacs-lisp
   (defun config-reload ()
     (interactive)
     (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c r") 'config-reload)
-#+end_src
+
+ #+end_src
 
 * Completion
 Using company for code completion.
@@ -117,74 +189,6 @@ symlinked .emacs.d in home.
          (message "Failed to load copilot: %s" err)))))
 #+end_src
 
-* Appearance
-Using dashboard and doom-theme with modeline.
-
-#+begin_src emacs-lisp
-  (use-package dashboard
-    :ensure t
-    :config
-    (setq dashboard-startup-banner 'logo
-          dashboard-banner-logo-title "Welcome back Master"
-          dashboard-set-file-icons t
-          dashboard-center-content t
-          dashboard-items '((recents  . 5)
-                            (bookmarks . 5)
-                            (projects . 5)
-                            (agenda . 5))
-          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-    :init
-    :hook (after-init . dashboard-setup-startup-hook))
-
-  (use-package doom-themes
-    :ensure t
-    :config
-    (load-theme 'doom-one t)
-    (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t))
-
-  (use-package doom-modeline
-    :ensure t
-    :init (doom-modeline-mode 1)
-    :config
-    (setq doom-modeline-height 35
-          doom-modeline-bar-width 3
-          doom-modeline-buffer-file-name-style 'truncate-with-project
-          doom-modeline-buffer-encoding nil
-          doom-modeline-buffer-modification-icon nil
-          doom-modeline-buffer-state-icon nil
-          doom-modeline-icon t
-          doom-modeline-major-mode-icon t
-          doom-modeline-minor-modes nil
-          doom-modeline-persp-name nil
-          doom-modeline-eglot t
-          doom-modeline-github nil
-          doom-modeline-github-interval (* 30 60)))
-
-  (use-package all-the-icons
-    :ensure t)
-
-  (use-package all-the-icons-dired
-    :ensure t
-    :hook (dired-mode . all-the-icons-dired-mode))
-
-  (use-package all-the-icons-ivy-rich
-    :ensure t
-    :init (all-the-icons-ivy-rich-mode 1))
-
-  (use-package nerd-icons
-    :ensure t
-    :config
-    (setq nerd-icons-font-family "Iosevka Nerd Font"))
-
-  (add-hook 'after-make-frame-functions
-            (lambda (f)
-              (with-selected-frame f
-                (set-frame-font "Iosevka Nerd Font 11" nil t)
-                (set-face-attribute 'mode-line nil :font "Iosevka Nerd Font 12" :height 100)
-                (set-face-attribute 'company-tooltip nil :font "Iosevka Nerd Font 11" :height 100))))
-#+end_src
-
 * Editor
 A compilation of different packages I use.
 
@@ -236,7 +240,7 @@ A compilation of different packages I use.
   (use-package whitespace-cleanup-mode)
 #+end_src
 
-* Evil mode
+* Evil
 Using evil mode for vim keybindings.
 
 #+begin_src emacs-lisp
@@ -260,9 +264,11 @@ Using evil mode for vim keybindings.
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key
       ;; General
-      "pf" 'projectile-find-file
+      "ff" 'projectile-find-file
+      "fg" 'projectile-ripgrep
       "pp" 'projectile-switch-project
       "ps" 'projectile-switch-to-buffer
+      "pc" 'projectile-cleanup-known-projects
 
       ;; Buffers
       "bb" 'switch-to-buffer
@@ -271,12 +277,32 @@ Using evil mode for vim keybindings.
       "bp" 'previous-buffer
 
       ;; Git
-      "gs" 'magit-status
-      "gl" 'magit-log-buffer-file
-      "gb" 'blamer-mode
+      "/" 'magit-status
+      "bm" 'blamer-mode
+
+      ;; LSP
+      "gd" 'xref-find-definitions
+      "gr" 'xref-find-references
+      "gt" 'eglot-find-typeDefinition
+      "la" 'eglot-code-actions
+      "lq" 'eglot-code-action-quickfix
+      "lo" 'eglot-code-actions-organize-imports
+      "lf" 'eglot-format
+      "lr" 'eglot-rename
+      "li" 'indent-region
+      "lwd" 'flymake-show-project-diagnostics
+      "lbd" 'flymake-show-buffer-diagnostics
+
+      ;; Treemacs
+      "<SPC>" 'treemacs-select-window
+      "tt" 'treemacs
 
       ;; Vterm
-      "tt" 'vterm))
+      "vt" 'vterm
+
+      ;; Whitespace
+      "ws" 'whitespace-mode
+      "wc" 'whitespace-cleanup-mode))
 
   (use-package evil-surround
     :after evil
@@ -311,7 +337,7 @@ Using evil mode for vim keybindings.
 
 #+end_src
 
-* Eglot LSP
+* Eglot
 Using Eglot, emacs builtinn LSP client.
 Setup using:
 - Java
@@ -453,7 +479,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     (interactive)
     (split-window-right)
     (windmove-right)
-    (find-file "~/Documents/org/todo.org"))
+    (find-file "~/Documents/notes/org/todo.org"))
 
   (global-set-key (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
   (global-set-key (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
@@ -626,4 +652,138 @@ Easy to use and setup, easy use of buffers.
   (use-package yaml-mode
     :ensure t
     :mode (("\\.\\(yml\\|yaml\\)\\'" . yaml-mode)))
+#+end_src
+
+* Treemacs
+Treemacs is file and project explorer similar to NeoTree or vim's NerdTree, but largely inspired by the project explorer in Exlipse.
+
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :ensure t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+            treemacs-deferred-git-apply-delay        0.5
+            treemacs-directory-name-transformer      #'identity
+            treemacs-display-in-side-window          t
+            treemacs-eldoc-display                   'simple
+            treemacs-file-event-delay                2000
+            treemacs-file-extension-regex            treemacs-last-period-regex-value
+            treemacs-file-follow-delay               0.2
+            treemacs-file-name-transformer           #'identity
+            treemacs-follow-after-init               t
+            treemacs-expand-after-init               t
+            treemacs-find-workspace-method           'find-for-file-or-pick-first
+            treemacs-git-command-pipe                ""
+            treemacs-goto-tag-strategy               'refetch-index
+            treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+            treemacs-hide-dot-git-directory          t
+            treemacs-indentation                     2
+            treemacs-indentation-string              " "
+            treemacs-is-never-other-window           nil
+            treemacs-max-git-entries                 5000
+            treemacs-missing-project-action          'ask
+            treemacs-move-forward-on-expand          nil
+            treemacs-no-png-images                   nil
+            treemacs-no-delete-other-windows         t
+            treemacs-project-follow-cleanup          nil
+            treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+            treemacs-position                        'left
+            treemacs-read-string-input               'from-child-frame
+            treemacs-recenter-distance               0.1
+            treemacs-recenter-after-file-follow      nil
+            treemacs-recenter-after-tag-follow       nil
+            treemacs-recenter-after-project-jump     'always
+            treemacs-recenter-after-project-expand   'on-distance
+            treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+            treemacs-project-follow-into-home        nil
+            treemacs-show-cursor                     nil
+            treemacs-show-hidden-files               t
+            treemacs-silent-filewatch                nil
+            treemacs-silent-refresh                  nil
+            treemacs-sorting                         'alphabetic-asc
+            treemacs-select-when-already-in-treemacs 'move-back
+            treemacs-space-between-root-nodes        t
+            treemacs-tag-follow-cleanup              t
+            treemacs-tag-follow-delay                1.5
+            treemacs-text-scale                      nil
+            treemacs-user-mode-line-format           nil
+            treemacs-user-header-line-format         nil
+            treemacs-wide-toggle-width               91
+            treemacs-width                           55
+            treemacs-width-increment                 1
+            treemacs-width-is-initially-locked       t
+            treemacs-workspace-switch-cleanup        nil)
+
+      ;; The default width and height of the icons is 22 pixels. If you are
+      ;; using a Hi-DPI display, uncomment this to double the icon size.
+      ;;(treemacs-resize-icons 44)
+
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (treemacs-fringe-indicator-mode 'always)
+      (when treemacs-python-executable
+        (treemacs-git-commit-diff-mode t))
+
+      (pcase (cons (not (null (executable-find "git")))
+                   (not (null treemacs-python-executable)))
+        (`(t . t)
+         (treemacs-git-mode 'deferred))
+        (`(t . _)
+         (treemacs-git-mode 'simple)))
+
+      (treemacs-hide-gitignored-files-mode nil))
+    :bind
+    (:map global-map
+          ("M-0"       . treemacs-select-window)
+          ("C-x t 1"   . treemacs-delete-other-windows)
+          ("C-x t t"   . treemacs)
+          ("C-x t d"   . treemacs-select-directory)
+          ("C-x t B"   . treemacs-bookmark)
+          ("C-x t C-t" . treemacs-find-file)
+          ("C-x t M-t" . treemacs-find-tag)))
+
+  (use-package treemacs-evil
+    :after (treemacs evil)
+    :ensure t)
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :ensure t)
+
+  (use-package treemacs-icons-dired
+    :hook (dired-mode . treemacs-icons-dired-enable-once)
+    :ensure t)
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :ensure t)
+
+  (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+    :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+    :ensure t
+    :config (treemacs-set-scope-type 'Perspectives))
+
+  (use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
+    :after (treemacs)
+    :ensure t
+    :config (treemacs-set-scope-type 'Tabs))
+
+#+end_src
+
+* Treesitter
+Enable treesitter, not ruse if this is needed still...
+
+#+begin_src emacs-lisp
+  (use-package tree-sitter
+    :hook ((tree-sitter-mode . tree-sitter-hl-mode))
+    :init
+    (global-tree-sitter-mode))
+
+  (use-package tree-sitter-langs
+    :after (tree-sitter))
 #+end_src

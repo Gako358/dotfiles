@@ -11,7 +11,6 @@ in {
         # Core packages
         general # Provides a more convenient way to define keybindings
         which-key # Displays available keybindings in popup
-
         all-the-icons # A package for inserting developer icons
         all-the-icons-dired # Shows icons for each file in dired mode
         all-the-icons-ivy-rich # More friendly display transformer for ivy
@@ -64,14 +63,22 @@ in {
         rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
         rainbow-mode # Colorize color names in buffers
         simple-httpd # A simple HTTP server
+        treemacs # A tree layout file explorer
+        treemacs-tab-bar # A tab bar for treemacs
+        treemacs-projectile # Integration between treemacs and projectile
+        treemacs-evil # Evil keybindings for treemacs
+        treemacs-icons-dired # Show icons for each file in dired mode
+        treemacs-magit # Magit integration for treemacs
+        treemacs-persp # Perspective integration for treemacs
+        tree-sitter # Incremental parsing system for Emacs
+        tree-sitter-langs # Tree-sitter grammar for various languages
         vterm # Fully-featured terminal emulator
         multi-vterm # Multiple vterm buffers
         web-mode # Major mode for editing web templates
         whitespace-cleanup-mode # Intelligently call whitespace-cleanup on save
 
         # Theme
-        doom-modeline # A minimal and modern mode-line
-        doom-themes # An opinionated pack of modern color-themes
+        kaolin-themes # A low contrast color theme for Emacs
 
         # Programming language packages.
         blacken # Black formatter for Python
