@@ -33,7 +33,6 @@
 
     # Scramgit
     scramgit.url = "github:gako358/scram";
-    neovimFlake.url = "github:gako358/neovim";
   };
 
   outputs = {
@@ -43,7 +42,6 @@
     flake-utils,
     home-manager,
     scramgit,
-    neovimFlake,
     ...
   } @ inputs: let
     inherit (self) outputs;

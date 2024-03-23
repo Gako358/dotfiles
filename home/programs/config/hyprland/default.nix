@@ -23,8 +23,12 @@ then {
   };
 
   home.packages = [
+    pkgs.ranger
+    pkgs.pcmanfm
+    pkgs.wayshot
+    pkgs.sway-contrib.grimshot
+
     inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
-    inputs.neovimFlake.defaultPackage.${pkgs.system}
   ];
 
   # Fake a tray, so apps can start

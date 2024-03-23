@@ -6,11 +6,9 @@
     any-nix-shell               # fish support for nix shell
     acpi                        # battery info
     arandr                      # screen layout manager
-    asciiquarium-transparent    # ascii aquarium
     brightnessctl               # control screen brightness
     bottom                      # alternative to htop & ytop
     cacert                      # ca certificates
-    cmatrix                     # matrix screensaver
     dbeaver                     # database manager
     dconf2nix                   # dconf (gnome) files to nix converter
     dive                        # explore docker layers
@@ -30,11 +28,9 @@
     ouch                        # painless compression and decompression for your terminal
     pavucontrol                 # pulseaudio volume control
     paprefs                     # pulseaudio preferences
-    pcmanfm                     # file manager
     prettyping                  # a nicer ping
     pulsemixer                  # pulseaudio mixer
     rage                        # encryption tool for secrets management
-    ranger                      # terminal file manager
     ripgrep                     # fast grep
     rnote                       # terminal note taking
     scrot                       # screenshot tool
@@ -43,14 +39,11 @@
     tldr                        # summary of a man page
     tree                        # display files in a tree view
     unzip                       # unzip files
-    wayshot                     # screenshot tool for wayland
     wgetpaste                   # paste to pastebin
     wl-gammactl                 # wayland gamma control
     wl-clipboard                # wayland clipboard manager
     xarchiver                   # archive manager
     zip                         # zip files
-
-    sway-contrib.grimshot # screenshot tool for wayland
   ];
 in {
   programs = {
@@ -79,9 +72,6 @@ in {
     inherit username homeDirectory;
     stateVersion = "23.11";
     packages = defaultPkgs;
-    sessionVariables = {
-      EDITOR = "nvim";
-    };
   };
 
   # restart services on change
