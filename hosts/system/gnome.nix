@@ -1,8 +1,8 @@
-{
-  pkgs,
-  config,
-  specialArgs,
-  ...
+{ pkgs
+, inputs
+, config
+, specialArgs
+, ...
 }:
 if specialArgs.hidpi
 then {
@@ -44,9 +44,13 @@ then {
     ]);
 
   # ensure gnome-settings-daemon udev rules are enabled
-  services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
+  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
   # ensure telepathy is enable
   services.telepathy.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    inputs.scramgit.defaultPackage.${pkgs.system}
+  ];
 
   programs.neovim = {
     enable = true;
@@ -69,4 +73,4 @@ then {
     };
   };
 }
-else {}
+else { }
