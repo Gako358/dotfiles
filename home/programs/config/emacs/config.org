@@ -293,10 +293,6 @@ Using evil mode for vim keybindings.
       "lwd" 'flymake-show-project-diagnostics
       "lbd" 'flymake-show-buffer-diagnostics
 
-      ;; Treemacs
-      "<SPC>" 'treemacs-select-window
-      "tt" 'treemacs
-
       ;; Vterm
       "vt" 'vterm
 
@@ -358,6 +354,10 @@ Using own created web mode, for vue, typescript and tailwind.
   (use-package eglot-java
     :hook (java-mode . eglot-java-mode)
     :mode ("\\.java\\'" . java-mode))
+
+  (use-package nixpkgs-fmt
+    :commands nixpkgs-fmt
+    :hook (nix-mode . nixpkgs-fmt-on-save-mode))
 
   (use-package nix-mode
     :hook (nix-mode . eglot-ensure)
@@ -496,6 +496,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "S-<down>") 'move-text-down)
   (global-set-key (kbd "C-<tab>") 'previous-buffer)
   (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
+  (global-set-key (kbd "C-n") 'treemacs)
 
   (use-package which-key
     :ensure t

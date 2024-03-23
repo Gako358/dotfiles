@@ -1,9 +1,11 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   emacsCopilotSrc = builtins.fetchGit {
     url = "https://github.com/zerolfx/copilot.el.git";
     rev = "421703f5dd5218ec2a3aa23ddf09d5f13e5014c2";
   };
-in {
+in
+{
   programs.emacs = {
     enable = true;
     extraPackages = epkgs:
@@ -51,6 +53,7 @@ in {
         ligature # Ligature support for Emacs
         magit # A Git porcelain inside Emacs
         nerd-icons # Nerd icons for Emacs
+        nixpkgs-fmt # Nixpkgs formatting
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
         org-modern # A modern org-mode distribution
@@ -93,6 +96,8 @@ in {
   };
 
   home.packages = with pkgs; [
+    nixpkgs-fmt
+    nil
   ];
 
   home.file."./.emacs.d/emacsCopilot".source = emacsCopilotSrc;
