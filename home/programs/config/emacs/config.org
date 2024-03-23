@@ -43,8 +43,8 @@ Using dashboard and doom-theme with modeline.
     :custom
     (mood-line-gpyph-alist mood-line-glyphs-unicode))
 
-  (set-frame-parameter (selected-frame) 'alpha '(91 . 55))
-  (add-to-list 'default-frame-alist '(alpha . (91 . 55)))
+  (set-frame-parameter (selected-frame) 'alpha '(97 . 73))
+  (add-to-list 'default-frame-alist '(alpha . (97 . 73)))
 
   (defun toggle-transparency ()
     (interactive)
@@ -55,7 +55,7 @@ Using dashboard and doom-theme with modeline.
                       ((numberp (cdr alpha)) (cdr alpha))
                       ((numberp (cadr alpha)) (cadr alpha)))
                 100)
-           '(91 . 55) '(100 . 100)))))
+           '(97 . 73) '(100 . 100)))))
   (global-set-key (kbd "C-S-s") 'toggle-transparency)
 
   (use-package all-the-icons
@@ -84,6 +84,10 @@ Using dashboard and doom-theme with modeline.
   (add-to-list 'default-frame-alist '(height . 64))
   (add-to-list 'default-frame-alist '(width . 370))
 #+end_src
+
+#+RESULTS:
+: ((tab-bar-lines . 0) (width . 370) (height . 64) (alpha 91 . 55) (vertical-scroll-bars) (left-fringe . 8) (right-fringe . 8))
+
 * General Settings
 #+begin_src emacs-lisp
   (menu-bar-mode -1) ; Disable the menu bar
@@ -378,8 +382,17 @@ Using own created web mode, for vue, typescript and tailwind.
     :mode "\\.s\\(cala\\|bt\\)$")
 
   (use-package scala-mode
-    :hook (scala-mode . eglot-ensure)
+    :hook ((scala-mode . eglot-ensure)
+           (scala-mode . add-scala-format-on-save))
     :mode "\\.scala\\'")
+
+  (defun add-scala-format-on-save ()
+    "Add `eglot-format-buffer` to `before-save-hook` (activated in scala-mode only)."
+    (add-hook 'before-save-hook
+              (lambda ()
+                (when (eq 'scala-mode major-mode)
+                  (eglot-format-buffer))))
+    nil)
 
   (setq major-mode-remap-alist
         '((bash-mode . bash-ts-mode)
