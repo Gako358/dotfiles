@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   gitConfig = {
     core = {
       editor = "nvim";
@@ -29,7 +30,7 @@
     };
     color.ui = true;
     fetch.prune = true;
-    pull.rebase = true;
+    pull.rebase = false;
     push.default = "upstream";
     push.autoSetupRemote = true;
     url = {
@@ -40,7 +41,8 @@
   };
 
   rg = "${pkgs.ripgrep}/bin/rg";
-in {
+in
+{
   home.packages = with pkgs.gitAndTools; [
     diff-so-fancy # git diff with colors
     git-crypt # git files encryption
@@ -88,5 +90,5 @@ in {
         }
       ];
     }
-    // (pkgs.sxm.git or {});
+    // (pkgs.sxm.git or { });
 }

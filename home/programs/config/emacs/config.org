@@ -84,13 +84,6 @@ Using dashboard and doom-theme with modeline.
   (add-to-list 'default-frame-alist '(height . 64))
   (add-to-list 'default-frame-alist '(width . 370))
 
-  (use-package vertico-posframe
-    :ensure t
-    :custom
-    (vertico-posframe-parameters
-      '((left-fringe . 8)
-        (right-fringe . 8))))
-
 #+end_src
 
 #+RESULTS:
@@ -518,7 +511,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "S-<down>") 'move-text-down)
   (global-set-key (kbd "C-<tab>") 'previous-buffer)
   (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
-  (global-set-key (kbd "C-n") 'treemacs)
+  (global-set-key (kbd "C-S-n") 'treemacs)
 
   (use-package which-key
     :ensure t
