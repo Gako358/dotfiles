@@ -83,6 +83,14 @@ Using dashboard and doom-theme with modeline.
 
   (add-to-list 'default-frame-alist '(height . 64))
   (add-to-list 'default-frame-alist '(width . 370))
+
+  (use-package vertico-posframe
+    :ensure t
+    :custom
+    (vertico-posframe-parameters
+      '((left-fringe . 8)
+        (right-fringe . 8))))
+
 #+end_src
 
 #+RESULTS:
@@ -268,6 +276,7 @@ Using evil mode for vim keybindings.
     (evil-leader/set-leader "<SPC>")
     (evil-leader/set-key
       ;; General
+      "fb" 'counsel-find-file
       "ff" 'projectile-find-file
       "fg" 'projectile-ripgrep
       "pp" 'projectile-switch-project

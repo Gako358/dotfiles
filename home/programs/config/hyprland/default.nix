@@ -1,8 +1,7 @@
-{
-  pkgs,
-  inputs,
-  specialArgs,
-  ...
+{ pkgs
+, inputs
+, specialArgs
+, ...
 }:
 if !specialArgs.hidpi
 then {
@@ -27,6 +26,8 @@ then {
     pkgs.pcmanfm
     pkgs.wayshot
     pkgs.sway-contrib.grimshot
+    pkgs.pavucontrol
+    pkgs.pulsemixer
 
     inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
   ];
@@ -35,8 +36,8 @@ then {
   systemd.user.targets.tray = {
     Unit = {
       Description = "Home Manager System Tray";
-      Requires = ["graphical-session-pre.target"];
+      Requires = [ "graphical-session-pre.target" ];
     };
   };
 }
-else {}
+else { }

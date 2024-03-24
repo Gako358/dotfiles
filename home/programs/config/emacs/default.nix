@@ -75,6 +75,7 @@ in
         treemacs-persp # Perspective integration for treemacs
         tree-sitter # Incremental parsing system for Emacs
         tree-sitter-langs # Tree-sitter grammar for various languages
+        vertico-posframe # Display vertico in a posframe
         vterm # Fully-featured terminal emulator
         multi-vterm # Multiple vterm buffers
         web-mode # Major mode for editing web templates
