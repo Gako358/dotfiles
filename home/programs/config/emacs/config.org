@@ -137,7 +137,8 @@ Using company for code completion.
     :config
     (setq
      company-backends '(company-capf company-files company-dabbrev)
-     company-idle-delay 0.1)
+     company-dabbrev-downcase 0
+     company-idle-delay 0)
     :init
     :hook (after-init . global-company-mode))
 
