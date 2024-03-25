@@ -15,6 +15,7 @@ then {
     gnomeExtensions.space-bar
     gnome.dconf-editor
     gnome.gnome-tweaks
+    gnome.polari
     flat-remix-gnome
   ];
   dconf.settings = {
