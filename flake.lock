@@ -466,11 +466,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1706962586,
-        "narHash": "sha256-QTbOc+sdY2H31GZ5T8lUgT54WQyXmHIGle+A4OfnrD4=",
+        "lastModified": 1711361050,
+        "narHash": "sha256-TUycGPXYOUhYIj5oKEq8OBmbsCiERX3pMkh/MsUuq50=",
         "owner": "gako358",
         "repo": "scram",
-        "rev": "f643b335fd2716eff89891ec6a4fad4b1714d0f7",
+        "rev": "fddadbed438705ca4709f5778453bd02a60bb2b7",
         "type": "github"
       },
       "original": {

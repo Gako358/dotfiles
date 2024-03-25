@@ -35,14 +35,6 @@ Using dashboard and doom-theme with modeline.
           kaolin-themes-git-gutter-solid t)
     (load-theme 'kaolin-ocean t))
 
-  (use-package mood-line
-    :ensure t
-    :custom-face
-    :config
-    (mood-line-mode)
-    :custom
-    (mood-line-gpyph-alist mood-line-glyphs-unicode))
-
   (set-frame-parameter (selected-frame) 'alpha '(97 . 73))
   (add-to-list 'default-frame-alist '(alpha . (97 . 73)))
 
@@ -84,7 +76,7 @@ Using dashboard and doom-theme with modeline.
   (add-to-list 'default-frame-alist '(height . 64))
   (add-to-list 'default-frame-alist '(width . 370))
 
-#+end_src
+    #+end_src
 
 #+RESULTS:
 : ((tab-bar-lines . 0) (width . 370) (height . 64) (alpha 91 . 55) (vertical-scroll-bars) (left-fringe . 8) (right-fringe . 8))
@@ -126,7 +118,7 @@ Using dashboard and doom-theme with modeline.
     (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c r") 'config-reload)
 
- #+end_src
+#+end_src
 
 * Completion
 Using company for code completion.
@@ -246,8 +238,44 @@ A compilation of different packages I use.
   (use-package whitespace-cleanup-mode)
 #+end_src
 
-* Evil
-Using evil mode for vim keybindings.
+* Version
+Using magit with forge, creates the best environment for working with
+Git inside emacs, the only thing missing here is a way to approve PR.
+For forge, create a file called ~/.authinfo with the following:
+
+- machine api.github.com login gako358^forge password ==secret-token==
+
+#+begin_src emacs-lisp
+  (use-package git-gutter
+    :hook (prog-mode . git-gutter-mode)
+    :custom
+    (git-gutter:update-interval 0.05))
+
+  (use-package git-gutter-fringe
+    :after git-gutter
+    :config
+    (fringe-mode '(8 . 8))
+    (define-fringe-bitmap 'git-gutter-fr:added
+      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+      nil nil 'center)
+    (define-fringe-bitmap 'git-gutter-fr:modified
+      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+      nil nil 'center)
+    (define-fringe-bitmap 'git-gutter-fr:deleted
+      [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+      nil nil 'center))
+
+  (use-package blamer
+    :custom
+    (blamer-idle-time 0.3)
+    (blamer-min-offset 70))
+
+  (use-package forge
+    :after magit)
+#+end_src
+
+* Keybindings
+Keys that I have binded to my keyboard for easy navigation in emacs
 
 #+begin_src emacs-lisp
   (use-package evil
@@ -337,116 +365,6 @@ Using evil mode for vim keybindings.
     :config
     (evil-snipe-mode 1)
     (evil-snipe-override-mode 1))
-
-#+end_src
-
-* Eglot
-Using Eglot, emacs builtinn LSP client.
-Setup using:
-- Java
-- Nix
-- Python
-- Rust
-- SBT and Scala
-- SQL
-
-Using own created web mode, for vue, typescript and tailwind.
-
-#+begin_src emacs-lisp
-  (use-package eglot
-    :ensure t
-    :config
-    (setq eglot-autoshutdown t))
-
-  (use-package eglot-java
-    :hook (java-mode . eglot-java-mode)
-    :mode ("\\.java\\'" . java-mode))
-
-  (use-package nixpkgs-fmt
-    :commands nixpkgs-fmt
-    :hook (nix-mode . nixpkgs-fmt-on-save-mode))
-
-  (use-package nix-mode
-    :hook (nix-mode . eglot-ensure)
-    :mode "\\.nix\\'")
-
-  (use-package blacken)
-  (use-package python-mode
-    :hook (python-mode . eglot-ensure))
-
-  (use-package rustic
-    :after eglot
-    :hook (rustic-mode . eglot-ensure)
-    :mode "\\.rs\\'")
-
-  (use-package sbt-mode
-    :config
-    (setq sbt:program-options '("-Dsbt.supershell=false"))
-    :mode "\\.s\\(cala\\|bt\\)$")
-
-  (use-package scala-mode
-    :hook ((scala-mode . eglot-ensure)
-           (scala-mode . add-scala-format-on-save))
-    :mode "\\.scala\\'")
-
-  (defun add-scala-format-on-save ()
-    "Add `eglot-format-buffer` to `before-save-hook` (activated in scala-mode only)."
-    (add-hook 'before-save-hook
-              (lambda ()
-                (when (eq 'scala-mode major-mode)
-                  (eglot-format-buffer))))
-    nil)
-
-  (setq major-mode-remap-alist
-        '((bash-mode . bash-ts-mode)
-          (css-mode . css-ts-mode)
-          (json-mode . js-ts-mode)
-          (js2-mode . js-ts-mode)
-          (typescript-mode . typescript-ts-mode)))
-
-  (setq treesit-font-lock-level 4)
-#+end_src
-
-* Git
-Using magit with forge, creates the best environment for working with
-Git inside emacs, the only thing missing here is a way to approve PR.
-For forge, create a file called ~/.authinfo with the following:
-
-- machine api.github.com login gako358^forge password ==secret-token==
-
-#+begin_src emacs-lisp
-  (use-package git-gutter
-    :hook (prog-mode . git-gutter-mode)
-    :custom
-    (git-gutter:update-interval 0.05))
-
-  (use-package git-gutter-fringe
-    :after git-gutter
-    :config
-    (fringe-mode '(8 . 8))
-    (define-fringe-bitmap 'git-gutter-fr:added
-      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-      nil nil 'center)
-    (define-fringe-bitmap 'git-gutter-fr:modified
-      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-      nil nil 'center)
-    (define-fringe-bitmap 'git-gutter-fr:deleted
-      [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-      nil nil 'center))
-
-  (use-package blamer
-    :custom
-    (blamer-idle-time 0.3)
-    (blamer-min-offset 70))
-
-  (use-package forge
-    :after magit)
-#+end_src
-
-* Keybindings
-Keys that I have binded to my keyboard for easy navigation in emacs
-
-#+begin_src emacs-lisp
   (defun split-window-right-and-move-there-dammit ()
     (interactive)
     (split-window-right)
@@ -521,6 +439,74 @@ Keys that I have binded to my keyboard for easy navigation in emacs
 
 #+end_src
 
+* Languages
+Using Eglot, emacs builtinn LSP client.
+Setup using:
+- Java
+- Nix
+- Python
+- Rust
+- SBT and Scala
+- SQL
+
+Using own created web mode, for vue, typescript and tailwind.
+
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure t
+    :config
+    (setq eglot-autoshutdown t))
+
+  (use-package eglot-java
+    :hook (java-mode . eglot-java-mode)
+    :mode ("\\.java\\'" . java-mode))
+
+  (use-package nixpkgs-fmt
+    :commands nixpkgs-fmt
+    :hook (nix-mode . nixpkgs-fmt-on-save-mode))
+
+  (use-package nix-mode
+    :hook (nix-mode . eglot-ensure)
+    :mode "\\.nix\\'")
+
+  (use-package blacken)
+  (use-package python-mode
+    :hook (python-mode . eglot-ensure))
+
+  (use-package rustic
+    :after eglot
+    :hook (rustic-mode . eglot-ensure)
+    :mode "\\.rs\\'")
+
+  (use-package sbt-mode
+    :config
+    (setq sbt:program-options '("-Dsbt.supershell=false"))
+    :mode "\\.s\\(cala\\|bt\\)$")
+
+  (use-package scala-mode
+    :after (eglot)
+    :config
+    :hook ((scala-mode . eglot-ensure)
+           (scala-mode . add-scala-format-on-save))
+    :mode "\\.scala\\'")
+
+  (defun add-scala-format-on-save ()
+    "Add `eglot-format-buffer` to `before-save-hook` (activated in scala-mode only)."
+    (add-hook 'before-save-hook
+              (lambda ()
+                (when (eq 'scala-mode major-mode)
+                  (eglot-format-buffer))))
+    nil)
+
+  (setq major-mode-remap-alist
+        '((bash-mode . bash-ts-mode)
+          (css-mode . css-ts-mode)
+          (json-mode . js-ts-mode)
+          (js2-mode . js-ts-mode)
+          (typescript-mode . typescript-ts-mode)))
+
+  (setq treesit-font-lock-level 4)
+#+end_src
 * ORG Mode
 One of the best features of emacs, that i know way to little
 about yet...
@@ -547,6 +533,10 @@ about yet...
           org-entities-user '(("flat"  "\\flat" nil "" "" "266D" "♭")
                               ("sharp" "\\sharp" nil "" "" "266F" "♯"))
           org-ellipsis " "
+          org-capture-templates '(("t" "Todo" entry (file+headline "~/Documents/notes/org/todo.org" "Tasks")
+                                   "* TODO %?\n %i\n %a")
+                                  ("j""Journal" entry (file+datatree "~/Documents/notes/org/journal.org")
+                                   "* %?\nEntered on %U\n %i\n %a"))
           org-src-fontify-natively t
           org-src-tab-acts-natively t
           org-confirm-babel-evaluate nil
@@ -790,17 +780,4 @@ Treemacs is file and project explorer similar to NeoTree or vim's NerdTree, but 
     :ensure t
     :config (treemacs-set-scope-type 'Tabs))
 
-#+end_src
-
-* Treesitter
-Enable treesitter, not ruse if this is needed still...
-
-#+begin_src emacs-lisp
-  (use-package tree-sitter
-    :hook ((tree-sitter-mode . tree-sitter-hl-mode))
-    :init
-    (global-tree-sitter-mode))
-
-  (use-package tree-sitter-langs
-    :after (tree-sitter))
 #+end_src
