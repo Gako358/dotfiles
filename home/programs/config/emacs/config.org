@@ -311,6 +311,9 @@ Keys that I have binded to my keyboard for easy navigation in emacs
       "bn" 'next-buffer
       "bp" 'previous-buffer
 
+      ;; Editor
+      "s" 'replace-word-at-point
+
       ;; Git
       "/" 'magit-status
       "bm" 'blamer-mode
@@ -415,6 +418,15 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     (windmove-right)
     (find-file "~/Documents/notes/org/todo.org"))
 
+  (defun replace-word-at-point ()
+    "Replace all occurrences of the word at point with a user-provided word in the current buffer."
+    (let ((old-word (thing-at-point 'word))
+          (new-word (read-string "Enter new word: ")))
+      (save-excursion
+        (goto-char (point-min))
+        (while (search-forward old-word nil t)
+          (replace-match new-word)))))
+
   (global-set-key (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
   (global-set-key (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
   (global-set-key (kbd "C-S-j") 'split-window-below-and-move-there-dammit)
@@ -431,6 +443,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "C-<tab>") 'previous-buffer)
   (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
   (global-set-key (kbd "C-S-n") 'treemacs)
+  (global-set-key (kbd "C-S-c") 'company-complete)
 
   (use-package which-key
     :ensure t
@@ -479,9 +492,10 @@ Using own created web mode, for vue, typescript and tailwind.
     :mode "\\.rs\\'")
 
   (use-package sbt-mode
+    :after eglog
     :config
     (setq sbt:program-options '("-Dsbt.supershell=false"))
-    :mode "\\.s\\(cala\\|bt\\)$")
+    :mode ("\\.s\\(cala\\|bt\\)$" . sbt-mode))
 
   (use-package scala-mode
     :after (eglot)
