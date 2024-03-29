@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   username = "merrinx";
   homeDirectory = "/home/${username}";
   configHome = "${homeDirectory}/.config";
@@ -44,8 +43,7 @@ let
     xarchiver # archive manager
     zip # zip files
   ];
-in
-{
+in {
   programs = {
     home-manager.enable = true;
     gh.enable = true;
@@ -63,8 +61,8 @@ in
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
 

@@ -33,6 +33,7 @@
 
     # Scramgit
     scramgit.url = "github:gako358/scram";
+    nvimFlake.url = "github:gako358/neovim";
   };
 
   outputs = {
@@ -41,6 +42,7 @@
     hardware,
     flake-utils,
     home-manager,
+    nvimFlake,
     scramgit,
     ...
   } @ inputs: let

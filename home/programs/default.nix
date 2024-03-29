@@ -37,6 +37,6 @@ in [
   ./citrix.nix
   ./git.nix
   ./network.nix
-  ./vscode.nix
+  ./tmux.nix
   more
 ]

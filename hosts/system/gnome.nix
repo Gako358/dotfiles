@@ -50,27 +50,7 @@ then {
 
   environment.systemPackages = with pkgs; [
     inputs.scramgit.defaultPackage.${pkgs.system}
+    inputs.nvimFlake.defaultPackage.${pkgs.system}
   ];
-
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-
-    configure = {
-      customRC = ''
-        set relativenumber
-        set cc=80
-        set list
-      '';
-
-      packages.myVimPackage = with pkgs.vimPlugins; {
-        start = [
-          copilot-vim
-          telescope-nvim
-        ];
-      };
-    };
-  };
 }
 else { }
