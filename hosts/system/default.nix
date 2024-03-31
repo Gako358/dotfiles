@@ -21,6 +21,7 @@ with lib; {
     ./hyprland.nix
     ./nfc.nix
     ./shell.nix
+    # ./snapper.nix
     ./qemu.nix
     ./wally.nix
   ];
