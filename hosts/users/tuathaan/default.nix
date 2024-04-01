@@ -21,7 +21,7 @@
   services = {
     dbus.enable = true;
     xserver = {
-      videoDrivers = ["intel"];
+      videoDrivers = ["intel" "displaylink"];
       displayManager = {
         # xrandr --setprovideroutputsource 2 0 This is after run xrandr --listproviders to identify the provider
         sessionCommands = ''
