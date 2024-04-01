@@ -57,6 +57,7 @@ then {
     gnome.gnome-weather
 
     inputs.scramgit.defaultPackage.${pkgs.system}
+    inputs.nvimFlake.defaultPackage.${pkgs.system}
   ];
 
   systemd = {
