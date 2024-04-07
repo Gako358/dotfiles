@@ -13,6 +13,7 @@ then {
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      xwayland.enable = true;
     };
   };
 
@@ -43,6 +44,7 @@ then {
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-wlr
+      pkgs.xdg-desktop-portal-hyprland
     ];
   };
 
