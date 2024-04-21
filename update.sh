@@ -41,6 +41,9 @@ else
     continue
 fi
 
+# delete older generations
+nix-collect-garbage --delete-older-than 28d
+
 git pull
 
 # Run a garbage collection
@@ -54,7 +57,7 @@ echo "System updated!"
 echo "Updating home-manager..."
 
 # Run a garbage collection
-home-manager expire-generations "-3 days"
+home-manager expire-generations "-19 days"
 
 # Update home-manager
 home-manager switch --flake .#$home_name
