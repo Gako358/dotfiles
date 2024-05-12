@@ -1,8 +1,9 @@
-{ pkgs
-, inputs
-, config
-, specialArgs
-, ...
+{
+  pkgs,
+  inputs,
+  config,
+  specialArgs,
+  ...
 }:
 if specialArgs.hidpi
 then {
@@ -12,7 +13,6 @@ then {
       variant = "";
       layout = "us";
     };
-    libinput.enable = true;
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
   };
@@ -44,7 +44,7 @@ then {
     ]);
 
   # ensure gnome-settings-daemon udev rules are enabled
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
   # ensure telepathy is enable
   services.telepathy.enable = true;
 
@@ -53,4 +53,4 @@ then {
     inputs.nvimFlake.defaultPackage.${pkgs.system}
   ];
 }
-else { }
+else {}

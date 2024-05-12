@@ -49,6 +49,7 @@
   programs.dconf.enable = true;
 
   services = {
+    libinput.enable = true;
     blueman.enable = true;
     dbus.packages = [pkgs.gnome.gnome-keyring pkgs.gcr];
     gnome.gnome-keyring = {
