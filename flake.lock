@@ -153,11 +153,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715380449,
-        "narHash": "sha256-716+f9Rj3wjSyD1xitCv2FcYbgPz1WIVDj+ZBclH99Y=",
+        "lastModified": 1715486357,
+        "narHash": "sha256-4pRuzsHZOW5W4CsXI9uhKtiJeQSUoe1d2M9mWU98HC4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "d7682620185f213df384c363288093b486b2883f",
+        "rev": "44677a1c96810a8e8c4ffaeaad10c842402647c1",
         "type": "github"
       },
       "original": {
@@ -205,17 +205,19 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1715468612,
-        "narHash": "sha256-AF5bXnJqS7sj9ioJ/X6g1vg91nM9rtpf4iMIdPLjrRc=",
-        "owner": "hyprwm",
-        "repo": "Hyprland",
-        "rev": "33a7b7bb6b307d6e4a093f75ffdda0419cd7ffaf",
-        "type": "github"
+        "lastModified": 1715724815,
+        "narHash": "sha256-I1ioStn+IZEURbjvsB+ZHuABldyqNefwi2utovefn+I=",
+        "ref": "refs/heads/main",
+        "rev": "94c20a186372aace78b188842848b873eb3ebbd7",
+        "revCount": 4693,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/hyprwm/Hyprland"
       },
       "original": {
-        "owner": "hyprwm",
-        "repo": "Hyprland",
-        "type": "github"
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/hyprwm/Hyprland"
       }
     },
     "hyprland-contrib": {
@@ -225,11 +227,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1713780596,
-        "narHash": "sha256-DDAYNGSnrBwvVfpKx+XjkuecpoE9HiEf6JW+DBQgvm0=",
+        "lastModified": 1715621965,
+        "narHash": "sha256-S5Wzi3hhFOiCaeZqmx3zBdrv8KzaEafD5hCfY8ixz0A=",
         "owner": "hyprwm",
         "repo": "contrib",
-        "rev": "110e6dc761d5c3d352574def3479a9c39dfc4358",
+        "rev": "46d2206858657d439792926958f52b037534de49",
         "type": "github"
       },
       "original": {
@@ -250,11 +252,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715172513,
-        "narHash": "sha256-TjQ74AGpEgNx/+sM0VKnPAOlYEG22FUJ9+RwDDP/hoA=",
+        "lastModified": 1715722806,
+        "narHash": "sha256-KrSLG2H3KGELxTFdiBhv8U6D53Q3UsJsQO+KgEabsNA=",
         "owner": "hyprwm",
         "repo": "hyprland-plugins",
-        "rev": "dcbdc9a08d1df753d6799bab823486f1fff5b8e6",
+        "rev": "c28d1011f4868c1a1ee80b10d9ee79900686df82",
         "type": "github"
       },
       "original": {
@@ -327,11 +329,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1715287423,
-        "narHash": "sha256-B7AJIjOyWgVMKhu7DlOnWa0VprdhywUVHuB/j+EwSxM=",
+        "lastModified": 1715608589,
+        "narHash": "sha256-vimNaLjLcoNIvBhF37GaB6PRYEvKMamY3UnDE9M5MW8=",
         "owner": "hyprwm",
         "repo": "hyprwayland-scanner",
-        "rev": "e2fc1c0eb8b392110588f478cce644348ead7271",
+        "rev": "65c2636484e5cb00583b8a7446c3fb657f568883",
         "type": "github"
       },
       "original": {
@@ -433,11 +435,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1715087517,
-        "narHash": "sha256-CLU5Tsg24Ke4+7sH8azHWXKd0CFd4mhLWfhYgUiDBpQ=",
+        "lastModified": 1715534503,
+        "narHash": "sha256-5ZSVkFadZbFP1THataCaSf0JH2cAH3S29hU9rrxTEqk=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b211b392b8486ee79df6cdfb1157ad2133427a29",
+        "rev": "2057814051972fa1453ddfb0d98badbea9b83c06",
         "type": "github"
       },
       "original": {
@@ -449,11 +451,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1715266358,
-        "narHash": "sha256-doPgfj+7FFe9rfzWo1siAV2mVCasW+Bh8I1cToAXEE4=",
+        "lastModified": 1715534503,
+        "narHash": "sha256-5ZSVkFadZbFP1THataCaSf0JH2cAH3S29hU9rrxTEqk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "f1010e0469db743d14519a1efd37e23f8513d714",
+        "rev": "2057814051972fa1453ddfb0d98badbea9b83c06",
         "type": "github"
       },
       "original": {
@@ -497,11 +499,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1715486665,
-        "narHash": "sha256-5z97FMMR19J+nutI5ewVvFF4J0hNtjAxPd94iAeavHw=",
+        "lastModified": 1715747238,
+        "narHash": "sha256-2SDntG1J87XvN0SARgWbEPwkZa4K75/wsIej9z3R1BA=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "e136efd755364fe13a1f1f5bc832c3fff4475141",
+        "rev": "15722f6171e918844b5bc4d55509b47db5e25ffa",
         "type": "github"
       },
       "original": {
@@ -556,15 +558,18 @@
         "plugins-telescope": "plugins-telescope",
         "plugins-todo-comments": "plugins-todo-comments",
         "plugins-trouble": "plugins-trouble",
+        "plugins-vim-dadbod": "plugins-vim-dadbod",
+        "plugins-vim-dadbod-completion": "plugins-vim-dadbod-completion",
+        "plugins-vim-dadbod-ui": "plugins-vim-dadbod-ui",
         "plugins-vim-vsnip": "plugins-vim-vsnip",
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1713787858,
-        "narHash": "sha256-peE+yjBEn/yLtzSFgSK/s4QnAqfq7oS572K/ofzxERk=",
+        "lastModified": 1715691500,
+        "narHash": "sha256-yDCRz0HRh4+xCDcK3QBvuTpRxskQO+TvMg6i57JhwLs=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "1ee09e7d4d8d747ddd811f4969e255c12fdb7c8d",
+        "rev": "201f96760b42612e606adb3cb0d01ea383aa2dbe",
         "type": "github"
       },
       "original": {
@@ -1226,6 +1231,54 @@
       "original": {
         "owner": "folke",
         "repo": "trouble.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-vim-dadbod": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1714603872,
+        "narHash": "sha256-8BWmOrsE/spJ3vWgN8l2dwJe5rBTpg/AwQASf2+9jVE=",
+        "owner": "tpope",
+        "repo": "vim-dadbod",
+        "rev": "37523ffe0849b51db07fa7f48430c2aca5420a0e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tpope",
+        "repo": "vim-dadbod",
+        "type": "github"
+      }
+    },
+    "plugins-vim-dadbod-completion": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1700231107,
+        "narHash": "sha256-4MgsBGfzAFTpQ4eRqXaHA3cCgbb1lVZDZJ+48t6HUB8=",
+        "owner": "kristijanhusak",
+        "repo": "vim-dadbod-completion",
+        "rev": "c920cb0ba3dff4b1b0ed373e1c0b3007dec696c2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kristijanhusak",
+        "repo": "vim-dadbod-completion",
+        "type": "github"
+      }
+    },
+    "plugins-vim-dadbod-ui": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1715677546,
+        "narHash": "sha256-A4x1CB09TZFoE1HWV9KHYnMj5hcDcXA2u2bfRF+Ejck=",
+        "owner": "kristijanhusak",
+        "repo": "vim-dadbod-ui",
+        "rev": "23ed6edb60dcef9b30b741ca4b00ac4637da7d69",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kristijanhusak",
+        "repo": "vim-dadbod-ui",
         "type": "github"
       }
     },

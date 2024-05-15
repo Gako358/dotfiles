@@ -20,7 +20,7 @@
     agenix.url = "github:ryantm/agenix"; # Secrets management
 
     # Hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     hyprland-contrib = {
       url = "github:hyprwm/contrib";
       inputs.nixpkgs.follows = "nixpkgs";
