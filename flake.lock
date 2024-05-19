@@ -533,6 +533,8 @@
         "plugins-lazygit": "plugins-lazygit",
         "plugins-lsp-signature": "plugins-lsp-signature",
         "plugins-lspkind": "plugins-lspkind",
+        "plugins-lualine": "plugins-lualine",
+        "plugins-nightfox": "plugins-nightfox",
         "plugins-noice": "plugins-noice",
         "plugins-notify": "plugins-notify",
         "plugins-nui": "plugins-nui",
@@ -562,11 +564,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1716144263,
-        "narHash": "sha256-iAYiRtz0uerAYvTbrRFiuxHpSIMWmRjlBh8ppv50GaU=",
+        "lastModified": 1716410173,
+        "narHash": "sha256-ZUNaE7U237zXfsSCjbMGI5KGm5eE3nZAZwivLE+83eo=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "45149f58f48216bc7739744d7d946ed617a39ac5",
+        "rev": "4dc26a180e163901f095578a6547d65ed5dbb85e",
         "type": "github"
       },
       "original": {
@@ -690,11 +692,11 @@
     "plugins-copilot-chat": {
       "flake": false,
       "locked": {
-        "lastModified": 1712795610,
-        "narHash": "sha256-6Kup+c/i7JxYrbu843uE5eNCeZ1f1w++/uDht2pYES4=",
+        "lastModified": 1715958200,
+        "narHash": "sha256-jZb+dqGaZEs1h2CbvsxbINfHauwHka9t+jmSJQ/mMFM=",
         "owner": "CopilotC-Nvim",
         "repo": "CopilotChat.nvim",
-        "rev": "261bb6268761cedf70342e4a869d6b437e0ccc6c",
+        "rev": "f694ccae14a6f45b783cb386f17431b05162e8d0",
         "type": "github"
       },
       "original": {
@@ -828,6 +830,38 @@
       "original": {
         "owner": "onsails",
         "repo": "lspkind-nvim",
+        "type": "github"
+      }
+    },
+    "plugins-lualine": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1712310396,
+        "narHash": "sha256-WcH2dWdRDgMkwBQhcgT+Z/ArMdm+VbRhmQftx4t2kNI=",
+        "owner": "hoob3rt",
+        "repo": "lualine.nvim",
+        "rev": "0a5a66803c7407767b799067986b4dc3036e1983",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hoob3rt",
+        "repo": "lualine.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-nightfox": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1714329621,
+        "narHash": "sha256-ly9yavagB6A8t2plHZyNJt5tqCBq+ExEtYGKR4+9qHQ=",
+        "owner": "EdenEast",
+        "repo": "nightfox.nvim",
+        "rev": "df75a6a94910ae47854341d6b5a6fd483192c0eb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "EdenEast",
+        "repo": "nightfox.nvim",
         "type": "github"
       }
     },

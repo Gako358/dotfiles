@@ -31,6 +31,7 @@
     rage # encryption tool for secrets management
     ripgrep # fast grep
     rnote # terminal note taking
+    scid-vs-pc # chess database with play and funtionality
     scrot # screenshot tool
     slurp # select a region in a wayland compositor
     spotify # music streaming
