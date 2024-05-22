@@ -467,11 +467,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1716097317,
-        "narHash": "sha256-1UMrLtgzielG/Sop6gl6oTSM4pDt7rF9j9VuxhDWDlY=",
+        "lastModified": 1716358718,
+        "narHash": "sha256-NQbegJb2ZZnAqp2EJhWwTf6DrZXSpA6xZCEq+RGV1r0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "8535fb92661f37ff9f0da3007fbc942f7d134b41",
+        "rev": "3f316d2a50699a78afe5e77ca486ad553169061e",
         "type": "github"
       },
       "original": {
@@ -550,8 +550,8 @@
         "plugins-nvim-lspconfig": "plugins-nvim-lspconfig",
         "plugins-nvim-metals": "plugins-nvim-metals",
         "plugins-nvim-nio": "plugins-nvim-nio",
-        "plugins-nvim-tree-lua": "plugins-nvim-tree-lua",
         "plugins-nvim-web-devicons": "plugins-nvim-web-devicons",
+        "plugins-oil": "plugins-oil",
         "plugins-plenary-nvim": "plugins-plenary-nvim",
         "plugins-rust-tools": "plugins-rust-tools",
         "plugins-sqls-nvim": "plugins-sqls-nvim",
@@ -564,11 +564,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1716410173,
-        "narHash": "sha256-ZUNaE7U237zXfsSCjbMGI5KGm5eE3nZAZwivLE+83eo=",
+        "lastModified": 1716660274,
+        "narHash": "sha256-jcl0n6Rk1h2qz40S811NSPiQ63N1YlZ2SeHAD2NjZ00=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "4dc26a180e163901f095578a6547d65ed5dbb85e",
+        "rev": "3a7e16bddb37781278ace6a0120a9c0c917d809a",
         "type": "github"
       },
       "original": {
@@ -1028,11 +1028,11 @@
     "plugins-nvim-jdtls": {
       "flake": false,
       "locked": {
-        "lastModified": 1709807351,
-        "narHash": "sha256-yodvMYeCOeQMYJ42lg6yK2GCP0kf9sw8CjxjjVIIYxM=",
+        "lastModified": 1716563650,
+        "narHash": "sha256-eAS3fZ4tUacDctQfeHucBZQRH5Af9KyNwfzuuqBl5Gw=",
         "owner": "mfussenegger",
         "repo": "nvim-jdtls",
-        "rev": "8eb5f0dbe6e126b392ddcaf45893358619893e45",
+        "rev": "10691312d51c5485c656a71258b55d3798d3fb3e",
         "type": "github"
       },
       "original": {
@@ -1105,22 +1105,6 @@
         "type": "github"
       }
     },
-    "plugins-nvim-tree-lua": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1712366921,
-        "narHash": "sha256-6pbOeklf+otsJIjt9IUyUfuTAedShnwERYq1IfhyrJs=",
-        "owner": "kyazdani42",
-        "repo": "nvim-tree.lua",
-        "rev": "81eb8d519233c105f30dc0a278607e62b20502fd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kyazdani42",
-        "repo": "nvim-tree.lua",
-        "type": "github"
-      }
-    },
     "plugins-nvim-web-devicons": {
       "flake": false,
       "locked": {
@@ -1134,6 +1118,22 @@
       "original": {
         "owner": "kyazdani42",
         "repo": "nvim-web-devicons",
+        "type": "github"
+      }
+    },
+    "plugins-oil": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1716410771,
+        "narHash": "sha256-nsKp7Ln3VSXrZVghRNjFxDugoSwJfoOPWGLL2Ife5VQ=",
+        "owner": "stevearc",
+        "repo": "oil.nvim",
+        "rev": "2cb39e838e9dcd8b374f09a3a87a2e5ec9d372f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stevearc",
+        "repo": "oil.nvim",
         "type": "github"
       }
     },
