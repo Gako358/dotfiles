@@ -564,11 +564,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1716660274,
-        "narHash": "sha256-jcl0n6Rk1h2qz40S811NSPiQ63N1YlZ2SeHAD2NjZ00=",
+        "lastModified": 1716664212,
+        "narHash": "sha256-emke50LYGtnfAELD57kGxjxT4GMFsInDuQEOaQeYBOY=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "3a7e16bddb37781278ace6a0120a9c0c917d809a",
+        "rev": "5ecff6c4d631c994a77c52d67e1ef8752be42312",
         "type": "github"
       },
       "original": {
