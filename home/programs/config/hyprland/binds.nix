@@ -1,18 +1,14 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   mainMod = "SUPER";
-  PRIMARY = "ALT";
   SECONDARY = "SHIFT";
   TERTIARY = "CTRL";
 
   # Dependencies
   grimshot = "${pkgs.sway-contrib.grimshot}/bin/grimshot";
-  lock = "${pkgs.swaylock}/bin/swaylock";
   swappy = "${pkgs.swappy}/bin/swappy";
   wofi = "${pkgs.wofi}/bin/wofi";
   terminal = "${pkgs.alacritty}/bin/alacritty";
-in
-{
+in {
   wayland.windowManager.hyprland.extraConfig = ''
     # Launchers
     bind = ${mainMod}, Return, exec, ${terminal}
@@ -21,7 +17,7 @@ in
     bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
 
     # Lockscreen
-    bind = ${mainMod} ${SECONDARY}, L, exec, ${lock} -f -c 000000
+    bind = ${mainMod} ${SECONDARY}, L, exec, loginctl lock-session
 
     # Screenshot
     bind = ${mainMod} ${SECONDARY}, P, exec, ${grimshot} --notify save area - | ${swappy} -f -

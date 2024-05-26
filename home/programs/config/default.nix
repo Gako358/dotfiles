@@ -7,7 +7,6 @@
     ./fish.nix
     ./mako.nix
     ./starship.nix
-    ./swayidle.nix
     ./waybar.nix
   ];
 }
