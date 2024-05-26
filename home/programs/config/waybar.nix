@@ -2,13 +2,20 @@
   pkgs,
   specialArgs,
   ...
-}:
-if !specialArgs.hidpi
-then let
+}: let
   opacity = "0";
+  fontSize =
+    if specialArgs.hidpi
+    then "19"
+    else "16";
+  iconSize =
+    if specialArgs.hidpi
+    then "25"
+    else "22";
   palette = {
     font = "RobotoMono Nerd Font";
-    fontsize = "12";
+    fontsize = fontSize;
+    iconsize = iconSize;
     primary_accent = "cba6f7";
     secondary_accent = "89b4fa";
     tertiary_accent = "f5f5f5";
@@ -293,7 +300,7 @@ in {
           border: none;
           border-radius: 0px;
           font-family: ${palette.font};
-          font-size: 14px;
+          font-size: ${palette.fontsize};
           min-height: 0;
       }
 
@@ -364,7 +371,7 @@ in {
           padding: 10px 10px 15px 25px;
           margin-left: 7px;
           font-weight: bold;
-          font-size: 16px;
+          font-size: ${palette.fontsize};
       }
       #custom-launcher {
           color: #${palette.secondary_accent};
@@ -377,7 +384,7 @@ in {
 
       #custom-playerctl.backward, #custom-playerctl.play, #custom-playerctl.foward {
           background: #${palette.tertiary_background_hex};
-          font-size: 22px;
+          font-size: ${palette.iconsize};
       }
       #custom-playerctl.backward:hover, #custom-playerctl.play:hover, #custom-playerctl.foward:hover{
           color: #${palette.tertiary_accent};
@@ -419,4 +426,3 @@ in {
     '';
   };
 }
-else {}

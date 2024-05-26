@@ -1,11 +1,8 @@
 {
-  specialArgs,
   inputs,
   pkgs,
   ...
-}:
-if !specialArgs.hidpi
-then {
+}: {
   imports = [
     inputs.hyprland.nixosModules.default
   ];
@@ -92,4 +89,3 @@ then {
     };
   };
 }
-else {}

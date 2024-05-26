@@ -2,13 +2,14 @@
   pkgs,
   specialArgs,
   ...
-}:
-if !specialArgs.hidpi
-then let
+}: let
   opacity = "1";
   palette = {
     font = "RobotoMono Nerd Font";
-    fontsize = "12";
+    fontsize =
+      if specialArgs.hidpi
+      then "19"
+      else "15";
     primary_accent = "cba6f7";
     secondary_accent = "89b4fa";
     tertiary_accent = "f5f5f5";
@@ -63,7 +64,7 @@ in {
       }
       #outer-box {
         font-weight: bold;
-        font-size: 14px;
+        font-size: ${palette.fontsize};
       }
       #entry {
         margin: 10px 80px;
@@ -79,4 +80,3 @@ in {
     '';
   };
 }
-else {}

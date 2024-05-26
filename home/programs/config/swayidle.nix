@@ -3,16 +3,17 @@
   config,
   specialArgs,
   ...
-}:
-if !specialArgs.hidpi
-then let
+}: let
   swaylock = "${config.programs.swaylock.package}/bin/swaylock";
   pgrep = "${pkgs.procps}/bin/pgrep";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   hyprctl = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl";
 
   isLocked = "${pgrep} -x ${swaylock}";
-  lockTime = 20 * 60;
+  lockTime =
+    if specialArgs.hidpi
+    then 50 * 60
+    else 10 * 60;
   screenDelay = 20; # 20 seconds
   micMute = 10; # 10 seconds
 
@@ -62,4 +63,3 @@ in {
       });
   };
 }
-else {}

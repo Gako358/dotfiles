@@ -1,10 +1,4 @@
-{
-  pkgs,
-  specialArgs,
-  ...
-}:
-if !specialArgs.hidpi
-then {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     eww # Widgets
     jq # JSON Processor
@@ -16,4 +10,3 @@ then {
     recursive = true;
   };
 }
-else {}

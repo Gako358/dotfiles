@@ -1,10 +1,8 @@
-{ pkgs
-, inputs
-, specialArgs
-, ...
-}:
-if !specialArgs.hidpi
-then {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     ./binds.nix
     ./hyprland.nix
@@ -36,8 +34,7 @@ then {
   systemd.user.targets.tray = {
     Unit = {
       Description = "Home Manager System Tray";
-      Requires = [ "graphical-session-pre.target" ];
+      Requires = ["graphical-session-pre.target"];
     };
   };
 }
-else { }
