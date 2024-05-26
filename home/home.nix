@@ -9,7 +9,6 @@
     brightnessctl # control screen brightness
     bottom # alternative to htop & ytop
     cacert # ca certificates
-    dbeaver # database manager
     dconf2nix # dconf (gnome) files to nix converter
     dive # explore docker layers
     duf # disk usage/free utility

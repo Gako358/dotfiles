@@ -1,15 +1,15 @@
-{ pkgs
-, specialArgs
-, ...
-}:
-let
+{
+  pkgs,
+  specialArgs,
+  ...
+}: let
   inherit (specialArgs) hidpi;
   mailClient = pkgs.thunderbird;
 
   dpiSettings = {
     "layout.css.devPixelsPerPx" =
       if hidpi
-      then "-1.0"
+      then "1.2"
       else "0.9";
   };
 
@@ -24,8 +24,7 @@ let
       "browser.urlbar.suggest.quickactions" = false;
     }
     // dpiSettings;
-in
-{
+in {
   programs.firefox = {
     enable = true;
     package = pkgs.firefox;
@@ -36,5 +35,5 @@ in
       };
     };
   };
-  home.packages = [ mailClient ];
+  home.packages = [mailClient];
 }
