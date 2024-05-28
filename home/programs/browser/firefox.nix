@@ -10,7 +10,7 @@
     "layout.css.devPixelsPerPx" =
       if hidpi
       then "1.2"
-      else "0.9";
+      else "-1.0";
   };
 
   settings =
