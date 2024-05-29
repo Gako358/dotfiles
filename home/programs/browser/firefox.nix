@@ -9,7 +9,7 @@
   dpiSettings = {
     "layout.css.devPixelsPerPx" =
       if hidpi
-      then "1.2"
+      then "1.3"
       else "-1.0";
   };
 
