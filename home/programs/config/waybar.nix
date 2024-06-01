@@ -1,17 +1,7 @@
-{
-  pkgs,
-  specialArgs,
-  ...
-}: let
+{pkgs, ...}: let
   opacity = "0";
-  fontSize =
-    if specialArgs.hidpi
-    then "19"
-    else "16";
-  iconSize =
-    if specialArgs.hidpi
-    then "25"
-    else "22";
+  fontSize = "16";
+  iconSize = "22";
   palette = {
     font = "RobotoMono Nerd Font";
     fontsize = fontSize;

@@ -2,7 +2,7 @@
 if specialArgs.hidpi
 then {
   wayland.windowManager.hyprland.extraConfig = ''
-    monitor=DP-2,3840x2160,0x0,1,bitdepth,10
+    monitor=DP-2,2560x1440,0x0,1,bitdepth,10
     monitor=,highrr,auto,1
   '';
 }
