@@ -1,17 +1,10 @@
-{
-  config,
-  specialArgs,
-  ...
-}: let
+{config, ...}: let
   palette = {
     background = "282c34";
     secondary_accent = "89b4fa";
     tertiary_accent = "f5f5f5";
   };
-  fontType =
-    if specialArgs.hidpi
-    then "RobotoMono Nerd Font 17"
-    else "RobotoMono Nerd Font 12";
+  fontType = "RobotoMono Nerd Font 12";
 in {
   services.mako = {
     enable = true;

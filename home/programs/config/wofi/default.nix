@@ -1,15 +1,8 @@
-{
-  pkgs,
-  specialArgs,
-  ...
-}: let
+{pkgs, ...}: let
   opacity = "1";
   palette = {
     font = "RobotoMono Nerd Font";
-    fontsize =
-      if specialArgs.hidpi
-      then "19"
-      else "15";
+    fontsize = "15";
     primary_accent = "cba6f7";
     secondary_accent = "89b4fa";
     tertiary_accent = "f5f5f5";

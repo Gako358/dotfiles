@@ -1,6 +1,5 @@
 let
-  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/dark_moon.jpg";
-  font = "RobotoMono Nerd Font";
+  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/screenofdeath.png";
 in {
   programs.hyprlock = {
     enable = true;
@@ -24,21 +23,10 @@ in {
           monitor = "";
           size = "300, 50";
           outline_thickness = 1;
-          fade_on_empty = false;
+          fade_on_empty = true;
           dots_spacing = 0.2;
           dots_center = true;
-        }
-      ];
-
-      label = [
-        {
-          monitor = "";
-          text = "$TIME";
-          font_family = font;
-          font_size = 50;
-          position = "0, 80";
-          valign = "center";
-          halign = "center";
+          position = "0, -120";
         }
       ];
     };
