@@ -534,7 +534,6 @@
         "plugins-lsp-signature": "plugins-lsp-signature",
         "plugins-lspkind": "plugins-lspkind",
         "plugins-lualine": "plugins-lualine",
-        "plugins-nightfox": "plugins-nightfox",
         "plugins-noice": "plugins-noice",
         "plugins-notify": "plugins-notify",
         "plugins-nui": "plugins-nui",
@@ -556,7 +555,9 @@
         "plugins-rust-tools": "plugins-rust-tools",
         "plugins-sqls-nvim": "plugins-sqls-nvim",
         "plugins-telescope": "plugins-telescope",
+        "plugins-tokyonight": "plugins-tokyonight",
         "plugins-trouble": "plugins-trouble",
+        "plugins-undotree": "plugins-undotree",
         "plugins-vim-dadbod": "plugins-vim-dadbod",
         "plugins-vim-dadbod-completion": "plugins-vim-dadbod-completion",
         "plugins-vim-dadbod-ui": "plugins-vim-dadbod-ui",
@@ -564,11 +565,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1716736503,
-        "narHash": "sha256-aGorXMqM+b4lqRaUK6idQxAW9dO/czmkmQoql2YIhuk=",
+        "lastModified": 1717705599,
+        "narHash": "sha256-AR3E1HHJ4FzycXRO4rgIZMWiDPqN5yOCZ+jdWTYsq7k=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "a83c23a1c74948582b8b212a34559b23781c0383",
+        "rev": "d484df716ae03b539f0b83c6925b455b0e22a1d4",
         "type": "github"
       },
       "original": {
@@ -846,22 +847,6 @@
       "original": {
         "owner": "hoob3rt",
         "repo": "lualine.nvim",
-        "type": "github"
-      }
-    },
-    "plugins-nightfox": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1714329621,
-        "narHash": "sha256-ly9yavagB6A8t2plHZyNJt5tqCBq+ExEtYGKR4+9qHQ=",
-        "owner": "EdenEast",
-        "repo": "nightfox.nvim",
-        "rev": "df75a6a94910ae47854341d6b5a6fd483192c0eb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "EdenEast",
-        "repo": "nightfox.nvim",
         "type": "github"
       }
     },
@@ -1201,6 +1186,22 @@
         "type": "github"
       }
     },
+    "plugins-tokyonight": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1717670776,
+        "narHash": "sha256-16/H5Oy6iQLmVrMA6zxHJkE4s4CQAoAAqA2pbZiCOWA=",
+        "owner": "folke",
+        "repo": "tokyonight.nvim",
+        "rev": "9d88650502bc331f43eb0bef6286e58144ac5a96",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "tokyonight.nvim",
+        "type": "github"
+      }
+    },
     "plugins-trouble": {
       "flake": false,
       "locked": {
@@ -1214,6 +1215,22 @@
       "original": {
         "owner": "folke",
         "repo": "trouble.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-undotree": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1707485506,
+        "narHash": "sha256-FIYDyfkaIS9C16ClWKLMdpSPv/OrcOalVVsyFJBU2eI=",
+        "owner": "jiaoshijie",
+        "repo": "undotree",
+        "rev": "eab459ab87dd249617b5f7187bb69e614a083047",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jiaoshijie",
+        "repo": "undotree",
         "type": "github"
       }
     },
