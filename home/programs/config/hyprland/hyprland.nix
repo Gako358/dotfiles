@@ -37,6 +37,9 @@ in {
     exec-once = ${eww} daemon
     exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     exec-once = "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+    exec-once = [workspace 1 silent] firefox
+    exec-once = [workspace 2 silent] alacritty
+    exec-once = [workspace 7 silent] thunderbird
 
     decoration {
       drop_shadow = yes
