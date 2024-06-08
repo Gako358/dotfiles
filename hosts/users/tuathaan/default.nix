@@ -6,7 +6,7 @@
   imports = [
     ./hardware-configuration.nix
   ];
-
+  hardware.brillo.enable = true;
   networking.hostName = "tuathaan";
   users.users = {
     merrinx = {

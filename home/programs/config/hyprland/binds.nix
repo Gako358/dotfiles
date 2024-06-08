@@ -1,4 +1,9 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
   mainMod = "SUPER";
   SECONDARY = "SHIFT";
   TERTIARY = "CTRL";
@@ -8,6 +13,7 @@
   swappy = "${pkgs.swappy}/bin/swappy";
   wofi = "${pkgs.wofi}/bin/wofi";
   terminal = "${pkgs.alacritty}/bin/alacritty";
+  lockScreen = lib.getExe config.programs.hyprlock.package;
 in {
   wayland.windowManager.hyprland.extraConfig = ''
     # Launchers
@@ -17,7 +23,7 @@ in {
     bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
 
     # Lockscreen
-    bind = ${mainMod} ${SECONDARY}, L, exec, loginctl lock-session
+    bind = ${mainMod} ${SECONDARY}, L, exec, ${lockScreen}
 
     # Screenshot
     bind = ${mainMod} ${SECONDARY}, P, exec, ${grimshot} --notify save area - | ${swappy} -f -
