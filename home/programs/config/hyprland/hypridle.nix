@@ -1,12 +1,12 @@
 {
   specialArgs,
-  config,
   pkgs,
   lib,
   ...
 }: let
   brillo = lib.getExe pkgs.brillo;
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
+  hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
   timeout =
     if specialArgs.hidpi
     then 1800
@@ -18,7 +18,7 @@ in {
 
     settings = {
       general = {
-        lock_cmd = lib.getExe config.programs.hyprlock.package;
+        lock_cmd = "pidof ${hyprlock} || ${hyprlock}";
         before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
         after-sleep-cmd = "${hyprctl} dispatch dpms on";
       };

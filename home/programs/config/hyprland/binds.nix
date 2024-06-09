@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}: let
+{pkgs, ...}: let
   mainMod = "SUPER";
   SECONDARY = "SHIFT";
   TERTIARY = "CTRL";
@@ -13,7 +8,7 @@
   swappy = "${pkgs.swappy}/bin/swappy";
   wofi = "${pkgs.wofi}/bin/wofi";
   terminal = "${pkgs.alacritty}/bin/alacritty";
-  lockScreen = lib.getExe config.programs.hyprlock.package;
+  lockScreen = "${pkgs.hyprlock}/bin/hyprlock";
 in {
   wayland.windowManager.hyprland.extraConfig = ''
     # Launchers
