@@ -46,14 +46,8 @@ in {
           on-resume = "hyprctl dispatch dpms on";
         }
         {
-          timeout =
-            if specialArgs.hidpi
-            then timeout + 30
-            else null;
-          on-timeout =
-            if specialArgs.hidpi
-            then "${pkgs.systemd}/bin/systemctl suspend"
-            else null;
+          timeout = timeout + 60;
+          on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
         }
       ];
     };
