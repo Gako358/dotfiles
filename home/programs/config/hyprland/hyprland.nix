@@ -26,7 +26,8 @@ in {
     }
 
     master {
-      new_is_master = false
+      new_status = master
+      no_gaps_when_only = 1
     }
 
     gestures {
