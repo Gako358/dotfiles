@@ -26,7 +26,6 @@ in {
     }
 
     master {
-      new_status = master
       no_gaps_when_only = 1
     }
 
@@ -36,6 +35,7 @@ in {
 
     exec-once = ${wallpaper}
     exec-once = ${eww} daemon
+    exec-once = handle-monitor
     exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     exec-once = "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     exec-once = [workspace 1 silent] firefox

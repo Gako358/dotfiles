@@ -1,10 +1,8 @@
 {
   specialArgs,
   pkgs,
-  lib,
   ...
 }: let
-  brillo = lib.getExe pkgs.brillo;
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
   timeout =
@@ -29,25 +27,26 @@ in {
         {
           timeout =
             if specialArgs.hidpi
-            then null
-            else timeout - 10;
+            then timeout
+            else null;
           on-timeout =
             if specialArgs.hidpi
-            then null
-            else "${brillo} -O; ${brillo} -u 1000000 -S 10";
+            then "hyprctl dispatch dpms off"
+            else null;
           on-resume =
             if specialArgs.hidpi
-            then null
-            else "${brillo} -I -u 500000";
+            then "hyprctl dispatch dpms on"
+            else null;
         }
         {
-          inherit timeout;
-          on-timeout = "hyprctl dispatch dpms off";
-          on-resume = "hyprctl dispatch dpms on";
-        }
-        {
-          timeout = timeout + 60;
-          on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
+          timeout =
+            if specialArgs.hidpi
+            then timeout + 60
+            else null;
+          on-timeout =
+            if specialArgs.hidpi
+            then "${pkgs.systemd}/bin/systemctl suspend"
+            else null;
         }
       ];
     };
