@@ -1,7 +1,7 @@
 {pkgs, ...}: let
   opacity = "0";
-  fontSize = "16";
-  iconSize = "22";
+  fontSize = "16px";
+  iconSize = "22px";
   palette = {
     font = "RobotoMono Nerd Font";
     fontsize = fontSize;
@@ -27,35 +27,9 @@
     tertiary_background_rgba = "rgba(33, 37, 43,${opacity})";
   };
   # Dependencies
-  cut = "${pkgs.coreutils}/bin/cut";
-  wc = "${pkgs.coreutils}/bin/wc";
-
-  jq = "${pkgs.jq}/bin/jq";
-  eww = "${pkgs.eww}/bin/eww";
   calendar = "${pkgs.gnome.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome.gnome-system-monitor}/bin/gnome-system-monitor";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
-  playerctld = "${pkgs.playerctl}/bin/playerctld";
-
-  # Function to simplify making waybar outputs
-  jsonOutput = name: {
-    pre ? "",
-    text ? "",
-    tooltip ? "",
-    alt ? "",
-    class ? "",
-    percentage ? "",
-  }: "${pkgs.writeShellScriptBin "waybar-${name}" ''
-    set -euo pipefail
-    ${pre}
-    ${jq} -cn \
-      --arg text "${text}" \
-      --arg tooltip "${tooltip}" \
-      --arg alt "${alt}" \
-      --arg class "${class}" \
-      --arg percentage "${percentage}" \
-      '{text:$text,tooltip:$tooltip,alt:$alt,class:$class,percentage:$percentage}'
-  ''}/bin/waybar-${name}";
 in {
   programs.waybar = {
     enable = true;
@@ -79,9 +53,7 @@ in {
         "custom/playerlabel"
       ];
       modules-center = [
-        "cava#left"
         "hyprland/workspaces"
-        "cava#right"
       ];
       modules-right = [
         "tray"
@@ -98,71 +70,6 @@ in {
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         format-alt = " {:%d/%m}";
         on-click = "${calendar}";
-      };
-      "wlr/workspaces" = {
-        active-only = false;
-        all-outputs = false;
-        disable-scroll = false;
-        on-scroll-up = "hyprctl dispatch workspace e-1";
-        on-scroll-down = "hyprctl dispatch workspace e+1";
-        format = "{name}";
-        on-click = "activate";
-        format-icons = {
-          urgent = "";
-          active = "";
-          default = "";
-          sort-by-number = true;
-        };
-      };
-      "cava#left" = {
-        framerate = 60;
-        autosens = 1;
-        bars = 18;
-        lower_cutoff_freq = 50;
-        higher_cutoff_freq = 10000;
-        method = "pipewire";
-        source = "auto";
-        stereo = true;
-        reverse = false;
-        bar_delimiter = 0;
-        monstercat = false;
-        waves = false;
-        input_delay = 2;
-        format-icons = [
-          "<span foreground='#${palette.primary_accent}'>▁</span>"
-          "<span foreground='#${palette.primary_accent}'>▂</span>"
-          "<span foreground='#${palette.primary_accent}'>▃</span>"
-          "<span foreground='#${palette.primary_accent}'>▄</span>"
-          "<span foreground='#${palette.secondary_accent}'>▅</span>"
-          "<span foreground='#${palette.secondary_accent}'>▆</span>"
-          "<span foreground='#${palette.secondary_accent}'>▇</span>"
-          "<span foreground='#${palette.secondary_accent}'>█</span>"
-        ];
-      };
-      "cava#right" = {
-        framerate = 60;
-        autosens = 1;
-        bars = 18;
-        lower_cutoff_freq = 50;
-        higher_cutoff_freq = 10000;
-        method = "pipewire";
-        source = "auto";
-        stereo = true;
-        reverse = false;
-        bar_delimiter = 0;
-        monstercat = false;
-        waves = false;
-        input_delay = 2;
-        format-icons = [
-          "<span foreground='#${palette.primary_accent}'>▁</span>"
-          "<span foreground='#${palette.primary_accent}'>▂</span>"
-          "<span foreground='#${palette.primary_accent}'>▃</span>"
-          "<span foreground='#${palette.primary_accent}'>▄</span>"
-          "<span foreground='#${palette.secondary_accent}'>▅</span>"
-          "<span foreground='#${palette.secondary_accent}'>▆</span>"
-          "<span foreground='#${palette.secondary_accent}'>▇</span>"
-          "<span foreground='#${palette.secondary_accent}'>█</span>"
-        ];
       };
       "custom/playerctl#backward" = {
         format = "󰙣 ";
@@ -196,39 +103,6 @@ in {
         exec = "${playerctl} -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F";
         on-click = "";
       };
-      "custom/currentplayer" = {
-        interval = 2;
-        return-type = "json";
-        exec = jsonOutput "currentplayer" {
-          pre = ''
-            player="$(${playerctl} status -f "{{playerName}}" 2>/dev/null || echo "No player active" | ${cut} -d '.' -f1)"
-            count="$(${playerctl} -l | ${wc} -l)"
-            if ((count > 1)); then
-              more=" +$((count - 1))"
-            else
-              more=""
-            fi
-          '';
-          alt = "$player";
-          tooltip = "$player ($count available)";
-          text = "$more";
-        };
-        format = "{icon}{}";
-        format-icons = {
-          "No player active" = " ";
-          "Celluloid" = "󰎁 ";
-          "spotify" = "󰓇 ";
-          "ncspot" = "󰓇 ";
-          "qutebrowser" = "󰖟 ";
-          "firefox" = " ";
-          "discord" = " 󰙯 ";
-          "sublimemusic" = " ";
-          "kdeconnect" = "󰄡 ";
-          "chromium" = " ";
-        };
-        on-click = "${playerctld} shift";
-        on-click-right = "${playerctld} unshift";
-      };
       battery = {
         states = {
           good = 95;
@@ -240,12 +114,6 @@ in {
         format-plugged = " {capacity}% ";
         format-alt = "{icon} {time}";
         format-icons = ["" "" "" "" ""];
-      };
-      "hyprland/language" = {
-        format = "󰌌 {}";
-        format-en = "US";
-        format-no = "NO";
-        on-click = "hyprctl switchxkblayout $SET_KB next";
       };
       memory = {
         format = "󰍛 {}%";
@@ -281,7 +149,6 @@ in {
       };
       "custom/launcher" = {
         format = "";
-        on-click = "${eww} open-many --toggle player_side time_side sliders_side sys_side";
         tooltip = "false";
       };
     };
