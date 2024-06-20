@@ -71,6 +71,17 @@ in {
         format-alt = " {:%d/%m}";
         on-click = "${calendar}";
       };
+      "custom/layout" = {
+        format = " {}";
+        exec = ''
+          hyprctl devices -j |
+          jq -r '.keyboards[] | .active_keymap' |
+          head -n1 |
+          cut -c1-2 |
+          tr 'a-z' 'A-Z'
+        '';
+        interval = 1;
+      };
       "custom/playerctl#backward" = {
         format = "󰙣 ";
         on-click = "${playerctl} previous";
@@ -165,18 +176,6 @@ in {
           background: ${palette.primary_background_rgba};
       }
 
-      #cava.left, #cava.right {
-          background: #${palette.tertiary_background_hex};
-          margin: 5px;
-          padding: 8px 16px;
-          color: #${palette.primary_accent};
-      }
-      #cava.left {
-          border-radius: 24px 10px 24px 10px;
-      }
-      #cava.right {
-          border-radius: 10px 24px 10px 24px;
-      }
       #workspaces {
           background: #${palette.tertiary_background_hex};
           margin: 5px 5px;
@@ -210,12 +209,12 @@ in {
       }
 
       #tray, #pulseaudio, #network, #battery, #cpu, #memory,
-      #custom-playerctl.backward, #custom-playerctl.play, #custom-playerctl.foward{
+      #custom-playerctl.backward, #custom-playerctl.play, #custom-playerctl.foward, #custom-layout{
           background: #${palette.tertiary_background_hex};
           font-weight: bold;
           margin: 5px 0px;
       }
-      #tray, #pulseaudio, #network, #battery, #cpu, #memory {
+      #tray, #pulseaudio, #network, #battery, #cpu, #memory, #custom-layout{
           color: #${palette.tertiary_accent};
           border-radius: 10px 24px 10px 24px;
           padding: 0 20px;
