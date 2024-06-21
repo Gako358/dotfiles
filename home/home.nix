@@ -38,6 +38,7 @@
     tldr # summary of a man page
     tree # display files in a tree view
     unzip # unzip files
+    vmware-horizon-client # vmware horizon client
     wgetpaste # paste to pastebin
     wl-gammactl # wayland gamma control
     wl-clipboard # wayland clipboard manager
