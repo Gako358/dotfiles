@@ -81,8 +81,7 @@
 
   # Enable hardware support
   hardware = {
-    opengl.enable = true;
-    opengl.driSupport = true;
+    graphics.enable = true;
     keyboard.zsa.enable = true;
     bluetooth.enable = true;
     # Enable braodcom chip for bluetooth
