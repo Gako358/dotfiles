@@ -1,63 +1,82 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 
-
+git fetch
 # Test system
 clear
 
 flake=$(hostname)
 home_name="merrinx@$flake"
 
-echo "Do you want to test the system or home-manager?"
-echo "1. System, 2. Home-manager, 3. Both or 4. None"
-read test
-
-if [[ "$test" == "1" ]]; then
-    nixos-rebuild build --flake .#$flake
-    exit 0
-elif [[ "$test" == "2" ]]; then
-    home-manager build --flake .#$home_name
-    exit 0
-elif [[ "$test" == "3" ]]; then
-    nixos-rebuild build --flake .#$flake
-    home-manager build --flake .#$home_name
-    exit 0
+# Check if there are any changes between the local and remote repository
+if ! git diff --quiet HEAD origin/main || ! git diff --quiet; then
+    echo "Changes detected, pulling changes."
+    git pull > /dev/null 2>&1
 else
-    continue
+    echo "No changes detected, exiting."
+    exit 0
 fi
 
-clear
-echo "Run a garbage collection?"
-echo "1. Yes, 2. No"
-read gc
+spinner() {
+    local pid=$1
+    local update_message=$2
+    local delay=0.75
+    local spinstr='|/-\'
+    printf " [ ]  $update_message...  " # Print the update message once before the loop
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf "\b\b\b[%c]" "$spinstr" # Update the spinner character only
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+    done
+    printf "\b\b\b                 \b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
+}
 
-# Run a garbage collection
-if [[ "$gc" == "1" ]]
-then
-    sudo nix-collect-garbage -d
-    continue
+# Check disk space
+disk_space=$(df /dev/nvme0n1p1 | awk 'NR==2 {print $5}' | sed 's/%//g')
+
+# Run a garbage collection if disk space is less than 60%
+if (( disk_space > 60 )); then
+    (sudo nix-collect-garbage -d > /dev/null 2>&1) &
+    spinner $! "Collecting garbage"
+    echo ""
+    clear
 else
-    continue
+    (nix-collect-garbage --delete-older-than 28d > /dev/null 2>&1) &
+    spinner $! "Deleting older generations"
+    echo ""
+    (home-manager expire-generations "-19 days" > /dev/null 2>&1) &
+    spinner $! "Removing older home generations..."
+    clear
 fi
-
-# delete older generations
-nix-collect-garbage --delete-older-than 28d
-
-git pull
-
-# Run a garbage collection
-# nix-collect-garbage
 
 # Run the nixos-rebuild command
-sudo nixos-rebuild switch --flake .#$flake
-
-clear
-echo "System updated!"
-echo "Updating home-manager..."
-
-# Run a garbage collection
-home-manager expire-generations "-19 days"
+echo "Updating system for $flake..."
+sudo -v
+(sudo nixos-rebuild switch --flake .#$flake &>nixos-switch.log || (cat nixos-switch.log | grep --color error && echo "An error occurred during the rebuild. Do you want to continue? (yes/no)" && read continue && if [[ "$continue" == "no" ]]; then exit 1; fi)) &
+spinner $! "System updating..."
+echo ""
+echo ""
 
 # Update home-manager
-home-manager switch --flake .#$home_name
+echo "System updated!, updating home-manager for $home_name..."
+(home-manager switch --flake .#$home_name &>home-manager.log || (cat home-manager.log | grep --color error && echo "An error occurred during the home-manager update. Exiting." && exit 1)) &
+spinner $! "Updating home"
+echo ""
+
+# Check if there were any errors during the execution of the script
+if ! grep -q "error" nixos-switch.log && ! grep -q "error" home-manager.log; then
+    rm nixos-switch.log home-manager.log
+fi
+
+echo ""
+echo ""
+echo ""
+echo " ____                   "
+echo "|  _ \  ___  _ __   ___ "
+echo "| | | |/ _ \| '_ \ / _ \\"
+echo "| |_| | (_) | | | |  __/"
+echo "|____/ \___/|_| |_|\___|"
+echo ""
+echo ""
