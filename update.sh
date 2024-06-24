@@ -2,6 +2,7 @@
 
 set -e
 
+clear
 echo ""
 echo ""
 echo ""
@@ -17,8 +18,6 @@ echo ""
 echo ""
 
 git fetch
-# Test system
-clear
 
 flake=$(hostname)
 home_name="merrinx@$flake"
@@ -26,7 +25,7 @@ home_name="merrinx@$flake"
 # Check if there are any changes between the local and remote repository
 if ! git diff --quiet HEAD origin/main || ! git diff --quiet; then
     echo "Changes detected, pulling changes."
-    git pull > /dev/null 2>&1
+    git pull >/dev/null 2>&1
 else
     echo "No changes detected, exiting."
     exit 0
@@ -51,18 +50,16 @@ spinner() {
 disk_space=$(df /dev/nvme0n1p1 | awk 'NR==2 {print $5}' | sed 's/%//g')
 
 # Run a garbage collection if disk space is less than 60%
-if (( disk_space > 60 )); then
-    (sudo nix-collect-garbage -d > /dev/null 2>&1) &
+if ((disk_space > 60)); then
+    (sudo nix-collect-garbage -d >/dev/null 2>&1) &
     spinner $! "Collecting garbage"
     echo ""
-    clear
 else
-    (nix-collect-garbage --delete-older-than 28d > /dev/null 2>&1) &
+    (nix-collect-garbage --delete-older-than 28d >/dev/null 2>&1) &
     spinner $! "Deleting older generations"
     echo ""
-    (home-manager expire-generations "-19 days" > /dev/null 2>&1) &
+    (home-manager expire-generations "-19 days" >/dev/null 2>&1) &
     spinner $! "Removing older home generations..."
-    clear
 fi
 
 # Run the nixos-rebuild command
