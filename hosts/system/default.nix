@@ -23,6 +23,7 @@ with lib; {
     ./shell.nix
     # ./snapper.nix
     ./qemu.nix
+    ./steam.nix
     ./wally.nix
   ];
 }
