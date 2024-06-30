@@ -65,6 +65,7 @@ fi
 # Run the nixos-rebuild command
 echo ""
 echo "Updating system for $flake..."
+echo ""
 sudo -v
 (sudo nixos-rebuild switch --flake .#$flake &>nixos-switch.log || (cat nixos-switch.log | grep --color error && echo "An error occurred during the rebuild. Do you want to continue? (yes/no)" && read continue && if [[ "$continue" == "no" ]]; then exit 1; fi)) &
 spinner $! "System updating..."
