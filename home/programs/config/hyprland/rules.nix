@@ -25,6 +25,7 @@
     windowrule = workspace 7, ^(thunderbird)$
     windowrule = workspace 8, title:^(app.slack.com_/client/T04MZPW21RA/C04MUBWKREZ)$
     windowrule = workspace 9, title:^(discord.com_/channels/@me)$
+    windowrule = workspace 9, title:^(Friends List)$
 
     windowrule = float, title:^(Spotify Premium)$
     windowrule = float, title:^(ranger)$
