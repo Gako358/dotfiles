@@ -27,8 +27,8 @@
     tertiary_background_rgba = "rgba(33, 37, 43,${opacity})";
   };
   # Dependencies
-  calendar = "${pkgs.gnome.gnome-calendar}/bin/gnome-calendar";
-  system = "${pkgs.gnome.gnome-system-monitor}/bin/gnome-system-monitor";
+  calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
+  system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
 in {
   programs.waybar = {

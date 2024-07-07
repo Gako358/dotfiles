@@ -51,7 +51,7 @@
   services = {
     libinput.enable = true;
     blueman.enable = true;
-    dbus.packages = [pkgs.gnome.gnome-keyring pkgs.gcr];
+    dbus.packages = [pkgs.gnome-keyring pkgs.gcr];
     gnome.gnome-keyring = {
       enable = true;
     };

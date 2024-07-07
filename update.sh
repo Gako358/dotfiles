@@ -27,8 +27,7 @@ if ! git diff --quiet HEAD origin/main || ! git diff --quiet; then
     echo "Changes detected, pulling changes."
     git pull >/dev/null 2>&1
 else
-    echo "No changes detected, exiting."
-    exit 0
+    echo "No changes remote, building local changes..."
 fi
 
 spinner() {
