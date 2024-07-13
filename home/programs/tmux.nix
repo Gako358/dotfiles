@@ -53,54 +53,6 @@
     module = "#[reverse,fg=${accent}] ${format} #(${icon}) ";
   };
 
-  bat = rec {
-    percentage =
-      pkgs.writeShellScriptBin "percentage" ''
-        path="/org/freedesktop/UPower/devices/DisplayDevice"
-        percentage=$(${pkgs.upower}/bin/upower -i $path | grep percentage | awk '{print $2}' | tr '%' ' ')
-        echo $percentage
-      ''
-      + "/bin/percentage";
-
-    state =
-      pkgs.writeShellScriptBin "state" ''
-        path="/org/freedesktop/UPower/devices/DisplayDevice"
-        state=$(${pkgs.upower}/bin/upower -i $path | grep state | awk '{print $2}')
-        echo $state
-      ''
-      + "/bin/state";
-
-    icon =
-      pkgs.writeShellScriptBin "icon" ''
-        percentage=$(${percentage})
-        state=$(${state})
-        if [ "$state" == "charging" ] || [ "$state" == "fully-charged" ]; then
-            echo "󰂄"
-        elif [ $percentage -ge 75 ]; then printf "󱊣"
-        elif [ $percentage -ge 50 ]; then printf "󱊢"
-        elif [ $percentage -ge 25 ]; then printf "󱊡"
-        elif [ $percentage -ge 0  ]; then printf "󰂎"
-        fi
-      ''
-      + "/bin/icon";
-
-    color =
-      pkgs.writeShellScriptBin "color" ''
-        percentage=$(${percentage})
-        state=$(${state})
-        if [ "$state" == "charging" ] || [ "$state" == "fully-charged" ]; then
-            echo "green"
-        elif [ $percentage -ge 75 ]; then printf "green"
-        elif [ $percentage -ge 50 ]; then printf "${fg2}"
-        elif [ $percentage -ge 25 ]; then printf "yellow"
-        elif [ $percentage -ge 0  ]; then printf "red"
-        fi
-      ''
-      + "/bin/color";
-
-    module = "#[fg=#(${color})]#(${icon}) #[fg=${fg}]#(${percentage})%";
-  };
-
   pwd = rec {
     accent = color "main_accent";
     icon = "#[fg=${accent}] ";
@@ -183,7 +135,7 @@ in {
       set-option -g @main_accent "blue"
       set-option -g status-style "bg=${bg} fg=${fg}"
       set-option -g status-left "${indicator.module}"
-      set-option -g status-right "${pwd.module} | ${bat.module} ${time.module}"
+      set-option -g status-right "${pwd.module} | ${time.module}"
       set-option -g window-status-current-format "${current_window.module}"
       set-option -g window-status-format "${window_status.module}"
       set-option -g window-status-separator ""
