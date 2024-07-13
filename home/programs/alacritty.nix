@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  fontSize = 11;
+  fontSize = 10;
 in {
   programs.alacritty = {
     enable = true;

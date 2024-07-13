@@ -42,6 +42,7 @@
     hardware,
     flake-utils,
     home-manager,
+    nix-colors,
     nvimFlake,
     scramgit,
     ...
@@ -95,7 +96,7 @@
       "merrinx@terangreal" = lib.homeManagerConfiguration {
         pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {
-          inherit inputs outputs;
+          inherit inputs outputs nix-colors;
           hidpi = true;
         };
         modules = [
@@ -105,7 +106,7 @@
       "merrinx@tuathaan" = lib.homeManagerConfiguration {
         pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {
-          inherit inputs outputs;
+          inherit inputs outputs nix-colors;
           hidpi = false;
         };
         modules = [

@@ -187,6 +187,25 @@ symlinked .emacs.d in home.
          (message "Failed to load copilot: %s" err)))))
 #+end_src
 
+* Copilot Chat
+#+begin_src emacs-lisp
+  (let
+      (
+       (copilot-chat-dir "~/.emacs.d/emacsCopilotChat")
+       (copilot-chat-file "~/.emacs.d/emacsCopilotChat/copilot-chat.el"))
+    ;; Check if the copilot-chat.el file exists
+    (when
+        (file-exists-p copilot-chat-file)
+      ;; Add the directory to the load-path
+      (add-to-list 'load-path copilot-chat-dir)
+      ;; Try to load the copilot-chat module and catch any errors
+      (condition-case err
+          (progn
+            (use-package copilot-chat))
+        (error
+         (message "Failed to load copilot-chat: %s" err)))))
+#+end_src
+
 * Editor
 A compilation of different packages I use.
 

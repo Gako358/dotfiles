@@ -1,11 +1,13 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   emacsCopilotSrc = builtins.fetchGit {
     url = "https://github.com/zerolfx/copilot.el.git";
-    rev = "421703f5dd5218ec2a3aa23ddf09d5f13e5014c2";
+    rev = "e15bafa95b39091dbb2a99ad62e42f03a8d78f01";
   };
-in
-{
+  emacsCopilotChatSrc = builtins.fetchGit {
+    url = "https://github.com/chep/copilot-chat.el";
+    rev = "dc8f5b6961e8d0955561441ae04154b81c3c1f36";
+  };
+in {
   programs.emacs = {
     enable = true;
     extraPackages = epkgs:
@@ -91,6 +93,7 @@ in
         rustic # Rust development environment
         sbt-mode # Major mode for editing SBT files
         scala-mode # Major mode for editing Scala files
+        yaml-mode # Major mode for editing YAML files
       ];
     extraConfig = builtins.readFile ./init.el;
   };
@@ -101,6 +104,7 @@ in
   ];
 
   home.file."./.emacs.d/emacsCopilot".source = emacsCopilotSrc;
+  home.file."./.emacs.d/emacsCopilotChat".source = emacsCopilotChatSrc;
   services.emacs = {
     enable = true;
     client.enable = true;
