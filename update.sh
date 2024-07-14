@@ -63,6 +63,7 @@ fi
 
 # Run the nixos-rebuild command
 echo ""
+echo ""
 echo "Updating system for $flake..."
 echo ""
 sudo -v
