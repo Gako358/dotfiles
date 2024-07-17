@@ -14,7 +14,8 @@
   current_window = rec {
     accent = color "main_accent";
     index = "#[reverse,fg=${accent},bg=${fg}] #I ";
-    name = "#[fg=${bg2},bg=${fg2}] #W ";
+    # name = "#[fg=${bg2},bg=${fg2}] #W ";
+    name = "#[fg=${bg2},bg=${fg2}] #{b:pane_current_path} ";
     flags = "#{?window_flags,#{window_flags}, }";
     module = "${index}${name}";
   };
@@ -22,7 +23,7 @@
   window_status = rec {
     accent = color "window_color";
     index = "#[reverse,fg=${accent},bg=${fg}] #I ";
-    name = "#[fg=${bg2},bg=${fg2}] #W ";
+    name = "#[fg=${bg2},bg=${fg2}] #{b:pane_current_path} ";
     flags = "#{?window_flags,#{window_flags}, }";
     module = "${index}${name}";
   };
@@ -53,11 +54,10 @@
     module = "#[reverse,fg=${accent}] ${format} #(${icon}) ";
   };
 
-  pwd = rec {
+  title = rec {
     accent = color "main_accent";
-    icon = "#[fg=${accent}] ";
-    format = "#[fg=${fg}]#{b:pane_current_path}";
-    module = "${icon}${format}";
+    format = "#[fg=${fg}]#W ";
+    module = "${format}";
   };
 in {
   programs.tmux = {
@@ -135,7 +135,7 @@ in {
       set-option -g @main_accent "blue"
       set-option -g status-style "bg=${bg} fg=${fg}"
       set-option -g status-left "${indicator.module}"
-      set-option -g status-right "${pwd.module} | ${time.module}"
+      set-option -g status-right "${title.module} | ${time.module}"
       set-option -g window-status-current-format "${current_window.module}"
       set-option -g window-status-format "${window_status.module}"
       set-option -g window-status-separator ""

@@ -600,11 +600,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1719252269,
-        "narHash": "sha256-PywhgJdH/fkxpW3E706IoBN1MQ/ykJElvDvEqLqQY9E=",
+        "lastModified": 1721038763,
+        "narHash": "sha256-oWflgkvom/Rn8sVFzMFGyRReHCc3O/DSEihCOy4bA5U=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "6cf9f3597318f4314b3331ab5e15eadab83ceaae",
+        "rev": "561b8bd1ac1f9dca2f11734dee27a14f6d0d4ac5",
         "type": "github"
       },
       "original": {
@@ -728,11 +728,11 @@
     "plugins-copilot-chat": {
       "flake": false,
       "locked": {
-        "lastModified": 1716568919,
-        "narHash": "sha256-dE5Q3WeLn9gY4KBIyhhDjkfxWeBuvlKmsdaSMkwEcUM=",
+        "lastModified": 1720964902,
+        "narHash": "sha256-2X24TvWW9TygpXDBXM0F0y+plNRU4yaUNWOztlcaFjY=",
         "owner": "CopilotC-Nvim",
         "repo": "CopilotChat.nvim",
-        "rev": "feca60cf0ae08d866ba35cc8a95d12941ccc4f59",
+        "rev": "6f143f210efd1f16d97c077b945c76b7d5fd0f8b",
         "type": "github"
       },
       "original": {
