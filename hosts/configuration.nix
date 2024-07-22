@@ -73,7 +73,6 @@
       wireplumber.enable = true;
     };
   };
-  sound.enable = true;
   security = {
     rtkit.enable = true;
     pam.services.swaylock = {};
