@@ -10,7 +10,6 @@
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-      xwayland.enable = true;
     };
   };
 
@@ -18,14 +17,14 @@
   environment = {
     variables = {
       # If cursor is not visible, try to set this to "on".
-      XDG_CURRENT_DESKTOP = "Hyprland";
+      XDG_CURRENT_DESKTOP = "wayland";
       XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "Hyprland";
+      XDG_SESSION_DESKTOP = "wayland";
     };
     sessionVariables = {
       MOZ_ENABLE_WAYLAND = "1";
       NIXOS_OZONE_WL = "1";
-      T_QPA_PLATFORM = "wayland";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
       WLR_NO_HARDWARE_CURSORS = "1";
     };
   };
@@ -40,7 +39,6 @@
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-wlr
-      # pkgs.xdg-desktop-portal
     ];
   };
 

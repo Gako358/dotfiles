@@ -1,7 +1,7 @@
 {pkgs, ...}: let
   opacity = "0";
-  fontSize = "16px";
-  iconSize = "22px";
+  fontSize = "14px";
+  iconSize = "17px";
   palette = {
     font = "RobotoMono Nerd Font";
     fontsize = fontSize;
@@ -29,7 +29,6 @@
   # Dependencies
   calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
-  playerctl = "${pkgs.playerctl}/bin/playerctl";
 in {
   programs.waybar = {
     enable = true;
@@ -41,19 +40,15 @@ in {
       position = "top";
       layer = "top";
       height = 37;
-      margin-top = 0;
+      margin-top = 3;
       margin-bottom = 0;
-      margin-left = 0;
-      margin-right = 0;
+      margin-left = 4;
+      margin-right = 4;
       modules-left = [
-        "custom/launcher"
-        "custom/playerctl#backward"
-        "custom/playerctl#play"
-        "custom/playerctl#foward"
-        "custom/playerlabel"
+        "hyprland/workspaces"
       ];
       modules-center = [
-        "hyprland/workspaces"
+        "clock"
       ];
       modules-right = [
         "tray"
@@ -62,7 +57,6 @@ in {
         "memory"
         "pulseaudio"
         "network"
-        "clock"
       ];
       clock = {
         format = " {:%a, %d %b, %I:%M %p}";
@@ -70,49 +64,6 @@ in {
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         format-alt = " {:%d/%m}";
         on-click = "${calendar}";
-      };
-      "custom/layout" = {
-        format = " {}";
-        exec = ''
-          hyprctl devices -j |
-          jq -r '.keyboards[] | .active_keymap' |
-          head -n1 |
-          cut -c1-2 |
-          tr 'a-z' 'A-Z'
-        '';
-        interval = 1;
-      };
-      "custom/playerctl#backward" = {
-        format = "󰙣 ";
-        on-click = "${playerctl} previous";
-        on-scroll-up = "${playerctl} volume .05+";
-        on-scroll-down = "${playerctl} volume .05-";
-      };
-      "custom/playerctl#play" = {
-        format = "{icon}";
-        return-type = "json";
-        exec = "${playerctl} -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F";
-        on-click = "${playerctl} play-pause";
-        on-scroll-up = "${playerctl} volume .05+";
-        on-scroll-down = "${playerctl} volume .05-";
-        format-icons = {
-          Playing = "<span>󰏥 </span>";
-          Paused = "<span> </span>";
-          Stopped = "<span> </span>";
-        };
-      };
-      "custom/playerctl#foward" = {
-        format = "󰙡 ";
-        on-click = "${playerctl} next";
-        on-scroll-up = "${playerctl} volume .05+";
-        on-scroll-down = "${playerctl} volume .05-";
-      };
-      "custom/playerlabel" = {
-        format = "<span>󰎈 {} 󰎈</span>";
-        return-type = "json";
-        max-length = 40;
-        exec = "${playerctl} -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F";
-        on-click = "";
       };
       battery = {
         states = {
@@ -158,10 +109,6 @@ in {
         scroll-step = 5;
         on-click = "pavucontrol";
       };
-      "custom/launcher" = {
-        format = "";
-        tooltip = "false";
-      };
     };
     style = ''
       * {
@@ -180,13 +127,13 @@ in {
           background: #${palette.tertiary_background_hex};
           margin: 5px 5px;
           padding: 8px 5px;
-          border-radius: 16px;
+          border-radius: 15px;
           color: #${palette.primary_accent}
       }
       #workspaces button {
           padding: 0px 5px;
           margin: 0px 3px;
-          border-radius: 16px;
+          border-radius: 15px;
           background: ${palette.primary_background_rgba};
           transition: all 0.3s ease-in-out;
       }
@@ -194,7 +141,7 @@ in {
       #workspaces button.active {
           background-color: #${palette.secondary_accent};
           color: #${palette.background};
-          border-radius: 16px;
+          border-radius: 15px;
           min-width: 50px;
           background-size: 400% 400%;
           transition: all 0.3s ease-in-out;
@@ -203,81 +150,29 @@ in {
       #workspaces button:hover {
           background-color: #${palette.tertiary_accent};
           color: #${palette.background};
-          border-radius: 16px;
+          border-radius: 15px;
           min-width: 50px;
           background-size: 400% 400%;
       }
 
-      #tray, #pulseaudio, #network, #battery, #cpu, #memory,
-      #custom-playerctl.backward, #custom-playerctl.play, #custom-playerctl.foward, #custom-layout{
+      #tray, #pulseaudio, #network, #battery, #cpu, #memory{
           background: #${palette.tertiary_background_hex};
           font-weight: bold;
           margin: 5px 0px;
       }
-      #tray, #pulseaudio, #network, #battery, #cpu, #memory, #custom-layout{
+      #tray, #pulseaudio, #network, #battery, #cpu, #memory{
           color: #${palette.tertiary_accent};
-          border-radius: 10px 24px 10px 24px;
-          padding: 0 20px;
+          border-radius: 15px;
+          padding: 0 7px;
           margin-left: 7px;
       }
       #clock {
           color: #${palette.tertiary_accent};
           background: #${palette.tertiary_background_hex};
-          border-radius: 0px 0px 0px 40px;
-          padding: 10px 10px 15px 25px;
-          margin-left: 7px;
+          border-radius: 15px;
+          padding: 0px 10px;
           font-weight: bold;
           font-size: ${palette.fontsize};
-      }
-      #custom-launcher {
-          color: #${palette.secondary_accent};
-          background: #${palette.tertiary_background_hex};
-          border-radius: 0px 0px 40px 0px;
-          margin: 0px;
-          padding: 0px 35px 0px 15px;
-          font-size: 28px;
-      }
-
-      #custom-playerctl.backward, #custom-playerctl.play, #custom-playerctl.foward {
-          background: #${palette.tertiary_background_hex};
-          font-size: ${palette.iconsize};
-      }
-      #custom-playerctl.backward:hover, #custom-playerctl.play:hover, #custom-playerctl.foward:hover{
-          color: #${palette.tertiary_accent};
-      }
-      #custom-playerctl.backward {
-          color: #${palette.primary_accent};
-          border-radius: 24px 0px 0px 10px;
-          padding-left: 16px;
-          margin-left: 7px;
-      }
-      #custom-playerctl.play {
-          color: #${palette.secondary_accent};
-          padding: 0 5px;
-      }
-      #custom-playerctl.foward {
-          color: #${palette.primary_accent};
-          border-radius: 0px 10px 24px 0px;
-          padding-right: 12px;
-          margin-right: 7px
-      }
-      #custom-playerlabel, #custom-currentplayer{
-          background: #${palette.tertiary_background_hex};
-          color: #${palette.tertiary_accent};
-          padding: 0 20px;
-          border-radius: 24px 10px 24px 10px;
-          margin: 5px 0;
-          font-weight: bold;
-      }
-      #window{
-          background: #${palette.tertiary_background_hex};
-          padding-left: 15px;
-          padding-right: 15px;
-          border-radius: 16px;
-          margin-top: 5px;
-          margin-bottom: 5px;
-          font-weight: normal;
-          font-style: normal;
       }
     '';
   };

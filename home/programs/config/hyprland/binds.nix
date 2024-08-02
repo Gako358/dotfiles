@@ -32,7 +32,6 @@ in {
     bind = ${mainMod}, Q, killactive
     bind = ${mainMod}, F, togglefloating
     bind = ${mainMod}, G, fullscreen
-    bind = ${mainMod}, O, fakefullscreen
     bind = ${mainMod}, P, togglesplit
 
     # Move/resize windows with mainMod + LMB/RMB and dragging

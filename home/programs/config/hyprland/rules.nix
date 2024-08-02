@@ -20,6 +20,7 @@
     windowrule = workspace 1, ^(firefox)$
     windowrule = workspace 3, ^(microsoft-edge)$
     windowrule = workspace 4, ^(chrome-teams.live.com__-Default)$
+    windowrule = workspace 4, ^(teams-for-linux)$
     windowrule = workspace 5, ^(Wfica)$
     windowrule = workspace 6, ^(steam)$
     windowrule = workspace 7, ^(thunderbird)$

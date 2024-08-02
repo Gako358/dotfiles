@@ -30,7 +30,6 @@ in [
   ./browser/discord.nix
   ./browser/firefox.nix
   ./browser/slack.nix
-  ./browser/teams.nix
   ./config
   ./alacritty.nix
   ./citrix.nix

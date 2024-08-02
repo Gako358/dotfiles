@@ -9,7 +9,6 @@
     ./hyprland.nix
     ./hyprlock.nix
     ./hyprpaper.nix
-    ./layout.nix
     ./monitors.nix
     ./rules.nix
     ./systemd-fixes.nix
@@ -19,6 +18,10 @@
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
+
+    settings = {
+      cursor.inactive_timeout = 5;
+    };
   };
 
   home.packages = [

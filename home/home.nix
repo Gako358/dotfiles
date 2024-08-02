@@ -16,7 +16,7 @@
     eza # a better `ls`
     fd # "find" for files
     gimp # gnu image manipulation program
-    hurl # http client
+    # hurl # http client
     jump # fast directory navigation
     killall # kill processes by name
     lazygit # terminal git ui
@@ -35,6 +35,7 @@
     scrot # screenshot tool
     slurp # select a region in a wayland compositor
     spotify # music streaming
+    teams-for-linux # microsoft teams
     tldr # summary of a man page
     tree # display files in a tree view
     unzip # unzip files

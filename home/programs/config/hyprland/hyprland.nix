@@ -1,73 +1,94 @@
 {pkgs, ...}: let
-  # Dependencies
   eww = "${pkgs.eww}/bin/eww";
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
 in {
-  wayland.windowManager.hyprland.extraConfig = ''
-    general {
-      layout = dwindle
-      resize_on_border = true
-    }
+  wayland.windowManager.hyprland.settings = {
+    env = [
+      "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+      "HYPRCURSOR_THEME,${pkgs.capitaine-cursors}"
+      "HYPRCURSOR_SIZE,16"
+    ];
 
-    misc {
-      layers_hog_keyboard_focus = false
-      layers_hog_keyboard_focus = true
-      disable_splash_rendering = true
-      disable_hyprland_logo = true
-    }
+    exec-once = [
+      "hyprctl setcursor capitaine-cursors-white 16}"
+      "${wallpaper}"
+      "${eww} daemon"
+      "[workspace 1 silent] firefox"
+      "[workspace 2 silent] alacritty"
+      "[workspace 4 silent] teams-for-linux"
+      "[workspace 7 silent] thunderbird"
+    ];
 
-    binds {
-      allow_workspace_cycles = true
-    }
+    general = {
+      gaps_in = 7;
+      gaps_out = 7;
+      border_size = 1;
+      allow_tearing = true;
+      resize_on_border = true;
+    };
+    decoration = {
+      rounding = 16;
+      blur = {
+        enabled = true;
+        brightness = 1.0;
+        contrast = 1.0;
+        noise = 0.01;
 
-    dwindle {
-      pseudotile = yes
-      preserve_split = yes
-    }
+        vibrancy = 0.2;
+        vibrancy_darkness = 0.5;
 
-    master {
-      no_gaps_when_only = 1
-    }
+        passes = 4;
+        size = 7;
 
-    gestures {
-      workspace_swipe = on
-    }
+        popups = true;
+        popups_ignorealpha = 0.2;
+      };
 
-    exec-once = ${wallpaper}
-    exec-once = ${eww} daemon
-    exec-once = handle-monitor
-    exec-once = "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-    exec-once = "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-    exec-once = [workspace 1 silent] firefox
-    exec-once = [workspace 2 silent] alacritty
-    exec-once = [workspace 7 silent] thunderbird
+      drop_shadow = true;
+      shadow_ignore_window = true;
+      shadow_offset = "0 15";
+      shadow_range = 100;
+      shadow_render_power = 2;
+      shadow_scale = 0.97;
+      "col.shadow" = "rgba(00000055)";
+    };
+    animations = {
+      enabled = true;
+      animation = [
+        "border, 1, 2, default"
+        "fade, 1, 4, default"
+        "windows, 1, 3, default, popin 80%"
+        "workspaces, 1, 2, default, slide"
+      ];
+    };
+    group = {
+      groupbar = {
+        font_size = 10;
+        gradients = false;
+      };
+    };
+    input = {
+      kb_layout = "us,no";
+      kb_options = "grp:alt_shift_toggle";
+    };
+    dwindle = {
+      pseudotile = true;
+      preserve_split = true;
+    };
+    misc = {
+      disable_autoreload = true;
+      force_default_wallpaper = 0;
+      animate_mouse_windowdragging = false;
+      vrr = 1;
+      no_direct_scanout = false;
+    };
 
-    decoration {
-      drop_shadow = yes
-      shadow_range = 8
-      shadow_render_power = 2
-      col.shadow = rgba(00000044)
-      dim_inactive = false
+    gestures = {
+      workspace_swipe = true;
+      workspace_swipe_forever = true;
+    };
 
-      blur {
-        enabled = true
-        size = 8
-        passes = 4
-        new_optimizations = on
-        noise = 0.01
-        contrast = 0.9
-        brightness = 0.8
-      }
-    }
-
-    animations {
-      enabled = yes
-      bezier = myBezier, 0.05, 0.9, 0.1, 1.05
-      animation = windows, 1, 5, myBezier
-      animation = windowsOut, 1, 7, default, popin 80%
-      animation = border, 1, 10, default
-      animation = fade, 1, 7, default
-      animation = workspaces, 1, 6, default
-    }
-  '';
+    xwayland.force_zero_scaling = true;
+    debug.disable_logs = false;
+  };
 }
