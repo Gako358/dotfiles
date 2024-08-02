@@ -41,7 +41,7 @@ in {
       layer = "top";
       height = 37;
       margin-top = 3;
-      margin-bottom = 0;
+      margin-bottom = 2;
       margin-left = 4;
       margin-right = 4;
       modules-left = [
@@ -169,8 +169,8 @@ in {
       #clock {
           color: #${palette.tertiary_accent};
           background: #${palette.tertiary_background_hex};
+          padding: 5px 5px;
           border-radius: 15px;
-          padding: 0px 10px;
           font-weight: bold;
           font-size: ${palette.fontsize};
       }

@@ -2,22 +2,35 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
-  config,
-  lib,
   modulesPath,
+  config,
+  pkgs,
+  lib,
   ...
 }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  boot.initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
-  boot.initrd.kernelModules = ["wl" "amdgpu"];
-  boot.kernelModules = ["kvm-amd" "wl"];
-  boot.extraModulePackages = [config.boot.kernelPackages.broadcom_sta];
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      systemd-boot.enable = true;
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
+      };
+    };
+    initrd = {
+      availableKernelModules = ["nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod"];
+      kernelModules = [
+        "wl"
+        "amdgpu"
+      ];
+    };
+    kernelModules = ["kvm-amd" "wl"];
+    extraModulePackages = [config.boot.kernelPackages.broadcom_sta];
+  };
 
   fileSystems."/" = {
     device = "/dev/nvme0n1p3";
@@ -58,7 +71,8 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp5s0.useDHCP = lib.mkDefault true;
+  # networking.wireless.interfaces = ["wlp5s0"];
   # networking.interfaces.wwan0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

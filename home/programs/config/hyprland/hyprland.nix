@@ -10,13 +10,15 @@ in {
     ];
 
     exec-once = [
-      "hyprctl setcursor capitaine-cursors-white 16}"
+      "hyprctl setcursor capitaine-cursors-white 16"
       "${wallpaper}"
       "${eww} daemon"
       "[workspace 1 silent] firefox"
       "[workspace 2 silent] alacritty"
       "[workspace 4 silent] teams-for-linux"
       "[workspace 7 silent] thunderbird"
+      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+      "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     ];
 
     general = {

@@ -2,27 +2,35 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
+  modulesPath,
   config,
   lib,
-  modulesPath,
   ...
 }: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  boot.initrd.availableKernelModules = ["xhci_pci" "thunderbolt" "vmd" "nvme" "usb_storage" "sd_mod"];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = [
-    "kvm-intel"
-    "virtio"
-    "bluetooth"
-    "btusb"
-  ];
-  boot.extraModulePackages = [];
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
+      };
+    };
+    initrd = {
+      availableKernelModules = ["xhci_pci" "thunderbolt" "vmd" "nvme" "usb_storage" "sd_mod"];
+      kernelModules = [];
+    };
+    kernelModules = [
+      "kvm-intel"
+      "virtio"
+      "bluetooth"
+      "btusb"
+    ];
+    extraModulePackages = [];
+  };
 
   fileSystems."/" = {
     device = "/dev/nvme0n1p3";
