@@ -10,7 +10,6 @@
     secondary_accent = "89b4fa";
     tertiary_accent = "f5f5f5";
     background = "282c34";
-    cursor = "Numix-Cursor";
 
     primary_accent_hex = "cba6f7";
     secondary_accent_hex = "89b4fa";
@@ -139,7 +138,7 @@ in {
       }
 
       #workspaces button.active {
-          background-color: #${palette.secondary_accent};
+          background-color: #${palette.tertiary_accent};
           color: #${palette.background};
           border-radius: 15px;
           min-width: 50px;
