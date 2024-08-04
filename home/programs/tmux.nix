@@ -14,7 +14,6 @@
   current_window = rec {
     accent = color "main_accent";
     index = "#[reverse,fg=${accent},bg=${fg}] #I ";
-    # name = "#[fg=${bg2},bg=${fg2}] #W ";
     name = "#[fg=${bg2},bg=${fg2}] #{b:pane_current_path} ";
     flags = "#{?window_flags,#{window_flags}, }";
     module = "${index}${name}";
@@ -26,38 +25,6 @@
     name = "#[fg=${bg2},bg=${fg2}] #{b:pane_current_path} ";
     flags = "#{?window_flags,#{window_flags}, }";
     module = "${index}${name}";
-  };
-
-  time = rec {
-    accent = color "main_accent";
-    format = "%H:%M";
-
-    icon =
-      pkgs.writeShellScriptBin "icon" ''
-        hour=$(date +%H)
-        if   [ "$hour" == "00" ] || [ "$hour" == "12" ]; then printf "󱑖"
-        elif [ "$hour" == "01" ] || [ "$hour" == "13" ]; then printf "󱑋"
-        elif [ "$hour" == "02" ] || [ "$hour" == "14" ]; then printf "󱑌"
-        elif [ "$hour" == "03" ] || [ "$hour" == "15" ]; then printf "󱑍"
-        elif [ "$hour" == "04" ] || [ "$hour" == "16" ]; then printf "󱑎"
-        elif [ "$hour" == "05" ] || [ "$hour" == "17" ]; then printf "󱑏"
-        elif [ "$hour" == "06" ] || [ "$hour" == "18" ]; then printf "󱑐"
-        elif [ "$hour" == "07" ] || [ "$hour" == "19" ]; then printf "󱑑"
-        elif [ "$hour" == "08" ] || [ "$hour" == "20" ]; then printf "󱑒"
-        elif [ "$hour" == "09" ] || [ "$hour" == "21" ]; then printf "󱑓"
-        elif [ "$hour" == "10" ] || [ "$hour" == "22" ]; then printf "󱑔"
-        elif [ "$hour" == "11" ] || [ "$hour" == "23" ]; then printf "󱑕"
-        fi
-      ''
-      + "/bin/icon";
-
-    module = "#[reverse,fg=${accent}] ${format} #(${icon}) ";
-  };
-
-  title = rec {
-    accent = color "main_accent";
-    format = "#[fg=${fg}]#W ";
-    module = "${format}";
   };
 in {
   programs.tmux = {
@@ -80,6 +47,9 @@ in {
       run-shell ${pkgs.tmuxPlugins.continuum}/share/tmux-plugins/continuum/continuum.tmux
       set -g @resurrect-dir "~/.config/tmux/resurrect"
       set-option -sa terminal-overrides ",xterm*:Tc"
+
+      # Set the status bar to be displayed at the top
+      set-option -g status-position top
 
       # Use Alt-hjkl without prefix key to switch panes
       bind -n C-M-h select-pane -L
@@ -135,7 +105,7 @@ in {
       set-option -g @main_accent "blue"
       set-option -g status-style "bg=${bg} fg=${fg}"
       set-option -g status-left "${indicator.module}"
-      set-option -g status-right "${title.module} | ${time.module}"
+      set-option -g status-right ""
       set-option -g window-status-current-format "${current_window.module}"
       set-option -g window-status-format "${window_status.module}"
       set-option -g window-status-separator ""
