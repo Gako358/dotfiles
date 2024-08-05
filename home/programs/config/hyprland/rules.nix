@@ -1,5 +1,12 @@
 {
   wayland.windowManager.hyprland.extraConfig = ''
+    workspace = 2, monitor:DP-3
+    workspace = 1, monitor:DP-2
+    workspace = 4, monitor:HDMI-A-1
+    workspace = 5, monitor:DP-2
+    workspace = 7, monitor:HDMI-A-1
+    workspace = 9, monitor:HDMI-A-1
+
     windowrule = float, ^(Rofi)$
     windowrule = float, ^(eww)$
     windowrule = float, ^(Gimp-2.10)$
@@ -18,8 +25,6 @@
     windowrule = float, ^(org.kde.kdeconnect-settings)$
 
     windowrule = workspace 1, ^(firefox)$
-    windowrule = workspace 3, ^(microsoft-edge)$
-    windowrule = workspace 4, ^(chrome-teams.live.com__-Default)$
     windowrule = workspace 4, ^(teams-for-linux)$
     windowrule = workspace 5, ^(Wfica)$
     windowrule = workspace 6, ^(steam)$
