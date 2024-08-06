@@ -1,5 +1,4 @@
 {pkgs, ...}: let
-  eww = "${pkgs.eww}/bin/eww";
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
 in {
   wayland.windowManager.hyprland.settings = {
@@ -11,8 +10,8 @@ in {
 
     exec-once = [
       "hyprctl setcursor capitaine-cursors-white 16"
+      "hyprlock"
       "${wallpaper}"
-      "${eww} daemon"
       "[workspace 1 silent] firefox"
       "[workspace 2 silent] alacritty"
       "[workspace 4 silent] teams-for-linux"

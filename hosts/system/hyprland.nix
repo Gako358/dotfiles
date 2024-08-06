@@ -16,10 +16,9 @@
   # Set session variables
   environment = {
     variables = {
-      # If cursor is not visible, try to set this to "on".
-      XDG_CURRENT_DESKTOP = "wayland";
+      XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "wayland";
+      XDG_SESSION_DESKTOP = "Hyprland";
     };
     sessionVariables = {
       MOZ_ENABLE_WAYLAND = "1";
