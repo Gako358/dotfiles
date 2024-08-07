@@ -19,6 +19,7 @@ in {
         lock_cmd = "pidof ${hyprlock} || ${hyprlock}";
         before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
         after-sleep-cmd = "${hyprctl} dispatch dpms on";
+        ignore_dbus_inhibit = true;
       };
 
       # Lock screen on 30/10 min, screen off + 3 min
