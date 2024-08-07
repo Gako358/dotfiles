@@ -10,7 +10,6 @@ in {
 
     exec-once = [
       "hyprctl setcursor capitaine-cursors-white 16"
-      "hyprlock"
       "${wallpaper}"
       "[workspace 1 silent] firefox"
       "[workspace 2 silent] alacritty"
