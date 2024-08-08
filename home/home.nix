@@ -35,7 +35,6 @@
     scrot # screenshot tool
     slurp # select a region in a wayland compositor
     spotify # music streaming
-    teams-for-linux # microsoft teams
     tldr # summary of a man page
     tree # display files in a tree view
     unzip # unzip files

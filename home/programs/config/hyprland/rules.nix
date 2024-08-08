@@ -25,7 +25,7 @@
     windowrule = float, ^(org.kde.kdeconnect-settings)$
 
     windowrule = workspace 1, ^(firefox)$
-    windowrule = workspace 4, ^(teams-for-linux)$
+    windowrule = workspace 4, ^(chromium-browser)$
     windowrule = workspace 5, ^(Wfica)$
     windowrule = workspace 6, ^(steam)$
     windowrule = workspace 7, ^(thunderbird)$
