@@ -80,18 +80,18 @@ in {
       font = {
         normal = {
           family = "FiraCode";
-          style = "Medium";
+          style = "Normal";
         };
         bold = {
           family = "FiraCode";
           style = "Bold";
         };
         italic = {
-          family = "FiraCode";
+          family = "JetBrainsMono Nerd Font";
           style = "Italic";
         };
         bold_italic = {
-          family = "FiraCode";
+          family = "JetBrainsMonoNL Nerd Font";
           style = "Bold Italic";
         };
         size = fontSize;
