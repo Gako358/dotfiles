@@ -80,7 +80,7 @@ in {
       font = {
         normal = {
           family = "FiraCode";
-          style = "Normal";
+          style = "Medium";
         };
         bold = {
           family = "FiraCode";
