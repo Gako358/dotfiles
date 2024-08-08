@@ -5,6 +5,7 @@
     workspace = 4, monitor:HDMI-A-1
     workspace = 5, monitor:DP-2
     workspace = 7, monitor:HDMI-A-1
+    workspace = 8, monitor:HDMI-A-1
     workspace = 9, monitor:HDMI-A-1
 
     windowrule = float, ^(Rofi)$
