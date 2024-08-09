@@ -631,11 +631,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1723111575,
-        "narHash": "sha256-2+dL08kCblUmkH0py23Yb1hLVPDyhQlEwMNogMXMKsg=",
+        "lastModified": 1723191837,
+        "narHash": "sha256-+1Rlak8MKmYx/PXeOexNFhPSytDxiQ0fZIs+G2IwLNk=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "fd53f251daf95b450671fff29f827cb8ffb254ef",
+        "rev": "06b0fbec8a2518df8e851d7ceb73ee330540e75d",
         "type": "github"
       },
       "original": {
