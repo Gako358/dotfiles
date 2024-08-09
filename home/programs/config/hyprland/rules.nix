@@ -35,6 +35,7 @@
     windowrule = workspace 9, title:^(Friends List)$
 
     windowrule = float, title:^(Spotify Premium)$
+    windowrule = float, title:^(Spotify)$
     windowrule = float, title:^(ranger)$
     windowrule = float, title:^(btop)$
 
