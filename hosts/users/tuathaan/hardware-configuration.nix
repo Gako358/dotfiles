@@ -22,6 +22,15 @@
     initrd = {
       availableKernelModules = ["xhci_pci" "thunderbolt" "vmd" "nvme" "usb_storage" "sd_mod"];
       kernelModules = [];
+      luks.devices = {
+        cryptroot = {
+          device = "/dev/nvme0n1p3";
+          preLVM = true;
+        };
+        cryptswap = {
+          device = "/dev/nvme0n1p2";
+        };
+      };
     };
     kernelModules = [
       "kvm-intel"
@@ -33,31 +42,31 @@
   };
 
   fileSystems."/" = {
-    device = "/dev/nvme0n1p3";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = ["subvol=root" "noatime" "compress=zstd" "ssd"];
   };
 
   fileSystems."/home" = {
-    device = "/dev/nvme0n1p3";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = ["subvol=home" "noatime" "compress=zstd" "ssd"];
   };
 
   fileSystems."/nix" = {
-    device = "/dev/nvme0n1p3";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = ["subvol=nix" "noatime" "compress=zstd" "ssd"];
   };
 
   fileSystems."/var" = {
-    device = "/dev/nvme0n1p3";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = ["subvol=var" "noatime" "compress=zstd" "ssd"];
   };
 
   fileSystems."/tmp" = {
-    device = "/dev/nvme0n1p3";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = ["subvol=tmp" "noatime" "compress=zstd" "ssd"];
   };
@@ -68,7 +77,7 @@
   };
 
   swapDevices = [
-    {device = "/dev/nvme0n1p2";}
+    {device = "/dev/mapper/cryptswap";}
   ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
