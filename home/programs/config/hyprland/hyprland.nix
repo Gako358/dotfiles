@@ -80,7 +80,6 @@ in {
       force_default_wallpaper = 0;
       animate_mouse_windowdragging = false;
       vrr = 1;
-      no_direct_scanout = false;
     };
 
     gestures = {
