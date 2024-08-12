@@ -69,4 +69,5 @@ function mount_partitions {
 }
 
 create_partitions
+setup_luks
 mount_partitions
