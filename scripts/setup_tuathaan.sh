@@ -61,12 +61,14 @@ function mount_partitions {
     mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=tmp "/dev/mapper/${CRYPTROOT_NAME}" /mnt/tmp
 
     mount "${DEVICE_NAME}p1" /mnt/boot/efi
-    swapon "${CRYPTSWAP_NAME}"
+    swapon "/dev/mapper/${CRYPTSWAP_NAME}"
 
     clear
     df -Th
     free -h
+    echo "Run: nixos-install --flake .#tuathaan"
 }
 
 create_partitions
+setup_luks
 mount_partitions
