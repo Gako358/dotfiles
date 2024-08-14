@@ -35,6 +35,6 @@ in [
   ./citrix.nix
   ./git.nix
   ./network.nix
-  ./tmux.nix
+  ./zellij.nix
   more
 ]
