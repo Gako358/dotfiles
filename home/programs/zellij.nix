@@ -51,7 +51,7 @@ let
         bg "#2b3b51"
         fg "#cdcecf"
         red "#c94f6d"
-        green "#81b29a"
+        green "#719cd6"
         blue "#719cd6"
         yellow "#dbc074"
         magenta "#9d79d6"
