@@ -247,7 +247,6 @@ let
     default_layout "default_layout"
     default_mode "normal"
     default_shell "fish"
-    pane_frames false
     scrollback_editor "hx"
     layout_dir "/home/merrinx/.config/zellij/layouts"
   '';
