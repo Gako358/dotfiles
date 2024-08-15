@@ -184,8 +184,8 @@ let
         bind "Ctrl g" { SwitchToMode "Locked"; }
         bind "Alt n" { NewPane; }
         bind "Alt i" { MoveTab "Left"; }
-        bind "Alt a" { GoToPreviousTab; SwitchToMode "Normal"; }
-        bind "Alt o" { GoToNextTab; SwitchToMode "Normal"; }
+        bind "Alt w" { GoToPreviousTab; SwitchToMode "Normal"; }
+        bind "Alt f" { GoToNextTab; SwitchToMode "Normal"; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }
