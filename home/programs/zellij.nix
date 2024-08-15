@@ -76,7 +76,6 @@ let
         bind "p" { SwitchFocus; SwitchToMode "Normal"; }
         bind "n" { NewPane; SwitchToMode "Normal"; }
         bind "d" { NewPane "Down"; SwitchToMode "Normal"; }
-        //bind "r" { NewPane "Right"; SwitchToMode "Normal"; }
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
         bind "f" { TogglePaneFrames; SwitchToMode "Normal"; }
@@ -220,9 +219,9 @@ let
         bind "Ctrl b" { SwitchToMode "Tmux"; }
       }
     }
-    theme "myNightfox"
+    theme "customTheme"
     themes {
-      myNightfox {
+      customTheme {
         bg "#2b3b51"
         fg "#cdcecf"
         red "#c94f6d"
