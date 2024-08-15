@@ -1,14 +1,25 @@
 let
   defaultLayout = ''
     layout {
-      pane size=1 borderless=true {
-          plugin location="compact-bar"
+      tab name="code" {
+        pane size=1 borderless=true {
+            plugin location="compact-bar"
+        }
+        pane
       }
-      pane
+      tab name="build" {
+        pane size=1 borderless=true {
+            plugin location="compact-bar"
+        }
+        pane split_direction="vertical" {
+          pane
+          pane
+        }
+      }
     }
   '';
 
-  projectLayout = ''
+  registerLayout = ''
     layout {
       tab name="shell" {
         pane size=1 borderless=true {
@@ -25,14 +36,8 @@ let
             plugin location="compact-bar"
         }
         pane
-        floating_panes {
-          pane {
-            width "50%"
-            height "50%"
-          }
-        }
       }
-      tab name="debug" {
+      tab name="logs" {
         pane size=1 borderless=true {
             plugin location="compact-bar"
         }
@@ -185,8 +190,8 @@ let
       shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
         bind "Alt n" { NewPane; }
-        bind "Alt i" { MoveTab "Left"; }
-        bind "Alt o" { MoveTab "Right"; }
+        bind "Alt i" { GoToPreviousTab; SwitchToMode "Normal"; }
+        bind "Alt o" { GoToNextTab; SwitchToMode "Normal"; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }
@@ -239,7 +244,7 @@ let
     }
     on_force_close "quit"
     pane_frames false
-    default_layout "project_layout"
+    default_layout "default_layout"
     default_mode "normal"
     default_shell "fish"
     pane_frames false
@@ -253,6 +258,6 @@ in {
   };
 
   home.file."./.config/zellij/layouts/default_layout.kdl".text = defaultLayout;
-  home.file."./.config/zellij/layouts/project_layout.kdl".text = projectLayout;
+  home.file."./.config/zellij/layouts/register_layout.kdl".text = registerLayout;
   home.file."./.config/zellij/config.kdl".text = zellijConfig;
 }
