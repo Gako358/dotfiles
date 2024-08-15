@@ -1,16 +1,14 @@
 let
   defaultLayout = ''
     layout {
-      tab name="code" {
+      default_tab_template {
         pane size=1 borderless=true {
             plugin location="compact-bar"
         }
-        pane
+        children
       }
+      tab name="code"
       tab name="build" {
-        pane size=1 borderless=true {
-            plugin location="compact-bar"
-        }
         pane split_direction="vertical" {
           pane
           pane
@@ -21,26 +19,21 @@ let
 
   registerLayout = ''
     layout {
-      tab name="shell" {
+      default_tab_template {
         pane size=1 borderless=true {
             plugin location="compact-bar"
         }
+        children
+      }
+      tab name="shell" {
         pane
         pane split_direction="vertical" {
           pane
           pane
         }
       }
-      tab name="code" {
-        pane size=1 borderless=true {
-            plugin location="compact-bar"
-        }
-        pane
-      }
+      tab name="code"
       tab name="logs" {
-        pane size=1 borderless=true {
-            plugin location="compact-bar"
-        }
         pane split_direction="vertical" {
           pane
           pane
@@ -190,7 +183,8 @@ let
       shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
         bind "Alt n" { NewPane; }
-        bind "Alt i" { GoToPreviousTab; SwitchToMode "Normal"; }
+        bind "Alt i" { MoveTab "Left"; }
+        bind "Alt a" { GoToPreviousTab; SwitchToMode "Normal"; }
         bind "Alt o" { GoToNextTab; SwitchToMode "Normal"; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
