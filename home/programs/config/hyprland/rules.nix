@@ -44,6 +44,14 @@
       windowrule = opacity 0.73 override 0.64 override, ^(Alacritty)$
     ''
     else ''
+      workspace = 2, monitor:DP-8
+      workspace = 1, monitor:DP-8
+      workspace = 4, monitor:eDP-1
+      workspace = 5, monitor:DP-8
+      workspace = 7, monitor:eDP-1
+      workspace = 8, monitor:eDP-1
+      workspace = 9, monitor:eDP-1
+
       windowrule = float, ^(Rofi)$
       windowrule = float, ^(eww)$
       windowrule = float, ^(Gimp-2.10)$
