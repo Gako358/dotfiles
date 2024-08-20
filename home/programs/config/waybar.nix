@@ -1,31 +1,19 @@
 {pkgs, ...}: let
-  opacity = "0";
   fontSize = "14px";
   iconSize = "17px";
+  opacity = "0.46";
   palette = {
     font = "RobotoMono Nerd Font";
     fontsize = fontSize;
     iconsize = iconSize;
-    primary_accent = "cba6f7";
-    secondary_accent = "89b4fa";
-    tertiary_accent = "f5f5f5";
-    background = "282c34";
-
-    primary_accent_hex = "cba6f7";
-    secondary_accent_hex = "89b4fa";
-    tertiary_accent_hex = "f5f5f5";
-    primary_background_hex = "11111B";
-    secondary_background_hex = "1b1b2b";
-    tertiary_background_hex = "21252b";
-
-    primary_accent_rgba = "rgba(203,166,247,${opacity})";
-    secondary_accent_rgba = "rgba(137,180,250,${opacity})";
-    tertiary_accent_rgba = "rgba(245,245,245,${opacity})";
-    primary_background_rgba = "rgba(40, 44, 52,${opacity})";
-    secondary_background_rgba = "rgba(59, 63, 76,${opacity})";
-    tertiary_background_rgba = "rgba(33, 37, 43,${opacity})";
+    background-color = "rgba(39, 39, 39, ${opacity})";
+    background = "#272727";
+    foreground = "#aeafb0";
+    dark = "#434343";
+    red = "#c94f6d";
+    yellow = "#dbc074";
+    blue = "#719cd6";
   };
-  # Dependencies
   calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
 in {
@@ -38,12 +26,13 @@ in {
     settings.mainBar = {
       position = "top";
       layer = "top";
-      height = 37;
+      height = 28;
       margin-top = 3;
       margin-bottom = 2;
       margin-left = 4;
       margin-right = 4;
       modules-left = [
+        "custom/launcher"
         "hyprland/workspaces"
       ];
       modules-center = [
@@ -51,6 +40,7 @@ in {
       ];
       modules-right = [
         "tray"
+        "temperature"
         "cpu"
         "battery"
         "memory"
@@ -63,6 +53,10 @@ in {
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         format-alt = " {:%d/%m}";
         on-click = "${calendar}";
+      };
+      "custom/launcher" = {
+        format = "   ";
+        tooltip = false;
       };
       battery = {
         states = {
@@ -119,59 +113,70 @@ in {
       }
 
       window#waybar {
-          background: ${palette.primary_background_rgba};
+         background-color: transparent;
+      }
+      window > box {
+         margin-left: 5px;
+         margin-right: 5px;
+         margin-top: 5px;
+         background-color: ${palette.background-color};
+         border: 2px none ${palette.blue};
       }
 
       #workspaces {
-          background: #${palette.tertiary_background_hex};
-          margin: 5px 5px;
-          padding: 8px 5px;
-          border-radius: 15px;
-          color: #${palette.primary_accent}
+         background: ${palette.foreground};
+         color: ${palette.background};
+         margin: 3px 3px;
+         padding: 3px 2px;
+         border-radius: 15px;
       }
       #workspaces button {
-          padding: 0px 5px;
-          margin: 0px 3px;
-          border-radius: 15px;
-          background: ${palette.primary_background_rgba};
-          transition: all 0.3s ease-in-out;
+         background: ${palette.foreground};
+         color: ${palette.background};
+         border-radius: 15px;
+         padding: 0px 2px;
+         transition: all 0.3s ease-in-out;
       }
 
       #workspaces button.active {
-          background-color: #${palette.tertiary_accent};
-          color: #${palette.background};
-          border-radius: 15px;
-          min-width: 50px;
-          background-size: 400% 400%;
-          transition: all 0.3s ease-in-out;
+         background-color: ${palette.blue};
+         color: ${palette.background};
+         border-radius: 15px;
+         min-width: 50px;
+         background-size: 400% 400%;
+         transition: all 0.3s ease-in-out;
       }
 
       #workspaces button:hover {
-          background-color: #${palette.tertiary_accent};
-          color: #${palette.background};
-          border-radius: 15px;
-          min-width: 50px;
-          background-size: 400% 400%;
+         background-color: ${palette.blue};
+         color: ${palette.background};
+         border-radius: 10px;
+         min-width: 50px;
+         background-size: 400% 400%;
       }
 
-      #tray, #pulseaudio, #network, #battery, #cpu, #memory{
-          background: #${palette.tertiary_background_hex};
-          font-weight: bold;
-          margin: 5px 0px;
+      #workspaces button.urgent {
+         background-color: ${palette.red};
+         color: ${palette.foreground};
+         border-radius: 15px;
       }
-      #tray, #pulseaudio, #network, #battery, #cpu, #memory{
-          color: #${palette.tertiary_accent};
-          border-radius: 15px;
-          padding: 0 7px;
-          margin-left: 7px;
+
+      #custom-launcher {
+         font-size: 20px;
+         padding-left: 16px;
+         padding-right: 28px;
+         color: ${palette.blue};
+         padding: 2px 8px;
       }
-      #clock {
-          color: #${palette.tertiary_accent};
-          background: #${palette.tertiary_background_hex};
-          padding: 5px 5px;
-          border-radius: 15px;
-          font-weight: bold;
-          font-size: ${palette.fontsize};
+
+      #mode, #clock, #memory, #temperature,#cpu, #temperature, #pulseaudio, #network, #battery {
+         padding-left: 7px;
+         padding-right: 7px;
+      }
+
+      #tray {
+         padding-right: 28px;
+         padding-left: 10px;
       }
     '';
   };
