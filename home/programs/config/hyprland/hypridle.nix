@@ -7,7 +7,7 @@
   hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
   timeout =
     if specialArgs.hidpi
-    then 1900
+    then 3600
     else 600;
 in {
   # screen idle
