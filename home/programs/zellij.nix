@@ -69,7 +69,6 @@ let
 
         bind "f" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
         bind "s" { ToggleFloatingPanes; SwitchToMode "Normal"; }
-        bind "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
 
         bind "1" { GoToTab 1; SwitchToMode "Normal"; }
         bind "2" { GoToTab 2; SwitchToMode "Normal"; }

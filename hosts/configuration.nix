@@ -83,7 +83,6 @@
     graphics.enable = true;
     keyboard.zsa.enable = true;
     bluetooth.enable = true;
-    # Enable braodcom chip for bluetooth
     enableAllFirmware = true;
     pulseaudio.enable = false;
   };
