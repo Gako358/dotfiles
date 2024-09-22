@@ -47,9 +47,9 @@
   environment.systemPackages = with pkgs; [
     pkgs.glib
     gnome-calendar
-    gnome.gnome-boxes
+    gnome-boxes
+    gnome-weather
     gnome-system-monitor
-    gnome.gnome-weather
 
     inputs.scramgit.defaultPackage.${pkgs.system}
     inputs.nvimFlake.defaultPackage.${pkgs.system}
