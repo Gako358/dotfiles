@@ -10,7 +10,7 @@ if specialArgs.hidpi then {
     inputs.nvimFlake.defaultPackage.${pkgs.system}
   ];
 
-  gnome.excludePackages = with pkgs; [
+  environment.gnome.excludePackages = with pkgs; [
     # gnome-text-editor
     atomix  # puzzle game
     cheese  # webcam tool
