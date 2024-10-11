@@ -1,8 +1,11 @@
 {
   pkgs,
   inputs,
+  specialArgs,
   ...
-}: {
+}:
+if !specialArgs.hidpi
+then {
   imports = [
     ./binds.nix
     ./hypridle.nix
@@ -43,3 +46,4 @@
     };
   };
 }
+else {}

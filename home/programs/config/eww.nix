@@ -1,4 +1,10 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  specialArgs,
+  ...
+}:
+if !specialArgs.hidpi
+then {
   home.packages = with pkgs; [
     eww # Widgets
     jq # JSON Processor
@@ -10,3 +16,4 @@
     recursive = true;
   };
 }
+else {}

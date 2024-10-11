@@ -15,9 +15,9 @@ with lib; {
   ];
 
   imports = [
+    ./desktop.nix
     ./docker.nix
     ./fonts.nix
-    ./greetd.nix
     ./hyprland.nix
     ./nfc.nix
     ./shell.nix

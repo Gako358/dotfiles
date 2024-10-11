@@ -1,11 +1,15 @@
 {
   inputs,
   pkgs,
+  specialArgs,
   ...
-}: {
+}:
+if !specialArgs.hidpi
+then {
   imports = [
     inputs.hyprland.nixosModules.default
   ];
+
   programs = {
     hyprland = {
       enable = true;
@@ -85,3 +89,4 @@
     };
   };
 }
+else {}
