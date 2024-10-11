@@ -1,7 +1,6 @@
-{ pkgs, specialArgs, ... }:
-
-let
-  commonPackages = with pkgs; [
+{ pkgs, specialArgs, ... }: 
+if specialArgs.hidpi then {
+  environment.systemPackages = with pkgs; [
     morewaita-icon-theme
     qogir-icon-theme
     gnome-extension-manager
@@ -11,7 +10,7 @@ let
     inputs.nvimFlake.defaultPackage.${pkgs.system}
   ];
 
-  gnomeExcludePackages = with pkgs; [
+  gnome.excludePackages = with pkgs; [
     # gnome-text-editor
     atomix  # puzzle game
     cheese  # webcam tool
@@ -37,11 +36,6 @@ let
     hitori  # sudoku game
     yelp  # Help view
   ];
-in
-if specialArgs.hidpi then {
-  environment.systemPackages = commonPackages;
-
-  gnome.excludePackages = gnomeExcludePackages;
 
   services.xserver = {
     displayManager.gdm.enable = true;
