@@ -111,7 +111,7 @@ in {
           columns = 154;
           lines = 37;
         };
-        decorations = "full";
+        decorations = "none";
         opacity = 0.91;
         padding = {
           x = 5;
