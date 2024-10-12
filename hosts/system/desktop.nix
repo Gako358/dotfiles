@@ -11,7 +11,6 @@ then {
       morewaita-icon-theme
       qogir-icon-theme
       gnome-extension-manager
-      wl-clipboard
 
       inputs.scramgit.defaultPackage.${pkgs.system}
       inputs.nvimFlake.defaultPackage.${pkgs.system}

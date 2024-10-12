@@ -144,13 +144,13 @@ in
             "org.gnome.Calendar.desktop"
             "spotify.desktop"
             "Alacritty.desktop"
+            "Chromium.desktop"
           ];
         };
 
         "org/gnome/shell/extensions/auto-move-windows" = {
           "application-list" = [
             "firefox.desktop:1"
-            "thunderbird.desktop:5"
             "Alacritty.desktop:2"
           ];
         };
@@ -216,7 +216,7 @@ in
           "activities-button-icon-monochrome" = false;
           "activities-button-label" = true;
           "animation" = 0;
-          "app-menu" = true;
+          "app-menu" = false;
           "app-menu-icon" = true;
           "app-menu-label" = true;
           "background-menu" = true;
@@ -246,7 +246,7 @@ in
           "search" = true;
           "show-apps-button" = true;
           "startup-status" = 0;
-          "theme" = true;
+          "theme" = false;
           "window-demands-attention-focus" = false;
           "window-menu-take-screenshot-button" = true;
           "window-picker-icon" = true;
