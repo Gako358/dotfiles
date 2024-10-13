@@ -10,11 +10,10 @@ in
     if specialArgs.hidpi
     then {
       home.packages = with pkgs; [
-        gnomeExtensions.auto-move-windows
         gnomeExtensions.blur-my-shell
         gnomeExtensions.caffeine
         gnomeExtensions.clipboard-history
-        gnomeExtensions.dash-to-dock
+        gnomeExtensions.dash-to-panel
         gnomeExtensions.just-perfection
         gnomeExtensions.pop-shell
         gnomeExtensions.rounded-window-corners
@@ -81,7 +80,7 @@ in
           dynamic-workspaces = false;
           edge-tiling = true;
           num-workspaces = 5;
-          workspaces-only-on-primary = true;
+          workspaces-only-on-primary = false;
         };
 
         "org/gnome/settings-daemon/plugins/media-keys" = {
@@ -123,11 +122,10 @@ in
 
         "org/gnome/shell" = {
           enabled-extensions = [
-            "auto-move-windows@gnome-shell-extensions.gcampax.github.com"
             "blur-my-shell@aunetx"
             "caffeine@patapon.info"
             "clipboard-history@alexsaveau.dev"
-            "dash-to-dock@micxgx.gmail.com"
+            "dash-to-panel@jderose9.github.com"
             "just-perfection-desktop@just-perfection"
             "pop-shell@system76.com"
             "rounded-window-corners@yilozt"
@@ -148,18 +146,11 @@ in
           ];
         };
 
-        "org/gnome/shell/extensions/auto-move-windows" = {
-          "application-list" = [
-            "firefox.desktop:1"
-            "Alacritty.desktop:2"
-          ];
-        };
-
         "org/gnome/shell/extensions/blur-my-shell" = {
           "settings-version" = 2;
         };
 
-        "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
+        "org/gnome/shell/extensions/blur-my-shell/dash-to-panel" = {
           "pipeline" = "pipeline_default_rounded";
         };
 
@@ -179,6 +170,13 @@ in
           "pipeline" = "pipeline_default";
         };
 
+        "org/gnome/shell/extensions/caffeine" = {
+          enable-fullscreen = true;
+          restore-state = true;
+          show-indicator = true;
+          show-notification = false;
+        };
+
         "org/gnome/shell/extensions/clipboard-history" = {
           "display-mode" = 3;
           "next-entry" = ["<Shift><Alt>j"];
@@ -186,28 +184,21 @@ in
           "toggle-menu" = ["<Shift><Alt>v"];
         };
 
-        "org/gnome/shell/extensions/dash-to-dock" = {
-          "animate-show-apps" = false;
-          "apply-custom-theme" = false;
-          "autohide" = true;
-          "background-color" = "rgb(24,25,38)";
-          "background-opacity" = 0.8;
-          "custom-background-color" = true;
-          "custom-theme-shrink" = true;
-          "dash-max-icon-size" = 37;
-          "dock-fixed" = false;
-          "dock-position" = "BOTTOM";
-          "extend-height" = false;
-          "height-fraction" = 0.9;
-          "hot-keys" = false;
-          "intellihide" = false;
-          "intellihide-mode" = "FOCUS_APPLICATION_WINDOWS";
-          "preferred-monitor" = -2;
-          "preferred-monitor-by-connector" = "DisplayPort-0";
-          "preview-size-scale" = 0.0;
-          "show-show-apps-button" = false;
-          "show-trash" = false;
-          "transparency-mode" = "DYNAMIC";
+        "org/gnome/shell/extensions/dash-to-panel" = {
+          appicon-margin = 0;
+          appicon-padding = 3;
+          available-monitors = [0];
+          dot-position = "BOTTOM";
+          hotkeys-overlay-combo = "TEMPORARILY";
+          leftbox-padding = -1;
+          panel-anchors = "{\"0\":\"MIDDLE\"}";
+          panel-lengths = "{\"0\":100}";
+          panel-positions = "{\"0\":\"BOTTOM\"}";
+          panel-sizes = "{\"0\":24}";
+          status-icon-padding = -1;
+          tray-padding = -1;
+          window-preview-title-position = "TOP";
+          taskbar-position = "CENTER";
         };
 
         "org/gnome/shell/extensions/just-perfection" = {
@@ -314,6 +305,11 @@ in
         "org/gnome/shell/extensions/space-bar/shortcuts" = {
           "enable-activate-workspace-shortcuts" = true;
           "enable-move-to-workspace-shortcuts" = true;
+        };
+
+        "org/gnome/shell/extensions/user-theme".name = "Flat-Remix-Blue-Light";
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
         };
 
         "org/gnome/shell/app-switcher" = {
