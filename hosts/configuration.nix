@@ -48,6 +48,9 @@
   console.useXkbConfig = true;
   programs.dconf.enable = true;
 
+  # Set the default editor
+  environment.variables.EDITOR = "nvim";
+
   services = {
     libinput.enable = true;
     blueman.enable = true;
