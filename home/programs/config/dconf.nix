@@ -10,15 +10,11 @@ in
     if specialArgs.hidpi
     then {
       home.packages = with pkgs; [
-        gnomeExtensions.blur-my-shell
         gnomeExtensions.caffeine
         gnomeExtensions.clipboard-history
         gnomeExtensions.dash-to-panel
         gnomeExtensions.just-perfection
         gnomeExtensions.pop-shell
-        gnomeExtensions.rounded-window-corners
-        gnomeExtensions.sound-output-device-chooser
-        gnomeExtensions.space-bar
         gnomeExtensions.tray-icons-reloaded
         gnomeExtensions.user-themes
         gnome-tweaks
@@ -80,7 +76,7 @@ in
           dynamic-workspaces = false;
           edge-tiling = true;
           num-workspaces = 5;
-          workspaces-only-on-primary = false;
+          workspaces-only-on-primary = true;
         };
 
         "org/gnome/settings-daemon/plugins/media-keys" = {
@@ -122,15 +118,11 @@ in
 
         "org/gnome/shell" = {
           enabled-extensions = [
-            "blur-my-shell@aunetx"
             "caffeine@patapon.info"
             "clipboard-history@alexsaveau.dev"
             "dash-to-panel@jderose9.github.com"
             "just-perfection-desktop@just-perfection"
             "pop-shell@system76.com"
-            "rounded-window-corners@yilozt"
-            "sound-output-device-chooser@kgshank.net"
-            "space-bar@luchrioh"
             "trayIconsReloaded@selfmade.pl"
             "user-theme@gnome-shell-extensions.gcampax.github.com"
           ];
@@ -142,32 +134,15 @@ in
             "org.gnome.Calendar.desktop"
             "spotify.desktop"
             "Alacritty.desktop"
-            "Chromium.desktop"
+            "vmware-view.desktop"
+            "virt-manager.desktop"
+            "Slack.desktop"
+            "gimp.desktop"
+            "Discord.desktop"
+            "dbeaver.desktop"
+            "selfservice.desktop"
+            "chromium-browser.desktop"
           ];
-        };
-
-        "org/gnome/shell/extensions/blur-my-shell" = {
-          "settings-version" = 2;
-        };
-
-        "org/gnome/shell/extensions/blur-my-shell/dash-to-panel" = {
-          "pipeline" = "pipeline_default_rounded";
-        };
-
-        "org/gnome/shell/extensions/blur-my-shell/lockscreen" = {
-          "pipeline" = "pipeline_default";
-        };
-
-        "org/gnome/shell/extensions/blur-my-shell/overview" = {
-          "pipeline" = "pipeline_default";
-        };
-
-        "org/gnome/shell/extensions/blur-my-shell/panel" = {
-          "pipeline" = "pipeline_default";
-        };
-
-        "org/gnome/shell/extensions/blur-my-shell/screenshot" = {
-          "pipeline" = "pipeline_default";
         };
 
         "org/gnome/shell/extensions/caffeine" = {
@@ -198,7 +173,6 @@ in
           status-icon-padding = -1;
           tray-padding = -1;
           window-preview-title-position = "TOP";
-          taskbar-position = "CENTER";
         };
 
         "org/gnome/shell/extensions/just-perfection" = {
@@ -257,54 +231,6 @@ in
           "gap-inner" = mkUint32 5;
           "gap-outer" = mkUint32 5;
           "tile-by-default" = true;
-        };
-
-        "org/gnome/shell/extensions/rounded-window-corners" = {
-          "border-color" = mkTuple [0.71764707565307617 0.74117660522460938 0.97254902124404907 1.0];
-          "border-width" = 1;
-          global-rounded-corner-settings = [
-            (mkDictionaryEntry [
-              "padding"
-              (mkVariant [
-                (mkDictionaryEntry ["top" (mkVariant 1)])
-                (mkDictionaryEntry ["left" (mkVariant 1)])
-                (mkDictionaryEntry ["right" (mkVariant 1)])
-                (mkDictionaryEntry ["bottom" (mkVariant 1)])
-              ])
-            ])
-
-            (mkDictionaryEntry [
-              "keep_rounded_corners"
-              (mkVariant [
-                (mkDictionaryEntry ["maximized" (mkVariant true)])
-                (mkDictionaryEntry ["fullscreen" (mkVariant false)])
-              ])
-            ])
-
-            (mkDictionaryEntry ["border_radius" (mkVariant 8)])
-            (mkDictionaryEntry ["smoothing" (mkVariant 0)])
-            (mkDictionaryEntry ["enabled" (mkVariant true)])
-          ];
-          "skip-libadwaita-app" = false;
-          "skip-libhandy-app" = false;
-        };
-
-        "org/gnome/shell/extensions/space-bar/appearance" = {
-          "inactive-workspace-text-color" = "rgb(154,153,150)";
-          "workspace-margin" = 3;
-          "workspaces-bar-padding" = 3;
-        };
-
-        "org/gnome/shell/extensions/space-bar/behavior" = {
-          "scroll-wheel" = "panel";
-          "show-empty-workspaces" = false;
-          "smart-workspace-names" = false;
-          "toggle-overview" = false;
-        };
-
-        "org/gnome/shell/extensions/space-bar/shortcuts" = {
-          "enable-activate-workspace-shortcuts" = true;
-          "enable-move-to-workspace-shortcuts" = true;
         };
 
         "org/gnome/shell/extensions/user-theme".name = "Flat-Remix-Blue-Light";
