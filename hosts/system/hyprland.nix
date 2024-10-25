@@ -49,7 +49,7 @@ then {
   };
 
   environment.systemPackages = with pkgs; [
-    pkgs.glib
+    glib
     gnome-calendar
     gnome-boxes
     gnome-weather

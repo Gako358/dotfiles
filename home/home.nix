@@ -16,7 +16,6 @@
     eza # a better `ls`
     fd # "find" for files
     gimp # gnu image manipulation program
-    # hurl # http client
     jump # fast directory navigation
     killall # kill processes by name
     lazygit # terminal git ui
@@ -26,6 +25,7 @@
     nix-index # locate packages containing certain nixpkgs
     nix-output-monitor # nom: monitor nix commands
     ouch # painless compression and decompression for your terminal
+    obsidian # note taking
     paprefs # pulseaudio preferences
     prettyping # a nicer ping
     rage # encryption tool for secrets management
@@ -38,7 +38,6 @@
     tldr # summary of a man page
     tree # display files in a tree view
     unzip # unzip files
-    vmware-horizon-client # vmware horizon client
     wgetpaste # paste to pastebin
     wl-gammactl # wayland gamma control
     wl-clipboard # wayland clipboard manager

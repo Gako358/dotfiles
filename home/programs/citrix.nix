@@ -6,7 +6,7 @@
   extraCerts = [];
 
   citrixOverlay = self: super: {
-    citrix_workspace_24_05_0 = super.citrix_workspace_24_05_0.overrideAttrs (oldAttrs: rec {
+    citrix_workspace = super.citrix_workspace.overrideAttrs (oldAttrs: rec {
       inherit extraCerts;
       buildInputs = oldAttrs.buildInputs ++ [self.openssl];
       postInstall = ''
@@ -20,24 +20,22 @@
     });
   };
 
-  liboggOverlay = final: prev: {
-    libogg = prev.libogg.overrideAttrs (prevAttrs: {
-      cmakeFlags =
-        (
-          if prevAttrs ? cmakeFlags
-          then prevAttrs.cmakeFlags
-          else []
-        )
-        ++ [
-          (final.lib.cmakeBool "BUILD_SHARED_LIBS" true)
-        ];
-    });
+  citrix_workspace = pkgs.citrix_workspace.override {
+    libvorbis = pkgs.libvorbis.override {
+      libogg = pkgs.libogg.overrideAttrs (prevAttrs: {
+        cmakeFlags =
+          (prevAttrs.cmakeFlags or [])
+          ++ [
+            (lib.cmakeBool "BUILD_SHARED_LIBS" true)
+          ];
+      });
+    };
   };
 in {
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = [citrixOverlay liboggOverlay];
+  nixpkgs.overlays = [citrixOverlay];
   home.packages = with pkgs; [
-    citrix_workspace_24_05_0
+    citrix_workspace
   ];
 }

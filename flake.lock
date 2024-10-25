@@ -675,6 +675,7 @@
         "plugins-nvim-metals": "plugins-nvim-metals",
         "plugins-nvim-nio": "plugins-nvim-nio",
         "plugins-nvim-web-devicons": "plugins-nvim-web-devicons",
+        "plugins-obsidian": "plugins-obsidian",
         "plugins-plenary-nvim": "plugins-plenary-nvim",
         "plugins-ranger": "plugins-ranger",
         "plugins-rust-tools": "plugins-rust-tools",
@@ -688,11 +689,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1728290696,
-        "narHash": "sha256-YaUCSEAy8bFSzJ/DV0PzVDN2rzughbiL3hf2gbhiRgs=",
+        "lastModified": 1729857166,
+        "narHash": "sha256-yA6kf/ljOaZos7IJPIuCg5SWNb6GoDrDbSw4qBlHQRc=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "c2a0e407c9ad783adcc1969fef41249925c723b5",
+        "rev": "95d48b607d24cd9cf94f21d3776e7828c8b21d8e",
         "type": "github"
       },
       "original": {
@@ -1258,6 +1259,22 @@
       "original": {
         "owner": "kyazdani42",
         "repo": "nvim-web-devicons",
+        "type": "github"
+      }
+    },
+    "plugins-obsidian": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722536347,
+        "narHash": "sha256-mbq7fAPmlwOAbWlN3lGX9WGBKTV8cAPZx8pnRCyszJc=",
+        "owner": "epwalsh",
+        "repo": "obsidian.nvim",
+        "rev": "14e0427bef6c55da0d63f9a313fd9941be3a2479",
+        "type": "github"
+      },
+      "original": {
+        "owner": "epwalsh",
+        "repo": "obsidian.nvim",
         "type": "github"
       }
     },

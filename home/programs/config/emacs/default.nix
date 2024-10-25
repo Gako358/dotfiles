@@ -3,10 +3,6 @@
     url = "https://github.com/zerolfx/copilot.el.git";
     rev = "e15bafa95b39091dbb2a99ad62e42f03a8d78f01";
   };
-  emacsCopilotChatSrc = builtins.fetchGit {
-    url = "https://github.com/chep/copilot-chat.el";
-    rev = "dc8f5b6961e8d0955561441ae04154b81c3c1f36";
-  };
 in {
   programs.emacs = {
     enable = true;
@@ -104,7 +100,6 @@ in {
   ];
 
   home.file."./.emacs.d/emacsCopilot".source = emacsCopilotSrc;
-  home.file."./.emacs.d/emacsCopilotChat".source = emacsCopilotChatSrc;
   services.emacs = {
     enable = true;
     client.enable = true;

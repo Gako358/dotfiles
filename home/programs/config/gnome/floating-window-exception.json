@@ -1,0 +1,69 @@
+{
+  "float": [
+    {
+      "class": "pop-shell-example",
+      "title": "pop-shell-example"
+    },
+    {
+      "class": "dconf-editor"
+    },
+    {
+      "class": "pop-shell-exceptions"
+    },
+    {
+      "class": "org.gnome.Nautilus"
+    },
+    {
+      "class": "pop-shell-exceptions",
+      "title": "Floating Window Exceptions"
+    },
+    {
+      "class": "org.gnome.Settings"
+    },
+    {
+      "class": "gnome-disks"
+    },
+    {
+      "class": "org.gnome.TextEditor"
+    },
+    {
+      "class": "vesktop"
+    },
+    {
+      "class": "org.gnome.Snapshot"
+    },
+    {
+      "class": "org.gnome.SystemMonitor"
+    },
+    {
+      "class": "org.gnome.Extensions"
+    },
+    {
+      "class": "Spotify"
+    },
+    {
+      "class": "com.github.wwmm.easyeffects"
+    },
+    {
+      "class": "discord"
+    },
+    {
+      "class": "slack"
+    },
+    {
+      "class": "thunderbird"
+    },
+    {
+      "class": "dbeaver"
+    },
+    {
+      "class": "cinny"
+    },
+    {
+      "class": "dropdown",
+      "title": "dropdown"
+    }
+  ],
+  "skiptaskbarhidden": [],
+  "log_on_focus": false
+}

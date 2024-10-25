@@ -34,6 +34,7 @@ in [
   ./alacritty.nix
   ./citrix.nix
   ./git.nix
+  ./jujutsu.nix
   ./network.nix
   ./zellij.nix
   more
