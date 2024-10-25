@@ -19,10 +19,24 @@
       '';
     });
   };
+
+  liboggOverlay = final: prev: {
+    libogg = prev.libogg.overrideAttrs (prevAttrs: {
+      cmakeFlags =
+        (
+          if prevAttrs ? cmakeFlags
+          then prevAttrs.cmakeFlags
+          else []
+        )
+        ++ [
+          (final.lib.cmakeBool "BUILD_SHARED_LIBS" true)
+        ];
+    });
+  };
 in {
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = [citrixOverlay];
+  nixpkgs.overlays = [citrixOverlay liboggOverlay];
   home.packages = with pkgs; [
     citrix_workspace_24_05_0
   ];
