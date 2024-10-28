@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   fzfConfig = ''
     set -x FZF_DEFAULT_OPTS "--preview='bat {} --color=always'" \n
     set -x SKIM_DEFAULT_COMMAND "rg --files || fd || find ."
@@ -42,8 +46,13 @@ in {
       drm = "docker images -a -q | xargs docker rmi -f";
       du = "${pkgs.ncdu}/bin/ncdu --color dark -rr -x";
       ls = "${pkgs.eza}/bin/eza";
-      ll = "ls -a";
+      la = "${lib.getExe pkgs.eza} --long --all --group --header --group-directories-first --sort=type --icons";
+      lg = "${lib.getExe pkgs.eza} --long --all --group --header --git";
+      lt = "${lib.getExe pkgs.eza} --long --all --group --header --tree --level ";
+
       ".." = "cd ..";
+
+      zz = "zellij";
       ping = "${pkgs.prettyping}/bin/prettyping";
       tree = "${pkgs.eza}/bin/eza -T";
       xdg-open = "${pkgs.mimeo}/bin/mimeo";

@@ -105,7 +105,7 @@ in {
         }
       ];
       selection.save_to_clipboard = true;
-      shell.program = "${pkgs.fish}/bin/fish";
+      terminal.shell.program = "${pkgs.fish}/bin/fish";
       window = {
         dimensions = {
           columns = 154;

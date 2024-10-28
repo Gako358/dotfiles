@@ -121,7 +121,7 @@ let
 in {
   programs.zellij = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
   };
 
   home.file."./.config/zellij/layouts/default_layout.kdl".text = defaultLayout;
