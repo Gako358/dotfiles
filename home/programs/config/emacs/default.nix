@@ -1,9 +1,11 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   emacsCopilotSrc = builtins.fetchGit {
-    url = "https://github.com/zerolfx/copilot.el.git";
-    rev = "e15bafa95b39091dbb2a99ad62e42f03a8d78f01";
+    url = "https://github.com/chep/copilot-chat.el.git";
+    rev = "26ac2f65cbe1b9154d40d42d0acb82402b513897";
   };
-in {
+in
+{
   programs.emacs = {
     enable = true;
     extraPackages = epkgs:
@@ -20,6 +22,7 @@ in {
         company-quickhelp # Documentation popup for Company
         counsel # Various completion functions using Ivy
         counsel-projectile # Ivy integration for Projectile
+        copilot # An Emacs package for pair programming
         dashboard # A startup screen extracted from Spacemacs
         dired-single # Reuse the dired buffer
         direnv # Environment switcher for Emacs
@@ -48,6 +51,7 @@ in {
         ivy-posframe # Display ivy in a posframe
         ivy-prescient # Better sorting and filtering for ivy
         ivy-rich # More friendly display transformer for ivy
+        jsonrpc # Json RPC library
         ligature # Ligature support for Emacs
         magit # A Git porcelain inside Emacs
         nerd-icons # Nerd icons for Emacs
