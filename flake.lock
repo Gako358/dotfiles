@@ -677,8 +677,10 @@
         "plugins-nvim-web-devicons": "plugins-nvim-web-devicons",
         "plugins-obsidian": "plugins-obsidian",
         "plugins-plenary-nvim": "plugins-plenary-nvim",
+        "plugins-project": "plugins-project",
         "plugins-ranger": "plugins-ranger",
         "plugins-rust-tools": "plugins-rust-tools",
+        "plugins-session": "plugins-session",
         "plugins-sqls-nvim": "plugins-sqls-nvim",
         "plugins-telescope": "plugins-telescope",
         "plugins-theme": "plugins-theme",
@@ -689,11 +691,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1729857166,
-        "narHash": "sha256-yA6kf/ljOaZos7IJPIuCg5SWNb6GoDrDbSw4qBlHQRc=",
+        "lastModified": 1730313179,
+        "narHash": "sha256-ztoYKoLsRH9KVHEBk16xTbUGONd/E462v3e0URgc8/c=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "95d48b607d24cd9cf94f21d3776e7828c8b21d8e",
+        "rev": "7851de33b497681c25cb368e8c909b4f68634afa",
         "type": "github"
       },
       "original": {
@@ -1294,6 +1296,22 @@
         "type": "github"
       }
     },
+    "plugins-project": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1726220391,
+        "narHash": "sha256-56OflNXtVtoRH38LuPxT4RGNIXlG3pH04jvOey/6qio=",
+        "owner": "coffebar",
+        "repo": "neovim-project",
+        "rev": "f841cf801031e56f5193a52402f9cc488ea1a8e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "coffebar",
+        "repo": "neovim-project",
+        "type": "github"
+      }
+    },
     "plugins-ranger": {
       "flake": false,
       "locked": {
@@ -1323,6 +1341,22 @@
       "original": {
         "owner": "simrat39",
         "repo": "rust-tools.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-session": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1728423652,
+        "narHash": "sha256-W9jtfVXHC8MQJwdbxakNqhd+xh/auQb3U09XKdN2Wzw=",
+        "owner": "Shatur",
+        "repo": "neovim-session-manager",
+        "rev": "ce43f2eb2a52492157d7742e5f684b9a42bb3e5c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Shatur",
+        "repo": "neovim-session-manager",
         "type": "github"
       }
     },
