@@ -660,6 +660,7 @@
         "plugins-lsp-signature": "plugins-lsp-signature",
         "plugins-lspkind": "plugins-lspkind",
         "plugins-lualine": "plugins-lualine",
+        "plugins-luatab": "plugins-luatab",
         "plugins-noice": "plugins-noice",
         "plugins-notify": "plugins-notify",
         "plugins-nui": "plugins-nui",
@@ -691,11 +692,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1730313179,
-        "narHash": "sha256-ztoYKoLsRH9KVHEBk16xTbUGONd/E462v3e0URgc8/c=",
+        "lastModified": 1730325620,
+        "narHash": "sha256-uA342Pv96aiSG4HocfJRnfMfAdsT/50WPQW/xN9N1x8=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "7851de33b497681c25cb368e8c909b4f68634afa",
+        "rev": "b9596d19dc9364efd763017f534cc4220534ae31",
         "type": "github"
       },
       "original": {
@@ -1021,6 +1022,22 @@
       "original": {
         "owner": "hoob3rt",
         "repo": "lualine.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-luatab": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1720020287,
+        "narHash": "sha256-urV+cNpw3my6Un5j2L/2rkxQ8fyXmaLUd7J5NFih2oA=",
+        "owner": "alvarosevilla95",
+        "repo": "luatab.nvim",
+        "rev": "7bc6e0f6957fbaa93c98529f2cf28052329002e0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "alvarosevilla95",
+        "repo": "luatab.nvim",
         "type": "github"
       }
     },
