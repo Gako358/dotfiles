@@ -46,8 +46,19 @@ then {
 
   services.xserver = {
     enable = true;
-    displayManager.gdm.enable = true;
+    displayManager = {
+      gdm.enable = true;
+      autoLogin = {
+        enable = true;
+        user = "merrinx";
+      };
+    };
     desktopManager.gnome.enable = true;
+  };
+
+  systemd.services = {
+    "getty@tty1".enable = false;
+    "autovt@tty1".enable = false;
   };
 }
 else {

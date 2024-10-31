@@ -11,7 +11,6 @@ in
       gnomeExtensions.clipboard-history
       gnomeExtensions.dash-to-panel
       gnomeExtensions.just-perfection
-      gnomeExtensions.pop-shell
       gnomeExtensions.tray-icons-reloaded
       gnomeExtensions.user-themes
       gnome-tweaks
@@ -119,7 +118,6 @@ in
           "clipboard-history@alexsaveau.dev"
           "dash-to-panel@jderose9.github.com"
           "just-perfection-desktop@just-perfection"
-          "pop-shell@system76.com"
           "trayIconsReloaded@selfmade.pl"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
         ];
@@ -139,7 +137,6 @@ in
           "dbeaver.desktop"
           "selfservice.desktop"
           "chromium-browser.desktop"
-          "neovide.desktop"
         ];
       };
 
@@ -222,13 +219,6 @@ in
         "workspace-switcher-size" = 0;
         "workspace-wrap-around" = false;
         "workspaces-in-app-grid" = true;
-      };
-
-      "org/gnome/shell/extensions/pop-shell" = {
-        "active-hint" = false;
-        "gap-inner" = mkUint32 5;
-        "gap-outer" = mkUint32 5;
-        "tile-by-default" = true;
       };
 
       "org/gnome/shell/extensions/user-theme".name = "Flat-Remix-Blue-Light";

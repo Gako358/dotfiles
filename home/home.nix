@@ -21,7 +21,6 @@
     lazygit # terminal git ui
     libsecret # secret management
     ncdu # disk space info (a better du)
-    neovide # neovim gui
     nitch # minimal system information fetch
     nix-index # locate packages containing certain nixpkgs
     nix-output-monitor # nom: monitor nix commands
