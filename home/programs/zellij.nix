@@ -106,7 +106,7 @@ let
         magenta "#9d79d6"
         orange "#f4a261"
         cyan "#63cdcf"
-        black "#282828"
+        black "#1a1a1a"
         white "#aeafb0"
       }
     }

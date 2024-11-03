@@ -1,5 +1,7 @@
 {
+  lib,
   pkgs,
+  config,
   inputs,
   specialArgs,
   ...
@@ -44,16 +46,18 @@ then {
     ];
   };
 
-  services.xserver = {
-    enable = true;
+  services = {
+    xserver = {
+      enable = true;
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+    };
     displayManager = {
-      gdm.enable = true;
       autoLogin = {
         enable = true;
         user = "merrinx";
       };
     };
-    desktopManager.gnome.enable = true;
   };
 
   systemd.services = {
@@ -64,7 +68,7 @@ then {
 else {
   services.greetd = let
     session = {
-      command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a • %h | %F' --cmd Hyprland";
+      command = "${lib.getExe config.programs.hyprland.package}";
       user = "merrinx";
     };
   in {
@@ -75,4 +79,6 @@ else {
       default_session = session;
     };
   };
+  # unlock GPG keyring on login
+  security.pam.services.greetd.enableGnomeKeyring = true;
 }
