@@ -652,7 +652,6 @@
         "plugins-copilot-chat": "plugins-copilot-chat",
         "plugins-copilot-cmp": "plugins-copilot-cmp",
         "plugins-crates-nvim": "plugins-crates-nvim",
-        "plugins-direnv": "plugins-direnv",
         "plugins-fidget": "plugins-fidget",
         "plugins-gitsigns-nvim": "plugins-gitsigns-nvim",
         "plugins-glow-nvim": "plugins-glow-nvim",
@@ -693,11 +692,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1730453658,
-        "narHash": "sha256-KDFG1n2dQWkf+QUFZv0wxoO6AMD+TWxXZy9fQSCAmVc=",
+        "lastModified": 1730837908,
+        "narHash": "sha256-WVijUrNEiw2oqCw3m4myiHHL5PRsfoktXC3q9lZnGDM=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "eb263a8863ab5c5175b830d4eaaf692033fabf05",
+        "rev": "06e90910d89bc04f266a85b9d01f2a439b6eab82",
         "type": "github"
       },
       "original": {
@@ -895,22 +894,6 @@
       "original": {
         "owner": "Saecki",
         "repo": "crates.nvim",
-        "type": "github"
-      }
-    },
-    "plugins-direnv": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1720449552,
-        "narHash": "sha256-nWdAIchqGsWiF0cQ7NwePRa1fpugE8duZKqdBaisrAc=",
-        "owner": "NotAShelf",
-        "repo": "direnv.nvim",
-        "rev": "3e38d855c764bb1bec230130ed0e026fca54e4c8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NotAShelf",
-        "repo": "direnv.nvim",
         "type": "github"
       }
     },
@@ -1333,15 +1316,15 @@
     "plugins-project": {
       "flake": false,
       "locked": {
-        "lastModified": 1726220391,
-        "narHash": "sha256-56OflNXtVtoRH38LuPxT4RGNIXlG3pH04jvOey/6qio=",
-        "owner": "coffebar",
+        "lastModified": 1730653508,
+        "narHash": "sha256-d4tnzKZzCa6IrWdxrJ7ZaDZYSjQe9/xnMUBe2odDQIk=",
+        "owner": "Gako358",
         "repo": "neovim-project",
-        "rev": "f841cf801031e56f5193a52402f9cc488ea1a8e6",
+        "rev": "b035d547f33091144a52a39555e2691905bfb9aa",
         "type": "github"
       },
       "original": {
-        "owner": "coffebar",
+        "owner": "Gako358",
         "repo": "neovim-project",
         "type": "github"
       }
