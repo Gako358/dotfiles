@@ -3,7 +3,7 @@
   specialArgs,
   ...
 }:
-if specialArgs.hidpi
+if specialArgs.desktop
 then {
   services.snapper = {
     snapshotInterval = "hourly";

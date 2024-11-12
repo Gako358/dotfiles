@@ -21,7 +21,7 @@
   calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
 in
-  if !specialArgs.hidpi
+  if !specialArgs.desktop
   then {
     programs.waybar = {
       enable = true;

@@ -6,7 +6,7 @@
   specialArgs,
   ...
 }:
-if specialArgs.hidpi
+if specialArgs.desktop
 then {
   environment = {
     systemPackages = with pkgs; [

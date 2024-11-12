@@ -1,9 +1,14 @@
 {
+  specialArgs,
   pkgs,
   ...
 }: let
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
+  timeout =
+    if specialArgs.hidpi
+    then 3600
+    else 600;
 in {
   # screen idle
   services.hypridle = {
@@ -17,17 +22,32 @@ in {
         ignore_dbus_inhibit = true;
       };
 
-      # Lock screen on 30/10 min, screen off + 3 min
+      # Lock screen on 60/10 min, screen off + 3 min
       # Suspend at 1 hour
       listener = [
         {
-          timeout = null;
-          on-timeout = null;
-          on-resume = null;
+          timeout =
+            if specialArgs.hidpi
+            then timeout
+            else null;
+          on-timeout =
+            if specialArgs.hidpi
+            then "hyprctl dispatch dpms off"
+            else null;
+          on-resume =
+            if specialArgs.hidpi
+            then "hyprctl dispatch dpms on"
+            else null;
         }
         {
-          timeout = null;
-          on-timeout = null;
+          timeout =
+            if specialArgs.hidpi
+            then timeout + 370
+            else null;
+          on-timeout =
+            if specialArgs.hidpi
+            then "${pkgs.systemd}/bin/systemctl suspend"
+            else null;
         }
       ];
     };

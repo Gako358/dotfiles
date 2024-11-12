@@ -4,7 +4,7 @@
   lib,
   ...
 }:
-if !specialArgs.hidpi
+if specialArgs.gaming
 then {
   programs.steam = {
     enable = true;

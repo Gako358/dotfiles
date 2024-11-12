@@ -4,7 +4,7 @@
   specialArgs,
   ...
 }:
-if !specialArgs.hidpi
+if !specialArgs.desktop
 then {
   imports = [
     inputs.hyprland.nixosModules.default
@@ -41,6 +41,7 @@ then {
     };
     extraPortals = [
       pkgs.xdg-desktop-portal-wlr
+      pkgs.xdg-desktop-portal-gtk
     ];
   };
 

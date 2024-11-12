@@ -29,13 +29,6 @@ in {
     decoration = {
       rounding = 16;
       blur.enabled = true;
-      drop_shadow = true;
-      shadow_ignore_window = true;
-      shadow_offset = "0 15";
-      shadow_range = 100;
-      shadow_render_power = 2;
-      shadow_scale = 0.97;
-      "col.shadow" = "rgba(00000055)";
     };
     animations = {
       enabled = true;

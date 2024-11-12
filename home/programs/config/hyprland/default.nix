@@ -4,7 +4,7 @@
   specialArgs,
   ...
 }:
-if !specialArgs.hidpi
+if !specialArgs.desktop
 then {
   imports = [
     ./binds.nix

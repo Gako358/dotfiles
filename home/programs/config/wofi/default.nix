@@ -28,7 +28,7 @@
     tertiary_background_rgba = "rgba(33, 37, 43,${opacity})";
   };
 in
-  if !specialArgs.hidpi
+  if !specialArgs.desktop
   then {
     programs.wofi = {
       enable = true;

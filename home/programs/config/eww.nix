@@ -3,7 +3,7 @@
   specialArgs,
   ...
 }:
-if !specialArgs.hidpi
+if !specialArgs.desktop
 then {
   home.packages = with pkgs; [
     eww # Widgets

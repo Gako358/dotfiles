@@ -10,7 +10,7 @@
   };
   fontType = "RobotoMono Nerd Font 12";
 in
-  if !specialArgs.hidpi
+  if !specialArgs.desktop
   then {
     services.mako = {
       enable = true;

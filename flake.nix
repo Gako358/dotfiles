@@ -74,7 +74,8 @@
       terangreal = lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hidpi = true;
+          desktop = false;
+          gaming = false;
         };
         modules = [
           ./hosts/configuration.nix
@@ -84,7 +85,8 @@
       tuathaan = lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hidpi = false;
+          desktop = false;
+          gaming = false;
         };
         modules = [
           ./hosts/configuration.nix
@@ -97,6 +99,7 @@
         pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {
           inherit inputs outputs nix-colors;
+          desktop = false;
           hidpi = true;
         };
         modules = [
@@ -107,6 +110,7 @@
         pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {
           inherit inputs outputs nix-colors;
+          desktop = false;
           hidpi = false;
         };
         modules = [
