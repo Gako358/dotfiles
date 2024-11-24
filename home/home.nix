@@ -69,7 +69,7 @@ in {
 
   home = {
     inherit username homeDirectory;
-    stateVersion = "25.05";
+    stateVersion = "24.11";
     packages = defaultPkgs;
   };
 
