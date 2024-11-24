@@ -93,5 +93,5 @@
   users.defaultUserShell = pkgs.fish;
   # Enable proprietary software
   nixpkgs.config.allowUnfree = true;
-  system.stateVersion = "23.11";
+  system.stateVersion = "25.05";
 }
