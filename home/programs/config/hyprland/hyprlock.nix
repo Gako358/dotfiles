@@ -1,5 +1,5 @@
 let
-  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/screenofdeath.png";
+  tmpScreenshot = "/tmp/current_background.png";
 in {
   programs.hyprlock = {
     enable = true;
@@ -14,7 +14,7 @@ in {
       background = [
         {
           monitor = "";
-          path = wallpaper;
+          path = tmpScreenshot;
         }
       ];
 

@@ -8,6 +8,7 @@
   swappy = "${pkgs.swappy}/bin/swappy";
   wofi = "${pkgs.wofi}/bin/wofi";
   terminal = "${pkgs.alacritty}/bin/alacritty";
+  tmpScreenshot = "/tmp/current_background.png";
   lockScreen = "${pkgs.hyprlock}/bin/hyprlock";
 in {
   wayland.windowManager.hyprland.extraConfig = ''
@@ -17,8 +18,8 @@ in {
     bind = ${mainMod}, B, exec, ${terminal} -t btop -e btm
     bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
 
-    # Lockscreen
-    bind = ${mainMod} ${SECONDARY}, L, exec, ${lockScreen}
+    # Lockscreen with screenshot
+    bind = ${mainMod} ${SECONDARY}, L, exec, rm -f ${tmpScreenshot} && ${grimshot} save screen ${tmpScreenshot} && ${lockScreen}
 
     # Screenshot
     bind = ${mainMod} ${SECONDARY}, P, exec, ${grimshot} --notify save area - | ${swappy} -f -
