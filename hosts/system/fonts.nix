@@ -1,20 +1,15 @@
 {pkgs, ...}: {
   fonts.packages = with pkgs; [
-    (nerdfonts.override {
-      fonts = [
-        "DejaVuSansMono"
-        "FiraCode"
-        "FiraMono"
-        "Hack"
-        "Iosevka"
-        "JetBrainsMono"
-        "LiberationMono"
-        "Noto"
-        "RobotoMono"
-        "SourceCodePro"
-        "UbuntuMono"
-      ];
-    })
+    nerd-fonts.dejavu-sans-mono
+    nerd-fonts.fira-code
+    nerd-fonts.fira-mono
+    nerd-fonts.hack
+    nerd-fonts.iosevka
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.liberation
+    nerd-fonts.noto
+    nerd-fonts.roboto-mono
+    nerd-fonts.ubuntu-mono
     cascadia-code
     corefonts
     fira-code
