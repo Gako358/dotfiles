@@ -87,6 +87,6 @@ jobs:
             --fill \
             --label bot \
             --title "Auto update $(date -I)")
-          gh pr merge $PR --merge --auto --delete-branch
+          gh pr merge $PR --merge --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.TEST_TOKEN }}
