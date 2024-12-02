@@ -5,26 +5,186 @@ on:
     - cron: '0 5 * * 0'
 
 jobs:
-  update-flake-deps:
-    runs-on: ubuntu-latest
+  generate_matrix:
+    runs-on: ubuntu-20.04
+    outputs:
+      packages: ${{ steps.gen_packages.outputs.packages }}
+      checks: ${{ steps.gen_checks.outputs.checks }}
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
-      with:
-        token: "${{ secrets.GITHUB_TOKEN }}"
-    - name: Install nix
-      uses: cachix/install-nix-action@v20
-      with:
-        extra_nix_config: |
-          experimental-features = nix-command flakes
-        nix_path: nixpkgs=channel:nixos-unstable
-    - name: Update flake deps
-      run: nix flake update
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "chore(deps): update flake deps"
-        title: "chore(deps): update flake deps"
-        branch: "update-flake-deps"
-        body: "This pull request updates the flake dependencies."
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          token: "${{ secrets.TEST_TOKEN }}"
+      - name: Install nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            auto-optimise-store = true
+            access-tokens = github.com=${{ secrets.TEST_TOKEN }}
+            experimental-features = nix-command flakes
+            substituters = https://cache.nixos.org/
+          install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Generate flake.json
+        run: |
+          nix flake show --json > flake.json
+      - id: gen_packages
+        run: |
+          packages=$(jq -c '.packages."x86_64-linux" | keys' < flake.json)
+          printf "::set-output name=packages::%s" "$packages"
+      - id: gen_checks
+        run: |
+          checks=$(jq -c '.checks."x86_64-linux" | keys' < flake.json)
+          printf "::set-output name=checks::%s" "$checks"
+
+  update_flake:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          token: "${{ secrets.TEST_TOKEN }}"
+      - name: Install nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            auto-optimise-store = true
+            access-tokens = github.com=${{ secrets.TEST_TOKEN }}
+            experimental-features = nix-command flakes
+            substituters = https://cache.nixos.org/
+          install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Set up git
+        run: |
+          git config user.email "gako358@outlook.com"
+          git config user.name "Gako358"
+      - name: Update the flake
+        run: nix flake update
+      - name: Store flake.lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: flake_lock
+          path: flake.lock
+
+  build_flake:
+    runs-on: ubuntu-20.04
+    needs: [generate_matrix, update_flake]
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        package: ${{fromJson(needs.generate_matrix.outputs.packages)}}
+    steps:
+      - name: Free diskspace
+        uses: easimon/maximize-build-space@master
+        with:
+          build-mount-path: /nix
+          root-reserve-mb: 5120
+          remove-dotnet: true
+          remove-android: true
+          remove-haskell: true
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          token: "${{ secrets.TEST_TOKEN }}"
+      - name: Install nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            auto-optimise-store = true
+            access-tokens = github.com=${{ secrets.TEST_TOKEN }}
+            experimental-features = nix-command flakes
+            substituters = https://cache.nixos.org/
+          install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Restore flake.lock
+        uses: actions/download-artifact@v4
+        with:
+          name: flake_lock
+      - name: Build everything
+        run: nix build .#${{ matrix.package }}
+
+  build_checks:
+    runs-on: ubuntu-20.04
+    needs: [generate_matrix, update_flake]
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        check: ${{fromJson(needs.generate_matrix.outputs.checks)}}
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          token: "${{ secrets.TEST_TOKEN }}"
+      - name: Install nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            auto-optimise-store = true
+            access-tokens = github.com=${{ secrets.TEST_TOKEN }}
+            experimental-features = nix-command flakes
+            substituters = https://cache.nixos.org/
+          install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Restore flake.lock
+        uses: actions/download-artifact@v4
+        with:
+          name: flake_lock
+      - name: Build everything
+        run: nix build .#checks.x86_64-linux.${{ matrix.check }} --no-link
+
+  check_flake:
+    runs-on: ubuntu-20.04
+    needs: [update_flake]
+    continue-on-error: true
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          token: "${{ secrets.TEST_TOKEN }}"
+      - name: Install nix
+        uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            auto-optimise-store = true
+            access-tokens = github.com=${{ secrets.TEST_TOKEN }}
+            experimental-features = nix-command flakes
+            substituters = https://cache.nixos.org/
+          install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Restore flake.lock
+        uses: actions/download-artifact@v4
+        with:
+          name: flake_lock
+      - name: Build everything
+        run: |
+          nix flake check --keep-going
+
+  push_update:
+    runs-on: ubuntu-20.04
+    permissions: write-all
+    needs: [update_flake, build_flake, build_checks, check_flake]
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          token: "${{ secrets.TEST_TOKEN }}"
+      - name: Restore flake.lock
+        uses: actions/download-artifact@v4
+        with:
+          name: flake_lock
+      - name: Set up git
+        run: |
+          git config user.email "gako358@outlook.com"
+          git config user.name "Gako358"
+      - name: Create and merge PR
+        run: |
+          git switch -c updates-${{ github.run_id }}
+          git commit -am "flake.lock: Update"
+          git push -u origin updates-${{ github.run_id }}
+          PR=$(gh pr create \
+            --assignee Gako358 \
+            --base main \
+            --body "Automatic flake update on $(date -I)" \
+            --fill \
+            --label bot \
+            --title "Auto update $(date -I)")
+          gh pr merge $PR --merge --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.TEST_TOKEN }}
