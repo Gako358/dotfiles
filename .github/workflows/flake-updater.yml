@@ -33,39 +33,6 @@ jobs:
           name: flake_lock
           path: flake.lock
 
-  build_flake:
-    runs-on: ubuntu-20.04
-    needs: update_flake
-    steps:
-      - name: Free diskspace
-        uses: easimon/maximize-build-space@master
-        with:
-          build-mount-path: /nix
-          root-reserve-mb: 5120
-          remove-dotnet: true
-          remove-android: true
-          remove-haskell: true
-      - name: Clone repository
-        uses: actions/checkout@v4
-        with:
-          token: "${{ secrets.TEST_TOKEN }}"
-      - name: Install nix
-        uses: cachix/install-nix-action@v30
-        with:
-          extra_nix_config: |
-            auto-optimise-store = true
-            access-tokens = github.com=${{ secrets.TEST_TOKEN }}
-            experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org/
-          install_url: https://releases.nixos.org/nix/nix-2.25.0/install
-      - name: Restore flake.lock
-        uses: actions/download-artifact@v4
-        with:
-          name: flake_lock
-      - name: Build packages
-        run: |
-          nixos-rebuild build --flake .#terangreal
-
   check_flake:
     runs-on: ubuntu-20.04
     needs: update_flake
@@ -94,7 +61,7 @@ jobs:
   push_update:
     runs-on: ubuntu-20.04
     permissions: write-all
-    needs: [update_flake, build_flake, check_flake]
+    needs: [update_flake, check_flake]
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
