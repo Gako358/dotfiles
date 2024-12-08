@@ -32,7 +32,7 @@ in [
   ./browser/slack.nix
   ./config
   ./alacritty.nix
-  ./citrix.nix
+  #./citrix.nix
   ./git.nix
   ./jujutsu.nix
   ./network.nix
