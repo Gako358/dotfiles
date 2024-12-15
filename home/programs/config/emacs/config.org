@@ -53,10 +53,6 @@ Using dashboard and doom-theme with modeline.
   (use-package all-the-icons
     :ensure t)
 
-  (use-package all-the-icons-dired
-    :ensure t
-    :hook (dired-mode . all-the-icons-dired-mode))
-
   (use-package all-the-icons-ivy-rich
     :ensure t
     :init (all-the-icons-ivy-rich-mode 1))
@@ -78,48 +74,318 @@ Using dashboard and doom-theme with modeline.
 
     #+end_src
 
-#+RESULTS:
-: ((tab-bar-lines . 0) (width . 370) (height . 64) (alpha 91 . 55) (vertical-scroll-bars) (left-fringe . 8) (right-fringe . 8))
-
-* General Settings
+* Core
 #+begin_src emacs-lisp
-  (menu-bar-mode -1) ; Disable the menu bar
-  (tool-bar-mode -1) ; Disable the toolbar
-  (scroll-bar-mode -1) ; Disable the scroll bar
-  (tab-bar-mode -1) ; Disable the tab bar
-  (setq-default indent-tabs-mode nil) ; Use spaces instead of tabs
-  (global-display-line-numbers-mode t) ;; Show line numbers
-  (setq
-   make-backup-files nil ; Disable backup files
-   auto-save-default nil ; Disable auto save
-   display-line-numbers-type 'relative
-   gc-cons-threshold 100000000 ;; 100mb
-   read-process-output-max (* 1024 1024)) ;; 1mb
+    (defvar minimal-emacs-ui-features '()
+      "List of user interface features to disable in minimal Emacs setup.
 
-  (setq locale-coding-system 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
+    This variable holds a list Emacs UI features that can be enabled:
+    - `context-menu`: Enables the context menu in graphical environments.
+    - `tool-bar`: Enables the tool bar in graphical environments.
+    - `menu-bar`: Enables the menu bar in graphical environments.
+    - `dialogs`: Enables both file dialogs and dialog boxes.
+    - `tooltips`: Enables tooltips.
 
-  (setq ring-bell-function 'ignore)
-  (defalias 'yes-or-no-p 'y-or-n-p)
+    Each feature in the list corresponds to a specific UI component that can be
+    turned on.")
 
-  (use-package async
-    :ensure t
-    :init (dired-async-mode 1))
+    (defvar minimal-emacs-frame-title-format "%b – Emacs"
+      "Template for displaying the title bar of visible and iconified frame.")
 
-  ;; Direnv Configuration
-  (require 'direnv)
-  (direnv-mode 1)
+    (defvar minimal-emacs-debug nil
+      "Non-nil to enable debug.")
 
-  (defun config-reload ()
-    (interactive)
-    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c r") 'config-reload)
+    (defvar minimal-emacs-gc-cons-threshold (* 16 1024 1024)
+      "The value of `gc-cons-threshold' after Emacs startup.")
+
+    (defvar minimal-emacs-package-initialize-and-refresh t
+      "Whether to automatically initialize and refresh packages.
+    When set to non-nil, Emacs will automatically call `package-initialize' and
+    `package-refresh-contents' to set up and update the package system.")
+
+    (defvar minimal-emacs-user-directory user-emacs-directory
+      "The default value of the `user-emacs-directory' variable.")
+
+    ;;; Load pre-early-init.el
+
+    (defun minimal-emacs-load-user-init (filename)
+      "Execute a file of Lisp code named FILENAME."
+      (let ((user-init-file
+             (expand-file-name filename
+                               minimal-emacs-user-directory)))
+        (when (file-exists-p user-init-file)
+          (load user-init-file nil t))))
+
+    (minimal-emacs-load-user-init "pre-early-init.el")
+
+    (setq custom-theme-directory
+          (expand-file-name "themes/" minimal-emacs-user-directory))
+    (setq custom-file (expand-file-name "custom.el" minimal-emacs-user-directory))
+
+    ;;; Garbage collection
+    ;; Garbage collection significantly affects startup times. This setting delays
+    ;; garbage collection during startup but will be reset later.
+
+    (setq gc-cons-threshold most-positive-fixnum)
+
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                (setq gc-cons-threshold minimal-emacs-gc-cons-threshold)))
+
+    ;;; Misc
+
+    (set-language-environment "UTF-8")
+
+    ;; Set-language-environment sets default-input-method, which is unwanted.
+    (setq default-input-method nil)
+
+    ;;; Performance
+
+    ;; Prefer loading newer compiled files
+    (setq load-prefer-newer t)
+
+    ;; Font compacting can be very resource-intensive, especially when rendering
+    ;; icon fonts on Windows. This will increase memory usage.
+    (setq inhibit-compacting-font-caches t)
+
+    (unless (daemonp)
+      (let ((old-value (default-toplevel-value 'file-name-handler-alist)))
+        (set-default-toplevel-value
+         'file-name-handler-alist
+         ;; Determine the state of bundled libraries using calc-loaddefs.el.
+         ;; If compressed, retain the gzip handler in `file-name-handler-alist`.
+         ;; If compiled or neither, omit the gzip handler during startup for
+         ;; improved startup and package load time.
+         (if (eval-when-compile
+               (locate-file-internal "calc-loaddefs.el" load-path))
+             nil
+           (list (rassq 'jka-compr-handler old-value))))
+        ;; Ensure the new value persists through any current let-binding.
+        (set-default-toplevel-value 'file-name-handler-alist
+                                    file-name-handler-alist)
+        ;; Remember the old value to reset it as needed.
+        (add-hook 'emacs-startup-hook
+                  (lambda ()
+                    (set-default-toplevel-value
+                     'file-name-handler-alist
+                     ;; Merge instead of overwrite to preserve any changes made
+                     ;; since startup.
+                     (delete-dups (append file-name-handler-alist old-value))))
+                  101))
+
+      (unless noninteractive
+        (unless minimal-emacs-debug
+          (unless minimal-emacs-debug
+            ;; Suppress redisplay and redraw during startup to avoid delays and
+            ;; prevent flashing an unstyled Emacs frame.
+            ;; (setq-default inhibit-redisplay t) ; Can cause artifacts
+            (setq-default inhibit-message t)
+
+            ;; Reset the above variables to prevent Emacs from appearing frozen or
+            ;; visually corrupted after startup or if a startup error occurs.
+            (defun minimal-emacs--reset-inhibited-vars-h ()
+              ;; (setq-default inhibit-redisplay nil) ; Can cause artifacts
+              (setq-default inhibit-message nil)
+              (remove-hook 'post-command-hook #'minimal-emacs--reset-inhibited-vars-h))
+
+            (add-hook 'post-command-hook
+                      #'minimal-emacs--reset-inhibited-vars-h -100))
+
+          (dolist (buf (buffer-list))
+            (with-current-buffer buf
+              (setq mode-line-format nil)))
+
+          (put 'mode-line-format 'initial-value
+               (default-toplevel-value 'mode-line-format))
+          (setq-default mode-line-format nil)
+
+          (defun minimal-emacs--startup-load-user-init-file (fn &rest args)
+            "Advice for startup--load-user-init-file to reset mode-line-format."
+            (unwind-protect
+                (progn
+                  ;; Start up as normal
+                  (apply fn args))
+              ;; If we don't undo inhibit-{message, redisplay} and there's an
+              ;; error, we'll see nothing but a blank Emacs frame.
+              (setq-default inhibit-message nil)
+              (unless (default-toplevel-value 'mode-line-format)
+                (setq-default mode-line-format
+                              (get 'mode-line-format 'initial-value)))))
+
+          (advice-add 'startup--load-user-init-file :around
+                      #'minimal-emacs--startup-load-user-init-file))
+
+        ;; Without this, Emacs will try to resize itself to a specific column size
+        (setq frame-inhibit-implied-resize t)
+
+        ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted.
+        ;; No second pass of case-insensitive search over auto-mode-alist.
+        (setq auto-mode-case-fold nil)
+
+        ;; Reduce *Message* noise at startup. An empty scratch buffer (or the
+        ;; dashboard) is more than enough, and faster to display.
+        (setq inhibit-startup-screen t
+              inhibit-startup-echo-area-message user-login-name)
+        (setq initial-buffer-choice nil
+              inhibit-startup-buffer-menu t
+              inhibit-x-resources t)
+
+        ;; Disable bidirectional text scanning for a modest performance boost.
+        (setq-default bidi-display-reordering 'left-to-right
+                      bidi-paragraph-direction 'left-to-right)
+
+        ;; Give up some bidirectional functionality for slightly faster re-display.
+        (setq bidi-inhibit-bpa t)
+
+        ;; Remove "For information about GNU Emacs..." message at startup
+        (advice-add #'display-startup-echo-area-message :override #'ignore)
+
+        ;; Suppress the vanilla startup screen completely. We've disabled it with
+        ;; `inhibit-startup-screen', but it would still initialize anyway.
+        (advice-add #'display-startup-screen :override #'ignore)
+
+        ;; Shave seconds off startup time by starting the scratch buffer in
+        ;; `fundamental-mode'
+        (setq initial-major-mode 'fundamental-mode
+              initial-scratch-message nil)
+
+        (unless minimal-emacs-debug
+          ;; Unset command line options irrelevant to the current OS. These options
+          ;; are still processed by `command-line-1` but have no effect.
+          (unless (eq system-type 'darwin)
+            (setq command-line-ns-option-alist nil))
+          (unless (memq initial-window-system '(x pgtk))
+            (setq command-line-x-option-alist nil)))))
+
+    ;;; Native compilation and Byte compilation
+
+    (if (and (featurep 'native-compile)
+             (fboundp 'native-comp-available-p)
+             (native-comp-available-p))
+        ;; Activate `native-compile'
+        (setq native-comp-jit-compilation t
+              native-comp-deferred-compilation t  ; Obsolete since Emacs 29.1
+              package-native-compile t)
+      ;; Deactivate the `native-compile' feature if it is not available
+      (setq features (delq 'native-compile features)))
+
+    ;; Suppress compiler warnings and don't inundate users with their popups.
+    (setq native-comp-async-report-warnings-errors
+          (or minimal-emacs-debug 'silent))
+    (setq native-comp-warning-on-missing-source minimal-emacs-debug)
+
+    (setq debug-on-error minimal-emacs-debug
+          jka-compr-verbose minimal-emacs-debug)
+
+    (setq byte-compile-warnings minimal-emacs-debug)
+    (setq byte-compile-verbose minimal-emacs-debug)
+
+    ;;; UI elements
+
+    (setq frame-title-format minimal-emacs-frame-title-format
+          icon-title-format minimal-emacs-frame-title-format)
+
+    ;; Disable startup screens and messages
+    (setq inhibit-splash-screen t)
+
+    ;; I intentionally avoid calling `menu-bar-mode', `tool-bar-mode', and
+    ;; `scroll-bar-mode' because manipulating frame parameters can trigger or queue
+    ;; a superfluous and potentially expensive frame redraw at startup, depending
+    ;; on the window system. The variables must also be set to `nil' so users don't
+    ;; have to call the functions twice to re-enable them.
+    (unless (memq 'menu-bar minimal-emacs-ui-features)
+      (push '(menu-bar-lines . 0) default-frame-alist)
+      (unless (memq window-system '(mac ns))
+        (setq menu-bar-mode nil)))
+
+    (unless (daemonp)
+      (unless noninteractive
+        (when (fboundp 'tool-bar-setup)
+          ;; Temporarily override the tool-bar-setup function to prevent it from
+          ;; running during the initial stages of startup
+          (advice-add #'tool-bar-setup :override #'ignore)
+          (define-advice startup--load-user-init-file
+              (:after (&rest _) minimal-emacs-setup-toolbar)
+            (advice-remove #'tool-bar-setup #'ignore)
+            (when tool-bar-mode
+              (tool-bar-setup))))))
+    (unless (memq 'tool-bar minimal-emacs-ui-features)
+      (push '(tool-bar-lines . 0) default-frame-alist)
+      (setq tool-bar-mode nil))
+
+    (push '(vertical-scroll-bars) default-frame-alist)
+    (push '(horizontal-scroll-bars) default-frame-alist)
+    (setq scroll-bar-mode nil)
+    (when (fboundp 'horizontal-scroll-bar-mode)
+      (horizontal-scroll-bar-mode -1))
+
+    (unless (memq 'tooltips minimal-emacs-ui-features)
+      (when (bound-and-true-p tooltip-mode)
+        (tooltip-mode -1)))
+
+    ;; Disable GUIs because they are inconsistent across systems, desktop
+    ;; environments, and themes, and they don't match the look of Emacs.
+    (unless (memq 'dialogs minimal-emacs-ui-features)
+      (setq use-file-dialog nil)
+      (setq use-dialog-box nil))
+
+    ;;; LSP
+    (setenv "LSP_USE_PLISTS" "true")
 
 #+end_src
 
+* Config
+#+begin_src emacs-lisp
+  ;; Ensure Emacs loads the most recent byte-compiled files.
+  (setq load-prefer-newer t)
+
+  ;; Ensure JIT compilation is enabled for improved performance by
+  ;; native-compiling loaded .elc files asynchronously
+  (setq native-comp-jit-compilation t)
+                                          ;(setq native-comp-deferred-compilation t) ; Deprecated in Emacs > 29.1
+
+                                          ;(use-package compile-angel
+                                          ;  :ensure t
+                                          ;  :demand t
+                                          ;  :config
+                                          ;  (compile-angel-on-load-mode)
+                                          ;  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
+
+  ;; Auto-revert in Emacs is a feature that automatically updates the
+  ;; contents of a buffer to reflect changes made to the underlying file
+  ;; on disk.
+  (add-hook 'after-init-hook #'global-auto-revert-mode)
+
+  ;; recentf is an Emacs package that maintains a list of recently
+  ;; accessed files, making it easier to reopen files you have worked on
+  ;; recently.
+  (add-hook 'after-init-hook #'recentf-mode)
+
+  ;; savehist is an Emacs feature that preserves the minibuffer history between
+  ;; sessions. It saves the history of inputs in the minibuffer, such as commands,
+  ;; search strings, and other prompts, to a file. This allows users to retain
+  ;; their minibuffer history across Emacs restarts.
+  (add-hook 'after-init-hook #'savehist-mode)
+
+  ;; save-place-mode enables Emacs to remember the last location within a file
+  ;; upon reopening. This feature is particularly beneficial for resuming work at
+  ;; the precise point where you previously left off.
+  (add-hook 'after-init-hook #'save-place-mode)
+
+  ;; Turn on which-key-mode
+  (add-hook 'after-init-hook 'which-key-mode)
+
+  ;; Turn off autosave-mode
+  ;; turn off backup-files
+  (auto-save-mode -1)
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+
+  ;;; Line numbers
+  (setq display-line-numbers-type 'relative)
+  (global-display-line-numbers-mode)
+
+#+end_src
 * Completion
 Using company for code completion.
 
@@ -154,57 +420,18 @@ Using company for code completion.
     :after company
     :init
     :hook (company-mode . company-quickhelp-mode))
-#+end_src
 
-* Copilot
-Code completion from Copilot, using the Nvim binary.
-Using Nix to fetch the package for me, and make it available in the
-symlinked .emacs.d in home.
-
-#+begin_src emacs-lisp
   (use-package copilot
-    :ensure t
-    :hook (prog-mode-hook . copilot-mode)
+    :demand t
+    :hook (prog-mode-hook . copilot-mode))
+
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+
+  (use-package copilot-chat
+    :after request
     :config
-    (define-key copilot-completion-map (kbd "C-p") 'copilot-accept-completion)
-    (define-key copilot-mode-map (kbd "<C-S-n>") 'copilot-next-completion)
-    (define-key copilot-mode-map (kbd "<C-S-p>") 'copilot-previous-completion))
-#+end_src
-
-* Copilot Chat
-#+begin_src emacs-lisp
-  (let
-      (
-       (copilot-chat-dir "~/.emacs.d/emacsCopilotChat")
-       (copilot-chat-file "~/.emacs.d/emacsCopilotChat/copilot-chat.el"))
-    ;; Check if the copilot-chat.el file exists
-    (when
-        (file-exists-p copilot-chat-file)
-      ;; Add the directory to the load-path
-      (add-to-list 'load-path copilot-chat-dir)
-      ;; Try to load the copilot-chat module and catch any errors
-      (condition-case err
-          (progn
-            (use-package copilot-chat))
-        (error
-         (message "Failed to load copilot-chat: %s" err)))))
-#+end_src
-
-* Editor
-A compilation of different packages I use.
-
-#+begin_src emacs-lisp
-  (use-package flycheck
-    :config
-    (global-flycheck-mode)) ; Enable flycheck
-
-  (use-package highlight-thing
-    :config
-    (global-highlight-thing-mode)
-    :custom
-    (highlight-thing-delay-seconds 0.5)
-    (highlight-thing-case-sensitive-p t)
-    (highlight-thing-ignore-list '("False" "True" "None")))
+    (setq copilot-chat-backend 'request))
 
   (use-package ivy
     :init
@@ -213,97 +440,33 @@ A compilation of different packages I use.
     (ivy-use-virtual-buffers t)
     (ivy-count-format "(%d/%d) "))
 
-  (use-package editorconfig
-    :ensure t
-    :diminish editorconfig-mode
-    :config
-    (editorconfig-mode 1))
-
-  (use-package jsonrpc
-    :ensure t)
-
-  (use-package pdf-tools
-    :ensure t
-    :config
-    (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-page)
-    (setq pdf-annot-activate-created-annotations t)
-    :hook
-    (pdf-view-mode . (lambda ()
-                       (when (bound-and-true-p display-line-numbers-mode)
-                         (display-line-numbers-mode -1)))))
-
-  (use-package rainbow-mode
-    :ensure t
-    :init (add-hook 'prog-mode-hook 'rainbow-mode))
-
-  (use-package rainbow-delimiters
-    :hook (prog-mode . rainbow-delimiters-mode))
-
-  (use-package whitespace)
-  (use-package whitespace-cleanup-mode)
-#+end_src
-
-* Version
-Using magit with forge, creates the best environment for working with
-Git inside emacs, the only thing missing here is a way to approve PR.
-For forge, create a file called ~/.authinfo with the following:
-
-- machine api.github.com login gako358^forge password ==secret-token==
-
-#+begin_src emacs-lisp
-  (use-package git-gutter
-    :hook (prog-mode . git-gutter-mode)
-    :custom
-    (git-gutter:update-interval 0.05))
-
-  (use-package git-gutter-fringe
-    :after git-gutter
-    :config
-    (fringe-mode '(8 . 8))
-    (define-fringe-bitmap 'git-gutter-fr:added
-      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-      nil nil 'center)
-    (define-fringe-bitmap 'git-gutter-fr:modified
-      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-      nil nil 'center)
-    (define-fringe-bitmap 'git-gutter-fr:deleted
-      [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-      nil nil 'center))
-
-  (use-package blamer
-    :custom
-    (blamer-idle-time 0.3)
-    (blamer-min-offset 70))
-
-  (use-package forge
-    :after magit)
 #+end_src
 
 * Keybindings
 Keys that I have binded to my keyboard for easy navigation in emacs
 
 #+begin_src emacs-lisp
+  ;; evil-want-keybinding must be declared before Evil and Evil Collection
+  (setq evil-want-keybinding nil)
+
   (use-package evil
     :ensure t
     :init
+    (setq evil-undo-system 'undo-fu)
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
+    :custom
+    (evil-want-Y-yank-to-eol t)
     :config
+    (evil-select-search-module 'evil-search-module 'evil-search)
     (evil-mode 1))
 
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init))
-
-  (use-package evil-leader
-    :init
-    (global-evil-leader-mode)
-    (evil-leader/set-leader "<SPC>")
-    (evil-leader/set-key
-      ;; General
+  ;;; Leader
+  (use-package evil-leader)
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key
+      ;; Project
       "fb" 'counsel-find-file
       "ff" 'projectile-find-file
       "fg" 'projectile-ripgrep
@@ -317,63 +480,71 @@ Keys that I have binded to my keyboard for easy navigation in emacs
       "bn" 'next-buffer
       "bp" 'previous-buffer
 
-      ;; Editor
-      "s" 'replace-word-at-point
+      ;; Copilot
+      "ccq" 'move-right-and-open-copilot-chat
+      "cce" 'copilot-chat-explain
+      "ccr" 'copilot-chat-reset
+      "ccv" 'copilot-chat-review
+      "ccd" 'copilot-chat-doc
+      "ccf" 'copilot-chat-fix
+      "cbl" 'move-and-open-copilot-chat-list
+      "cba" 'copilot-chat-add-current-buffer
+      "cbd" 'copilot-chat-del-current-buffer
 
       ;; Git
       "/" 'magit-status
       "bm" 'blamer-mode
 
       ;; LSP
-      "gd" 'xref-find-definitions
-      "gr" 'xref-find-references
-      "gt" 'eglot-find-typeDefinition
       "la" 'eglot-code-actions
-      "lq" 'eglot-code-action-quickfix
-      "lo" 'eglot-code-actions-organize-imports
       "lf" 'eglot-format
-      "lr" 'eglot-rename
-      "li" 'indent-region
+      "li" 'ident-region
+      "ln" 'flymake-goto-next-error
+      "le" 'eglot
       "lwd" 'flymake-show-project-diagnostics
       "lbd" 'flymake-show-buffer-diagnostics
+      "e"  'eldoc-box-help-at-point
+    )
 
-      ;; Vterm
-      "vt" 'vterm
-
-      ;; Whitespace
-      "ws" 'whitespace-mode
-      "wc" 'whitespace-cleanup-mode))
-
-  (use-package evil-surround
+  (use-package evil-collection
     :after evil
     :ensure t
     :config
-    (global-evil-surround-mode 1))
-
-  (use-package evil-commentary
-    :after evil
-    :ensure t
-    :config
-    (evil-commentary-mode 1))
+    (evil-collection-init))
 
   (use-package evil-visualstar
     :after evil
     :ensure t
-    :config
-    (global-evil-visualstar-mode 1))
+    :defer t
+    :commands global-evil-visualstar-mode
+    :hook (after-init . global-evil-visualstar-mode))
 
-  (use-package evil-matchit
+  (use-package evil-surround
     :after evil
     :ensure t
-    :config
-    (global-evil-matchit-mode 1))
+    :defer t
+    :commands global-evil-surround-mode
+    :custom
+    (evil-surround-pairs-alist
+     '((?\( . ("(" . ")"))
+       (?\[ . ("[" . "]"))
+       (?\{ . ("{" . "}"))
 
-  (use-package evil-snipe
-    :after evil
-    :ensure t
-    :config
-    (evil-snipe-mode 1)
-    (evil-snipe-override-mode 1))
+       (?\) . ("(" . ")"))
+       (?\] . ("[" . "]"))
+       (?\} . ("{" . "}"))
+
+       (?< . ("<" . ">"))
+       (?> . ("<" . ">"))))
+    :hook (after-init . global-evil-surround-mode))
+
+  (with-eval-after-load "evil"
+    (evil-define-operator my-evil-comment-or-uncomment (beg end)
+      "Toggle comment for the region between BEG and END."
+      (interactive "<r>")
+      (comment-or-uncomment-region beg end))
+    (evil-define-key 'normal 'global (kbd "gc") 'my-evil-comment-or-uncomment))
+
   (defun split-window-right-and-move-there-dammit ()
     (interactive)
     (split-window-right)
@@ -433,6 +604,24 @@ Keys that I have binded to my keyboard for easy navigation in emacs
         (while (search-forward old-word nil t)
           (replace-match new-word)))))
 
+  (defun move-right-and-open-copilot-chat ()
+    (interactive)
+    (split-window-right)
+    (windmove-right)
+    (copilot-chat-display))
+
+  (defun move-and-open-copilot-chat-list ()
+    "If nothing is open to the right, split right, move there and open copilot-chat-list, or if something is open to the right, split below, move there and open copilot-chat-list."
+    (interactive)
+    (if (windmove-find-other-window 'right)
+        (progn
+          (split-window-below)
+          (windmove-down))
+      (progn
+        (split-window-right)
+        (windmove-right)))
+    (copilot-chat-list))
+
   (global-set-key (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
   (global-set-key (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
   (global-set-key (kbd "C-S-j") 'split-window-below-and-move-there-dammit)
@@ -446,15 +635,8 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "C-l") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'move-text-up)
   (global-set-key (kbd "S-<down>") 'move-text-down)
-  (global-set-key (kbd "C-<tab>") 'previous-buffer)
+  (global-set-key (kbd "S-<tab>") 'previous-buffer)
   (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
-  (global-set-key (kbd "C-S-n") 'treemacs)
-  (global-set-key (kbd "C-S-c") 'company-complete)
-
-  (use-package which-key
-    :ensure t
-    :config
-    (which-key-mode))
 
 #+end_src
 
@@ -471,22 +653,47 @@ Setup using:
 Using own created web mode, for vue, typescript and tailwind.
 
 #+begin_src emacs-lisp
-  (use-package eglot
-    :ensure t
+  (use-package treesit
+    :ensure nil
+    :custom
+    (treesit-font-lock-level 4)
     :config
-    (setq eglot-autoshutdown t))
+    (seq-do (lambda (it)
+              (push it major-mode-remap-alist))
+            '((python-mode . python-ts-mode)
+              (javascript-mode . js-ts-mode)
+              (typescript-mode . typescript-ts-mode)
+              (java-mode . java-ts-mode)
+              (css-mode . css-ts-mode)
+              (sh-mode . bash-ts-mode)
+              (scala-mode . scala-ts-mode)
+              (shell-script-mode . bash-ts-mode))))
 
-  (use-package eglot-java
-    :hook (java-mode . eglot-java-mode)
-    :mode ("\\.java\\'" . java-mode))
+  (use-package scala-ts-mode
+    :init
+    (setq scala-ts-indent-offset 2))
+
+  (use-package haskell-mode)
+
+  (use-package nix-ts-mode
+    :mode "\\.nix\\'")
 
   (use-package nixpkgs-fmt
     :commands nixpkgs-fmt
     :hook (nix-mode . nixpkgs-fmt-on-save-mode))
 
-  (use-package nix-mode
-    :hook (nix-mode . eglot-ensure)
-    :mode "\\.nix\\'")
+  (use-package typescript-ts-mode
+    :mode (("\\.cts\\'" . typescript-ts-mode)
+           ("\\.tsx\\'" . typescript-ts-mode)
+           ("\\.ts\\'" . typescript-ts-mode)))
+
+  (use-package eglot-booster
+    :after eglot
+    :config	(eglot-booster-mode))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(scala-ts-mode . ("metals"))))
 
   (use-package blacken)
   (use-package python-mode
@@ -497,120 +704,20 @@ Using own created web mode, for vue, typescript and tailwind.
     :hook (rustic-mode . eglot-ensure)
     :mode "\\.rs\\'")
 
-  (use-package sbt-mode
-    :after eglog
-    :config
-    (setq sbt:program-options '("-Dsbt.supershell=false"))
-    :mode ("\\.s\\(cala\\|bt\\)$" . sbt-mode))
+  (use-package eldoc-box)
 
-  (use-package scala-mode
-    :after (eglot)
-    :config
-    :hook ((scala-mode . eglot-ensure)
-           (scala-mode . add-scala-format-on-save))
-    :mode "\\.scala\\'")
-
-  (defun add-scala-format-on-save ()
-    "Add `eglot-format-buffer` to `before-save-hook` (activated in scala-mode only)."
-    (add-hook 'before-save-hook
-              (lambda ()
-                (when (eq 'scala-mode major-mode)
-                  (eglot-format-buffer))))
-    nil)
-
-  (setq major-mode-remap-alist
-        '((bash-mode . bash-ts-mode)
-          (css-mode . css-ts-mode)
-          (json-mode . js-ts-mode)
-          (js2-mode . js-ts-mode)
-          (typescript-mode . typescript-ts-mode)))
-
-  (setq treesit-font-lock-level 4)
-#+end_src
-* ORG Mode
-One of the best features of emacs, that i know way to little
-about yet...
-
-#+begin_src emacs-lisp
-  (use-package org
-    :init
-    (setq org-directory (or org-directory "~/Documents/notes/org/")
-          org-id-locations-file (expand-file-name ".orgids" org-directory)
-          org-agenda-files (list org-directory)
-          org-agenda-deadline-faces '((1.001 . error)
-                                      (1.0 . org-warning)
-                                      (0.5 . org-upcoming-deadline)
-                                      (0.0 . org-upcoming-distant-deadline))
-          org-agenda-window-setup 'current-window
-          org-agenda-skip-unavailable-files t
-          org-agenda-span 10
-          org-agenda-start-on-weekday nil
-          org-agenda-start-day "-3d"
-          org-agenda-inhibit-startup t
-          org-indirect-buffer-display 'current-window
-          org-eldoc-breadcrumb-separator " → "
-          org-enforce-todo-dependencies t
-          org-entities-user '(("flat"  "\\flat" nil "" "" "266D" "♭")
-                              ("sharp" "\\sharp" nil "" "" "266F" "♯"))
-          org-ellipsis " "
-          org-capture-templates '(("t" "Todo" entry (file+headline "~/Documents/notes/org/todo.org" "Tasks")
-                                   "* TODO %?\n %i\n %a")
-                                  ("j" "Journal" entry (file+datatree "~/Documents/notes/org/journal.org")
-                                   "* %?\nEntered on %U\n %i\n %a"))
-          org-src-fontify-natively t
-          org-src-tab-acts-natively t
-          org-confirm-babel-evaluate nil
-          org-export-with-smart-quotes t
-          org-src-window-setup 'current-window
-          org-fontify-done-headline t
-          org-fontify-quote-and-verse-blocks t
-          org-fontify-whole-heading-line t
-          org-hide-leading-stars t
-          org-image-actual-width nil
-          org-imenu-depth 6
-          org-priority-faces '((?A . error)
-                               (?B . warning)
-                               (?C . success))
-          org-startup-indented t
-          org-tags-column 0
-          org-use-sub-superscripts '{}
-          org-startup-folded nil))
-
-  (add-hook 'org-mode-hook 'org-indent-mode)
-  (use-package org-roam
-    :init
-    (setq org-roam-v2-ack t
-          org-roam-directory "~/Documents/notes/roam/"
-          org-roam-db-location "~/Documents/notes/roam/org-roam.db"
-          org-roam-completion-everywhere t))
-
-  (use-package org-roam-ui
-    :init
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-
-  (use-package org-present
-    :hook ((org-present-mode . (lambda ()
-                                 (org-present-big)
-                                 (org-display-inline-images)
-                                 (org-present-hide-cursor)
-                                 (org-present-read-only)))
-           (org-present-mode-quit . (lambda ()
-                                      (org-present-small)
-                                      (org-remove-inline-images)
-                                      (org-present-show-cursor)
-                                      (org-present-read-write))))
-    )
-
-  (use-package org-pomodoro
-    :init
-    (setq org-pomodoro-length 25
-          org-pomodoro-short-break-length 5
-          org-pomodoro-long-break-length 15
-          org-pomodoro-manual-break t))
-
+  (use-package web-mode
+    :ensure t
+    :mode
+    (("\\.phtml\\'" . web-mode)
+     ("\\.php\\'" . web-mode)
+     ("\\.vue\\'" . web-mode)
+     ("\\.tpl\\'" . web-mode)
+     ("\\.[agj]sp\\'" . web-mode)
+     ("\\.as[cp]x\\'" . web-mode)
+     ("\\.erb\\'" . web-mode)
+     ("\\.mustache\\'" . web-mode)
+     ("\\.djhtml\\'" . web-mode)))
 #+end_src
 
 * Projects
@@ -633,171 +740,45 @@ Easy to use and setup, easy use of buffers.
     :after projectile
     :config
     (counsel-projectile-mode))
+
+  ;;; Terminal
+  (use-package eat)
+  (add-hook 'eshell-load-hook #'eat-eshell-mode)
+  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
 #+end_src
 
-* Terminal
+* Version
+Using magit with forge, creates the best environment for working with
+Git inside emacs, the only thing missing here is a way to approve PR.
+For forge, create a file called ~/.authinfo with the following:
+
+- machine api.github.com login gako358^forge password ==secret-token==
 
 #+begin_src emacs-lisp
-  (use-package vterm
-    :ensure t)
+  (use-package git-gutter
+    :hook (prog-mode . git-gutter-mode)
+    :custom
+    (git-gutter:update-interval 0.05))
 
-  (use-package multi-vterm
-    :ensure t
-    :bind (("C-S-t" . multi-vterm-project)
-           ("C-S-b" . multi-vterm-dedicated-toggle))
+  (use-package git-gutter-fringe
+    :after git-gutter
     :config
-    (setq multi-vterm-dedicated-window-height 37))
-#+end_src
+    (fringe-mode '(8 . 8))
+    (define-fringe-bitmap 'git-gutter-fr:added
+      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+      nil nil 'center)
+    (define-fringe-bitmap 'git-gutter-fr:modified
+      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
+      nil nil 'center)
+    (define-fringe-bitmap 'git-gutter-fr:deleted
+      [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
+      nil nil 'center))
 
-* Web-Mode
+  (use-package blamer
+    :custom
+    (blamer-idle-time 0.3)
+    (blamer-min-offset 70))
 
-#+begin_src emacs-lisp
-  (use-package web-mode
-    :ensure t
-    :mode (("\\.phtml\\'" . web-mode)
-           ("\\.tpl\\.php\\'" . web-mode)
-           ("\\.[agj]sp\\'" . web-mode)
-           ("\\.as[cp]x\\'" . web-mode)
-           ("\\.erb\\'" . web-mode)
-           ("\\.mustache\\'" . web-mode)
-           ("\\.liquid\\'" . web-mode)
-           ("\\.djhtml\\'" . web-mode)
-           ("\\.html?\\'" . web-mode))
-    :config
-    (setq web-mode-enable-auto-closing t
-          web-mode-markup-indent-offset 2
-          web-mode-css-indent-offset 2
-          web-mode-part-padding 2
-          web-mode-script-padding 2
-          web-mode-style-padding 2
-          web-mode-code-indent-offset 2))
-#+end_src
-
-* Yaml-Mode
-
-#+begin_src emacs-lisp
-  (use-package yaml-mode
-    :ensure t
-    :mode (("\\.\\(yml\\|yaml\\)\\'" . yaml-mode)))
-#+end_src
-
-* Treemacs
-Treemacs is file and project explorer similar to NeoTree or vim's NerdTree, but largely inspired by the project explorer in Exlipse.
-
-#+begin_src emacs-lisp
-  (use-package treemacs
-    :ensure t
-    :defer t
-    :init
-    (with-eval-after-load 'winum
-      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-    :config
-    (progn
-      (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-            treemacs-deferred-git-apply-delay        0.5
-            treemacs-directory-name-transformer      #'identity
-            treemacs-display-in-side-window          t
-            treemacs-eldoc-display                   'simple
-            treemacs-file-event-delay                2000
-            treemacs-file-extension-regex            treemacs-last-period-regex-value
-            treemacs-file-follow-delay               0.2
-            treemacs-file-name-transformer           #'identity
-            treemacs-follow-after-init               t
-            treemacs-expand-after-init               t
-            treemacs-find-workspace-method           'find-for-file-or-pick-first
-            treemacs-git-command-pipe                ""
-            treemacs-goto-tag-strategy               'refetch-index
-            treemacs-header-scroll-indicators        '(nil . "^^^^^^")
-            treemacs-hide-dot-git-directory          t
-            treemacs-indentation                     2
-            treemacs-indentation-string              " "
-            treemacs-is-never-other-window           nil
-            treemacs-max-git-entries                 5000
-            treemacs-missing-project-action          'ask
-            treemacs-move-forward-on-expand          nil
-            treemacs-no-png-images                   nil
-            treemacs-no-delete-other-windows         t
-            treemacs-project-follow-cleanup          nil
-            treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-            treemacs-position                        'left
-            treemacs-read-string-input               'from-child-frame
-            treemacs-recenter-distance               0.1
-            treemacs-recenter-after-file-follow      nil
-            treemacs-recenter-after-tag-follow       nil
-            treemacs-recenter-after-project-jump     'always
-            treemacs-recenter-after-project-expand   'on-distance
-            treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
-            treemacs-project-follow-into-home        nil
-            treemacs-show-cursor                     nil
-            treemacs-show-hidden-files               t
-            treemacs-silent-filewatch                nil
-            treemacs-silent-refresh                  nil
-            treemacs-sorting                         'alphabetic-asc
-            treemacs-select-when-already-in-treemacs 'move-back
-            treemacs-space-between-root-nodes        t
-            treemacs-tag-follow-cleanup              t
-            treemacs-tag-follow-delay                1.5
-            treemacs-text-scale                      nil
-            treemacs-user-mode-line-format           nil
-            treemacs-user-header-line-format         nil
-            treemacs-wide-toggle-width               91
-            treemacs-width                           55
-            treemacs-width-increment                 1
-            treemacs-width-is-initially-locked       t
-            treemacs-workspace-switch-cleanup        nil)
-
-      ;; The default width and height of the icons is 22 pixels. If you are
-      ;; using a Hi-DPI display, uncomment this to double the icon size.
-      ;;(treemacs-resize-icons 44)
-
-      (treemacs-follow-mode t)
-      (treemacs-filewatch-mode t)
-      (treemacs-fringe-indicator-mode 'always)
-      (when treemacs-python-executable
-        (treemacs-git-commit-diff-mode t))
-
-      (pcase (cons (not (null (executable-find "git")))
-                   (not (null treemacs-python-executable)))
-        (`(t . t)
-         (treemacs-git-mode 'deferred))
-        (`(t . _)
-         (treemacs-git-mode 'simple)))
-
-      (treemacs-hide-gitignored-files-mode nil))
-    :bind
-    (:map global-map
-          ("M-0"       . treemacs-select-window)
-          ("C-x t 1"   . treemacs-delete-other-windows)
-          ("C-x t t"   . treemacs)
-          ("C-x t d"   . treemacs-select-directory)
-          ("C-x t B"   . treemacs-bookmark)
-          ("C-x t C-t" . treemacs-find-file)
-          ("C-x t M-t" . treemacs-find-tag)))
-
-  (use-package treemacs-evil
-    :after (treemacs evil)
-    :ensure t)
-
-  (use-package treemacs-projectile
-    :after (treemacs projectile)
-    :ensure t)
-
-  (use-package treemacs-icons-dired
-    :hook (dired-mode . treemacs-icons-dired-enable-once)
-    :ensure t)
-
-  (use-package treemacs-magit
-    :after (treemacs magit)
-    :ensure t)
-
-  (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-    :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-    :ensure t
-    :config (treemacs-set-scope-type 'Perspectives))
-
-  (use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
-    :after (treemacs)
-    :ensure t
-    :config (treemacs-set-scope-type 'Tabs))
-
+  (use-package forge
+    :after magit)
 #+end_src
