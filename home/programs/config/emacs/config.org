@@ -77,261 +77,264 @@ Using dashboard and doom-theme with modeline.
 
 * Core
 #+begin_src emacs-lisp
-    (defvar minimal-emacs-ui-features '()
-      "List of user interface features to disable in minimal Emacs setup.
+  (defvar minimal-emacs-ui-features '()
+    "List of user interface features to disable in minimal Emacs setup.
 
-    This variable holds a list Emacs UI features that can be enabled:
-    - `context-menu`: Enables the context menu in graphical environments.
-    - `tool-bar`: Enables the tool bar in graphical environments.
-    - `menu-bar`: Enables the menu bar in graphical environments.
-    - `dialogs`: Enables both file dialogs and dialog boxes.
-    - `tooltips`: Enables tooltips.
+  This variable holds a list Emacs UI features that can be enabled:
+  - `context-menu`: Enables the context menu in graphical environments.
+  - `tool-bar`: Enables the tool bar in graphical environments.
+  - `menu-bar`: Enables the menu bar in graphical environments.
+  - `dialogs`: Enables both file dialogs and dialog boxes.
+  - `tooltips`: Enables tooltips.
 
-    Each feature in the list corresponds to a specific UI component that can be
-    turned on.")
+  Each feature in the list corresponds to a specific UI component that can be
+  turned on.")
 
-    (defvar minimal-emacs-frame-title-format "%b – Emacs"
-      "Template for displaying the title bar of visible and iconified frame.")
+  (defvar minimal-emacs-frame-title-format "%b – Emacs"
+    "Template for displaying the title bar of visible and iconified frame.")
 
-    (defvar minimal-emacs-debug nil
-      "Non-nil to enable debug.")
+  (defvar minimal-emacs-debug nil
+    "Non-nil to enable debug.")
 
-    (defvar minimal-emacs-gc-cons-threshold (* 16 1024 1024)
-      "The value of `gc-cons-threshold' after Emacs startup.")
+  (defvar minimal-emacs-gc-cons-threshold (* 16 1024 1024)
+    "The value of `gc-cons-threshold' after Emacs startup.")
 
-    (defvar minimal-emacs-package-initialize-and-refresh t
-      "Whether to automatically initialize and refresh packages.
-    When set to non-nil, Emacs will automatically call `package-initialize' and
-    `package-refresh-contents' to set up and update the package system.")
+  (defvar minimal-emacs-package-initialize-and-refresh t
+    "Whether to automatically initialize and refresh packages.
+  When set to non-nil, Emacs will automatically call `package-initialize' and
+  `package-refresh-contents' to set up and update the package system.")
 
-    (defvar minimal-emacs-user-directory user-emacs-directory
-      "The default value of the `user-emacs-directory' variable.")
+  (defvar minimal-emacs-user-directory user-emacs-directory
+    "The default value of the `user-emacs-directory' variable.")
 
-    ;;; Load pre-early-init.el
+  ;;; Load pre-early-init.el
 
-    (defun minimal-emacs-load-user-init (filename)
-      "Execute a file of Lisp code named FILENAME."
-      (let ((user-init-file
-             (expand-file-name filename
-                               minimal-emacs-user-directory)))
-        (when (file-exists-p user-init-file)
-          (load user-init-file nil t))))
+  (defun minimal-emacs-load-user-init (filename)
+    "Execute a file of Lisp code named FILENAME."
+    (let ((user-init-file
+           (expand-file-name filename
+                             minimal-emacs-user-directory)))
+      (when (file-exists-p user-init-file)
+        (load user-init-file nil t))))
 
-    (minimal-emacs-load-user-init "pre-early-init.el")
+  (minimal-emacs-load-user-init "pre-early-init.el")
 
-    (setq custom-theme-directory
-          (expand-file-name "themes/" minimal-emacs-user-directory))
-    (setq custom-file (expand-file-name "custom.el" minimal-emacs-user-directory))
+  (setq custom-theme-directory
+        (expand-file-name "themes/" minimal-emacs-user-directory))
+  (setq custom-file (expand-file-name "custom.el" minimal-emacs-user-directory))
 
-    ;;; Garbage collection
-    ;; Garbage collection significantly affects startup times. This setting delays
-    ;; garbage collection during startup but will be reset later.
+  ;;; Garbage collection
+  ;; Garbage collection significantly affects startup times. This setting delays
+  ;; garbage collection during startup but will be reset later.
 
-    (setq gc-cons-threshold most-positive-fixnum)
+  (setq gc-cons-threshold most-positive-fixnum)
 
-    (add-hook 'emacs-startup-hook
-              (lambda ()
-                (setq gc-cons-threshold minimal-emacs-gc-cons-threshold)))
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold minimal-emacs-gc-cons-threshold)))
 
-    ;;; Misc
+  ;;; Misc
 
-    (set-language-environment "UTF-8")
+  (set-language-environment "UTF-8")
 
-    ;; Set-language-environment sets default-input-method, which is unwanted.
-    (setq default-input-method nil)
+  ;; Set-language-environment sets default-input-method, which is unwanted.
+  (setq default-input-method nil)
 
-    ;;; Performance
+  ;;; Performance
 
-    ;; Prefer loading newer compiled files
-    (setq load-prefer-newer t)
+  ;; Prefer loading newer compiled files
+  (setq load-prefer-newer t)
 
-    ;; Font compacting can be very resource-intensive, especially when rendering
-    ;; icon fonts on Windows. This will increase memory usage.
-    (setq inhibit-compacting-font-caches t)
+  ;; Font compacting can be very resource-intensive, especially when rendering
+  ;; icon fonts on Windows. This will increase memory usage.
+  (setq inhibit-compacting-font-caches t)
 
-    (unless (daemonp)
-      (let ((old-value (default-toplevel-value 'file-name-handler-alist)))
-        (set-default-toplevel-value
-         'file-name-handler-alist
-         ;; Determine the state of bundled libraries using calc-loaddefs.el.
-         ;; If compressed, retain the gzip handler in `file-name-handler-alist`.
-         ;; If compiled or neither, omit the gzip handler during startup for
-         ;; improved startup and package load time.
-         (if (eval-when-compile
-               (locate-file-internal "calc-loaddefs.el" load-path))
-             nil
-           (list (rassq 'jka-compr-handler old-value))))
-        ;; Ensure the new value persists through any current let-binding.
-        (set-default-toplevel-value 'file-name-handler-alist
-                                    file-name-handler-alist)
-        ;; Remember the old value to reset it as needed.
-        (add-hook 'emacs-startup-hook
-                  (lambda ()
-                    (set-default-toplevel-value
-                     'file-name-handler-alist
-                     ;; Merge instead of overwrite to preserve any changes made
-                     ;; since startup.
-                     (delete-dups (append file-name-handler-alist old-value))))
-                  101))
+  (unless (daemonp)
+    (let ((old-value (default-toplevel-value 'file-name-handler-alist)))
+      (set-default-toplevel-value
+       'file-name-handler-alist
+       ;; Determine the state of bundled libraries using calc-loaddefs.el.
+       ;; If compressed, retain the gzip handler in `file-name-handler-alist`.
+       ;; If compiled or neither, omit the gzip handler during startup for
+       ;; improved startup and package load time.
+       (if (eval-when-compile
+             (locate-file-internal "calc-loaddefs.el" load-path))
+           nil
+         (list (rassq 'jka-compr-handler old-value))))
+      ;; Ensure the new value persists through any current let-binding.
+      (set-default-toplevel-value 'file-name-handler-alist
+                                  file-name-handler-alist)
+      ;; Remember the old value to reset it as needed.
+      (add-hook 'emacs-startup-hook
+                (lambda ()
+                  (set-default-toplevel-value
+                   'file-name-handler-alist
+                   ;; Merge instead of overwrite to preserve any changes made
+                   ;; since startup.
+                   (delete-dups (append file-name-handler-alist old-value))))
+                101))
 
-      (unless noninteractive
+    (unless noninteractive
+      (unless minimal-emacs-debug
         (unless minimal-emacs-debug
-          (unless minimal-emacs-debug
-            ;; Suppress redisplay and redraw during startup to avoid delays and
-            ;; prevent flashing an unstyled Emacs frame.
-            ;; (setq-default inhibit-redisplay t) ; Can cause artifacts
-            (setq-default inhibit-message t)
+          ;; Suppress redisplay and redraw during startup to avoid delays and
+          ;; prevent flashing an unstyled Emacs frame.
+          ;; (setq-default inhibit-redisplay t) ; Can cause artifacts
+          (setq-default inhibit-message t)
 
-            ;; Reset the above variables to prevent Emacs from appearing frozen or
-            ;; visually corrupted after startup or if a startup error occurs.
-            (defun minimal-emacs--reset-inhibited-vars-h ()
-              ;; (setq-default inhibit-redisplay nil) ; Can cause artifacts
-              (setq-default inhibit-message nil)
-              (remove-hook 'post-command-hook #'minimal-emacs--reset-inhibited-vars-h))
+          ;; Reset the above variables to prevent Emacs from appearing frozen or
+          ;; visually corrupted after startup or if a startup error occurs.
+          (defun minimal-emacs--reset-inhibited-vars-h ()
+            ;; (setq-default inhibit-redisplay nil) ; Can cause artifacts
+            (setq-default inhibit-message nil)
+            (remove-hook 'post-command-hook #'minimal-emacs--reset-inhibited-vars-h))
 
-            (add-hook 'post-command-hook
-                      #'minimal-emacs--reset-inhibited-vars-h -100))
+          (add-hook 'post-command-hook
+                    #'minimal-emacs--reset-inhibited-vars-h -100))
 
-          (dolist (buf (buffer-list))
-            (with-current-buffer buf
-              (setq mode-line-format nil)))
+        (dolist (buf (buffer-list))
+          (with-current-buffer buf
+            (setq mode-line-format nil)))
 
-          (put 'mode-line-format 'initial-value
-               (default-toplevel-value 'mode-line-format))
-          (setq-default mode-line-format nil)
+        (put 'mode-line-format 'initial-value
+             (default-toplevel-value 'mode-line-format))
+        (setq-default mode-line-format nil)
 
-          (defun minimal-emacs--startup-load-user-init-file (fn &rest args)
-            "Advice for startup--load-user-init-file to reset mode-line-format."
-            (unwind-protect
-                (progn
-                  ;; Start up as normal
-                  (apply fn args))
-              ;; If we don't undo inhibit-{message, redisplay} and there's an
-              ;; error, we'll see nothing but a blank Emacs frame.
-              (setq-default inhibit-message nil)
-              (unless (default-toplevel-value 'mode-line-format)
-                (setq-default mode-line-format
-                              (get 'mode-line-format 'initial-value)))))
+        (defun minimal-emacs--startup-load-user-init-file (fn &rest args)
+          "Advice for startup--load-user-init-file to reset mode-line-format."
+          (unwind-protect
+              (progn
+                ;; Start up as normal
+                (apply fn args))
+            ;; If we don't undo inhibit-{message, redisplay} and there's an
+            ;; error, we'll see nothing but a blank Emacs frame.
+            (setq-default inhibit-message nil)
+            (unless (default-toplevel-value 'mode-line-format)
+              (setq-default mode-line-format
+                            (get 'mode-line-format 'initial-value)))))
 
-          (advice-add 'startup--load-user-init-file :around
-                      #'minimal-emacs--startup-load-user-init-file))
+        (advice-add 'startup--load-user-init-file :around
+                    #'minimal-emacs--startup-load-user-init-file))
 
-        ;; Without this, Emacs will try to resize itself to a specific column size
-        (setq frame-inhibit-implied-resize t)
+      ;; Without this, Emacs will try to resize itself to a specific column size
+      (setq frame-inhibit-implied-resize t)
 
-        ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted.
-        ;; No second pass of case-insensitive search over auto-mode-alist.
-        (setq auto-mode-case-fold nil)
+      ;; A second, case-insensitive pass over `auto-mode-alist' is time wasted.
+      ;; No second pass of case-insensitive search over auto-mode-alist.
+      (setq auto-mode-case-fold nil)
 
-        ;; Reduce *Message* noise at startup. An empty scratch buffer (or the
-        ;; dashboard) is more than enough, and faster to display.
-        (setq inhibit-startup-screen t
-              inhibit-startup-echo-area-message user-login-name)
-        (setq initial-buffer-choice nil
-              inhibit-startup-buffer-menu t
-              inhibit-x-resources t)
+      ;; Reduce *Message* noise at startup. An empty scratch buffer (or the
+      ;; dashboard) is more than enough, and faster to display.
+      (setq inhibit-startup-screen t
+            inhibit-startup-echo-area-message user-login-name)
+      (setq initial-buffer-choice nil
+            inhibit-startup-buffer-menu t
+            inhibit-x-resources t)
 
-        ;; Disable bidirectional text scanning for a modest performance boost.
-        (setq-default bidi-display-reordering 'left-to-right
-                      bidi-paragraph-direction 'left-to-right)
+      ;; Disable bidirectional text scanning for a modest performance boost.
+      (setq-default bidi-display-reordering 'left-to-right
+                    bidi-paragraph-direction 'left-to-right)
 
-        ;; Give up some bidirectional functionality for slightly faster re-display.
-        (setq bidi-inhibit-bpa t)
+      ;; Give up some bidirectional functionality for slightly faster re-display.
+      (setq bidi-inhibit-bpa t)
 
-        ;; Remove "For information about GNU Emacs..." message at startup
-        (advice-add #'display-startup-echo-area-message :override #'ignore)
+      ;; Remove "For information about GNU Emacs..." message at startup
+      (advice-add #'display-startup-echo-area-message :override #'ignore)
 
-        ;; Suppress the vanilla startup screen completely. We've disabled it with
-        ;; `inhibit-startup-screen', but it would still initialize anyway.
-        (advice-add #'display-startup-screen :override #'ignore)
+      ;; Suppress the vanilla startup screen completely. We've disabled it with
+      ;; `inhibit-startup-screen', but it would still initialize anyway.
+      (advice-add #'display-startup-screen :override #'ignore)
 
-        ;; Shave seconds off startup time by starting the scratch buffer in
-        ;; `fundamental-mode'
-        (setq initial-major-mode 'fundamental-mode
-              initial-scratch-message nil)
+      ;; Shave seconds off startup time by starting the scratch buffer in
+      ;; `fundamental-mode'
+      (setq initial-major-mode 'fundamental-mode
+            initial-scratch-message nil)
 
-        (unless minimal-emacs-debug
-          ;; Unset command line options irrelevant to the current OS. These options
-          ;; are still processed by `command-line-1` but have no effect.
-          (unless (eq system-type 'darwin)
-            (setq command-line-ns-option-alist nil))
-          (unless (memq initial-window-system '(x pgtk))
-            (setq command-line-x-option-alist nil)))))
+      (unless minimal-emacs-debug
+        ;; Unset command line options irrelevant to the current OS. These options
+        ;; are still processed by `command-line-1` but have no effect.
+        (unless (eq system-type 'darwin)
+          (setq command-line-ns-option-alist nil))
+        (unless (memq initial-window-system '(x pgtk))
+          (setq command-line-x-option-alist nil)))))
 
-    ;;; Native compilation and Byte compilation
+  ;;; Native compilation and Byte compilation
 
-    (if (and (featurep 'native-compile)
-             (fboundp 'native-comp-available-p)
-             (native-comp-available-p))
-        ;; Activate `native-compile'
-        (setq native-comp-jit-compilation t
-              native-comp-deferred-compilation t  ; Obsolete since Emacs 29.1
-              package-native-compile t)
-      ;; Deactivate the `native-compile' feature if it is not available
-      (setq features (delq 'native-compile features)))
+  (if (and (featurep 'native-compile)
+           (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+      ;; Activate `native-compile'
+      (setq native-comp-jit-compilation t
+            native-comp-deferred-compilation t  ; Obsolete since Emacs 29.1
+            package-native-compile t)
+    ;; Deactivate the `native-compile' feature if it is not available
+    (setq features (delq 'native-compile features)))
 
-    ;; Suppress compiler warnings and don't inundate users with their popups.
-    (setq native-comp-async-report-warnings-errors
-          (or minimal-emacs-debug 'silent))
-    (setq native-comp-warning-on-missing-source minimal-emacs-debug)
+  ;; Suppress compiler warnings and don't inundate users with their popups.
+  (setq native-comp-async-report-warnings-errors
+        (or minimal-emacs-debug 'silent))
+  (setq native-comp-warning-on-missing-source minimal-emacs-debug)
 
-    (setq debug-on-error minimal-emacs-debug
-          jka-compr-verbose minimal-emacs-debug)
+  (setq debug-on-error minimal-emacs-debug
+        jka-compr-verbose minimal-emacs-debug)
 
-    (setq byte-compile-warnings minimal-emacs-debug)
-    (setq byte-compile-verbose minimal-emacs-debug)
+  (setq byte-compile-warnings minimal-emacs-debug)
+  (setq byte-compile-verbose minimal-emacs-debug)
 
-    ;;; UI elements
+  ;;; UI elements
 
-    (setq frame-title-format minimal-emacs-frame-title-format
-          icon-title-format minimal-emacs-frame-title-format)
+  (setq frame-title-format minimal-emacs-frame-title-format
+        icon-title-format minimal-emacs-frame-title-format)
 
-    ;; Disable startup screens and messages
-    (setq inhibit-splash-screen t)
+  ;; Disable startup screens and messages
+  (setq inhibit-splash-screen t)
 
-    ;; I intentionally avoid calling `menu-bar-mode', `tool-bar-mode', and
-    ;; `scroll-bar-mode' because manipulating frame parameters can trigger or queue
-    ;; a superfluous and potentially expensive frame redraw at startup, depending
-    ;; on the window system. The variables must also be set to `nil' so users don't
-    ;; have to call the functions twice to re-enable them.
-    (unless (memq 'menu-bar minimal-emacs-ui-features)
-      (push '(menu-bar-lines . 0) default-frame-alist)
-      (unless (memq window-system '(mac ns))
-        (setq menu-bar-mode nil)))
+  ;; I intentionally avoid calling `menu-bar-mode', `tool-bar-mode', and
+  ;; `scroll-bar-mode' because manipulating frame parameters can trigger or queue
+  ;; a superfluous and potentially expensive frame redraw at startup, depending
+  ;; on the window system. The variables must also be set to `nil' so users don't
+  ;; have to call the functions twice to re-enable them.
+  (unless (memq 'menu-bar minimal-emacs-ui-features)
+    (push '(menu-bar-lines . 0) default-frame-alist)
+    (unless (memq window-system '(mac ns))
+      (setq menu-bar-mode nil)))
 
-    (unless (daemonp)
-      (unless noninteractive
-        (when (fboundp 'tool-bar-setup)
-          ;; Temporarily override the tool-bar-setup function to prevent it from
-          ;; running during the initial stages of startup
-          (advice-add #'tool-bar-setup :override #'ignore)
-          (define-advice startup--load-user-init-file
-              (:after (&rest _) minimal-emacs-setup-toolbar)
-            (advice-remove #'tool-bar-setup #'ignore)
-            (when tool-bar-mode
-              (tool-bar-setup))))))
-    (unless (memq 'tool-bar minimal-emacs-ui-features)
-      (push '(tool-bar-lines . 0) default-frame-alist)
-      (setq tool-bar-mode nil))
+  (unless (daemonp)
+    (unless noninteractive
+      (when (fboundp 'tool-bar-setup)
+        ;; Temporarily override the tool-bar-setup function to prevent it from
+        ;; running during the initial stages of startup
+        (advice-add #'tool-bar-setup :override #'ignore)
+        (define-advice startup--load-user-init-file
+            (:after (&rest _) minimal-emacs-setup-toolbar)
+          (advice-remove #'tool-bar-setup #'ignore)
+          (when tool-bar-mode
+            (tool-bar-setup))))))
+  (unless (memq 'tool-bar minimal-emacs-ui-features)
+    (push '(tool-bar-lines . 0) default-frame-alist)
+    (setq tool-bar-mode nil))
 
-    (push '(vertical-scroll-bars) default-frame-alist)
-    (push '(horizontal-scroll-bars) default-frame-alist)
-    (setq scroll-bar-mode nil)
-    (when (fboundp 'horizontal-scroll-bar-mode)
-      (horizontal-scroll-bar-mode -1))
+  (push '(vertical-scroll-bars) default-frame-alist)
+  (push '(horizontal-scroll-bars) default-frame-alist)
+  (setq scroll-bar-mode nil)
+  (when (fboundp 'horizontal-scroll-bar-mode)
+    (horizontal-scroll-bar-mode -1))
 
-    (unless (memq 'tooltips minimal-emacs-ui-features)
-      (when (bound-and-true-p tooltip-mode)
-        (tooltip-mode -1)))
+  (unless (memq 'tooltips minimal-emacs-ui-features)
+    (when (bound-and-true-p tooltip-mode)
+      (tooltip-mode -1)))
 
-    ;; Disable GUIs because they are inconsistent across systems, desktop
-    ;; environments, and themes, and they don't match the look of Emacs.
-    (unless (memq 'dialogs minimal-emacs-ui-features)
-      (setq use-file-dialog nil)
-      (setq use-dialog-box nil))
+  ;; Disable GUIs because they are inconsistent across systems, desktop
+  ;; environments, and themes, and they don't match the look of Emacs.
+  (unless (memq 'dialogs minimal-emacs-ui-features)
+    (setq use-file-dialog nil)
+    (setq use-dialog-box nil))
 
-    ;;; LSP
-    (setenv "LSP_USE_PLISTS" "true")
+  ;;; LSP
+  (setenv "LSP_USE_PLISTS" "true")
+
+  ;; Disable sound bell
+  (setq visible-bell 1)
 
 #+end_src
 
@@ -386,6 +389,15 @@ Using dashboard and doom-theme with modeline.
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode)
 
+  ;;; Ranger
+  (use-package ranger)
+  (ranger-override-dired-mode t)
+  (setq ranger-show-hidden t)
+
+  ;;; Direnv integration
+  (use-package envrc
+    :hook (after-init . envrc-global-mode))
+
 #+end_src
 * Completion
 Using company for code completion.
@@ -422,6 +434,16 @@ Using company for code completion.
     :init
     :hook (company-mode . company-quickhelp-mode))
 
+  (use-package orderless
+    ;; Vertico leverages Orderless' flexible matching capabilities, allowing users
+    ;; to input multiple patterns separated by spaces, which Orderless then
+    ;; matches in any order against the candidates.
+    :ensure t
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles partial-completion)))))
+
   (use-package copilot
     :demand t
     :hook (prog-mode-hook . copilot-mode))
@@ -447,71 +469,87 @@ Using company for code completion.
 Keys that I have binded to my keyboard for easy navigation in emacs
 
 #+begin_src emacs-lisp
-  ;; evil-want-keybinding must be declared before Evil and Evil Collection
-  (setq evil-want-keybinding nil)
+   ;; evil-want-keybinding must be declared before Evil and Evil Collection
+   (setq evil-want-keybinding nil)
 
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-undo-system 'undo-fu)
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
-    :custom
-    (evil-want-Y-yank-to-eol t)
-    :config
-    (evil-select-search-module 'evil-search-module 'evil-search)
-    (evil-mode 1))
+   (use-package evil
+     :ensure t
+     :init
+     (setq evil-undo-system 'undo-fu)
+     (setq evil-want-integration t)
+     (setq evil-want-keybinding nil)
+     :custom
+     (evil-want-Y-yank-to-eol t)
+     :config
+     (evil-select-search-module 'evil-search-module 'evil-search)
+     (evil-mode 1))
 
-  ;;; Leader
-  (use-package evil-leader)
-  (global-evil-leader-mode)
-  (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key
-      ;; Project
-      "fb" 'counsel-find-file
-      "ff" 'projectile-find-file
-      "fg" 'projectile-ripgrep
-      "pp" 'projectile-switch-project
-      "ps" 'projectile-switch-to-buffer
-      "pc" 'projectile-cleanup-known-projects
+   ;;; Leader
+   (use-package evil-leader)
+   (global-evil-leader-mode)
+   (evil-leader/set-leader "<SPC>")
+   (evil-leader/set-key
+       ;; Project
+       "fb" 'counsel-find-file
+       "ff" 'projectile-find-file
+       "fg" 'projectile-ripgrep
+       "pp" 'projectile-switch-project
+       "pc" 'projectile-cleanup-known-projects
 
-      ;; Buffers
-      "bb" 'switch-to-buffer
-      "bd" 'kill-buffer
-      "bn" 'next-buffer
-      "bp" 'previous-buffer
+       "<SPC>" 'projectile-switch-to-buffer
 
-      ;; Copilot
-      "ccq" 'move-right-and-open-copilot-chat
-      "cce" 'copilot-chat-explain
-      "ccr" 'copilot-chat-reset
-      "ccv" 'copilot-chat-review
-      "ccd" 'copilot-chat-doc
-      "ccf" 'copilot-chat-fix
-      "cbl" 'move-and-open-copilot-chat-list
-      "cba" 'copilot-chat-add-current-buffer
-      "cbd" 'copilot-chat-del-current-buffer
+       ;; Buffers
+       "bb" 'switch-to-buffer
+       "bd" 'kill-buffer
+       "bn" 'next-buffer
+       "bp" 'previous-buffer
 
-      ;; Git
-      "/" 'magit-status
-      "bm" 'blamer-mode
+       ;; Copilot
+       "ccq" 'move-right-and-open-copilot-chat
+       "cce" 'copilot-chat-explain
+       "ccr" 'copilot-chat-reset
+       "ccv" 'copilot-chat-review
+       "ccd" 'copilot-chat-doc
+       "ccf" 'copilot-chat-fix
+       "cbl" 'move-and-open-copilot-chat-list
+       "cba" 'copilot-chat-add-current-buffer
+       "cbd" 'copilot-chat-del-current-buffer
 
-      ;; LSP
-      "la" 'eglot-code-actions
-      "lf" 'eglot-format
-      "li" 'ident-region
-      "ln" 'flymake-goto-next-error
-      "le" 'eglot
-      "lwd" 'flymake-show-project-diagnostics
-      "lbd" 'flymake-show-buffer-diagnostics
-      "e"  'eldoc-box-help-at-point
-    )
+       ;; Terminal
+       "pt" '("term" . eat-project)
+       "po" '("term-other-window" . eat-project-other-window)
+
+       ;; Ranger
+       "pr" 'ranger
+
+       ;; Git
+       "/" 'magit-status
+       "bm" 'blamer-mode
+
+       ;; LSP
+       "la" 'eglot-code-actions
+       "lf" 'eglot-format
+       "li" 'ident-region
+       "ln" 'flymake-goto-next-error
+       "le"  'eldoc-box-help-at-point
+       "lwd" 'flymake-show-project-diagnostics
+       "lbd" 'flymake-show-buffer-diagnostics
+     )
 
   (use-package evil-collection
     :after evil
     :ensure t
+    :hook (evil-mode . evil-collection-init)
+    :bind (([remap evil-show-marks] . evil-collection-consult-mark)
+           ([remap evil-show-jumps] . evil-collection-consult-jump-list))
     :config
-    (evil-collection-init))
+    ;; Make `evil-collection-consult-mark' and `evil-collection-consult-jump-list'
+    ;; immediately available.
+    (evil-collection-require 'consult)
+    :custom
+    (evil-collection-setup-debugger-keys nil)
+    (evil-collection-calendar-want-org-bindings t)
+    (evil-collection-unimpaired-want-repeat-mode-integration t))
 
   (use-package evil-visualstar
     :after evil
@@ -606,9 +644,9 @@ Keys that I have binded to my keyboard for easy navigation in emacs
           (replace-match new-word)))))
 
   (defun move-right-and-open-copilot-chat ()
+    "Open a new tab and display the Copilot chat."
     (interactive)
-    (split-window-right)
-    (windmove-right)
+    (tab-new)
     (copilot-chat-display))
 
   (defun move-and-open-copilot-chat-list ()
@@ -623,6 +661,11 @@ Keys that I have binded to my keyboard for easy navigation in emacs
         (windmove-right)))
     (copilot-chat-list))
 
+  (use-package vim-tab-bar
+    :ensure t
+    :commands vim-tab-bar-mode
+    :hook (after-init . vim-tab-bar-mode))
+
   (global-set-key (kbd "C-S-l") 'split-window-right-and-move-there-dammit)
   (global-set-key (kbd "C-S-h") 'split-window-left-and-move-there-dammit)
   (global-set-key (kbd "C-S-j") 'split-window-below-and-move-there-dammit)
@@ -636,7 +679,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "C-l") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'move-text-up)
   (global-set-key (kbd "S-<down>") 'move-text-down)
-  (global-set-key (kbd "S-<tab>") 'previous-buffer)
+  (global-set-key (kbd "C-<tab>") 'evil-switch-to-windows-last-buffer)
   (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
 
 #+end_src
@@ -661,32 +704,15 @@ Using own created web mode, for vue, typescript and tailwind.
     :config
     (seq-do (lambda (it)
               (push it major-mode-remap-alist))
-            '((python-mode . python-ts-mode)
-              (javascript-mode . js-ts-mode)
+              '((javascript-mode . js-ts-mode)
+              (python-mode . python-ts-mode)
               (typescript-mode . typescript-ts-mode)
               (java-mode . java-ts-mode)
               (css-mode . css-ts-mode)
               (sh-mode . bash-ts-mode)
               (scala-mode . scala-ts-mode)
+              (nix-mode . nix-ts-mode)
               (shell-script-mode . bash-ts-mode))))
-
-  (use-package scala-ts-mode
-    :init
-    (setq scala-ts-indent-offset 2))
-
-  (use-package haskell-mode)
-
-  (use-package nix-ts-mode
-    :mode "\\.nix\\'")
-
-  (use-package nixpkgs-fmt
-    :commands nixpkgs-fmt
-    :hook (nix-mode . nixpkgs-fmt-on-save-mode))
-
-  (use-package typescript-ts-mode
-    :mode (("\\.cts\\'" . typescript-ts-mode)
-           ("\\.tsx\\'" . typescript-ts-mode)
-           ("\\.ts\\'" . typescript-ts-mode)))
 
   (use-package eglot-booster
     :after eglot
@@ -696,16 +722,99 @@ Using own created web mode, for vue, typescript and tailwind.
     (add-to-list 'eglot-server-programs
                  '(scala-ts-mode . ("metals"))))
 
-  (use-package blacken)
-  (use-package python-mode
-    :hook (python-mode . eglot-ensure))
+  ;; Scala language server
+  (use-package scala-ts-mode
+    :init
+    (setq scala-ts-indent-offset 2))
 
+  (use-package haskell-mode)
+  (use-package markdown-mode)
+  (use-package nix-ts-mode
+    :mode "\\.nix\\'"
+    :hook (nix-ts-mode . eglot-ensure))
+
+  ;; Python language server
+  (use-package python
+    :after eglot
+    :hook (python-ts-mode . eglot-ensure)
+    :mode "\\.py\\'")
+
+  ;; Rust language server
   (use-package rustic
     :after eglot
     :hook (rustic-mode . eglot-ensure)
     :mode "\\.rs\\'")
 
   (use-package eldoc-box)
+
+  ;; Java language server
+  (use-package eglot-java
+    :hook (java-ts-mode . eglot-java-mode)
+    :config
+    (define-key eglot-java-mode-map (kbd "C-c l n") #'eglot-java-file-new)
+    (define-key eglot-java-mode-map (kbd "C-c l x") #'eglot-java-run-main)
+    (define-key eglot-java-mode-map (kbd "C-c l t") #'eglot-java-run-test)
+    (define-key eglot-java-mode-map (kbd "C-c l N") #'eglot-java-project-new)
+    (define-key eglot-java-mode-map (kbd "C-c l T") #'eglot-java-project-build-task)
+    (define-key eglot-java-mode-map (kbd "C-c l R") #'eglot-java-project-build-refresh))
+
+  ;; Javascript language server
+  (use-package js-ts-mode
+    :after eglot
+    :hook (js-ts-mode . eglot-ensure)
+    :mode
+      (("\\.js\\'")
+       ("\\.ts\\'")))
+
+  ;; Vue language support
+  (use-package vue-ts-mode
+    :mode "\\.vue\\'"
+    :custom
+    (mmm-submode-decoration-level 0 "Don't color submodes differently")
+    :config
+    (defun vue-eglot-init-options ()
+      (let ((tsdk-path "lib/node_modules/typescript/lib/"))
+        `(:typescript (:tsdk ,tsdk-path
+                      :languageFeatures (:completion
+                                         (:defaultTagNameCase "kebab"
+                                          :defaultAttrNameCase "kebab"
+                                          :getDocumentNameCasesRequest nil
+                                          :getDocumentSelectionRequest nil)
+                                         :diagnostics
+                                         (:getDocumentVersionRequest nil))
+                      :documentFeatures (:documentFormatting
+                                         (:defaultPrintWidth 100
+                                          :getDocumentPrintWidthRequest nil)
+                                         :documentSymbol t
+                                         :documentColor t)))))
+    (add-to-list 'eglot-server-programs `(vue-ts-mode . ("vue-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
+    (setq vue--front-tag-lang-regex
+      (concat "<%s"                               ; The tag name
+              "\\(?:"                             ; Zero of more of...
+              "\\(?:\\s-+\\w+=[\"'].*?[\"']\\)"   ; Any optional key-value pairs like type="foo/bar"
+              "\\|\\(?:\\s-+scoped\\)"            ; The optional "scoped" attribute
+              "\\|\\(?:\\s-+module\\)"            ; The optional "module" attribute
+              "\\|\\(?:\\s-+setup\\)"             ; The optional "setup" attribute
+              "\\)*"
+              "\\(?:\\s-+lang=[\"']%s[\"']\\)"    ; The language specifier (required)
+              "\\(?:"                             ; Zero of more of...
+              "\\(?:\\s-+\\w+=[\"'].*?[\"']\\)"   ; Any optional key-value pairs like type="foo/bar"
+              "\\|\\(?:\\s-+scoped\\)"            ; The optional "scoped" attribute
+              "\\|\\(?:\\s-+module\\)"            ; The optional "module" attribute
+              "\\|\\(?:\\s-+setup\\)"             ; The optional "setup" attribute
+              "\\)*"
+              " *>\n"))                           ; The end of the tag
+    (setq vue--front-tag-regex
+      (concat "<%s"                        ; The tag name
+              "\\(?:"                      ; Zero of more of...
+              "\\(?:\\s-+" vue--not-lang-key "[\"'][^\"']*?[\"']\\)" ; Any optional key-value pairs like type="foo/bar".
+              ;; ^ Disallow "lang" in k/v pairs to avoid matching regions with non-default languages
+              "\\|\\(?:\\s-+scoped\\)"      ; The optional "scoped" attribute
+              "\\|\\(?:\\s-+module\\)"      ; The optional "module" attribute
+              "\\|\\(?:\\s-+setup\\)"       ; The optional "setup" attribute
+              "\\)*"
+              "\\s-*>\n"))                  ; The end of the tag
+    )
 
   (use-package web-mode
     :ensure t
@@ -719,6 +828,32 @@ Using own created web mode, for vue, typescript and tailwind.
      ("\\.erb\\'" . web-mode)
      ("\\.mustache\\'" . web-mode)
      ("\\.djhtml\\'" . web-mode)))
+
+  ;; Formaters
+  (use-package apheleia
+    :config
+    ;; Add scalafmt for Scala
+    (push '(scalafmt . ("scalafmt" "--stdin" "--non-interactive" "--quiet" "--stdout")) apheleia-formatters)
+    (push '(scala-ts-mode . scalafmt) apheleia-mode-alist)
+
+    ;; Add black for Python
+    (push '(black . ("black" "-")) apheleia-formatters)
+    (push '(python-mode . black) apheleia-mode-alist)
+
+    ;; Add prettier for TypeScript and JavaScript
+    (push '(prettier . ("prettier" "--stdin-filepath" buffer-file-name)) apheleia-formatters)
+    (push '(typescript-ts-mode . prettier) apheleia-mode-alist)
+    (push '(js-ts-mode . prettier) apheleia-mode-alist)
+
+    ;; Add google-java-format for Java
+    (push '(google-java-format . ("google-java-format" "-")) apheleia-formatters)
+    (push '(java-ts-mode . google-java-format) apheleia-mode-alist)
+
+    ;; Add nixfmt for Nix
+    (push '(nixpkgs-fmt . ("nixpkgs-fmt")) apheleia-formatters)
+    (push '(nix-mode . nixpkgs-fmt) apheleia-mode-alist))
+
+  (apheleia-global-mode +1)
 #+end_src
 
 * Projects

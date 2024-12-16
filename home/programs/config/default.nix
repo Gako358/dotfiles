@@ -1,6 +1,5 @@
 {
   imports = [
-    ./emacs
     ./gnome
     ./hyprland
     ./neofetch

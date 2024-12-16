@@ -21,6 +21,27 @@ let
     }
   );
 
+  vue-ts-mode = pkgs.emacsPackages.melpaBuild {
+    pname = "vue-ts-mode";
+    version = "20231029";
+
+    commit = "5ec5bb317b80ce394e156c61b7b9c63996382a68";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "8uff3r";
+      repo = "vue-ts-mode";
+      rev = "5ec5bb317b80ce394e156c61b7b9c63996382a68";
+      hash = "sha256-1SOlRcq0KSO9n+isUSL5IhlujD4FWcU5I0zP6xuInuQ=";
+    };
+
+    recipe = pkgs.writeText "recipe" ''
+      (vue-ts-mode
+      :repo "8uff3r/vue-ts-mode"
+      :fetcher github
+      :files ("*.el"))
+    '';
+  };
+
   eglot-booster = pkgs.emacsPackages.melpaBuild {
     pname = "eglot-booster";
     version = "20241029";
@@ -49,88 +70,88 @@ in
     extraPackages = epkgs:
       with epkgs; [
         # Evil
-        evil                # Extensible vi layer for Emacs
-        evil-collection     # A set of keybindings for evil-mode
-        evil-commentary     # Comment stuff out
-        evil-leader         # A set of keybindings for evil-mode
-        evil-matchit        # Matchit for evil-mode
-        evil-org            # Org-mode keybindings for evil-mode
-        evil-snipe          # Snipe text objects
-        evil-surround       # Surround text objects with punctuation
-        evil-visualstar     # Start a * or # search from the visual selection
+        evil # Extensible vi layer for Emacs
+        evil-collection # A set of keybindings for evil-mode
+        evil-commentary # Comment stuff out
+        evil-leader # A set of keybindings for evil-mode
+        evil-matchit # Matchit for evil-mode
+        evil-org # Org-mode keybindings for evil-mode
+        evil-snipe # Snipe text objects
+        evil-surround # Surround text objects with punctuation
+        evil-visualstar # Start a * or # search from the visual selection
+        vim-tab-bar # Tab bar for Vim
 
         # Completion
-        company             # Modular text completion framework
-        company-box         # A company front-end with icons
-        company-quickhelp   # Documentation popup for Company
-        consult             # Consulting completing-read
-        copilot             # An Emacs package for pair programming
-	copilot-chat        # An Emacs copilot chat framework
-        ivy                 # A generic completion mechanism
-        ivy-posframe        # Display ivy in a posframe
-        ivy-prescient       # Better sorting and filtering for ivy
-        ivy-rich            # More friendly display transformer for ivy
-        wgrep               # Writable grep buffer and apply the changes to files
-        yasnippet           # Template system for Emacs
+        company # Modular text completion framework
+        company-box # A company front-end with icons
+        company-quickhelp # Documentation popup for Company
+        consult # Consulting completing-read
+        copilot # An Emacs package for pair programming
+        copilot-chat # An Emacs copilot chat framework
+        ivy # A generic completion mechanism
+        ivy-posframe # Display ivy in a posframe
+        ivy-prescient # Better sorting and filtering for ivy
+        ivy-rich # More friendly display transformer for ivy
+        orderless # Completion style for Ivy
+        wgrep # Writable grep buffer and apply the changes to files
+        yasnippet # Template system for Emacs
 
         # General
-        editorconfig        # EditorConfig Emacs Plugin
-        general             # Provides a more convenient way to define keybindings
-        ligature            # Ligature support for Emacs
+        editorconfig # EditorConfig Emacs Plugin
+        general # Provides a more convenient way to define keybindings
+        ligature # Ligature support for Emacs
+        ranger # File manager for Emacs
 
         # Org
-        org                 # For keeping notes, maintaining TODO lists, and project planning
-        org-drill           # A spaced repetition system for Emacs
-        org-modern          # A modern org-mode distribution
-        org-pomodoro        # Pomodoro technique implementation
-        org-present         # A simple org-mode presentation tool
-        org-roam            # A note-taking tool based on the principles of networked thought
-        org-roam-ui         # A graphical user interface for org-roam
+        org # For keeping notes, maintaining TODO lists, and project planning
+        org-drill # A spaced repetition system for Emacs
+        org-modern # A modern org-mode distribution
+        org-pomodoro # Pomodoro technique implementation
+        org-present # A simple org-mode presentation tool
+        org-roam # A note-taking tool based on the principles of networked thought
+        org-roam-ui # A graphical user interface for org-roam
 
         # Project
-        counsel             # Various completion functions using Ivy
-        counsel-projectile  # Ivy integration for Projectile
-        eat                 # Emacs All
-        projectile          # Project Interaction Library for Emacs
+        counsel # Various completion functions using Ivy
+        counsel-projectile # Ivy integration for Projectile
+        eat # Emacs All
+        projectile # Project Interaction Library for Emacs
 
         # Env
-        envrc               # .envrc support for Emacs
+        envrc # .envrc support for Emacs
 
         # Git
-        blamer              # Show git blame information in the fringe
-        forge               # Work with Git forges from the comfort of Magit
-        ghub                # Minuscule client library for the Github API
-        git-gutter          # Show git diff in the fringe
-        git-gutter-fringe   # Fringe version of git-gutter.el
-        magit               # A Git porcelain inside Emacs
-
-        # Formaters
-        blacken             # Black formatter for Python
-        nixpkgs-fmt         # Nixpkgs formatting
+        blamer # Show git blame information in the fringe
+        forge # Work with Git forges from the comfort of Magit
+        ghub # Minuscule client library for the Github API
+        git-gutter # Show git diff in the fringe
+        git-gutter-fringe # Fringe version of git-gutter.el
+        magit # A Git porcelain inside Emacs
 
         # Theme
-        dashboard                 # A startup screen extracted from Spacemacs
-        kaolin-themes             # A low contrast color theme for Emacs
-        nerd-icons                # Nerd icons for Emacs
-        rainbow-delimiters        # Highlight delimiters such as parentheses, brackets or braces according to their depth
-        rainbow-mode              # Colorize color names in buffers
-	      all-the-icons             # A package for inserting developer icons
-        all-the-icons-ivy-rich    # More friendly display transformer for ivy
+        dashboard # A startup screen extracted from Spacemacs
+        kaolin-themes # A low contrast color theme for Emacs
+        nerd-icons # Nerd icons for Emacs
+        rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
+        rainbow-mode # Colorize color names in buffers
+        all-the-icons # A package for inserting developer icons
+        all-the-icons-ivy-rich # More friendly display transformer for ivy
 
         # Programming language packages.
-        dockerfile-mode                     # Major mode for editing Dockerfiles
-        eglot-booster                       # Eglot booster
-        eldoc-box                           # Display function signatures at point
-        haskell-mode                        # Haskell development environment
-        jsonrpc                             # Json RPC library
-        markdown-mode                       # Major mode for editing Markdown files
-        nix-ts-mode                         # Nix development environment
-        python-mode                         # Major mode for editing Python files
-        rustic                              # Rust development environment
-        scala-ts-mode                       # Scala development environment
-        treesit-grammars.with-all-grammars  # Tree-sitter grammars
-        web-mode                            # Major mode for editing web templates
-        yaml-mode                           # Major mode for editing YAML files
+        apheleia # A universal formatter interface
+        eglot-booster # Eglot booster
+        eldoc-box # Display function signatures at point
+        haskell-mode # Haskell development environment
+        eglot-java # Java development environment
+        markdown-mode # Major mode for editing Markdown files
+        nix-ts-mode # Major mode for editing Nix files
+        python # Python development environment
+        rustic # Rust development environment
+        scala-ts-mode # Scala development environment
+        treesit-grammars.with-all-grammars # Tree-sitter grammars
+        vue-ts-mode # Major mode for editing Vue.js files
+        web-mode # Major mode for editing web templates
+        yaml-mode # Major mode for editing YAML files
       ];
     extraConfig = builtins.readFile ./init.el;
   };
