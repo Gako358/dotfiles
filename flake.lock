@@ -752,7 +752,6 @@
         "plugins-cmp-vsnip": "plugins-cmp-vsnip",
         "plugins-copilot": "plugins-copilot",
         "plugins-copilot-chat": "plugins-copilot-chat",
-        "plugins-copilot-cmp": "plugins-copilot-cmp",
         "plugins-crates-nvim": "plugins-crates-nvim",
         "plugins-fidget": "plugins-fidget",
         "plugins-gitsigns-nvim": "plugins-gitsigns-nvim",
@@ -778,12 +777,9 @@
         "plugins-nvim-metals": "plugins-nvim-metals",
         "plugins-nvim-nio": "plugins-nvim-nio",
         "plugins-nvim-web-devicons": "plugins-nvim-web-devicons",
-        "plugins-obsidian": "plugins-obsidian",
         "plugins-plenary-nvim": "plugins-plenary-nvim",
-        "plugins-project": "plugins-project",
         "plugins-ranger": "plugins-ranger",
         "plugins-rust-tools": "plugins-rust-tools",
-        "plugins-session": "plugins-session",
         "plugins-sqls-nvim": "plugins-sqls-nvim",
         "plugins-telescope": "plugins-telescope",
         "plugins-theme": "plugins-theme",
@@ -794,11 +790,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1731443141,
-        "narHash": "sha256-0RwFaWLYHeRDgbnqn6nb0bLih2mgs6aS5DzVpUsPXo4=",
+        "lastModified": 1734559847,
+        "narHash": "sha256-8CEb/UcE12YAgyM5jmEdS3Vbb3e16CekPjMEThDWVUs=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "925a1f252de837b818765cc18f3b32ae4c155193",
+        "rev": "c5b431857560867f3f4dcb1d45187de2f1709f03",
         "type": "github"
       },
       "original": {
@@ -964,22 +960,6 @@
       "original": {
         "owner": "CopilotC-Nvim",
         "repo": "CopilotChat.nvim",
-        "type": "github"
-      }
-    },
-    "plugins-copilot-cmp": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1718601710,
-        "narHash": "sha256-8w9go2SBkI+BrXNadWM8ZxDDfrAnZZJx6RbVHAK4+Pg=",
-        "owner": "zbirenbaum",
-        "repo": "copilot-cmp",
-        "rev": "b6e5286b3d74b04256d0a7e3bd2908eabec34b44",
-        "type": "github"
-      },
-      "original": {
-        "owner": "zbirenbaum",
-        "repo": "copilot-cmp",
         "type": "github"
       }
     },
@@ -1383,22 +1363,6 @@
         "type": "github"
       }
     },
-    "plugins-obsidian": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1722536347,
-        "narHash": "sha256-mbq7fAPmlwOAbWlN3lGX9WGBKTV8cAPZx8pnRCyszJc=",
-        "owner": "epwalsh",
-        "repo": "obsidian.nvim",
-        "rev": "14e0427bef6c55da0d63f9a313fd9941be3a2479",
-        "type": "github"
-      },
-      "original": {
-        "owner": "epwalsh",
-        "repo": "obsidian.nvim",
-        "type": "github"
-      }
-    },
     "plugins-plenary-nvim": {
       "flake": false,
       "locked": {
@@ -1412,22 +1376,6 @@
       "original": {
         "owner": "nvim-lua",
         "repo": "plenary.nvim",
-        "type": "github"
-      }
-    },
-    "plugins-project": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1730653508,
-        "narHash": "sha256-d4tnzKZzCa6IrWdxrJ7ZaDZYSjQe9/xnMUBe2odDQIk=",
-        "owner": "Gako358",
-        "repo": "neovim-project",
-        "rev": "b035d547f33091144a52a39555e2691905bfb9aa",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Gako358",
-        "repo": "neovim-project",
         "type": "github"
       }
     },
@@ -1460,22 +1408,6 @@
       "original": {
         "owner": "simrat39",
         "repo": "rust-tools.nvim",
-        "type": "github"
-      }
-    },
-    "plugins-session": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1728423652,
-        "narHash": "sha256-W9jtfVXHC8MQJwdbxakNqhd+xh/auQb3U09XKdN2Wzw=",
-        "owner": "Shatur",
-        "repo": "neovim-session-manager",
-        "rev": "ce43f2eb2a52492157d7742e5f684b9a42bb3e5c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Shatur",
-        "repo": "neovim-session-manager",
         "type": "github"
       }
     },
