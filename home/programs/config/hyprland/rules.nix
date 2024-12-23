@@ -2,10 +2,12 @@
   wayland.windowManager.hyprland.extraConfig =
     if specialArgs.hidpi
     then ''
-      workspace = 2, monitor:DP-3
       workspace = 1, monitor:DP-2
-      workspace = 4, monitor:HDMI-A-1
+      workspace = 2, monitor:DP-3
+      workspace = 3, monitor:DP-3
+      workspace = 4, monitor:DP-3
       workspace = 5, monitor:DP-2
+      workspace = 6, monitor:HDMI-A-1
       workspace = 7, monitor:HDMI-A-1
       workspace = 8, monitor:HDMI-A-1
       workspace = 9, monitor:HDMI-A-1
@@ -45,10 +47,12 @@
       windowrule = opacity 0.73 override 0.64 override, ^(Alacritty)$
     ''
     else ''
-      workspace = 2, monitor:DP-8
       workspace = 1, monitor:DP-8
-      workspace = 4, monitor:eDP-1
+      workspace = 2, monitor:DP-8
+      workspace = 3, monitor:DP-8
+      workspace = 4, monitor:DP-8
       workspace = 5, monitor:DP-8
+      workspace = 6, monitor:eDP-1
       workspace = 7, monitor:eDP-1
       workspace = 8, monitor:eDP-1
       workspace = 9, monitor:eDP-1
