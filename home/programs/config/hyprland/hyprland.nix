@@ -13,7 +13,7 @@ in {
       "${wallpaper}"
       "[workspace 1 silent] firefox"
       "[workspace 2 silent] alacritty"
-      "[workspace 4 silent] chromium"
+      "[workspace 6 silent] chromium"
       "[workspace 7 silent] thunderbird"
       "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
