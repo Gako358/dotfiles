@@ -61,6 +61,7 @@ jobs:
 
   build_flake:
     runs-on: ubuntu-20.04
+    timeout-minutes: 55
     needs: [generate_matrix, update_flake]
     strategy:
       fail-fast: false
