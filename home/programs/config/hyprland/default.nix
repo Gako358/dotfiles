@@ -29,7 +29,6 @@ then {
 
   home.packages = [
     pkgs.ranger
-    pkgs.pcmanfm
     pkgs.wayshot
     pkgs.sway-contrib.grimshot
     pkgs.pavucontrol
