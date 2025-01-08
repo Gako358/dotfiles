@@ -31,9 +31,9 @@
       windowrule = float, ^(org.pulseaudio.pavucontrol)$
 
       windowrule = workspace 1, ^(firefox)$
-      windowrule = workspace 4, ^(chromium-browser)$
       windowrule = workspace 5, ^(Wfica)$
       windowrule = workspace 6, ^(steam)$
+      windowrule = workspace 6, ^(chromium-browser)$
       windowrule = workspace 7, ^(thunderbird)$
       windowrule = workspace 8, title:^(app.slack.com_/client/T04MZPW21RA/C04MUBWKREZ)$
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
@@ -44,7 +44,7 @@
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
 
-      windowrule = opacity 0.73 override 0.64 override, ^(Alacritty)$
+      windowrule = opacity 0.99 override 0.91 override, ^(Alacritty)$
     ''
     else ''
       workspace = 1, monitor:DP-8
@@ -76,9 +76,9 @@
       windowrule = float, ^(org.pulseaudio.pavucontrol)$
 
       windowrule = workspace 1, ^(firefox)$
-      windowrule = workspace 4, ^(chromium-browser)$
       windowrule = workspace 5, ^(Wfica)$
       windowrule = workspace 6, ^(steam)$
+      windowrule = workspace 6, ^(chromium-browser)$
       windowrule = workspace 7, ^(thunderbird)$
       windowrule = workspace 8, title:^(app.slack.com_/client/T04MZPW21RA/C04MUBWKREZ)$
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
@@ -89,6 +89,6 @@
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
 
-      windowrule = opacity 0.73 override 0.64 override, ^(Alacritty)$
+      windowrule = opacity 0.99 override 0.91 override, ^(Alacritty)$
     '';
 }
