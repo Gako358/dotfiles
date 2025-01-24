@@ -2,20 +2,16 @@
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
 in {
   wayland.windowManager.hyprland.settings = {
-    env = [
-      "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
-      "HYPRCURSOR_THEME,${pkgs.capitaine-cursors}"
-      "HYPRCURSOR_SIZE,16"
-    ];
-
     exec-once = [
-      "hyprctl setcursor capitaine-cursors-white 16"
       "${wallpaper}"
+      "hyprctl setcursor capitaine-cursors-white 16"
       "[workspace 1 silent] firefox"
       "[workspace 2 silent] alacritty"
       "[workspace 6 silent] chromium"
       "[workspace 7 silent] thunderbird"
-      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+      "wl-clip-persist --clipboard both &"
+      "wl-paste --watch cliphist store &"
+      "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     ];
 

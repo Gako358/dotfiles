@@ -1,16 +1,8 @@
-{
-  specialArgs,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
-  timeout =
-    if specialArgs.hidpi
-    then 3600
-    else 600;
+  timeout = 3600;
 in {
-  # screen idle
   services.hypridle = {
     enable = true;
 
@@ -26,28 +18,14 @@ in {
       # Suspend at 1 hour
       listener = [
         {
-          timeout =
-            if specialArgs.hidpi
-            then timeout
-            else null;
-          on-timeout =
-            if specialArgs.hidpi
-            then "hyprctl dispatch dpms off"
-            else null;
-          on-resume =
-            if specialArgs.hidpi
-            then "hyprctl dispatch dpms on"
-            else null;
+          timeout = timeout;
+          on-timeout = "hyprctl dispatch dpms off";
+          on-resume = "hyprctl dispatch dpms on";
         }
         {
           timeout =
-            if specialArgs.hidpi
-            then timeout + 370
-            else null;
-          on-timeout =
-            if specialArgs.hidpi
-            then "${pkgs.systemd}/bin/systemctl suspend"
-            else null;
+            timeout + 370;
+          on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
         }
       ];
     };

@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-# Get the brightness of the screen and print it to stdout.
-brightness=$(xbacklight -get)

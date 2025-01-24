@@ -26,9 +26,12 @@
     nix-output-monitor # nom: monitor nix commands
     ouch # painless compression and decompression for your terminal
     obsidian # note taking
+    pavucontrol # pulseaudio volume control
     paprefs # pulseaudio preferences
+    pulsemixer # pulseaudio volume control
     prettyping # a nicer ping
     rage # encryption tool for secrets management
+    ranger # file manager
     ripgrep # fast grep
     rnote # terminal note taking
     scid-vs-pc # chess database with play and funtionality
@@ -38,6 +41,7 @@
     tldr # summary of a man page
     tree # display files in a tree view
     unzip # unzip files
+    wayshot # screenshot tool
     wgetpaste # paste to pastebin
     wl-gammactl # wayland gamma control
     wl-clipboard # wayland clipboard manager

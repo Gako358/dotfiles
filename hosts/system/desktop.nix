@@ -1,71 +1,84 @@
 {
   lib,
-  pkgs,
   config,
   inputs,
-  specialArgs,
+  pkgs,
   ...
-}:
-if specialArgs.desktop
-then {
-  environment = {
-    systemPackages = with pkgs; [
-      morewaita-icon-theme
-      qogir-icon-theme
-      gnome-extension-manager
+}: {
+  imports = [
+    inputs.hyprland.nixosModules.default
+  ];
 
-      inputs.scramgit.defaultPackage.${pkgs.system}
-      inputs.nvimFlake.defaultPackage.${pkgs.system}
-    ];
+  programs = {
+    hyprland = {
+      enable = true;
+      package = inputs.hyprland.packages.${pkgs.system}.default;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
+    };
+  };
 
-    gnome.excludePackages = with pkgs; [
-      # gnome-text-editor
-      atomix # puzzle game
-      cheese # webcam tool
-      epiphany # web browser
-      evince # document viewer
-      gedit
-      geary # email reader
-      gnome-characters
-      gnome-connections
-      gnome-console
-      gnome-contacts
-      gnome-font-viewer
-      gnome-initial-setup
-      gnome-maps
-      gnome-music
-      gnome-photos
-      gnome-shell-extensions
-      gnome-tour
-      iagno # go game
-      snapshot
-      tali # poker game
-      totem # video player
-      hitori # sudoku game
-      yelp # Help view
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true;
+    config = {
+      common.default = ["gtk"];
+      hyprland.default = [
+        "gtk"
+        "hyprland"
+      ];
+    };
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
     ];
   };
 
-  services = {
-    xserver = {
-      enable = true;
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
-    };
-    displayManager = {
-      autoLogin = {
-        enable = true;
-        user = "merrinx";
+  security = {
+    polkit.enable = true;
+  };
+
+  environment.systemPackages = with pkgs; [
+    glib
+    pulseaudioFull
+    gnome-calendar
+    gnome-boxes
+    gnome-weather
+    gnome-system-monitor
+
+    inputs.scramgit.defaultPackage.${pkgs.system}
+    inputs.nvimFlake.defaultPackage.${pkgs.system}
+  ];
+
+  systemd = {
+    user.services.polkit-gnome-authentication-agent-1 = {
+      description = "polkit-gnome-authentication-agent-1";
+      wantedBy = ["graphical-session.target"];
+      wants = ["graphical-session.target"];
+      after = ["graphical-session.target"];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
       };
     };
   };
 
-  systemd.services = {
-    "getty@tty1".enable = false;
-    "autovt@tty1".enable = false;
+  services = {
+    gvfs.enable = true;
+    devmon.enable = true;
+    udisks2.enable = true;
+    upower.enable = true;
+    accounts-daemon.enable = true;
+    gnome = {
+      evolution-data-server.enable = true;
+      glib-networking.enable = true;
+      gnome-keyring.enable = true;
+      gnome-online-accounts.enable = true;
+    };
   };
-}
-else {
+
   services.greetd = let
     session = {
       command = "${lib.getExe config.programs.hyprland.package}";

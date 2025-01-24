@@ -1,11 +1,8 @@
 {
   pkgs,
   inputs,
-  specialArgs,
   ...
-}:
-if !specialArgs.desktop
-then {
+}: {
   imports = [
     ./binds.nix
     ./hypridle.nix
@@ -16,10 +13,12 @@ then {
     ./rules.nix
     ./systemd-fixes.nix
     ./tty.nix
+    ./variables.nix
   ];
   # Enable hyprland
   wayland.windowManager.hyprland = {
     enable = true;
+    xwayland.enable = true;
     systemd.enable = true;
 
     settings = {
@@ -28,12 +27,6 @@ then {
   };
 
   home.packages = [
-    pkgs.ranger
-    pkgs.wayshot
-    pkgs.sway-contrib.grimshot
-    pkgs.pavucontrol
-    pkgs.pulsemixer
-
     inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
   ];
 
@@ -45,4 +38,3 @@ then {
     };
   };
 }
-else {}

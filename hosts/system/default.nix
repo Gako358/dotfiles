@@ -18,12 +18,9 @@ with lib; {
     ./desktop.nix
     ./docker.nix
     ./fonts.nix
-    ./hyprland.nix
     ./nfc.nix
     ./shell.nix
-    # ./snapper.nix
     ./qemu.nix
-    ./steam.nix
     ./wally.nix
   ];
 }

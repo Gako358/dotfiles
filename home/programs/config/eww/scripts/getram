@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-# Get the free ram and print it to stdout.
-free_ram=$(free -h | awk '/^Mem:/ { print $3 }')
