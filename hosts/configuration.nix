@@ -83,7 +83,10 @@
 
   # Enable hardware support
   hardware = {
-    graphics.enable = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
     keyboard.zsa.enable = true;
     bluetooth.enable = true;
     enableAllFirmware = true;

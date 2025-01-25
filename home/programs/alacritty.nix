@@ -112,7 +112,7 @@ in {
           lines = 37;
         };
         decorations = "none";
-        opacity = 0.99;
+        opacity = 0.91;
         padding = {
           x = 5;
           y = 5;

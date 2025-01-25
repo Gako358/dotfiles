@@ -1,7 +1,7 @@
 {pkgs, ...}: let
   fontSize = "14px";
   iconSize = "17px";
-  opacity = "0.99";
+  opacity = "0.46";
   palette = {
     font = "RobotoMono Nerd Font";
     fontsize = fontSize;

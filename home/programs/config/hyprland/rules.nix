@@ -44,7 +44,7 @@
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
 
-      windowrule = opacity 0.99 override 0.91 override, ^(Alacritty)$
+      windowrule = opacity 0.73 override 0.64 override, ^(Alacritty)$
     ''
     else ''
       workspace = 1, monitor:DP-8

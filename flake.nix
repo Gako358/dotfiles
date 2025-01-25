@@ -36,81 +36,80 @@
     nvimFlake.url = "github:gako358/neovim";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    hardware,
-    flake-utils,
-    home-manager,
-    nix-colors,
-    nvimFlake,
-    scramgit,
-    ...
-  } @ inputs: let
-    inherit (self) outputs;
-    lib = nixpkgs.lib // home-manager.lib;
-    systems = ["x86_64-linux" "aarch64-linux"];
-    forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
-    pkgsFor = lib.genAttrs systems (system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      });
-  in {
-    inherit lib;
-    overlays = {
-      default = import ./overlay {inherit inputs outputs;};
-    };
-    templates = import ./templates;
-    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
-    devShells = forEachSystem (pkgs:
-      import ./shell.nix {
-        inherit pkgs;
-        buildInputs = with pkgs; [
-        ];
-      });
+  outputs =
+    { self
+    , nixpkgs
+    , home-manager
+    , nix-colors
+    , ...
+    } @ inputs:
+    let
+      inherit (self) outputs;
+      lib = nixpkgs.lib // home-manager.lib;
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
+      pkgsFor = lib.genAttrs systems (system:
+        import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        });
+    in
+    {
+      inherit lib;
+      overlays = {
+        default = import ./overlay { inherit inputs outputs; };
+      };
+      templates = import ./templates;
+      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
+      devShells = forEachSystem (pkgs:
+        import ./shell.nix {
+          inherit pkgs;
+          buildInputs = with pkgs; [
+            nixpkgs-fmt
+          ];
+        });
 
-    nixosConfigurations = {
-      terangreal = lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
+      nixosConfigurations = {
+        terangreal = lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [
+            ./hosts/configuration.nix
+            ./hosts/users/terangreal
+          ];
         };
-        modules = [
-          ./hosts/configuration.nix
-          ./hosts/users/terangreal
-        ];
+        tuathaan = lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [
+            ./hosts/configuration.nix
+            ./hosts/users/tuathaan
+          ];
+        };
       };
-      tuathaan = lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
+      homeConfigurations = {
+        "merrinx@terangreal" = lib.homeManagerConfiguration {
+          pkgs = pkgsFor.x86_64-linux;
+          extraSpecialArgs = {
+            inherit inputs outputs nix-colors;
+            hidpi = true;
+          };
+          modules = [
+            ./home/home.nix
+          ];
         };
-        modules = [
-          ./hosts/configuration.nix
-          ./hosts/users/tuathaan
-        ];
+        "merrinx@tuathaan" = lib.homeManagerConfiguration {
+          pkgs = pkgsFor.x86_64-linux;
+          extraSpecialArgs = {
+            inherit inputs outputs nix-colors;
+            hidpi = false;
+          };
+          modules = [
+            ./home/home.nix
+          ];
+        };
       };
     };
-    homeConfigurations = {
-      "merrinx@terangreal" = lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {
-          inherit inputs outputs nix-colors;
-          hidpi = true;
-        };
-        modules = [
-          ./home/home.nix
-        ];
-      };
-      "merrinx@tuathaan" = lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {
-          inherit inputs outputs nix-colors;
-          hidpi = false;
-        };
-        modules = [
-          ./home/home.nix
-        ];
-      };
-    };
-  };
 }
