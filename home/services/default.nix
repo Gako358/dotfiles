@@ -4,7 +4,8 @@ let
       pasystray.enable = true; # pulseaudio system tray
     };
   };
-in [
+in
+[
   ./secret.nix
   more
 ]

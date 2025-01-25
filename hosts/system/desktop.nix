@@ -1,9 +1,8 @@
-{
-  lib,
-  config,
-  inputs,
-  pkgs,
-  ...
+{ lib
+, config
+, inputs
+, pkgs
+, ...
 }: {
   imports = [
     inputs.hyprland.nixosModules.default
@@ -22,7 +21,7 @@
     enable = true;
     xdgOpenUsePortal = true;
     config = {
-      common.default = ["gtk"];
+      common.default = [ "gtk" ];
       hyprland.default = [
         "gtk"
         "hyprland"
@@ -52,9 +51,9 @@
   systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {
       description = "polkit-gnome-authentication-agent-1";
-      wantedBy = ["graphical-session.target"];
-      wants = ["graphical-session.target"];
-      after = ["graphical-session.target"];
+      wantedBy = [ "graphical-session.target" ];
+      wants = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
@@ -79,19 +78,21 @@
     };
   };
 
-  services.greetd = let
-    session = {
-      command = "${lib.getExe config.programs.hyprland.package}";
-      user = "merrinx";
+  services.greetd =
+    let
+      session = {
+        command = "${lib.getExe config.programs.hyprland.package}";
+        user = "merrinx";
+      };
+    in
+    {
+      enable = true;
+      restart = true;
+      settings = {
+        terminal.vt = 1;
+        default_session = session;
+      };
     };
-  in {
-    enable = true;
-    restart = true;
-    settings = {
-      terminal.vt = 1;
-      default_session = session;
-    };
-  };
   # unlock GPG keyring on login
   security.pam.services.greetd.enableGnomeKeyring = true;
 }
