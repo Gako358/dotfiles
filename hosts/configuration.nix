@@ -89,7 +89,6 @@
     keyboard.zsa.enable = true;
     bluetooth.enable = true;
     enableAllFirmware = true;
-    pulseaudio.enable = false;
   };
   # Set default shell to fish global
   users.defaultUserShell = pkgs.fish;

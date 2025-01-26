@@ -845,11 +845,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1737836430,
-        "narHash": "sha256-sZxo2/+ElEPOdXVLEgIZlhTtsGF8fjuUr5jsnM/XCNU=",
+        "lastModified": 1737887297,
+        "narHash": "sha256-rpR9332/tQ7wQxlw8sABIn2OyuT8QQ+VAr3tIm7z/64=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "3382178d9f632a9ca00e934a3d201bd7b41aa38f",
+        "rev": "41a1b87acfa545bd00652f6f604c4999182379a9",
         "type": "github"
       },
       "original": {

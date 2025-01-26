@@ -15,10 +15,10 @@ in {
     width = 460;
     height = 190;
     borderSize = 1;
-    defaultTimeout = 12000;
-    backgroundColor = "#${palette.background}dd";
-    borderColor = "#${palette.secondary_accent}dd";
-    textColor = "#${palette.tertiary_accent}dd";
+    defaultTimeout = 7300; # 7 sec
+    backgroundColor = "#${palette.background}aa"; # More transparent
+    borderColor = "#${palette.secondary_accent}aa"; # More transparent
+    textColor = "#${palette.tertiary_accent}aa"; # More transparent
     layer = "overlay";
   };
 }
