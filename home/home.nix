@@ -10,7 +10,6 @@ let
     brightnessctl # control screen brightness
     bottom # alternative to htop & ytop
     cacert # ca certificates
-    dbeaver-bin # database manager
     dconf2nix # dconf (gnome) files to nix converter
     dive # explore docker layers
     duf # disk usage/free utility
@@ -20,6 +19,7 @@ let
     jump # fast directory navigation
     killall # kill processes by name
     lazygit # terminal git ui
+    lazysql # terminal sql client
     libsecret # secret management
     ncdu # disk space info (a better du)
     nitch # minimal system information fetch
