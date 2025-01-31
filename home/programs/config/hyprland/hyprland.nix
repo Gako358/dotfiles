@@ -1,18 +1,19 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
-in {
+in
+{
   wayland.windowManager.hyprland.settings = {
     exec-once = [
+      "dbus-update-activation-environment --systemd --all && systemctl --user stop graphical-session.target && systemctl --user start hyprland-session.target"
       "${wallpaper}"
       "hyprctl setcursor capitaine-cursors-white 16"
+      "wl-clip-persist --clipboard both &"
+      "wl-paste --watch cliphist store &"
       "[workspace 1 silent] firefox"
       "[workspace 2 silent] alacritty"
       "[workspace 6 silent] chromium"
       "[workspace 7 silent] thunderbird"
-      "wl-clip-persist --clipboard both &"
-      "wl-paste --watch cliphist store &"
-      "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-      "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     ];
 
     general = {

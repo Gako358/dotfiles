@@ -1,7 +1,4 @@
-{ pkgs
-, lib
-, ...
-}: {
+{
   imports = [
     ./hardware-configuration.nix
   ];
@@ -14,17 +11,6 @@
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
       extraGroups = [ "wheel" "networkmanager" "docker" "libvirtd" "video" "audio" "plugdev" ];
-    };
-  };
-  services = {
-    dbus.enable = true;
-    xserver = {
-      videoDrivers = [ "amdgpu" ];
-      displayManager = {
-        sessionCommands = ''
-          ${lib.getBin pkgs.dbus}/bin/dbus-update-activation-environment --systemd --all
-        '';
-      };
     };
   };
 }

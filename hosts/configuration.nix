@@ -53,7 +53,10 @@
   services = {
     libinput.enable = true;
     blueman.enable = true;
-    dbus.packages = [ pkgs.gnome-keyring pkgs.gcr ];
+    dbus = {
+      implementation = "broker";
+      packages = [ pkgs.gnome-keyring pkgs.gcr ];
+    };
     gnome.gnome-keyring = {
       enable = true;
     };
