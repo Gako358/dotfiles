@@ -1,8 +1,6 @@
 let
   scripts =
-    { config
-    , lib
-    , pkgs
+    { pkgs
     , ...
     }:
     let
