@@ -5,7 +5,8 @@
 , ...
 }: {
   imports = [
-    ./system
+    ./programs
+    ./services
   ];
   # NixOS Network Configuration
   networking = {
@@ -49,37 +50,6 @@
 
   # Set the default editor
   environment.variables.EDITOR = "nvim";
-
-  services = {
-    libinput.enable = true;
-    blueman.enable = true;
-    dbus = {
-      enable = true;
-      implementation = "broker";
-      packages = [ pkgs.gnome-keyring pkgs.gcr ];
-    };
-    gnome.gnome-keyring = {
-      enable = true;
-    };
-    # Enable SSH
-    openssh = {
-      enable = true;
-      # Forbid root login through SSH.
-      settings = {
-        PermitRootLogin = "no";
-        PasswordAuthentication = false;
-      };
-    };
-    pulseaudio.enable = false;
-    # Enable pipewire
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      wireplumber.extraConfig."wireplumber.profiles".main."monitor.libcamera" = "disabled";
-    };
-  };
   security = {
     rtkit.enable = true;
     pam.services.swaylock = { };

@@ -75,8 +75,8 @@
             inherit inputs outputs;
           };
           modules = [
-            ./hosts/configuration.nix
-            ./hosts/users/terangreal
+            ./system
+            ./hosts/terangreal
           ];
         };
         tuathaan = lib.nixosSystem {
@@ -84,8 +84,8 @@
             inherit inputs outputs;
           };
           modules = [
-            ./hosts/configuration.nix
-            ./hosts/users/tuathaan
+            ./system
+            ./hosts/tuathaan
           ];
         };
       };
@@ -97,7 +97,7 @@
             hidpi = true;
           };
           modules = [
-            ./home/home.nix
+            ./home
           ];
         };
         "merrinx@tuathaan" = lib.homeManagerConfiguration {
@@ -107,7 +107,7 @@
             hidpi = false;
           };
           modules = [
-            ./home/home.nix
+            ./home
           ];
         };
       };
