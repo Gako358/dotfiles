@@ -17,9 +17,8 @@ with lib; {
     ./desktop.nix
     ./docker.nix
     ./fonts.nix
-    ./nfc.nix
-    ./shell.nix
     ./qemu.nix
-    ./wally.nix
+    ./shell.nix
+    ./xdg.nix
   ];
 }
