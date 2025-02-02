@@ -809,11 +809,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1738436288,
-        "narHash": "sha256-lDxY3TXWK1dT0rwbGk7wvriJdWW1wdcFDrpGhJQODMY=",
+        "lastModified": 1738496636,
+        "narHash": "sha256-1d739co/J3Bc3lzmrOeD96hXvpjfSLJ0vffeeRD+zws=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "74552a3323b8fb9551280c2833b6972fa7367e09",
+        "rev": "8af0db8aeafe467a0866c8dfcb94657223225c0b",
         "type": "github"
       },
       "original": {
