@@ -29,7 +29,7 @@
       };
     };
     kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+    extraModulePackages = [];
   };
 
   fileSystems."/" = {
