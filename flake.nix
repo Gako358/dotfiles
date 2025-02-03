@@ -99,7 +99,7 @@
         };
         "merrinx@tuathaan" = lib.homeManagerConfiguration {
           pkgs = pkgsFor.x86_64-linux;
-          extraSpecialArgs = { inherit inputs outputs nix-colors; hidpi = true; };
+          extraSpecialArgs = { inherit inputs outputs nix-colors; hidpi = false; };
           modules = [
             ./home
           ];
