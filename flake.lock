@@ -780,6 +780,7 @@
         "plugins-glow-nvim": "plugins-glow-nvim",
         "plugins-indent-blankline": "plugins-indent-blankline",
         "plugins-lazygit": "plugins-lazygit",
+        "plugins-leap": "plugins-leap",
         "plugins-lsp-signature": "plugins-lsp-signature",
         "plugins-lspkind": "plugins-lspkind",
         "plugins-lualine": "plugins-lualine",
@@ -809,11 +810,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1738496636,
-        "narHash": "sha256-1d739co/J3Bc3lzmrOeD96hXvpjfSLJ0vffeeRD+zws=",
+        "lastModified": 1738590626,
+        "narHash": "sha256-CYr/LFKHZwr2HEi5RuSeWTbALVJFaTYYSq2X9caIbJs=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "8af0db8aeafe467a0866c8dfcb94657223225c0b",
+        "rev": "dd14175481a31a441b4ad8835a89420d044c680c",
         "type": "github"
       },
       "original": {
@@ -1091,6 +1092,22 @@
       "original": {
         "owner": "kdheepak",
         "repo": "lazygit.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-leap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1737814145,
+        "narHash": "sha256-xHe0UsydKLYt8sxPHL/Qe77B9hfQWJhVJjRoaQCrclA=",
+        "owner": "ggandor",
+        "repo": "leap.nvim",
+        "rev": "be8e6eee2dabc68ce810ddf2e800c14bfda09fee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ggandor",
+        "repo": "leap.nvim",
         "type": "github"
       }
     },
