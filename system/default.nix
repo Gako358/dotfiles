@@ -62,7 +62,6 @@
       enable32Bit = true;
     };
     keyboard.zsa.enable = true;
-    bluetooth.enable = true;
     enableAllFirmware = true;
   };
   # Set default shell to fish global

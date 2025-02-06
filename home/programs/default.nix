@@ -14,6 +14,7 @@ let
       fd # "find" for files
       gimp # gnu image manipulation program
       jump # fast directory navigation
+      headsetcontrol # control logitech headsets
       killall # kill processes by name
       lazygit # terminal git ui
       lazysql # terminal sql client
