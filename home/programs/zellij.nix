@@ -118,8 +118,7 @@ let
     scrollback_editor "hx"
     layout_dir "/home/merrinx/.config/zellij/layouts"
   '';
-in
-{
+in {
   programs.zellij = {
     enable = true;
     enableFishIntegration = false;

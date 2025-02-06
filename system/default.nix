@@ -1,8 +1,9 @@
-{ config
-, inputs
-, lib
-, pkgs
-, ...
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
 }: {
   imports = [
     ./programs
@@ -19,7 +20,7 @@
   };
   # NixOS enable Flakes
   nix = {
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     settings = {
       experimental-features = "nix-command flakes";
@@ -32,12 +33,12 @@
       options = "--delete-older-than 10d";
     };
     # Trusted users
-    settings.trusted-users = [ "root" "merrinx" "@wheel" ];
+    settings.trusted-users = ["root" "merrinx" "@wheel"];
 
     # Enable optimisation
     optimise = {
       automatic = true;
-      dates = [ "weekly" ];
+      dates = ["weekly"];
     };
   };
   # Timezone and locale
@@ -52,7 +53,7 @@
   environment.variables.EDITOR = "nvim";
   security = {
     rtkit.enable = true;
-    pam.services.swaylock = { };
+    pam.services.swaylock = {};
   };
 
   # Enable hardware support

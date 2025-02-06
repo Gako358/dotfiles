@@ -1,4 +1,4 @@
-{ ... }: {
+{...}: {
   colorScheme = {
     slug = "nightfox";
     name = "Nightfox";

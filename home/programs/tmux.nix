@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   bg = "default";
   fg = "default";
   bg2 = "brightblack";
@@ -27,8 +26,7 @@ let
     flags = "#{?window_flags,#{window_flags}, }";
     module = "${index}${name}";
   };
-in
-{
+in {
   programs.tmux = {
     enable = true;
     plugins = with pkgs.tmuxPlugins; [

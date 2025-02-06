@@ -63,7 +63,7 @@
       import ./shell.nix {
         inherit pkgs;
         buildInputs = with pkgs; [
-          nixpkgs-fmt
+          alejandra
         ];
       });
 

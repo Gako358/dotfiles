@@ -1,8 +1,8 @@
-{ pkgs
-, lib
-, ...
-}:
-let
+{
+  pkgs,
+  lib,
+  ...
+}: let
   fzfConfig = ''
     set -x FZF_DEFAULT_OPTS "--preview='bat {} --color=always'" \n
     set -x SKIM_DEFAULT_COMMAND "rg --files || fd || find ."
@@ -24,8 +24,7 @@ let
     + themeConfig;
 
   dc = "${pkgs.docker-compose}/bin/docker-compose";
-in
-{
+in {
   programs.fish = {
     enable = true;
     vendor = {

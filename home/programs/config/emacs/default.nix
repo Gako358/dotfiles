@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   metals = pkgs.metals.overrideAttrs (
     final: prev: {
       version = "1.4.1";
@@ -17,7 +16,7 @@ let
         outputHashAlgo = "sha256";
         outputHash = "sha256-CVAPjeTYuv0w57EK/IldJcGz8mTQnyCGAjaUf6La2rU";
       };
-      buildInputs = [ final.deps ];
+      buildInputs = [final.deps];
     }
   );
 
@@ -62,8 +61,7 @@ let
       :files ("*.el"))
     '';
   };
-in
-{
+in {
   programs.emacs = {
     enable = true;
     package = pkgs.emacs30;

@@ -1,8 +1,9 @@
-{ lib
-, config
-, inputs
-, pkgs
-, ...
+{
+  lib,
+  config,
+  inputs,
+  pkgs,
+  ...
 }: {
   environment.systemPackages = with pkgs; [
     glib
@@ -24,9 +25,9 @@
   systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {
       description = "polkit-gnome-authentication-agent-1";
-      wantedBy = [ "graphical-session.target" ];
-      wants = [ "graphical-session.target" ];
-      after = [ "graphical-session.target" ];
+      wantedBy = ["graphical-session.target"];
+      wants = ["graphical-session.target"];
+      after = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
@@ -45,21 +46,19 @@
     upower.enable = true;
     accounts-daemon.enable = true;
 
-    greetd =
-      let
-        session = {
-          command = "${lib.getExe config.programs.hyprland.package}";
-          user = "merrinx";
-        };
-      in
-      {
-        enable = true;
-        restart = true;
-        settings = {
-          terminal.vt = 1;
-          default_session = session;
-        };
+    greetd = let
+      session = {
+        command = "${lib.getExe config.programs.hyprland.package}";
+        user = "merrinx";
       };
+    in {
+      enable = true;
+      restart = true;
+      settings = {
+        terminal.vt = 1;
+        default_session = session;
+      };
+    };
     gnome = {
       evolution-data-server.enable = true;
       glib-networking.enable = true;

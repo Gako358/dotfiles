@@ -1,5 +1,5 @@
 let
-  themes = { pkgs, ... }: {
+  themes = {pkgs, ...}: {
     gtk = {
       enable = true;
       theme = {
@@ -17,5 +17,4 @@ let
       };
     };
   };
-in
-[ themes ]
+in [themes]

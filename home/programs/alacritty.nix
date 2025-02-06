@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   fontSize = 10;
-in
-{
+in {
   programs.alacritty = {
     enable = true;
     settings = {

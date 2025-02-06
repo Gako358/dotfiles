@@ -1,4 +1,4 @@
-{ specialArgs, ... }:
+{specialArgs, ...}:
 if specialArgs.hidpi
 then {
   wayland.windowManager.hyprland.extraConfig = ''
