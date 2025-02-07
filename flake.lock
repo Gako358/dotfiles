@@ -810,11 +810,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1738872513,
-        "narHash": "sha256-xwE5icclyHz20DuvZcWcjnIPDD95pMS1/orSxk2gtEs=",
+        "lastModified": 1738932970,
+        "narHash": "sha256-hQhJ1PnstQLedvY2tjgLay+aXhZAiZI3+dHE1DUDgpU=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "53e9f216d6ad8191404ebb7c3aaed2d4358eafc0",
+        "rev": "8bfd13c3cd6f4869562a037e94e207b38cd8e477",
         "type": "github"
       },
       "original": {
