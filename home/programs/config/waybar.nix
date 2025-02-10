@@ -13,6 +13,7 @@
     red = "#c94f6d";
     yellow = "#dbc074";
     blue = "#719cd6";
+    grey = "#665c54";
   };
   calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
@@ -54,6 +55,16 @@ in {
         format-alt = " {:%d/%m}";
         on-click = "${calendar}";
       };
+      "hyprland/workspaces" = {
+        format = "{icon}";
+        on-click = "activate";
+        format-icons = {
+          default = "";
+          active = "";
+        };
+        sort-by-number = true;
+      };
+
       "custom/launcher" = {
         format = "   ";
         tooltip = false;
@@ -123,42 +134,26 @@ in {
          border: 2px none ${palette.blue};
       }
 
-      #workspaces {
-         background: ${palette.foreground};
-         color: ${palette.background};
-         margin: 3px 3px;
-         padding: 3px 2px;
-         border-radius: 15px;
+      #workspaces button:hover,
+      #workspaces button.active:hover,
+      #workspaces button.empty:hover
+      {
+        margin: initial;
+        box-shadow: initial;
       }
+
       #workspaces button {
-         background: ${palette.foreground};
-         color: ${palette.background};
-         border-radius: 15px;
-         padding: 0px 2px;
-         transition: all 0.3s ease-in-out;
+        margin: initial;
+        padding: initial;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: ${palette.grey};
       }
 
-      #workspaces button.active {
-         background-color: ${palette.blue};
-         color: ${palette.background};
-         border-radius: 15px;
-         min-width: 50px;
-         background-size: 400% 400%;
-         transition: all 0.3s ease-in-out;
-      }
-
-      #workspaces button:hover {
-         background-color: ${palette.blue};
-         color: ${palette.background};
-         border-radius: 10px;
-         min-width: 50px;
-         background-size: 400% 400%;
-      }
-
-      #workspaces button.urgent {
-         background-color: ${palette.red};
-         color: ${palette.foreground};
-         border-radius: 15px;
+      #workspaces button.active,
+      #workspaces button.empty
+      {
+        color: ${palette.blue};
       }
 
       #custom-launcher {
