@@ -799,6 +799,8 @@
         "plugins-nvim-metals": "plugins-nvim-metals",
         "plugins-nvim-nio": "plugins-nvim-nio",
         "plugins-nvim-web-devicons": "plugins-nvim-web-devicons",
+        "plugins-org-roam": "plugins-org-roam",
+        "plugins-orgmode": "plugins-orgmode",
         "plugins-plenary-nvim": "plugins-plenary-nvim",
         "plugins-ranger": "plugins-ranger",
         "plugins-rust-tools": "plugins-rust-tools",
@@ -810,11 +812,11 @@
         "plugins-which-key": "plugins-which-key"
       },
       "locked": {
-        "lastModified": 1738932970,
-        "narHash": "sha256-hQhJ1PnstQLedvY2tjgLay+aXhZAiZI3+dHE1DUDgpU=",
+        "lastModified": 1739731441,
+        "narHash": "sha256-u9eB6st8AHj7GNu1vym0FwWU74GNQSk0vkSO64epLjU=",
         "owner": "gako358",
         "repo": "neovim",
-        "rev": "8bfd13c3cd6f4869562a037e94e207b38cd8e477",
+        "rev": "e06419aa94df30ac8286bdea4fa69d1c64e15d00",
         "type": "github"
       },
       "original": {
@@ -1396,6 +1398,38 @@
       "original": {
         "owner": "kyazdani42",
         "repo": "nvim-web-devicons",
+        "type": "github"
+      }
+    },
+    "plugins-org-roam": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1738257172,
+        "narHash": "sha256-I6Cz1d+7RJ5BJS5DhCqpUpKJIGI9B5McTWxcu06R7ag=",
+        "owner": "chipsenkbeil",
+        "repo": "org-roam.nvim",
+        "rev": "c32aa470a9f9c2aa9e63c91859b0425e45cb3d1d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chipsenkbeil",
+        "repo": "org-roam.nvim",
+        "type": "github"
+      }
+    },
+    "plugins-orgmode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1739606305,
+        "narHash": "sha256-hZ2ZE83VRuM5T8XsCCegnR1IrUN5q4PmbZLuYw8/9BQ=",
+        "owner": "nvim-orgmode",
+        "repo": "orgmode",
+        "rev": "f3f888af34ac02eb2488bbf068d11d8a4b822642",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-orgmode",
+        "repo": "orgmode",
         "type": "github"
       }
     },
