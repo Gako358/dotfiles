@@ -7,6 +7,7 @@ let
       brightnessctl # control screen brightness
       bottom # alternative to htop & ytop
       cacert # ca certificates
+      cmatrix # matrix screensaver
       dconf2nix # dconf (gnome) files to nix converter
       dive # explore docker layers
       duf # disk usage/free utility
@@ -24,7 +25,6 @@ let
       nix-index # locate packages containing certain nixpkgs
       nix-output-monitor # nom: monitor nix commands
       ouch # painless compression and decompression for your terminal
-      obsidian # note taking
       pavucontrol # pulseaudio volume control
       paprefs # pulseaudio preferences
       pulsemixer # pulseaudio volume control

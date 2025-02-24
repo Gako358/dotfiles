@@ -20,7 +20,6 @@ echo ""
 git fetch
 
 flake=$(hostname)
-home_name="merrinx@$flake"
 
 # Check if there are any changes between the local and remote repository
 if ! git diff --quiet HEAD origin/main || ! git diff --quiet; then
@@ -64,21 +63,16 @@ fi
 # Run the nixos-rebuild command
 echo ""
 echo ""
-echo "Updating system for $flake..."
+echo "Updating system and home-manager for $flake..."
 echo ""
 sudo -v
 (sudo nixos-rebuild switch --flake .#$flake &>nixos-switch.log || (cat nixos-switch.log | grep --color error && echo "An error occurred during the rebuild. Do you want to continue? (yes/no)" && read continue && if [[ "$continue" == "no" ]]; then exit 1; fi)) &
 spinner $! "System updating..."
 echo ""
 
-# Update home-manager
-(home-manager switch --flake .#$home_name &>home-manager.log || (cat home-manager.log | grep --color error && echo "An error occurred during the home-manager update. Exiting." && exit 1)) &
-spinner $! "Updating home"
-echo ""
-
 # Check if there were any errors during the execution of the script
-if ! grep -q "error" nixos-switch.log && ! grep -q "error" home-manager.log; then
-    rm nixos-switch.log home-manager.log
+if ! grep -q "error" nixos-switch.log; then
+    rm nixos-switch.log
 fi
 
 echo ""

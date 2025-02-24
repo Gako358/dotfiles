@@ -62,7 +62,7 @@
     devShells = forEachSystem (pkgs:
       import ./shell.nix {
         inherit pkgs;
-        buildInputs = with pkgs; [
+        buildInputs = [
         ];
       });
 
@@ -72,8 +72,21 @@
           inherit inputs outputs;
         };
         modules = [
+          inputs.home-manager.nixosModules.home-manager
           ./system
           ./hosts/terangreal
+          {
+            home-manager = {
+              extraSpecialArgs = {
+                inherit inputs outputs;
+                hidpi = true;
+              };
+              users.merrinx = {...}: {
+                nixpkgs.config.allowUnfree = true;
+                imports = [./home];
+              };
+            };
+          }
         ];
       };
       tuathaan = lib.nixosSystem {
@@ -81,30 +94,23 @@
           inherit inputs outputs;
         };
         modules = [
+          inputs.home-manager.nixosModules.home-manager
           ./system
-          ./hosts/tuathaan
-        ];
-      };
-    };
-    homeConfigurations = {
-      "merrinx@terangreal" = lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {
-          inherit inputs outputs nix-colors;
-          hidpi = true;
-        };
-        modules = [
-          ./home
-        ];
-      };
-      "merrinx@tuathaan" = lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {
-          inherit inputs outputs nix-colors;
-          hidpi = false;
-        };
-        modules = [
-          ./home
+          ./hosts/terangreal
+          {
+            home-manager = {
+              # useGlobalPkgs = true; # TODO: Fix this on new install
+              # useUserPackages = true;
+              extraSpecialArgs = {
+                inherit inputs outputs;
+                hidpi = false;
+              };
+              users.merrinx = {...}: {
+                nixpkgs.config.allowUnfree = true;
+                imports = [./home];
+              };
+            };
+          }
         ];
       };
     };
