@@ -85,7 +85,7 @@
               };
               users.merrinx = {...}: {
                 nixpkgs.config.allowUnfree = true;
-                imports = [./home];
+                imports = [./modules];
               };
             };
           }
@@ -109,7 +109,7 @@
               };
               users.merrinx = {...}: {
                 nixpkgs.config.allowUnfree = true;
-                imports = [./home];
+                imports = [./modules];
               };
             };
           }
