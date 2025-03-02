@@ -99,11 +99,11 @@
         modules = [
           inputs.home-manager.nixosModules.home-manager
           ./system
-          ./hosts/terangreal
+          ./hosts/tuathaan
           {
             home-manager = {
               # useGlobalPkgs = true; # TODO: Fix this on new install
-              # useUserPackages = true;
+              useUserPackages = true;
               extraSpecialArgs = {
                 inherit inputs outputs;
                 hidpi = false;
