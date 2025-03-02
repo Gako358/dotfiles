@@ -1,7 +1,6 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }: {
   home.packages = with pkgs; let
     slack-chromium = makeDesktopItem {
@@ -13,5 +12,6 @@
       type = "Application";
       terminal = false;
     };
-  in [slack-chromium];
+  in
+  [ slack-chromium ];
 }

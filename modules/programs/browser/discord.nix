@@ -1,8 +1,8 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{ config
+, pkgs
+, ...
+}:
+let
   discord-chromium = pkgs.makeDesktopItem {
     name = "Discord";
     desktopName = "Discord";
@@ -11,12 +11,13 @@
       ${config.programs.chromium.package}/bin/chromium --ozone-platform-hint=auto --app="https://discord.com/channels/@me"'';
     icon = "discord";
     type = "Application";
-    categories = ["Network" "InstantMessaging"];
+    categories = [ "Network" "InstantMessaging" ];
     terminal = false;
-    mimeTypes = ["x-scheme-handler/discord"];
+    mimeTypes = [ "x-scheme-handler/discord" ];
   };
-in {
-  home.packages = with pkgs; [
+in
+{
+  home.packages = [
     discord-chromium
   ];
 }

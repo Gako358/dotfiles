@@ -77,8 +77,10 @@ in [
   ./browser/chromium.nix
   ./browser/discord.nix
   ./browser/firefox.nix
+  ./browser/nyxt.nix
   ./browser/slack.nix
   ./config
+  ./email
   ./alacritty.nix
   ./git.nix
   ./jujutsu.nix
