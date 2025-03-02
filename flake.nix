@@ -83,6 +83,7 @@
                 inherit inputs outputs;
                 hidpi = true;
               };
+              backupFileExtension = ".hm-backup";
               users.merrinx = {...}: {
                 nixpkgs.config.allowUnfree = true;
                 imports = [./modules];
@@ -107,6 +108,7 @@
                 inherit inputs outputs;
                 hidpi = false;
               };
+              backupFileExtension = ".hm-backup";
               users.merrinx = {...}: {
                 nixpkgs.config.allowUnfree = true;
                 imports = [./modules];
