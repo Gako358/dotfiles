@@ -1,8 +1,8 @@
-{
-  pkgs,
-  lib,
-  ...
-}: let
+{ pkgs
+, lib
+, ...
+}:
+let
   fzfConfig = ''
     set -x FZF_DEFAULT_OPTS "--preview='bat {} --color=always'" \n
     set -x SKIM_DEFAULT_COMMAND "rg --files || fd || find ."
@@ -24,7 +24,8 @@
     + themeConfig;
 
   dc = "${pkgs.docker-compose}/bin/docker-compose";
-in {
+in
+{
   programs.fish = {
     enable = true;
     vendor = {
@@ -70,9 +71,6 @@ in {
       update = "nix flake update";
       supdate = "sudo nix flake update";
       upgrade = "sudo nixos-rebuild switch --flake";
-
-      homeflake = "home-manager switch --flake";
-      homeflake_install = "nix run github:nix-community/home-manager#home-manager -- switch --flake";
     };
     shellInit = fishConfig;
   };
