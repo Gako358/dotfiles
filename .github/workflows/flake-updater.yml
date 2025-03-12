@@ -22,6 +22,7 @@ jobs:
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
             substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
       - name: Generate flake.json
         run: |
@@ -29,7 +30,7 @@ jobs:
       - id: gen_nixos_configurations
         run: |
           nixos_configurations=$(jq -c '.nixosConfigurations | keys' < flake.json)
-          echo "::set-output name=nixos_configurations::$nixos_configurations"
+          echo "nixos_configurations=$nixos_configurations" >> $GITHUB_OUTPUT
 
   update_flake:
     runs-on: ubuntu-20.04
@@ -45,8 +46,15 @@ jobs:
             auto-optimise-store = true
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org/
+            substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Set up cachix
+        uses: cachix/cachix-action@master
+        with:
+          name: merrinx
+          signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
+          skipPush: true
       - name: Set up git
         run: |
           git config user.email "gako358@outlook.com"
@@ -69,8 +77,6 @@ jobs:
       matrix:
         nixos_configuration: ${{ fromJson(needs.generate_matrix.outputs.nixos_configurations) }}
     steps:
-      # - name: Prepare store folder
-      #   run: sudo mkdir -p /nix
       - name: Free diskspace
         uses: easimon/maximize-build-space@master
         with:
@@ -91,13 +97,21 @@ jobs:
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
             substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Set up cachix
+        uses: cachix/cachix-action@master
+        with:
+          name: merrinx
+          signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
+          pathsToPush: result
       - name: Restore flake.lock
         uses: actions/download-artifact@v4
         with:
           name: flake_lock
       - name: Build everything
-        run: nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel
+        run: |
+          nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel --out-link result
 
   check_flake:
     runs-on: ubuntu-20.04
@@ -115,8 +129,15 @@ jobs:
             auto-optimise-store = true
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org/
+            substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
+      - name: Set up cachix
+        uses: cachix/cachix-action@master
+        with:
+          name: merrinx
+          signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
+          skipPush: true
       - name: Restore flake.lock
         uses: actions/download-artifact@v4
         with:
