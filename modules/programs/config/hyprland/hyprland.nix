@@ -9,7 +9,7 @@ in {
       "wl-clip-persist --clipboard both &"
       "wl-paste --watch cliphist store &"
       "[workspace 1 silent] firefox"
-      "[workspace 2 silent] alacritty"
+      "[workspace 2 silent] wezterm"
       "[workspace 6 silent] chromium"
       "[workspace 7 silent] thunderbird"
     ];
