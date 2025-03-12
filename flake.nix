@@ -38,85 +38,87 @@
     nvimFlake.url = "github:gako358/neovim";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    nix-colors,
-    ...
-  } @ inputs: let
-    inherit (self) outputs;
-    lib = nixpkgs.lib // home-manager.lib;
-    systems = ["x86_64-linux" "aarch64-linux"];
-    forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
-    pkgsFor = lib.genAttrs systems (system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      });
-  in {
-    inherit lib;
-    overlays = {
-      default = import ./overlay {inherit inputs outputs;};
-    };
-    templates = import ./templates;
-    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
-    devShells = forEachSystem (pkgs:
-      import ./shell.nix {
-        inherit pkgs;
-        buildInputs = [
-        ];
-      });
+  outputs =
+    { self
+    , nixpkgs
+    , home-manager
+    , nix-colors
+    , ...
+    } @ inputs:
+    let
+      inherit (self) outputs;
+      lib = nixpkgs.lib // home-manager.lib;
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
+      pkgsFor = lib.genAttrs systems (system:
+        import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        });
+    in
+    {
+      inherit lib;
+      overlays = {
+        default = import ./overlay { inherit inputs outputs; };
+      };
+      templates = import ./templates;
+      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
+      devShells = forEachSystem (pkgs:
+        import ./shell.nix {
+          inherit pkgs;
+          buildInputs = [
+          ];
+        });
 
-    nixosConfigurations = {
-      terangreal = lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
+      nixosConfigurations = {
+        terangreal = lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [
+            inputs.home-manager.nixosModules.home-manager
+            ./system
+            ./hosts/terangreal
+            {
+              home-manager = {
+                extraSpecialArgs = {
+                  inherit inputs outputs;
+                  hidpi = true;
+                };
+                backupFileExtension = ".hm-backup";
+                users.merrinx = { ... }: {
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [ ./modules ];
+                };
+              };
+            }
+          ];
         };
-        modules = [
-          inputs.home-manager.nixosModules.home-manager
-          ./system
-          ./hosts/terangreal
-          {
-            home-manager = {
-              extraSpecialArgs = {
-                inherit inputs outputs;
-                hidpi = true;
+        tuathaan = lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [
+            inputs.home-manager.nixosModules.home-manager
+            ./system
+            ./hosts/tuathaan
+            {
+              home-manager = {
+                # useGlobalPkgs = true; # TODO: Fix this on new install
+                useUserPackages = true;
+                extraSpecialArgs = {
+                  inherit inputs outputs;
+                  hidpi = false;
+                };
+                backupFileExtension = ".hm-backup";
+                users.merrinx = { ... }: {
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [ ./modules ];
+                };
               };
-              backupFileExtension = ".hm-backup";
-              users.merrinx = {...}: {
-                nixpkgs.config.allowUnfree = true;
-                imports = [./modules];
-              };
-            };
-          }
-        ];
-      };
-      tuathaan = lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
+            }
+          ];
         };
-        modules = [
-          inputs.home-manager.nixosModules.home-manager
-          ./system
-          ./hosts/tuathaan
-          {
-            home-manager = {
-              # useGlobalPkgs = true; # TODO: Fix this on new install
-              useUserPackages = true;
-              extraSpecialArgs = {
-                inherit inputs outputs;
-                hidpi = false;
-              };
-              backupFileExtension = ".hm-backup";
-              users.merrinx = {...}: {
-                nixpkgs.config.allowUnfree = true;
-                imports = [./modules];
-              };
-            };
-          }
-        ];
       };
     };
-  };
 }

@@ -81,10 +81,10 @@ in [
   ./browser/slack.nix
   ./config
   ./email
-  ./alacritty.nix
   ./git.nix
   ./jujutsu.nix
   ./network.nix
+  ./wezterm.nix
   ./zellij.nix
   more
 ]
