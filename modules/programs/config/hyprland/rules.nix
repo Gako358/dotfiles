@@ -43,8 +43,6 @@
       windowrule = float, title:^(Spotify)$
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
-
-      windowrule = opacity 0.91 override 0.73 override, ^(Alacritty)$
     ''
     else ''
       workspace = 1, monitor:DP-8
@@ -88,7 +86,5 @@
       windowrule = float, title:^(Spotify)$
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
-
-      windowrule = opacity 0.91 override 0.73 override, ^(Alacritty)$
     '';
 }
