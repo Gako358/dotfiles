@@ -53,8 +53,7 @@ jobs:
         uses: cachix/cachix-action@master
         with:
           name: merrinx
-          authToken: "${{ secrets.CACHIX_SIGNING_KEY }}"
-          skipPush: true
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Set up git
         run: |
           git config user.email "gako358@outlook.com"
@@ -69,11 +68,11 @@ jobs:
 
   build_flake:
     runs-on: ubuntu-20.04
-    timeout-minutes: 55
+    timeout-minutes: 180
     needs: [generate_matrix, update_flake]
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 3
       matrix:
         nixos_configuration: ${{ fromJson(needs.generate_matrix.outputs.nixos_configurations) }}
     steps:
@@ -81,10 +80,18 @@ jobs:
         uses: easimon/maximize-build-space@master
         with:
           build-mount-path: /nix
-          root-reserve-mb: 5120
+          swap-size-mb: 6144
+          root-reserve-mb: 4096
           remove-dotnet: true
           remove-android: true
           remove-haskell: true
+          remove-docker-images: true
+      - name: Clean up additional space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
       - name: Clone repository
         uses: actions/checkout@v4
         with:
@@ -98,20 +105,33 @@ jobs:
             experimental-features = nix-command flakes
             substituters = https://cache.nixos.org/ https://nix-community.cachix.org https://merrinx.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
+            max-jobs = 2
+            cores = 2
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
       - name: Set up cachix
         uses: cachix/cachix-action@master
         with:
           name: merrinx
-          authToken: "${{ secrets.CACHIX_SIGNING_KEY }}"
-          pathsToPush: result
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Restore flake.lock
         uses: actions/download-artifact@v4
         with:
           name: flake_lock
-      - name: Build everything
+      - name: Build with periodic GC
         run: |
+          # Start periodic GC in the background
+          (while true; do nix-collect-garbage -d; sleep 300; done) &
+          GCPID=$!
+          # Ensure it's killed when the script exits
+          trap "kill $GCPID" EXIT
+
+          # Build the configuration
           nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel --out-link result
+      - name: Push to cachix in smaller batches
+        run: |
+          for path in $(nix path-info --json result | jq -r '.[].path'); do
+            cachix push merrinx $path || true
+          done
 
   check_flake:
     runs-on: ubuntu-20.04
@@ -136,8 +156,7 @@ jobs:
         uses: cachix/cachix-action@master
         with:
           name: merrinx
-          authToken: "${{ secrets.CACHIX_SIGNING_KEY }}"
-          skipPush: true
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Restore flake.lock
         uses: actions/download-artifact@v4
         with:
