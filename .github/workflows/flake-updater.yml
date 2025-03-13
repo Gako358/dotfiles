@@ -2,7 +2,7 @@ name: "Update Flake Deps"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 5 * * 0"
+    - cron: "0 2 * * 1"
 
 jobs:
   generate_matrix:
@@ -21,7 +21,7 @@ jobs:
             auto-optimise-store = true
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            substituters = https://cache.nixos.org/ https://nix-community.cachix.org https://merrinx.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
       - name: Generate flake.json
@@ -46,7 +46,7 @@ jobs:
             auto-optimise-store = true
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            substituters = https://cache.nixos.org/ https://nix-community.cachix.org https://merrinx.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
       - name: Set up cachix
@@ -96,7 +96,7 @@ jobs:
             auto-optimise-store = true
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            substituters = https://cache.nixos.org/ https://nix-community.cachix.org https://merrinx.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
       - name: Set up cachix
@@ -129,7 +129,7 @@ jobs:
             auto-optimise-store = true
             access-tokens = github.com=${{ secrets.TEST_TOKEN }}
             experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org/ https://nix-community.cachix.org
+            substituters = https://cache.nixos.org/ https://nix-community.cachix.org https://merrinx.cachix.org
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
       - name: Set up cachix
