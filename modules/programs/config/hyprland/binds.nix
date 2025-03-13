@@ -8,7 +8,7 @@ let
   grimshot = "${pkgs.sway-contrib.grimshot}/bin/grimshot";
   swappy = "${pkgs.swappy}/bin/swappy";
   wofi = "${pkgs.wofi}/bin/wofi";
-  terminal = "${pkgs.wezterm}/bin/wezterm";
+  terminal = "/home/merrinx/.nix-profile/bin/wezterm";
   tmpScreenshot = "/tmp/current_background.png";
   lockScreen = "${pkgs.hyprlock}/bin/hyprlock";
 in

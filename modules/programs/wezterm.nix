@@ -79,6 +79,9 @@
           mods = "LEADER",
           action = act.SwitchToWorkspace {
             name = "default",
+            spawn = {
+              cwd = "/home/merrinx"
+            },
           },
         },
         -- Switch to the dotfiles workspace
@@ -141,6 +144,7 @@
       config.use_fancy_tab_bar = true
       config.show_new_tab_button_in_tab_bar = false
       config.tab_and_split_indices_are_zero_based = false
+      config.tab_bar_at_bottom = true
       local LEFT_END = utf8.char(0xE0B6)
       local RIGHT_END = utf8.char(0xE0B4)
       local bg_color = "#1a1a1a"
