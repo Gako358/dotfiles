@@ -2,28 +2,12 @@
   programs.wezterm = {
     enable = true;
 
-    extraConfig = /*lua*/''
+    extraConfig = /*lua*/ ''
       local wezterm = require "wezterm"
 
       -- wezterm.gui is not available to the mux server, so take care to
       -- do something reasonable when this config is evaluated by the mux
-      function get_appearance()
-        if wezterm.gui then
-          return wezterm.gui.get_appearance()
-        end
-        return "Dark"
-      end
-
-      function scheme_for_appearance(appearance)
-        if appearance:find "Dark" then
-          return "nightfox"
-        else
-          return "dayfox"
-        end
-      end
-
       wezterm.add_to_config_reload_watch_list(wezterm.config_dir)
-      wezterm.color_scheme_dirs = wezterm.color_scheme_dirs or {}
 
       -- Action shorthand
       local act = wezterm.action
@@ -153,54 +137,83 @@
         },
       }
 
-      -- Plugins
-      wezterm.plugin
-        .require('https://github.com/yriveiro/wezterm-status')
-        .apply_to_config(config, {
-            ui = {
-              theme = {
-                bg_color = '#88C0D0',
-                fg_color = '#2E3440',
-                intensity = 'Normal',
-                underline = 'None',
-                italic = true,
-                strikethrough = false,
-              },
-              separators = {
-                arrow_solid_left = '\u{e0b0}',
-                arrow_solid_right = '\u{e0b2}',
-                arrow_thin_left = '\u{e0b1}',
-                arrow_thin_right = '\u{e0b3}',
-              }
-            },
-            cells = {
-              battery = { enabled = false },
-              hostname = { enabled = false },
-              date = { format = '%H:%M' },
-              mode = {
-                enabled = true,
-                modes = {
-                  normal = ' ' .. wezterm.nerdfonts.cod_home,
-                  copy_mode = ' ' .. wezterm.nerdfonts.cod_copy,
-                  search_mode = ' ' .. wezterm.nerdfonts.cod_search,
-                }
-              },
-              cwd = {
-                enabled = true,
-                tilde_prefix = true,
-                path_aliases = {
-                  { pattern = os.getenv("HOME") .. "/Projects", replacement = "󰲋 " },    -- Projects folder
-                  { pattern = os.getenv("HOME") .. "/Projects/workspace", replacement = "󱌣 " },  -- Workspace folder
-                  { pattern = os.getenv("HOME") .. "/Documents", replacement = "󰈙 " },   -- Documents folder
-                  { pattern = os.getenv("HOME") .. "/Sources/dotfiles", replacement = "󱄯 " }    -- Dotfiles folder
-                }
-              }
-            }
-          })
+      -- Tab bar configuration
+      config.use_fancy_tab_bar = true
+      config.show_new_tab_button_in_tab_bar = false
+      config.tab_and_split_indices_are_zero_based = false
+      local LEFT_END = utf8.char(0xE0B6)
+      local RIGHT_END = utf8.char(0xE0B4)
+      local active_tab_bg_color = "#FFA066"
+      local inactive_tab_text_color = "#719cd6"
+      local active_tab_fg_color = "#1a1a1a"
+      local inactive_tab_bg_color = "#1a1a1a"
+
+      function tab_title(tab_info)
+        local title = tab_info.tab_title
+        -- if the tab title is explicitly set, take that
+        if title and #title > 0 then
+          return title
+        end
+        -- Otherwise, use the title from the active pane
+        -- in that tab
+        return tab_info.active_pane.title
+      end
+
+      wezterm.on(
+        "format-tab-title",
+        function(tab, tabs, panes, config, hover, max_width)
+          local title = tab_title(tab)
+          title = wezterm.truncate_right(title, max_width - 2)
+          local main_bg_color = "#1a1a1a"
+          local background = "#1a1a1a"
+          local tab_icon_inactive = "#719cd6"
+          local tab_icon_inactive_icon = wezterm.nerdfonts.md_ghost_off_outline
+          local tab_icon_active_icon = wezterm.nerdfonts.md_ghost
+          local icon_text = ""
+          local tab_icon_color = ""
+          local tab_text_color = ""
+          local tab_background_color = "#1a1a1a"
+
+          if tab.is_active then
+            tab_icon_color = active_tab_fg_color
+            tab_text_color = active_tab_fg_color
+            tab_background_color = active_tab_bg_color
+            icon_text = tab_icon_active_icon
+          else
+            tab_icon_color = tab_icon_inactive
+            tab_text_color = inactive_tab_text_color
+            icon_text = tab_icon_inactive_icon
+            tab_background_color = inactive_tab_bg_color
+          end
+
+          return {
+            { Background = { Color = main_bg_color } },
+            { Foreground = { Color = tab_background_color } },
+            { Text = LEFT_END },
+            { Background = { Color = tab_background_color } },
+            { Foreground = { Color = tab_icon_color } },
+            { Text = " " .. icon_text .. " " },
+            { Background = { Color = tab_background_color } },
+            { Foreground = { Color = tab_text_color } },
+            { Text = title .. "  " },
+            { Background = { Color = background } },
+            { Foreground = { Color = tab_background_color } },
+            { Text = RIGHT_END },
+          }
+        end
+      )
+
+      -- Get the built-in nightfox scheme and modify it
+      local nightfox_scheme = wezterm.get_builtin_color_schemes()["nightfox"]
+      nightfox_scheme.background = "#1a1a1a"
 
       return {
         check_for_updates = false,
-        color_scheme = "nightfox",
+        color_schemes = {
+          -- Override with our modified version
+          ["Modified Nightfox"] = nightfox_scheme,
+        },
+        color_scheme = "Modified Nightfox",
         default_cursor_style = "SteadyBar",
         enable_scroll_bar = true,
         font = wezterm.font_with_fallback({
@@ -211,17 +224,12 @@
         hide_tab_bar_if_only_one_tab = true,
         scrollback_lines = 10000,
         window_background_opacity = 0.9,
-        colors = {
-          background = "#1a1a1a",
-        },
         leader = config.leader,
         keys = config.keys,
         key_tables = config.key_tables,
-
-        -- Include any plugin-related configurations
-        tab_bar_style = config.tab_bar_style,
-        status_update_interval = config.status_update_interval,
-        wezterm_plugin_bar = config.wezterm_plugin_bar,
+        use_fancy_tab_bar = config.use_fancy_tab_bar,
+        show_new_tab_button_in_tab_bar = config.show_new_tab_button_in_tab_bar,
+        tab_and_split_indices_are_zero_based = config.tab_and_split_indices_are_zero_based,
       }
     '';
   };
