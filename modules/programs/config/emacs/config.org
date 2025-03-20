@@ -71,6 +71,21 @@ Using dashboard and kaolin-theme with modeline.
     :ensure t
     :config
     (setq nerd-icons-font-family "Iosevka Nerd Font"))
+
+  ;; Pretty icons for completion
+  (use-package nerd-icons-completion
+    :ensure t
+    :after marginalia
+    :config
+    (nerd-icons-completion-marginalia-setup)
+    (nerd-icons-completion-mode 1))
+
+  (use-package nerd-icons-corfu
+    :ensure t
+    :after corfu
+    :config
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
 #+end_src
 
 ** Transparency
@@ -94,77 +109,16 @@ Using dashboard and kaolin-theme with modeline.
 * Completion
 Using Corfu, vertico and cape for code completion.
 
-** All-the-icons-completion
-#+begin_src emacs-lisp
-  ;; all-the-icons-completion
-  (use-package all-the-icons-completion
-    :ensure t
-    :hook
-    (marginalia-mode-hook . all-the-icons-completion-marginalia-setup))
-#+end_src
-
 ** Cape
 #+begin_src emacs-lisp
   ;; Completion At Point Extensions.
   (use-package cape
     :ensure t
-    :commands
-    (cape-wrap-silent
-     cape-wrap-purify)
-    :functions
-    (cape-capf-buster
-     cape-capf-super)
-    :hook
-    ((comint-mode-hook
-      eshell-mode-hook) . init-cape-comint-capf)
-    (eglot-managed-mode-hook . init-cape-eglot-capf)
-    (prog-mode-hook . init-cape-prog-capf)
-    (text-mode-hook . init-cape-text-capf)
-    :bind
-    (([remap dabbrev-expand] . cape-dabbrev)
-     (:prefix-map completion-prefix-map :prefix "M-P"
-                  ("d" . cape-dabbrev)
-                  ("h" . cape-history)
-                  ("f" . cape-file)
-                  ("k" . cape-keyword)
-                  ("p" . completion-at-point)
-                  ("s" . cape-elisp-symbol)
-                  ("a" . cape-abbrev)
-                  ("l" . cape-line)
-                  ("w" . cape-dict)
-                  ("\\" . cape-tex)
-                  ("&" . cape-sgml)
-                  ("r" . cape-rfc1345))
-     (:map corfu-map
-           ("C-x C-f" . cape-file)))
     :init
-    ;; Use cape-dict for dictionary completion.
-    (setq cape-dict-file (getenv "WORDLIST"))
-    (setq text-mode-ispell-word-completion nil)
-    :config
-    (defun init-cape-comint-capf ()
-      (setq-local completion-at-point-functions
-                  (list (apply #'cape-capf-super
-                               #'cape-history
-                               (cl-remove-if-not #'functionp completion-at-point-functions)))))
-
-    (defun init-cape-eglot-capf ()
-      (setq-local completion-at-point-functions
-                  (list #'cape-file
-                        (cape-capf-super (cape-capf-buster #'eglot-completion-at-point #'string-prefix-p)
-                                         :with #'tempel-complete))))
-
-    (defun init-cape-prog-capf ()
-      (add-hook 'completion-at-point-functions #'cape-file nil t))
-
-    (defun init-cape-text-capf ()
-      (add-hook 'completion-at-point-functions #'cape-file nil t)
-      (add-hook 'completion-at-point-functions #'cape-dict 10 t))
-
-    (setq-default completion-at-point-functions
-                  (list #'cape-file #'cape-dabbrev))
-    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-silent)
-    (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
+    (add-hook 'completion-at-point-functions #'cape-file)
+    (add-hook 'completion-at-point-functions #'cape-elisp-block)
+    ;; (add-hook 'completion-at-point-functions #'cape-history)
+    )
 #+end_src
 
 ** Consult
@@ -172,33 +126,76 @@ Using Corfu, vertico and cape for code completion.
   ;; Commands compatible with completing-read.
   (use-package consult
     :ensure t
-    :bind
-    (([remap bookmark-jump] . consult-bookmark)
-     ([remap goto-line] . consult-goto-line)
-     ([remap imenu] . consult-imenu)
-     ([remap jump-to-register] . consult-register)
-     ([remap point-to-register] . consult-register-store)
-     ([remap switch-to-buffer] . consult-buffer)
-     ([remap yank-pop] . consult-yank-pop)
-     ("C-c k" . consult-kmacro)
-     ("C-c r" . consult-recent-file)
-     (:map search-map
-           ("g" . consult-ripgrep)
-           ("m" . consult-mark)
-           ("M-m" . consult-global-mark)))
-    :init
-    (setq consult-preview-key "M-RET"))
-#+end_src
+    :bind (;; C-c bindings in `mode-specific-map'
+	   ("C-c M-x" . consult-mode-command)
+	   ("C-c h" . consult-history)
+	   ("C-c k" . consult-kmacro)
+	   ("C-c m" . consult-man)
+	   ("C-c i" . consult-info)
+	   ([remap Info-search] . consult-info)
+	   ;; C-x bindings in `ctl-x-map'
+	   ("C-x M-:" . consult-complex-command)
+	   ("C-x 4 b" . consult-buffer-other-window)
+	   ("C-x 5 b" . consult-buffer-other-frame)
+	   ("C-x t b" . consult-buffer-other-tab)
+	   ("C-x r b" . consult-bookmark)
+	   ("C-x b" . consult-buffer)
+	   ("C-x p b" . consult-project-buffer)
+	   ;; Custom M-# bindings for fast register access
+	   ("M-#" . consult-register-load)
+	   ("M-'" . consult-register-store)
+	   ("C-M-#" . consult-register)
+	   ;; Other custom bindings
+	   ("M-y" . consult-yank-pop)
+	   ;; M-g bindings in `goto-map'
+	   ("M-g e" . consult-compile-error)
+	   ("M-g f" . consult-flymake)
+	   ("M-g g" . consult-goto-line)
+	   ;; ("M-g M-g" . consult-goto-line)
+	   ("M-g o" . consult-outline)
+	   ("M-g m" . consult-mark)
+	   ("M-g k" . consult-global-mark)
+	   ("M-g i" . consult-imenu)
+	   ("M-g I" . consult-imenu-multi)
+	   ;; M-s bindings in `search-map'
+	   ("M-s d" . consult-find)
+	   ("M-s c" . consult-locate)
+	   ("M-s g" . consult-ripgrep)
+	   ("M-s G" . consult-git-grep)
+	   ("M-s l" . consult-line)
+	   ("M-s L" . consult-line-multi)
+	   ("M-s u" . consult-focus-lines)
+	   ("M-s v" . kristian/consult-ripgrep-from-visual-selection)
+	   ;; Isearch integration
+	   :map isearch-mode-map
+	   ("M-s L" . consult-line-multi)
+	   )
 
-** Consult-xref
-#+begin_src emacs-lisp
-  (use-package consult-xref
-    :after xref
-    :functions
-    (consult-xref)
+    ;; Enable automatic preview at point in the *Completions* buffer.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
+
     :init
-    (setq xref-show-xrefs-function #'consult-xref)
-    (setq xref-show-definitions-function #'consult-xref))
+    ;; Optionally configure the register formatting. This improves the register
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
+
+    ;; Optionally tweak the register preview window.
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
+
+    :config
+    (consult-customize
+     consult-theme :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-file-register
+     consult--source-recent-file consult--source-project-recent-file
+     ;; :preview-key "M-."
+     :preview-key '(:debounce 0.4 any))
+    (setq consult-narrow-key "<"))
 #+end_src
 
 ** Copilot
@@ -219,9 +216,9 @@ Using Corfu, vertico and cape for code completion.
       (if (bound-and-true-p copilot-mode)
 	(copilot-mode -1)
 	(copilot-mode 1)))
-    
+
     (global-set-key (kbd "C-c C-p") 'toggle-copilot-mode)
-    
+
     (add-to-list 'copilot-indentation-alist '(prog-mode . 2))
     (add-to-list 'copilot-indentation-alist '(org-mode . 2))
     (add-to-list 'copilot-indentation-alist '(text-mode . 2))
@@ -238,34 +235,40 @@ Using Corfu, vertico and cape for code completion.
 ** Corfu
 #+begin_src emacs-lisp
   ;; Completion Overlay Region Function.
-   (use-package corfu
-     :ensure t
-     :commands
-     (corfu-mode
-      corfu-indexed-mode
-      global-corfu-mode)
-     :hook
-     (minibuffer-setup-hook . corfu-enable-in-minibuffer)
-     (corfu-mode-hook . corfu-popupinfo-mode)
-     :bind
-     (:map corfu-map
-           ([return] . nil)
-           ("RET" . nil)
-           ("TAB" . corfu-next)
-           ([tab] . corfu-next)
-           ("S-TAB" . corfu-previous)
-           ([backtab] . corfu-previous)
-           ("C-e" . corfu-complete))
-     :init
-     (setq corfu-cycle t)
-     (setq corfu-preselect 'first)
-     (global-corfu-mode 1)
-     (corfu-indexed-mode 1)
-     :config
-     (defun corfu-enable-in-minibuffer ()
-       "Enable Corfu completion in the minibuffer, e.g., `eval-expression'."
-       (when (where-is-internal #'completion-at-point (list (current-local-map)))
-         (corfu-mode 1))))
+  (use-package corfu
+    :init
+    (global-corfu-mode 1)
+    (setq global-corfu-minibuffer
+	  (lambda ()
+	    (not (or (bound-and-true-p mct--active)
+		     (bound-and-true-p vertico--input)
+		     (eq (current-local-map) read-passwd-map)))))
+    :bind (:map corfu-map
+		("C-n" . corfu-next)
+		("C-p" . corfu-previous)
+		("C-h" . corfu-info-documentation)
+		;; Remove the C-y binding from here since Evil intercepts it
+		)
+
+    :custom
+    (corfu-cycle t)
+    (corfu-auto t)
+    (corfu-preview-current nil)
+    (corfu-quit-at-boundary t)
+    (corfu-quit-no-match t)
+
+    :config
+    ;; Add Evil-specific binding for C-y in Corfu
+    (with-eval-after-load 'evil
+      (define-key evil-insert-state-map (kbd "C-y") 
+                  (lambda () 
+                    (interactive)
+                    (if (and (boundp 'corfu-mode) corfu-mode)
+                        (corfu-insert)
+                      (evil-paste-before 1)))))
+
+
+    )
 #+end_src
 
 ** Embark
@@ -277,11 +280,11 @@ Using Corfu, vertico and cape for code completion.
     :ensure t
     :defer t
     :commands (embark-act
-               embark-dwim
-               embark-export
-               embark-collect
-               embark-bindings
-               embark-prefix-help-command)
+	       embark-dwim
+	       embark-export
+	       embark-collect
+	       embark-bindings
+	       embark-prefix-help-command)
     :init
     (setq prefix-help-command #'embark-prefix-help-command)
 
@@ -298,7 +301,7 @@ Using Corfu, vertico and cape for code completion.
   (use-package embark-consult
     :after embark consult
     :bind (:map minibuffer-mode-map
-                ("C-e Ce" . embark-export))
+		("C-e Ce" . embark-export))
     :hook (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
@@ -315,51 +318,40 @@ Using Corfu, vertico and cape for code completion.
 #+begin_src emacs-lisp
   ;; Annotations for completion candidates.
   (use-package marginalia
+    ;; Marginalia allows Embark to offer you preconfigured actions in more contexts.
+    ;; In addition to that, Marginalia also enhances Vertico by adding rich
+    ;; annotations to the completion candidates displayed in Vertico's interface.
     :ensure t
-    :defer 2
-    :commands
-    (marginalia-mode)
-    :config
-    (marginalia-mode 1))
+    :defer t
+    :commands (marginalia-mode marginalia-cycle)
+    :hook (after-init . marginalia-mode))
 #+end_src
 
 ** Orderless
 #+begin_src emacs-lisp
   ;; Space-separated matching components matching in any order.
   (use-package orderless
+    ;; Vertico leverages Orderless' flexible matching capabilities, allowing users
+    ;; to input multiple patterns separated by spaces, which Orderless then
+    ;; matches in any order against the candidates.
     :ensure t
-    :init
-    (setq completion-styles '(substring orderless))
-    (setq completion-category-defaults nil)
-    (setq completion-category-overrides '((file (styles partial-completion)))))
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
 ** Vertico
 #+begin_src emacs-lisp
   ;; Vertical interactive completion UI.
+  ;; Tip: You can remove the `vertico-mode' use-package and replace it
+  ;;      with the built-in `fido-vertical-mode'.
   (use-package vertico
+    ;; (Note: It is recommended to also enable the savehist package.)
     :ensure t
-    :commands
-    (vertico-insert
-     vertico-exit)
-    :hook
-    (after-init-hook . vertico-mode)
-    :bind
-    (:map vertico-map
-          ("C-e" . vertico-move-end-of-line-or-insert))
-    :init
-    (defun vertico-move-end-of-line-or-insert (arg)
-      "Move to end of line or insert current candidate.
-             ARG lines can be used.
-
-             When only one candidate exists exit input after insert."
-      (interactive "p")
-      (if (eolp)
-          (progn
-            (vertico-insert)
-            (when (= vertico--total 1)
-              (vertico-exit)))
-        (move-end-of-line arg))))
+    :defer t
+    :commands vertico-mode
+    :hook (after-init . vertico-mode))
 #+end_src
 
 ** Grep
@@ -679,59 +671,57 @@ Edit and grammars needed
 * Filetree
 Setting up dirvish
 #+begin_src emacs-lisp
-(use-package dirvish
-  :ensure t
-  :init
-  (dirvish-override-dired-mode)
-  :custom
-  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-   '(("h" "~/"                          "Home")
-     ("d" "~/Downloads/"                "Downloads")
-     ("m" "/mnt/"                       "Drives")
-     ("p" "~/src/"                      "Projects")
-     ("t" "~/.local/share/Trash/files/" "TrashCan")))
+  (use-package dirvish
+    :ensure t
+    :init
+    (dirvish-override-dired-mode)
+    :custom
+    (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+     '(("h" "~/"                          "Home")
+       ("d" "~/Downloads/"                "Downloads")
+       ("m" "/mnt/"                       "Drives")
+       ("p" "~/src/"                      "Projects")
+       ("t" "~/.local/share/Trash/files/" "TrashCan")))
 
-  :config
-  ;; (dirvish-peek-mode)             ; Preview files in minibuffer
-  ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
-  (setq dirvish-mode-line-format
-        '(:left (sort symlink) :right (omit yank index)))
-  (setq dirvish-attributes           ; The order *MATTERS* for some attributes
-        '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
-        dirvish-side-attributes
-        '(vc-state nerd-icons collapse file-size))
-  (setq delete-by-moving-to-trash t)
-  (setq dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
-  :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
-  (("C-c f" . dirvish)
-   :map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
-   ;; ("M-?"   . dirvish-dispatch)     ; contains most of sub-menus in dirvish extensions
-   ("M-a"   . dirvish-quick-access)
-   ("M-f"   . dirvish-file-info-menu)
-   ("M-y"   . dirvish-yank-menu)
-   ;; ("N"   . dirvish-narrow)
-   ;; ("^"   . dirvish-history-last)
-   ("M-h" . dired-up-directory)
-   ("M-n" . dired-create-empty-file)
-   ;; ("H"   . dirvish-history-jump) ; remapped `describe-mode'
-   ;; ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
-   ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
-   ("M-o" . dirvish-subtree-toggle)
-   ;; ("M-f" . dirvish-history-go-forward)
-   ;; ("M-b" . dirvish-history-go-backward)
-   ("M-l" . dirvish-ls-switches-menu)
-   ("M-m" . dirvish-mark-menu)
-   ("M-t" . dirvish-layout-toggle)
-   ("M-s" . dirvish-setup-menu)
-   ("M-e" . dirvish-emerge-menu)
-   ("M-q" . dirvish-quit)
-   ("M-j" . dirvish-fd-jump)))
+    :config
+    ;; (dirvish-peek-mode)             ; Preview files in minibuffer
+    ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
+    (setq dirvish-mode-line-format
+          '(:left (sort symlink) :right (omit yank index)))
+    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
+          '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
+          dirvish-side-attributes
+          '(vc-state nerd-icons collapse file-size))
+    (setq delete-by-moving-to-trash t)
+    (setq dired-listing-switches
+          "-l --almost-all --human-readable --group-directories-first --no-group")
+    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
+    ((:map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
+           ;; ("M-?"   . dirvish-dispatch)     ; contains most of sub-menus in dirvish extensions
+           ("M-a"   . dirvish-quick-access)
+           ("M-f"   . dirvish-file-info-menu)
+           ("M-y"   . dirvish-yank-menu)
+           ;; ("N"   . dirvish-narrow)
+           ;; ("^"   . dirvish-history-last)
+           ("M-h" . dired-up-directory)
+           ("M-n" . dired-create-empty-file)
+           ;; ("H"   . dirvish-history-jump) ; remapped `describe-mode'
+           ;; ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
+           ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+           ("M-o" . dirvish-subtree-toggle)
+           ;; ("M-f" . dirvish-history-go-forward)
+           ;; ("M-b" . dirvish-history-go-backward)
+           ("M-l" . dirvish-ls-switches-menu)
+           ("M-m" . dirvish-mark-menu)
+           ("M-t" . dirvish-layout-toggle)
+           ("M-s" . dirvish-setup-menu)
+           ("M-e" . dirvish-emerge-menu)
+           ("M-q" . dirvish-quit)
+           ("M-j" . dirvish-fd-jump))))
 
-(add-hook 'dirvish-setup-hook (lambda ()
-                                (visual-line-mode -1)
-                                (setq-local truncate-lines t)))
-
+  (add-hook 'dirvish-setup-hook (lambda ()
+                                  (visual-line-mode -1)
+                                  (setq-local truncate-lines t)))
 #+end_src
 * General
 #+begin_src emacs-lisp
@@ -792,24 +782,21 @@ Setting up dirvish
 * Grammars
 Setting up treesitter grammars
 #+begin_src emacs-lisp
-
   (use-package treesit
     :ensure nil
     :custom
     (treesit-font-lock-level 4)
     :config
     (seq-do (lambda (it)
-              (push it major-mode-remap-alist))
-            '((javascript-mode . js-ts-mode)
-              (python-mode . python-ts-mode)
-              (typescript-mode . typescript-ts-mode)
-              (java-mode . java-ts-mode)
-              (css-mode . css-ts-mode)
-              (sh-mode . bash-ts-mode)
-              (scala-mode . scala-ts-mode)
-              (nix-mode . nix-ts-mode)
-              (shell-script-mode . bash-ts-mode))))
-
+	    (push it major-mode-remap-alist))
+	  '((python-mode . python-ts-mode)
+	    (javascript-mode . js-ts-mode)
+	    (typescript-mode . typescript-ts-mode)
+	    (java-mode . java-ts-mode)
+	    (css-mode . css-ts-mode)
+	    (sh-mode . bash-ts-mode)
+	    (scala-mode . scala-ts-mode)
+	    (shell-script-mode . bash-ts-mode))))
 #+end_src
 * Keybindings
 Keys that I have binded to my keyboard for easy navigation in emacs
@@ -853,10 +840,6 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     "bn" 'next-buffer
     "bp" 'previous-buffer
 
-    ;; Terminal
-    "pt" '("term" . eat-project)
-    "po" '("term-other-window" . eat-project-other-window)
-
     ;; Git
     "/" 'magit-status
     "bm" 'blamer-mode
@@ -874,7 +857,23 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     "ln" 'flymake-goto-next-error
     "lh"  'eldoc-box-help-at-point
     "lwd" 'flymake-show-project-diagnostics
-    "lbd" 'flymake-show-buffer-diagnostics)
+    "lbd" 'flymake-show-buffer-diagnostics
+
+    ;; Dirvish
+    "rf" 'dirvish
+
+    ;; Vterm
+    "tt" 'toggle-vterm
+    "tf" 'toggle-vterm-shackle
+    "t1" (lambda () (interactive) (toggle-vterm 1))
+    "t2" (lambda () (interactive) (toggle-vterm 2))
+    "t3" (lambda () (interactive) (toggle-vterm 3))
+    "t4" (lambda () (interactive) (toggle-vterm 4))
+    "t5" (lambda () (interactive) (toggle-vterm 5))
+    "t6" (lambda () (interactive) (toggle-vterm 6))
+    "t7" (lambda () (interactive) (toggle-vterm 7))
+    "t8" (lambda () (interactive) (toggle-vterm 8))
+    "t9" (lambda () (interactive) (toggle-vterm 9)))
 #+end_src
 
 ** Evil Collection
@@ -1018,7 +1017,6 @@ Using Eglot, Emacs built-in LSP client.
 Setup using:
 - Java
 - Nix
-- Python
 - Rust
 - SBT and Scala
 - SQL
@@ -1068,47 +1066,16 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 	(goto-char current-point)))) ;; Restore the point after formatting
 #+end_src
 
-** Python
-#+begin_src emacs-lisp
-  ;; Python language server
-  (use-package python
-    :mode "\\.py\\'"
-    :hook
-    (python-ts-mode-hook . eglot-ensure)
-    (python-ts-mode-hook . indent-bars-mode)
-    :bind
-    (:map python-ts-mode-map ("C-. r" . run-python))
-    :init
-    (cl-pushnew '("\\([^/]+\\)\\.py\\'" "\\1_test.py") find-sibling-rules :test #'equal)
-    (cl-pushnew '("\\([^/]+\\)_test\\.py\\'" "\\1.py") find-sibling-rules :test #'equal)
-    (cl-pushnew '("src/\\(\\(?:[s][r][^c]\\|[^s][^r][^c]\\|$\\)./\\)+\\([^/]+\\)\\.py\\'" "tests/\\1test_\\2.py") find-sibling-rules :test #'equal)
-    (cl-pushnew '("tests/\\(.+/\\)test_\\([^/]+\\)\\.py\\'" "src/\\1\\2.py") find-sibling-rules :test #'equal)
-    :config
-    (put 'python-shell-interpreter 'safe-local-variable #'(lambda (x) (member x '("python" "ipython")))))
-
-  (cl-pushnew '(python-mode . python-ts-mode) major-mode-remap-alist :test #'equal)
-
-  (use-package python-test
-    :ensure t
-    :bind
-    (:map python-ts-mode-map
-  	("C-. t a" . python-test-project)
-  	("C-. t f" . python-test-file)
-  	("C-. t t" . python-test-function))
-    :init
-    (setq python-test-backend 'pytest)
-    :config
-    (setq python-test-project-root-files
-  	(append '("README.md") python-test-project-root-files)))
-#+end_src
-
 ** Rust
 #+begin_src emacs-lisp
   ;; Rust language server
-  (use-package rustic
-    :after eglot
-    :hook (rustic-mode . eglot-ensure)
-    :mode "\\.rs\\'")
+  (use-package rust-ts-mode
+    :mode "\\.rs\\'"
+    :hook
+    (rust-ts-mode-hook . eglot-ensure)
+    :init
+    (with-eval-after-load 'org
+      (cl-pushnew '("rust" . rust-ts-mode) org-src-lang-modes :test #'equal)))
 #+end_src
 
 ** TypeScript
@@ -1217,7 +1184,7 @@ ORG config
 
   (define-key org-prefix-map (kbd "c") 'org-roam-capture)
 
-  (setq org-roam-directory (file-truename "~/Documents/notes"))
+  (setq org-roam-directory (file-truename "~/Documents/notes/src"))
 
   (org-roam-db-autosync-mode)
 
@@ -1255,6 +1222,32 @@ Easy to use and setup, easy use of buffers.
   (use-package eat)
   (add-hook 'eshell-load-hook #'eat-eshell-mode)
   (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+#+end_src
+
+* Terminal
+** Vterm
+Settup vterm for project term
+#+begin_src emacs-lisp
+  ;; A terminal via libvterm
+  (use-package vterm
+    :defer t
+    :preface
+    (defvar vterms nil)
+
+    (defun toggle-vterm (&optional n)
+      (interactive)
+      (setq vterms (seq-filter 'buffer-live-p vterms))
+      (let ((default-directory (or (vc-root-dir) default-directory)))
+        (cond ((numberp n) (push (vterm n) vterms))
+              ((null vterms) (push (vterm 1) vterms))
+              ((seq-contains-p vterms (current-buffer))
+               (switch-to-buffer (car (seq-difference (buffer-list) vterms))))
+              (t (switch-to-buffer (car (seq-intersection (buffer-list) vterms)))))))
+
+    :config
+    ;; Don't query about killing vterm buffers, just kill it
+    (defadvice vterm (after kill-with-no-query nil activate)
+      (set-process-query-on-exit-flag (get-buffer-process ad-return-value) nil)))
 #+end_src
 
 * Version
