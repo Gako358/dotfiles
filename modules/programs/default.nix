@@ -1,5 +1,5 @@
 let
-  more = {pkgs, ...}: {
+  more = { pkgs, ... }: {
     home.packages = with pkgs; [
       any-nix-shell # fish support for nix shell
       acpi # battery info
@@ -63,7 +63,7 @@ let
       fzf = {
         enable = true;
         defaultCommand = "fd --type file --follow"; # FZF_DEFAULT_COMMAND
-        defaultOptions = ["--height 20%"]; # FZF_DEFAULT_OPTS
+        defaultOptions = [ "--height 20%" ]; # FZF_DEFAULT_OPTS
         fileWidgetCommand = "fd --type file --follow"; # FZF_CTRL_T_COMMAND
       };
 
@@ -73,7 +73,8 @@ let
       ssh.enable = true;
     };
   };
-in [
+in
+[
   ./browser/chromium.nix
   ./browser/discord.nix
   ./browser/firefox.nix
@@ -81,10 +82,9 @@ in [
   ./browser/slack.nix
   ./config
   ./email
+  ./alacritty.nix
   ./git.nix
-  ./jujutsu.nix
   ./network.nix
-  ./wezterm.nix
   ./zellij.nix
   more
 ]
