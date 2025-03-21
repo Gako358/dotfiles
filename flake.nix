@@ -35,7 +35,6 @@
 
     # Scramgit
     scramgit.url = "github:gako358/scram";
-    nvimFlake.url = "github:gako358/neovim";
   };
 
   outputs =

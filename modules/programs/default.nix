@@ -84,6 +84,7 @@ in
   ./email
   ./alacritty.nix
   ./git.nix
+  ./neovim.nix
   ./network.nix
   ./zellij.nix
   more
