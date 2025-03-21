@@ -9,15 +9,19 @@ The configuration is setup using NixOS, check README.
 
 
 * Appearance
-Using dashboard and kaolin-theme with modeline.
+Using the dashboard package with the kaolin-theme to enhance the startup experience and overall look of Emacs.
 
 ** All-the-icons
+All-the-icons: Provides a rich set of icons for various file types and modes.
+
 #+begin_src emacs-lisp
   (use-package all-the-icons
     :ensure t)
 #+end_src
 
 ** All-the-icons-ivy-rich
+All-the-icons-ivy-rich: Enhances Ivy's minibuffer completion with icons, activated on startup.
+
 #+begin_src emacs-lisp
   (use-package all-the-icons-ivy-rich
     :ensure t
@@ -25,6 +29,8 @@ Using dashboard and kaolin-theme with modeline.
 #+end_src
 
 ** Dashboard
+The dashboard package is configured to display a welcoming startup screen with a custom banner, recent files, bookmarks, projects, and agenda items.
+
 #+begin_src emacs-lisp
   (use-package dashboard
     :ensure t
@@ -43,6 +49,8 @@ Using dashboard and kaolin-theme with modeline.
 #+end_src
 
 ** Fonts
+Custom fonts are set using "Iosevka Nerd Font" for both the main text and the mode-line, ensuring a consistent and visually appealing interface across all frames.
+
 #+begin_src emacs-lisp
   (add-hook 'after-make-frame-functions
 	    (lambda (f)
@@ -55,6 +63,8 @@ Using dashboard and kaolin-theme with modeline.
 #+end_src
 
 ** Themes
+The kaolin-themes package is used with specific settings for a personalized look, loading the "kaolin-ocean" theme.
+
 #+begin_src emacs-lisp
   (use-package kaolin-themes
     :config
@@ -66,6 +76,10 @@ Using dashboard and kaolin-theme with modeline.
 #+end_src
 
 ** Nerd-icons
+Nerd-icons: Sets "Iosevka Nerd Font" as the icon font family.
+Nerd-icons-completion: Integrates with Marginalia for enhanced completion visuals.
+Nerd-icons-corfu: Adds pretty icons to Corfu completion menus.
+
 #+begin_src emacs-lisp
   (use-package nerd-icons
     :ensure t
@@ -89,6 +103,8 @@ Using dashboard and kaolin-theme with modeline.
 #+end_src
 
 ** Transparency
+Frame transparency is set to 73%, with a function to toggle between transparent and opaque states using C-S-s.
+
 #+begin_src emacs-lisp
   (set-frame-parameter (selected-frame) 'alpha '(73 . 50))
   (add-to-list 'default-frame-alist '(alpha . (73 . 50)))
@@ -106,10 +122,33 @@ Using dashboard and kaolin-theme with modeline.
   (global-set-key (kbd "C-S-s") 'toggle-transparency)
 #+end_src
 
+** Tab-Bar
+The vim-tab-bar package is used for managing tabs, activated after initialization.
+
+#+begin_src emacs-lisp
+  (use-package vim-tab-bar
+    :ensure t
+    :commands vim-tab-bar-mode
+    :hook (after-init . vim-tab-bar-mode))
+#+end_src
+
+** Undo-Session
+The undo-fu-session package is configured for global session management, maintaining undo history across sessions.
+
+#+begin_src emacs-lisp
+  (use-package undo-fu-session
+    :ensure t
+    :config
+    (undo-fu-session-global-mode))
+#+end_src
+
 * Completion
 Using Corfu, vertico and cape for code completion.
 
 ** Cape
+Completion At Point Extensions:
+- Cape: Provides extensions for completion-at-point-functions to enhance the completion experience for files and Emacs Lisp blocks.
+
 #+begin_src emacs-lisp
   ;; Completion At Point Extensions.
   (use-package cape
@@ -123,6 +162,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Consult
+Commands Compatible with Completing-read:
+- Consult: Provides various commands that integrate with completing-read for enhanced navigation and search capabilities.
+
 #+begin_src emacs-lisp
   ;; Commands compatible with completing-read.
   (use-package consult
@@ -200,6 +242,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Copilot
+AI-Powered Code Completion:
+- Copilot: Integrates GitHub Copilot for AI-powered code completion, with custom keybindings and configuration for different modes.
+
 #+begin_src emacs-lisp
   (use-package dash :ensure t)
   (use-package s :ensure t)
@@ -234,6 +279,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Corfu
+Completion Overlay Region Function:
+- Corfu: Provides a completion overlay for better in-line completion, with custom keybindings for navigation and configuration for an improved user experience.
+
 #+begin_src emacs-lisp
   ;; Completion Overlay Region Function.
   (use-package corfu
@@ -273,6 +321,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Embark
+Context Menu for Actions:
+- Embark: Offers a context menu for performing actions on selected items directly from the completion interface.
+
 #+begin_src emacs-lisp
   (use-package embark
     ;; Embark is an Emacs package that acts like a context menu, allowing
@@ -298,6 +349,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Embark-consult
+Integration with Consult:
+- Embark-consult: Enhances Embark by integrating it with Consult, providing additional context-sensitive actions during completion.
+
 #+begin_src emacs-lisp
   (use-package embark-consult
     :after embark consult
@@ -307,6 +361,8 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** General Completion
+General Completion: Configures Emacs to enable indentation and completion with the TAB key, and sets completion cycle threshold for better usability.
+
 #+begin_src emacs-lisp
   ;; Enable indentation and completion with the TAB key.
   (setq tab-always-indent 'complete)
@@ -316,6 +372,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Marginalia
+Annotations for Completion Candidates:
+- Marginalia: Adds rich annotations to completion candidates, enhancing the completion experience with additional context.
+
 #+begin_src emacs-lisp
   ;; Annotations for completion candidates.
   (use-package marginalia
@@ -329,6 +388,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Orderless
+Flexible Matching:
+- Orderless: Provides flexible matching capabilities for completion, allowing multiple patterns to be matched in any order.
+
 #+begin_src emacs-lisp
   ;; Space-separated matching components matching in any order.
   (use-package orderless
@@ -343,6 +405,9 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Vertico
+Vertical Interactive Completion UI:
+- Vertico: Offers a vertical completion interface, improving the user experience for navigating and selecting completion candidates.
+
 #+begin_src emacs-lisp
   ;; Vertical interactive completion UI.
   ;; Tip: You can remove the `vertico-mode' use-package and replace it
@@ -356,11 +421,16 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 ** Grep
+Writable Grep:
+- wgrep: Allows editing of grep buffers, enabling changes to be applied directly to files.
+
 #+begin_src emacs-lisp
   (use-package wgrep)
 #+end_src
 
 ** Yasnippet
+Snippet Expansion:
+- Yasnippet: Provides support for snippet expansion, allowing predefined templates to be used for faster coding.
 #+begin_src emacs-lisp
   (use-package yasnippet
     :ensure t
@@ -632,9 +702,17 @@ Using Corfu, vertico and cape for code completion.
 #+end_src
 
 * Edit
-Edit and grammars needed
+Edit, format, and grammar support for various programming languages and markdown.
 
 ** Apheleia
+Formatters:
+- Apheleia: Provides on-the-fly code formatting using various formatters:
+        Scalafmt for Scala
+        Black for Python
+        Prettier for TypeScript and JavaScript
+        Google Java Format for Java
+        nixpkgs-fmt for Nix
+
 #+begin_src emacs-lisp
   ;; Formatters
   (use-package apheleia
@@ -664,13 +742,17 @@ Edit and grammars needed
 #+end_src
 
 ** Markdown Mode
+Markdown Edit:
+- Markdown Mode: Provides support for editing markdown files, enhancing the writing and formatting experience.
+
 #+begin_src emacs-lisp
   ;; Markdown edit
   (use-package markdown-mode)
 #+end_src
 
 * Filetree
-Setting up dirvish
+Config dirvish
+
 #+begin_src emacs-lisp
   (use-package dirvish
     :ensure t
@@ -876,7 +958,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     ;; LSP
     "lo" 'eglot
     "la" 'eglot-code-actions
-    "lf" 'eglot-format-buffer
+    "lf" 'apheleia-format-buffer
     "lr" 'eglot-rename
     "lH" 'gelot-nlay-hints-mode
     "ld" 'eglot-find-declaration
@@ -1011,32 +1093,13 @@ Keys that I have binded to my keyboard for easy navigation in emacs
 
   (global-set-key (kbd "S-<up>") 'move-text-up)
   (global-set-key (kbd "S-<down>") 'move-text-down)
-#+end_src
-
-** Undo Fu Session
-#+begin_src emacs-lisp
-  (use-package undo-fu-session
-    :ensure t
-    :config
-    (undo-fu-session-global-mode))
-#+end_src
-
-** Vim Tab Bar
-#+begin_src emacs-lisp
-  (use-package vim-tab-bar
-    :ensure t
-    :commands vim-tab-bar-mode
-    :hook (after-init . vim-tab-bar-mode))
-#+end_src
-
-** Window Management
-#+begin_src emacs-lisp
   (global-set-key (kbd "C-S-<right>") 'enlarge-window-horizontally)
   (global-set-key (kbd "C-S-<left>") 'shrink-window-horizontally)
   (global-set-key (kbd "C-S-<down>") 'shrink-window)
   (global-set-key (kbd "C-S-<up>") 'enlarge-window)
   (global-set-key (kbd "C-<tab>") 'evil-switch-to-windows-last-buffer)
 #+end_src
+
 * Languages
 Using Eglot, Emacs built-in LSP client.
 Setup using:
@@ -1199,23 +1262,69 @@ Setting up eglot LSP
 #+end_src
 
 * ORG
-ORG config
+** Dslide
 
+Programmable Org Presentation
 #+begin_src emacs-lisp
-  (use-package org-roam)
+   (use-package dslide
+     :defer t
+     :config
+     ;; Add any additional configuration for dslide here
+     )
+
+   (with-eval-after-load 'dslide
+     (define-key org-mode-map (kbd "C-c d s") 'dslide-start)
+     (define-key org-mode-map (kbd "C-c d n") 'dslide-next)
+     (define-key org-mode-map (kbd "C-c d p") 'dslide-prev))
+
+   ;; Function to enable dslide-mode manually
+   (defun enable-dslide-mode ()
+     "Enable dslide-mode manually."
+     (interactive)
+     (dslide-mode 1))
+
+   ;; Bind a key to enable dslide-mode manually
+   (define-key org-mode-map (kbd "C-c d e") 'enable-dslide-mode)
+#+end_src
+
+** Org-Roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory (file-truename "~/Documents/notes/src"))
+    (org-roam-completion-everywhere t)
+    (org-roam-capture-templates
+     '(("d" "default" plain
+	"%?"
+	:if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+	:unnarrowed t)))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert)
+	 :map org-mode-map
+	 ("C-M-i" . completion-at-point))
+    :config
+    (org-roam-setup)
+    (org-roam-db-autosync-mode))
+
+  (use-package org-modern
+    :ensure t
+    :hook ((org-mode . org-modern-mode)
+           (org-agenda-finalize . org-modern-agenda)))
+
+  ;; Define a prefix command for org-mode related commands
   (define-prefix-command 'org-prefix-map)
 
+  ;; Bind the prefix command to "C-x o"
   (global-set-key (kbd "C-x o") 'org-prefix-map)
 
+  ;; Bind org-roam-capture to "C-x o c"
   (define-key org-prefix-map (kbd "c") 'org-roam-capture)
-
-  (setq org-roam-directory (file-truename "~/Documents/notes/src"))
-
-  (org-roam-db-autosync-mode)
-
-  (add-hook 'org-mode-hook #'org-modern-mode)
-  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 #+end_src
+
 * Projects
 Projectile is the go-to project package to use with Emacs.
 Easy to use and setup, easy use of buffers.
@@ -1252,6 +1361,7 @@ Easy to use and setup, easy use of buffers.
 * Terminal
 ** Vterm
 Settup vterm for project term
+
 #+begin_src emacs-lisp
   ;; A terminal via libvterm
   (use-package vterm

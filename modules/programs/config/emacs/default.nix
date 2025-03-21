@@ -139,6 +139,7 @@ in
         eldoc-box # Display function signatures at point
 
         # Org
+        dslide # A presentation tool for Emacs
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
         org-modern # A modern org-mode distribution
