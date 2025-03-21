@@ -117,6 +117,7 @@ Using Corfu, vertico and cape for code completion.
     :init
     (add-hook 'completion-at-point-functions #'cape-file)
     (add-hook 'completion-at-point-functions #'cape-elisp-block)
+    ;; (add-hook 'completion-at-point-functions #'cape-dabbrev) ;; Buffer completion
     ;; (add-hook 'completion-at-point-functions #'cape-history)
     )
 #+end_src
@@ -260,8 +261,8 @@ Using Corfu, vertico and cape for code completion.
     :config
     ;; Add Evil-specific binding for C-y in Corfu
     (with-eval-after-load 'evil
-      (define-key evil-insert-state-map (kbd "C-y") 
-                  (lambda () 
+      (define-key evil-insert-state-map (kbd "C-y")
+                  (lambda ()
                     (interactive)
                     (if (and (boundp 'corfu-mode) corfu-mode)
                         (corfu-insert)
@@ -816,35 +817,35 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     (evil-want-Y-yank-to-eol t)
     :config
     (evil-select-search-module 'evil-search-module 'evil-search)
-    (evil-mode 1)
+    (evil-mode 1))
 
     ;; Unbind default window management keys
-    (define-key evil-normal-state-map (kbd "C-w") nil)
-    (define-key evil-motion-state-map (kbd "C-w") nil)
+    ;; (define-key evil-normal-state-map (kbd "C-w") nil)
+    ;; (define-key evil-motion-state-map (kbd "C-w") nil)
 
     ;; Bind new keys for window management
-    (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
-    (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
-    (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
-    (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
-    (define-key evil-normal-state-map (kbd "C-x") 'evil-window-split)
-    (define-key evil-normal-state-map (kbd "C-v") 'evil-window-vsplit)
+    ;; (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+    ;; (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+    ;; (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+    ;; (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+    ;; (define-key evil-normal-state-map (kbd "C-x") 'evil-window-split)
+    ;; (define-key evil-normal-state-map (kbd "C-v") 'evil-window-vsplit)
 
     ;; Optionally, you can also bind in motion state if you prefer
-    (define-key evil-motion-state-map (kbd "C-l") 'evil-window-right)
-    (define-key evil-motion-state-map (kbd "C-h") 'evil-window-left)
-    (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
-    (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
-    (define-key evil-motion-state-map (kbd "C-x") 'evil-window-split)
-    (define-key evil-motion-state-map (kbd "C-v") 'evil-window-vsplit)
+    ;; (define-key evil-motion-state-map (kbd "C-l") 'evil-window-right)
+    ;; (define-key evil-motion-state-map (kbd "C-h") 'evil-window-left)
+    ;; (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
+    ;; (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
+    ;; (define-key evil-motion-state-map (kbd "C-x") 'evil-window-split)
+    ;; (define-key evil-motion-state-map (kbd "C-v") 'evil-window-vsplit)
 
     ;; Optionally bind in insert state if you want the same behavior while editing text
-    (define-key evil-insert-state-map (kbd "C-l") 'evil-window-right)
-    (define-key evil-insert-state-map (kbd "C-h") 'evil-window-left)
-    (define-key evil-insert-state-map (kbd "C-j") 'evil-window-down)
-    (define-key evil-insert-state-map (kbd "C-k") 'evil-window-up)
-    (define-key evil-insert-state-map (kbd "C-x") 'evil-window-split)
-    (define-key evil-insert-state-map (kbd "C-v") 'evil-window-vsplit))
+    ;; (define-key evil-insert-state-map (kbd "C-l") 'evil-window-right)
+    ;; (define-key evil-insert-state-map (kbd "C-h") 'evil-window-left)
+    ;; (define-key evil-insert-state-map (kbd "C-j") 'evil-window-down)
+    ;; (define-key evil-insert-state-map (kbd "C-k") 'evil-window-up)
+    ;; (define-key evil-insert-state-map (kbd "C-x") 'evil-window-split)
+    ;; (define-key evil-insert-state-map (kbd "C-v") 'evil-window-vsplit))
 #+end_src
 
 ** Evil Leader
