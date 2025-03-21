@@ -707,11 +707,11 @@ Edit, format, and grammar support for various programming languages and markdown
 ** Apheleia
 Formatters:
 - Apheleia: Provides on-the-fly code formatting using various formatters:
-        Scalafmt for Scala
-        Black for Python
-        Prettier for TypeScript and JavaScript
-        Google Java Format for Java
-        nixpkgs-fmt for Nix
+  -  Scalafmt for Scala
+  -  Black for Python
+  -  Prettier for TypeScript and JavaScript
+  -  Google Java Format for Java
+  -  nixpkgs-fmt for Nix
 
 #+begin_src emacs-lisp
   ;; Formatters
