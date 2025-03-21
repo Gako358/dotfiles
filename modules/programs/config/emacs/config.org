@@ -975,6 +975,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
 
     ;; Vterm
     "tl" 'vterm-layout
+    "tk" 'kill-all-vterms-in-project
     "tt" 'toggle-vterm
     "t1" (lambda () (interactive) (toggle-vterm 1))
     "t2" (lambda () (interactive) (toggle-vterm 2))
@@ -1376,8 +1377,8 @@ Settup vterm for project term
       (interactive)
       (setq vterms (seq-filter 'buffer-live-p vterms))
       (let ((default-directory (or (vc-root-dir) default-directory)))
-        (cond ((numberp n) (push (vterm n) vterms))
-              ((null vterms) (push (vterm 1) vterms))
+        (cond ((numberp n) (let ((buf (vterm n))) (push buf vterms) (switch-to-buffer buf)))
+              ((null vterms) (let ((buf (vterm 1))) (push buf vterms) (switch-to-buffer buf)))
               ((seq-contains-p vterms (current-buffer))
                (switch-to-buffer (car (seq-difference (buffer-list) vterms))))
               (t (switch-to-buffer (car (seq-intersection (buffer-list) vterms)))))))
@@ -1394,15 +1395,29 @@ Settup vterm for project term
         (let ((default-directory (or (vc-root-dir) default-directory)))
           (delete-other-windows)
           (let ((left-vterm (vterm 1)))
+            (push left-vterm vterms)
             (split-window-right)
             (other-window 1)
             (let ((top-right-vterm (vterm 2)))
+              (push top-right-vterm vterms)
               (split-window-below)
               (other-window 1)
               (let ((bottom-right-vterm (vterm 3)))
+                (push bottom-right-vterm vterms)
                 (balance-windows)
                 (select-window (get-buffer-window left-vterm))
                 (setq vterm-layout-active t)))))))
+
+    (defun kill-all-vterms-in-project ()
+      "Kill all vterm buffers associated with the current project."
+      (interactive)
+      (setq vterms (seq-filter 'buffer-live-p vterms))  ;; Update the list of live vterm buffers
+      (let ((project-root (or (vc-root-dir) default-directory)))
+        (dolist (vterm-buffer vterms)
+  	(with-current-buffer vterm-buffer
+            (when (string-prefix-p project-root default-directory)
+              (kill-buffer vterm-buffer)))))
+      (setq vterms (seq-filter 'buffer-live-p vterms)))  ;; Update the vterms list
 
     :config
     ;; Don't query about killing vterm buffers, just kill it
