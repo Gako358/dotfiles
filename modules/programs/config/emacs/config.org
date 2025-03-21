@@ -47,8 +47,8 @@ Using dashboard and kaolin-theme with modeline.
   (add-hook 'after-make-frame-functions
 	    (lambda (f)
 	      (with-selected-frame f
-		(set-frame-font "Iosevka Nerd Font 10" nil t)
-		(set-face-attribute 'mode-line nil :font "Iosevka Nerd Font 11" :height 100))))
+		(set-frame-font "Iosevka Nerd Font 11" nil t)
+		(set-face-attribute 'mode-line nil :font "Iosevka Nerd Font 12" :height 100))))
 
   (add-to-list 'default-frame-alist '(height . 64))
   (add-to-list 'default-frame-alist '(width . 370))
@@ -816,7 +816,35 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     (evil-want-Y-yank-to-eol t)
     :config
     (evil-select-search-module 'evil-search-module 'evil-search)
-    (evil-mode 1))
+    (evil-mode 1)
+
+    ;; Unbind default window management keys
+    (define-key evil-normal-state-map (kbd "C-w") nil)
+    (define-key evil-motion-state-map (kbd "C-w") nil)
+
+    ;; Bind new keys for window management
+    (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+    (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+    (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+    (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+    (define-key evil-normal-state-map (kbd "C-x") 'evil-window-split)
+    (define-key evil-normal-state-map (kbd "C-v") 'evil-window-vsplit)
+
+    ;; Optionally, you can also bind in motion state if you prefer
+    (define-key evil-motion-state-map (kbd "C-l") 'evil-window-right)
+    (define-key evil-motion-state-map (kbd "C-h") 'evil-window-left)
+    (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
+    (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
+    (define-key evil-motion-state-map (kbd "C-x") 'evil-window-split)
+    (define-key evil-motion-state-map (kbd "C-v") 'evil-window-vsplit)
+
+    ;; Optionally bind in insert state if you want the same behavior while editing text
+    (define-key evil-insert-state-map (kbd "C-l") 'evil-window-right)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-window-left)
+    (define-key evil-insert-state-map (kbd "C-j") 'evil-window-down)
+    (define-key evil-insert-state-map (kbd "C-k") 'evil-window-up)
+    (define-key evil-insert-state-map (kbd "C-x") 'evil-window-split)
+    (define-key evil-insert-state-map (kbd "C-v") 'evil-window-vsplit))
 #+end_src
 
 ** Evil Leader
@@ -864,7 +892,6 @@ Keys that I have binded to my keyboard for easy navigation in emacs
 
     ;; Vterm
     "tt" 'toggle-vterm
-    "tf" 'toggle-vterm-shackle
     "t1" (lambda () (interactive) (toggle-vterm 1))
     "t2" (lambda () (interactive) (toggle-vterm 2))
     "t3" (lambda () (interactive) (toggle-vterm 3))
@@ -934,10 +961,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
       (interactive "<r>")
       (comment-or-uncomment-region beg end))
     (evil-define-key 'normal 'global (kbd "gc") 'my-evil-comment-or-uncomment))
-#+end_src
 
-** Functions
-#+begin_src emacs-lisp
   (defun move-right-and-open-todo ()
     (interactive)
     (split-window-right)
