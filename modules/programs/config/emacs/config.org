@@ -901,33 +901,41 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     (evil-select-search-module 'evil-search-module 'evil-search)
     (evil-mode 1))
 
-    ;; Unbind default window management keys
-    ;; (define-key evil-normal-state-map (kbd "C-w") nil)
-    ;; (define-key evil-motion-state-map (kbd "C-w") nil)
+  ;; Define scroll up
+  (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
+  (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
+  (define-key evil-insert-state-map (kbd "C-u")
+  	    (lambda ()
+  	      (interactive)
+  	      (evil-delete (point-at-bol) (point))))
 
-    ;; Bind new keys for window management
-    ;; (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
-    ;; (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
-    ;; (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
-    ;; (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
-    ;; (define-key evil-normal-state-map (kbd "C-x") 'evil-window-split)
-    ;; (define-key evil-normal-state-map (kbd "C-v") 'evil-window-vsplit)
+  ;; Unbind default window management keys
+  ;; (define-key evil-normal-state-map (kbd "C-w") nil)
+  ;; (define-key evil-motion-state-map (kbd "C-w") nil)
 
-    ;; Optionally, you can also bind in motion state if you prefer
-    ;; (define-key evil-motion-state-map (kbd "C-l") 'evil-window-right)
-    ;; (define-key evil-motion-state-map (kbd "C-h") 'evil-window-left)
-    ;; (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
-    ;; (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
-    ;; (define-key evil-motion-state-map (kbd "C-x") 'evil-window-split)
-    ;; (define-key evil-motion-state-map (kbd "C-v") 'evil-window-vsplit)
+  ;; Bind new keys for window management
+  ;; (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+  ;; (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+  ;; (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+  ;; (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
+  ;; (define-key evil-normal-state-map (kbd "C-x") 'evil-window-split)
+  ;; (define-key evil-normal-state-map (kbd "C-v") 'evil-window-vsplit)
 
-    ;; Optionally bind in insert state if you want the same behavior while editing text
-    ;; (define-key evil-insert-state-map (kbd "C-l") 'evil-window-right)
-    ;; (define-key evil-insert-state-map (kbd "C-h") 'evil-window-left)
-    ;; (define-key evil-insert-state-map (kbd "C-j") 'evil-window-down)
-    ;; (define-key evil-insert-state-map (kbd "C-k") 'evil-window-up)
-    ;; (define-key evil-insert-state-map (kbd "C-x") 'evil-window-split)
-    ;; (define-key evil-insert-state-map (kbd "C-v") 'evil-window-vsplit))
+  ;; Optionally, you can also bind in motion state if you prefer
+  ;; (define-key evil-motion-state-map (kbd "C-l") 'evil-window-right)
+  ;; (define-key evil-motion-state-map (kbd "C-h") 'evil-window-left)
+  ;; (define-key evil-motion-state-map (kbd "C-j") 'evil-window-down)
+  ;; (define-key evil-motion-state-map (kbd "C-k") 'evil-window-up)
+  ;; (define-key evil-motion-state-map (kbd "C-x") 'evil-window-split)
+  ;; (define-key evil-motion-state-map (kbd "C-v") 'evil-window-vsplit)
+
+  ;; Optionally bind in insert state if you want the same behavior while editing text
+  ;; (define-key evil-insert-state-map (kbd "C-l") 'evil-window-right)
+  ;; (define-key evil-insert-state-map (kbd "C-h") 'evil-window-left)
+  ;; (define-key evil-insert-state-map (kbd "C-j") 'evil-window-down)
+  ;; (define-key evil-insert-state-map (kbd "C-k") 'evil-window-up)
+  ;; (define-key evil-insert-state-map (kbd "C-x") 'evil-window-split)
+  ;; (define-key evil-insert-state-map (kbd "C-v") 'evil-window-vsplit))
 #+end_src
 
 ** Evil Leader
@@ -975,6 +983,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
 
     ;; Vterm
     "tl" 'vterm-layout
+    "tr" 'toggle-vterm-right
     "tk" 'kill-all-vterms-in-project
     "tt" 'toggle-vterm
     "t1" (lambda () (interactive) (toggle-vterm 1))
@@ -1372,13 +1381,14 @@ Settup vterm for project term
     (defvar vterms nil)
     (defvar vterm-layout-active nil "Flag to indicate if vterm layout is active.")
     (defvar previous-window-configuration nil "Stores the previous window configuration.")
+    (defvar vterm-right-buffer nil "Holds the current right-side vterm buffer.")
 
     (defun toggle-vterm (&optional n)
       (interactive)
       (setq vterms (seq-filter 'buffer-live-p vterms))
       (let ((default-directory (or (vc-root-dir) default-directory)))
-        (cond ((numberp n) (let ((buf (vterm n))) (push buf vterms) (switch-to-buffer buf)))
-              ((null vterms) (let ((buf (vterm 1))) (push buf vterms) (switch-to-buffer buf)))
+        (cond ((numberp n) (let ((buf (vterm (generate-new-buffer-name (format "*vterm-%d*" n))))) (push buf vterms) (switch-to-buffer buf)))
+              ((null vterms) (let ((buf (vterm (generate-new-buffer-name "*vterm-1*")))) (push buf vterms) (switch-to-buffer buf)))
               ((seq-contains-p vterms (current-buffer))
                (switch-to-buffer (car (seq-difference (buffer-list) vterms))))
               (t (switch-to-buffer (car (seq-intersection (buffer-list) vterms)))))))
@@ -1394,19 +1404,37 @@ Settup vterm for project term
         (setq previous-window-configuration (current-window-configuration))
         (let ((default-directory (or (vc-root-dir) default-directory)))
           (delete-other-windows)
-          (let ((left-vterm (vterm 1)))
+          (let ((left-vterm (vterm (generate-new-buffer-name "*vterm-1*"))))
             (push left-vterm vterms)
             (split-window-right)
             (other-window 1)
-            (let ((top-right-vterm (vterm 2)))
+            (let ((top-right-vterm (vterm (generate-new-buffer-name "*vterm-2*"))))
               (push top-right-vterm vterms)
               (split-window-below)
               (other-window 1)
-              (let ((bottom-right-vterm (vterm 3)))
+              (let ((bottom-right-vterm (vterm (generate-new-buffer-name "*vterm-3*"))))
                 (push bottom-right-vterm vterms)
                 (balance-windows)
                 (select-window (get-buffer-window left-vterm))
                 (setq vterm-layout-active t)))))))
+
+    ;; Define a function to toggle a vterm buffer on the right
+    (defun toggle-vterm-right ()
+      "Toggle a vterm buffer on the right side of the screen."
+      (interactive)
+      (if (and vterm-right-buffer (buffer-live-p vterm-right-buffer))
+          (if (eq (current-buffer) vterm-right-buffer)
+              (progn
+                (delete-window)
+                (bury-buffer vterm-right-buffer)
+                (balance-windows))
+            (select-window (display-buffer vterm-right-buffer)))
+        (let ((default-directory (or (vc-root-dir) default-directory)))
+          (split-window-right)
+          (other-window 1)
+          (setq vterm-right-buffer (vterm (generate-new-buffer-name "*vterm-right*")))
+          (push vterm-right-buffer vterms)
+          (switch-to-buffer vterm-right-buffer))))
 
     (defun kill-all-vterms-in-project ()
       "Kill all vterm buffers associated with the current project."
@@ -1414,7 +1442,7 @@ Settup vterm for project term
       (setq vterms (seq-filter 'buffer-live-p vterms))  ;; Update the list of live vterm buffers
       (let ((project-root (or (vc-root-dir) default-directory)))
         (dolist (vterm-buffer vterms)
-  	(with-current-buffer vterm-buffer
+          (with-current-buffer vterm-buffer
             (when (string-prefix-p project-root default-directory)
               (kill-buffer vterm-buffer)))))
       (setq vterms (seq-filter 'buffer-live-p vterms)))  ;; Update the vterms list
