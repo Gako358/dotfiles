@@ -974,6 +974,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     "rf" 'dirvish
 
     ;; Vterm
+    "tl" 'vterm-layout
     "tt" 'toggle-vterm
     "t1" (lambda () (interactive) (toggle-vterm 1))
     "t2" (lambda () (interactive) (toggle-vterm 2))
@@ -1368,6 +1369,8 @@ Settup vterm for project term
     :defer t
     :preface
     (defvar vterms nil)
+    (defvar vterm-layout-active nil "Flag to indicate if vterm layout is active.")
+    (defvar previous-window-configuration nil "Stores the previous window configuration.")
 
     (defun toggle-vterm (&optional n)
       (interactive)
@@ -1378,6 +1381,28 @@ Settup vterm for project term
               ((seq-contains-p vterms (current-buffer))
                (switch-to-buffer (car (seq-difference (buffer-list) vterms))))
               (t (switch-to-buffer (car (seq-intersection (buffer-list) vterms)))))))
+
+    ;; Define a function to create the vterm layout
+    (defun vterm-layout ()
+      "Toggle a layout with three vterm buffers: one to the left and two to the right."
+      (interactive)
+      (if vterm-layout-active
+          (progn
+            (set-window-configuration previous-window-configuration)
+            (setq vterm-layout-active nil))
+        (setq previous-window-configuration (current-window-configuration))
+        (let ((default-directory (or (vc-root-dir) default-directory)))
+          (delete-other-windows)
+          (let ((left-vterm (vterm 1)))
+            (split-window-right)
+            (other-window 1)
+            (let ((top-right-vterm (vterm 2)))
+              (split-window-below)
+              (other-window 1)
+              (let ((bottom-right-vterm (vterm 3)))
+                (balance-windows)
+                (select-window (get-buffer-window left-vterm))
+                (setq vterm-layout-active t)))))))
 
     :config
     ;; Don't query about killing vterm buffers, just kill it
