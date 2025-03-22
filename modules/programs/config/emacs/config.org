@@ -933,7 +933,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     ;; Project
     "fb" 'counsel-find-file
     "ff" 'projectile-find-file
-    "fg" 'projectile-ripgrep
+    "fg" 'consult-grep
     "pp" 'projectile-switch-project
     "pc" 'projectile-cleanup-known-projects
 
@@ -1154,7 +1154,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 
 #+end_src
 
-** Markdown Mode
+** Markdown
 Markdown Edit:
 - Markdown Mode: Provides support for editing markdown files, enhancing the writing and formatting experience.
 
