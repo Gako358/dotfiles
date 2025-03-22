@@ -129,6 +129,7 @@ in
 
         # Programming language packages.
         eglot-java # Java development environment
+        haskell-ts-mode # Haskell development environment
         nix-ts-mode # Major mode for editing Nix files
         scala-ts-mode # Scala development environment
         web-mode # Major mode for editing web templates
@@ -152,7 +153,6 @@ in
         # Project
         counsel # Various completion functions using Ivy
         counsel-projectile # Ivy integration for Projectile
-        eat # Emacs All
         projectile # Project Interaction Library for Emacs
 
         # Terminal
