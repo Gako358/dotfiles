@@ -1174,8 +1174,9 @@ Markdown Edit:
   (defun nixpkgs-fmt-before-save ()
     "Format the current buffer with nixpkgs-fmt."
     (when (eq major-mode 'nix-ts-mode)
-      (shell-command-to-string (concat "nixpkgs-fmt " buffer-file-name))
-      (revert-buffer t t t)))
+      (let ((output-buffer (get-buffer-create "*nixpkgs-fmt*")))
+        (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" output-buffer t)
+        (kill-buffer output-buffer))))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
