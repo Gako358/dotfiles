@@ -248,20 +248,23 @@ AI-Powered Code Completion:
 #+begin_src emacs-lisp
   (use-package dash :ensure t)
   (use-package s :ensure t)
-  (use-package editorconfig :ensure t)
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
   (use-package f :ensure t)
   (use-package copilot
     :ensure t
     :bind (:map copilot-completion-map
-		("C-e" . copilot-accept-completion)
-		("C-S-e" . copilot-accept-completion-by-word))
+  	      ("C-e" . copilot-accept-completion)
+  	      ("C-S-e" . copilot-accept-completion-by-word))
     :config
     (defun toggle-copilot-mode ()
       "Toggle Copilot mode on and off."
       (interactive)
       (if (bound-and-true-p copilot-mode)
-	(copilot-mode -1)
-	(copilot-mode 1)))
+  	(copilot-mode -1)
+        (copilot-mode 1)))
 
     (global-set-key (kbd "C-c C-p") 'toggle-copilot-mode)
 
@@ -871,15 +874,17 @@ Setting up treesitter grammars
     (treesit-font-lock-level 4)
     :config
     (seq-do (lambda (it)
-	    (push it major-mode-remap-alist))
-	  '((python-mode . python-ts-mode)
-	    (javascript-mode . js-ts-mode)
-	    (typescript-mode . typescript-ts-mode)
-	    (java-mode . java-ts-mode)
-	    (css-mode . css-ts-mode)
-	    (sh-mode . bash-ts-mode)
-	    (scala-mode . scala-ts-mode)
-	    (shell-script-mode . bash-ts-mode))))
+	      (push it major-mode-remap-alist))
+	    '((python-mode . python-ts-mode)
+	      (javascript-mode . js-ts-mode)
+	      (typescript-mode . typescript-ts-mode)
+	      (java-mode . java-ts-mode)
+	      (css-mode . css-ts-mode)
+	      (sh-mode . bash-ts-mode)
+	      (scala-mode . scala-ts-mode)
+	      (dockerfile-mode . dockerfile-ts-mode)
+	      (yaml-mode . yaml-ts-mode)
+	      (shell-script-mode . bash-ts-mode))))
 #+end_src
 * Keybindings
 Keys that I have binded to my keyboard for easy navigation in emacs
@@ -905,9 +910,16 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
   (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
   (define-key evil-insert-state-map (kbd "C-u")
-  	    (lambda ()
-  	      (interactive)
-  	      (evil-delete (point-at-bol) (point))))
+    	    (lambda ()
+    	      (interactive)
+    	      (evil-delete (point-at-bol) (point))))
+
+  ;; Evil numbers inc and dec
+  (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
+  (define-key evil-visual-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
+  (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
+  (define-key evil-visual-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
+
 
   ;; Unbind default window management keys
   ;; (define-key evil-normal-state-map (kbd "C-w") nil)
@@ -1126,6 +1138,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 #+begin_src emacs-lisp
   ;; Java language server
   (use-package eglot-java
+    :init
     :hook (java-ts-mode . eglot-java-mode)
     :config
     (define-key eglot-java-mode-map (kbd "C-c l n") #'eglot-java-file-new)
@@ -1134,6 +1147,9 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
     (define-key eglot-java-mode-map (kbd "C-c l N") #'eglot-java-project-new)
     (define-key eglot-java-mode-map (kbd "C-c l T") #'eglot-java-project-build-task)
     (define-key eglot-java-mode-map (kbd "C-c l R") #'eglot-java-project-build-refresh))
+
+  (with-eval-after-load 'eglot-java)
+
 #+end_src
 
 ** Scala

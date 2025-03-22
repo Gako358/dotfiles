@@ -21,23 +21,6 @@ let
       :files ("*.el"))
     '';
   };
-  vue-ts-mode = pkgs.emacsPackages.melpaBuild {
-    pname = "vue-ts-mode";
-    version = "20231029";
-    commit = "5ec5bb317b80ce394e156c61b7b9c63996382a68";
-    src = pkgs.fetchFromGitHub {
-      owner = "8uff3r";
-      repo = "vue-ts-mode";
-      rev = "5ec5bb317b80ce394e156c61b7b9c63996382a68";
-      hash = "sha256-1SOlRcq0KSO9n+isUSL5IhlujD4FWcU5I0zP6xuInuQ=";
-    };
-    recipe = pkgs.writeText "recipe" ''
-      (vue-ts-mode
-      :repo "8uff3r/vue-ts-mode"
-      :fetcher github
-      :files ("*.el"))
-    '';
-  };
   metals = pkgs.metals.overrideAttrs (
     final: prev: {
       deps = pkgs.stdenv.mkDerivation {
@@ -57,6 +40,23 @@ let
       buildInputs = [ final.deps ];
     }
   );
+  vue-ts-mode = pkgs.emacsPackages.melpaBuild {
+    pname = "vue-ts-mode";
+    version = "20231029";
+    commit = "5ec5bb317b80ce394e156c61b7b9c63996382a68";
+    src = pkgs.fetchFromGitHub {
+      owner = "8uff3r";
+      repo = "vue-ts-mode";
+      rev = "5ec5bb317b80ce394e156c61b7b9c63996382a68";
+      hash = "sha256-1SOlRcq0KSO9n+isUSL5IhlujD4FWcU5I0zP6xuInuQ=";
+    };
+    recipe = pkgs.writeText "recipe" ''
+      (vue-ts-mode
+      :repo "8uff3r/vue-ts-mode"
+      :fetcher github
+      :files ("*.el"))
+    '';
+  };
 
 in
 {
@@ -128,11 +128,12 @@ in
         treesit-grammars.with-all-grammars # Tree-sitter grammars
 
         # Programming language packages.
+        eglot-java # Java development environment
         nix-ts-mode # Major mode for editing Nix files
         scala-ts-mode # Scala development environment
         web-mode # Major mode for editing web templates
-        yaml-mode # Major mode for editing YAML files
         vue-ts-mode # Major mode for editing Vue3 files
+        yaml-mode # Major mode for editing YAML files
 
         # LSP
         eglot-booster # Eglot booster
@@ -167,16 +168,16 @@ in
   };
 
   home.packages = [
-    pkgs.nixpkgs-fmt
-    pkgs.emacs-lsp-booster
     pkgs.astyle
+    pkgs.emacs-lsp-booster
     pkgs.fd
-    pkgs.nil
-    pkgs.imagemagick
-    pkgs.poppler
     pkgs.ffmpegthumbnailer
+    pkgs.imagemagick
     pkgs.mediainfo
     metals
+    pkgs.nil
+    pkgs.nixpkgs-fmt
+    pkgs.poppler
   ];
 
   home.file = {
