@@ -21,25 +21,6 @@ let
       :files ("*.el"))
     '';
   };
-  metals = pkgs.metals.overrideAttrs (
-    final: prev: {
-      deps = pkgs.stdenv.mkDerivation {
-        name = "${prev.pname}-deps-${metalsVersion}";
-        buildCommand = ''
-          export COURSIER_CACHE=$(pwd)
-          ${pkgs.pkgs.coursier}/bin/cs fetch org.scalameta:metals_2.13:${metalsVersion} \
-            -r bintray:scalacenter/releases \
-            -r sonatype:snapshots > deps
-          mkdir -p $out/share/java
-          cp $(< deps) $out/share/java/
-        '';
-        outputHashMode = "recursive";
-        outputHashAlgo = "sha256";
-        outputHash = "sha256-2FA2B/WzNGU4B785pn5zZ9Xj64huzbSbr2Or+CxUMlI=";
-      };
-      buildInputs = [ final.deps ];
-    }
-  );
   vue-ts-mode = pkgs.emacsPackages.melpaBuild {
     pname = "vue-ts-mode";
     version = "20231029";
@@ -132,6 +113,8 @@ in
         haskell-ts-mode # Haskell development environment
         nix-ts-mode # Major mode for editing Nix files
         scala-ts-mode # Scala development environment
+        sql-indent # Indentation for SQL files
+        tide # TypeScript Interactive Development Environment
         web-mode # Major mode for editing web templates
         vue-ts-mode # Major mode for editing Vue3 files
         yaml-pro # Major mode for editing YAML files
@@ -174,7 +157,6 @@ in
     pkgs.ffmpegthumbnailer
     pkgs.imagemagick
     pkgs.mediainfo
-    metals
     pkgs.nil
     pkgs.nixpkgs-fmt
     pkgs.poppler

@@ -1141,8 +1141,8 @@ Setup using:
 - Nix
 - Rust
 - SBT and Scala
-- Typescript
 - SQL
+- Typescript
 - Yaml
 
 Using own created web mode, for Vue, TypeScript, and Tailwind.
@@ -1222,68 +1222,47 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
                  '(scala-ts-mode . ("metals"))))
 #+end_src
 
+** SQL
+#+begin_src emacs-lisp
+  ;; SQL syntax-based indentation
+  (use-package sql-indent
+    :ensure t
+    :hook (sql-mode . sqlind-minor-mode))
+
+  (with-eval-after-load 'sql-indent
+    (add-hook 'sql-mode-hook 'sqlind-minor-mode))
+#+end_src
+
 ** TypeScript
 #+begin_src emacs-lisp
-  ;; Javascript language server
-   (use-package js-ts-mode
-     :after eglot
-     :hook (js-ts-mode . eglot-ensure)
-     :mode
-     (("\\.js\\'" . js-ts-mode)
-      ("\\.ts\\'" . js-ts-mode)))
+  (defun setup-tide-mode ()
+    (interactive)
+    (tide-setup)
+    (flymake-mode +1)
+    (eldoc-mode +1)
+    (tide-hl-identifier-mode +1))
+
+  ;; formats the buffer before saving
+  (add-hook 'before-save-hook 'tide-format-before-save)
+  (add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
+
+  ;; for js-ts-mode with eglot
+  (use-package js-ts-mode
+    :after eglot
+    :hook (js-ts-mode . eglot-ensure)
+    :mode
+    (("\\.js\\'" . js-ts-mode)
+     ("\\.ts\\'" . js-ts-mode)))
 #+end_src
 
 ** Vue
 #+begin_src emacs-lisp
   ;; Vue language support
   (use-package vue-ts-mode
-    :mode "\\.vue\\'"
-    :custom
-    (mmm-submode-decoration-level 0 "Don't color submodes differently")
-    :config
-    (defun vue-eglot-init-options ()
-      (let ((tsdk-path "lib/node_modules/typescript/lib/"))
-        `(:typescript (:tsdk ,tsdk-path
-      			   :languageFeatures (:completion
-      					      (:defaultTagNameCase "kebab"
-      								   :defaultAttrNameCase "kebab"
-      								   :getDocumentNameCasesRequest nil
-      								   :getDocumentSelectionRequest nil)
-      					      :diagnostics
-      					      (:getDocumentVersionRequest nil))
-      			   :documentFeatures (:documentFormatting
-      					      (:defaultPrintWidth 100
-      								  :getDocumentPrintWidthRequest nil)
-      					      :documentSymbol t
-      					      :documentColor t)))))
-    (add-to-list 'eglot-server-programs `(vue-ts-mode . ("vue-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
-    (setq vue--front-tag-lang-regex
-      	(concat "<%s"                               ; The tag name
-      		"\\(?:"                             ; Zero of more of...
-      		"\\(?:\\s-+\\w+=[\"'].*?[\"']\\)"   ; Any optional key-value pairs like type="foo/bar"
-      		"\\|\\(?:\\s-+scoped\\)"            ; The optional "scoped" attribute
-      		"\\|\\(?:\\s-+module\\)"            ; The optional "module" attribute
-      		"\\|\\(?:\\s-+setup\\)"             ; The optional "setup" attribute
-      		"\\)*"
-      		"\\(?:\\s-+lang=[\"']%s[\"']\\)"    ; The language specifier (required)
-      		"\\(?:"                             ; Zero of more of...
-      		"\\(?:\\s-+\\w+=[\"'].*?[\"']\\)"   ; Any optional key-value pairs like type="foo/bar"
-      		"\\|\\(?:\\s-+scoped\\)"            ; The optional "scoped" attribute
-      		"\\|\\(?:\\s-+module\\)"            ; The optional "module" attribute
-      		"\\|\\(?:\\s-+setup\\)"             ; The optional "setup" attribute
-      		"\\)*"
-      		" *>\n"))                           ; The end of the tag
-    (setq vue--front-tag-regex
-      	(concat "<%s"                        ; The tag name
-      		"\\(?:"                      ; Zero of more of...
-      		"\\(?:\\s-+" vue--not-lang-key "[\"'][^\"']*?[\"']\\)" ; Any optional key-value pairs like type="foo/bar".
-      		;; ^ Disallow "lang" in k/v pairs to avoid matching regions with non-default languages
-      		"\\|\\(?:\\s-+scoped\\)"      ; The optional "scoped" attribute
-      		"\\|\\(?:\\s-+module\\)"      ; The optional "module" attribute
-      		"\\|\\(?:\\s-+setup\\)"       ; The optional "setup" attribute
-      		"\\)*"
-      		"\\s-*>\n"))                  ; The end of the tag
-    )
+    :after eglot
+    :hook (vue-ts-mode . eglot-ensure)
+    :mode
+    (("\\.vue\\'" . vue-ts-mode)))
 #+end_src
 
 ** Web Mode
@@ -1293,7 +1272,6 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
     :mode
     (("\\.phtml\\'" . web-mode)
      ("\\.php\\'" . web-mode)
-     ("\\.vue\\'" . web-mode)
      ("\\.tpl\\'" . web-mode)
      ("\\.[agj]sp\\'" . web-mode)
      ("\\.as[cp]x\\'" . web-mode)
@@ -1364,7 +1342,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
     (when (derived-mode-p 'yaml-ts-mode)
       (yaml-pro-format)))
 
-#+end_src
+  #+end_src
 
 * LSP
 Setting up eglot LSP
