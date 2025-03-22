@@ -744,6 +744,12 @@ Formatters:
   (apheleia-global-mode +1)
 #+end_src
 
+** Dockerfile
+
+#+begin_src emacs-lisp
+  (use-package dockerfile-ts-mode)
+#+end_src
+
 ** Markdown Mode
 Markdown Edit:
 - Markdown Mode: Provides support for editing markdown files, enhancing the writing and formatting experience.
@@ -751,6 +757,12 @@ Markdown Edit:
 #+begin_src emacs-lisp
   ;; Markdown edit
   (use-package markdown-mode)
+#+end_src
+
+** Yaml
+
+#+begin_src emacs-lisp
+  (use-package yaml-ts-mode)
 #+end_src
 
 * Filetree
@@ -1130,6 +1142,7 @@ Setup using:
 - Nix
 - Rust
 - SBT and Scala
+- Typescript
 - SQL
 
 Using own created web mode, for Vue, TypeScript, and Tailwind.
@@ -1150,20 +1163,6 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 
   (with-eval-after-load 'eglot-java)
 
-#+end_src
-
-** Scala
-#+begin_src emacs-lisp
-  ;; Scala language server
-  (use-package scala-ts-mode
-    :init
-    (setq scala-ts-indent-offset 2)
-    :hook ((scala-ts-mode . eglot-ensure)
-	   (before-save . eglot-format-buffer)))
-
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '(scala-ts-mode . ("metals"))))
 #+end_src
 
 ** Nix
@@ -1191,6 +1190,20 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
     :init
     (with-eval-after-load 'org
       (cl-pushnew '("rust" . rust-ts-mode) org-src-lang-modes :test #'equal)))
+#+end_src
+
+** Scala
+#+begin_src emacs-lisp
+  ;; Scala language server
+  (use-package scala-ts-mode
+    :init
+    (setq scala-ts-indent-offset 2)
+    :hook ((scala-ts-mode . eglot-ensure)
+	   (before-save . eglot-format-buffer)))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(scala-ts-mode . ("metals"))))
 #+end_src
 
 ** TypeScript
@@ -1272,6 +1285,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
      ("\\.mustache\\'" . web-mode)
      ("\\.djhtml\\'" . web-mode)))
 #+end_src
+
 * LSP
 Setting up eglot LSP
 
