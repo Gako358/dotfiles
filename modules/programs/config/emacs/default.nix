@@ -133,7 +133,7 @@ in
         scala-ts-mode # Scala development environment
         web-mode # Major mode for editing web templates
         vue-ts-mode # Major mode for editing Vue3 files
-        yaml-mode # Major mode for editing YAML files
+        yaml-pro # Major mode for editing YAML files
 
         # LSP
         eglot-booster # Eglot booster
