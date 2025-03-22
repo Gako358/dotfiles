@@ -746,11 +746,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1742683915,
-        "narHash": "sha256-l1Zg3Kn3/500pFStmv6QZ39PCyTRgwKaQRJtD0WS2wc=",
+        "lastModified": 1742684252,
+        "narHash": "sha256-tOSsiTE9isNUjQPTbfUpW3lz3CGsAAizP//b9XpwQX4=",
         "owner": "gako358",
         "repo": "scram",
-        "rev": "c08601bb00f228ce0991cc95e50ad0bca6b407fe",
+        "rev": "80ca4c897b5990d2e532205573effd7605379e4c",
         "type": "github"
       },
       "original": {
