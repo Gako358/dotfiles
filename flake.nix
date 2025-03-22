@@ -66,6 +66,7 @@
         import ./shell.nix {
           inherit pkgs;
           buildInputs = [
+            pkgs.nixpkgs-fmt
           ];
         });
 

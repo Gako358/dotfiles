@@ -1,11 +1,13 @@
-{config, ...}: let
+{ config, ... }:
+let
   palette = {
     background = "282c34";
     secondary_accent = "89b4fa";
     tertiary_accent = "f5f5f5";
   };
   fontType = "RobotoMono Nerd Font 12";
-in {
+in
+{
   services.mako = {
     enable = true;
     iconPath = "${config.gtk.iconTheme.package}/share/icons/Papirus-Dark";

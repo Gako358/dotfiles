@@ -12,7 +12,7 @@
     gnome-system-monitor
 
     inputs.scramgit.defaultPackage.${pkgs.system}
-    # inputs.nvimFlake.defaultPackage.${pkgs.system}
+    # inputs.emacsFlake.defaultPackage.${pkgs.system}
   ];
 
   security = {

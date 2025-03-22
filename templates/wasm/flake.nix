@@ -9,19 +9,22 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    flake-utils,
-    rust-overlay,
-  }:
+  outputs =
+    { self
+    , nixpkgs
+    , flake-utils
+    , rust-overlay
+    ,
+    }:
     flake-utils.lib.eachDefaultSystem (
-      system: let
-        overlays = [rust-overlay.overlays.default];
-        pkgs = import nixpkgs {inherit system overlays;};
+      system:
+      let
+        overlays = [ rust-overlay.overlays.default ];
+        pkgs = import nixpkgs { inherit system overlays; };
         rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-        inputs = [rust pkgs.wasm-bindgen-cli pkgs.trunk];
-      in {
+        inputs = [ rust pkgs.wasm-bindgen-cli pkgs.trunk ];
+      in
+      {
         defaultPackage = pkgs.rustPlatform.buildRustPackage {
           pname = "wasm-example";
           version = "0.1.0";
@@ -48,7 +51,7 @@
           '';
         };
 
-        devShell = pkgs.mkShell {packages = inputs;};
+        devShell = pkgs.mkShell { packages = inputs; };
       }
     );
 }

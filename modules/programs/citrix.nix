@@ -1,14 +1,14 @@
-{
-  lib,
-  pkgs,
-  ...
-}: let
-  extraCerts = [];
+{ lib
+, pkgs
+, ...
+}:
+let
+  extraCerts = [ ];
 
   citrixOverlay = self: super: {
     citrix_workspace = super.citrix_workspace.overrideAttrs (oldAttrs: rec {
       inherit extraCerts;
-      buildInputs = oldAttrs.buildInputs ++ [self.openssl];
+      buildInputs = oldAttrs.buildInputs ++ [ self.openssl ];
       postInstall = ''
         mkdir -p $out/opt/Citrix/ICAClient/keystore/cacerts
         for cert in ${lib.concatStringsSep " " extraCerts}; do
@@ -24,17 +24,18 @@
     libvorbis = pkgs.libvorbis.override {
       libogg = pkgs.libogg.overrideAttrs (prevAttrs: {
         cmakeFlags =
-          (prevAttrs.cmakeFlags or [])
+          (prevAttrs.cmakeFlags or [ ])
           ++ [
             (lib.cmakeBool "BUILD_SHARED_LIBS" true)
           ];
       });
     };
   };
-in {
+in
+{
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = [citrixOverlay];
+  nixpkgs.overlays = [ citrixOverlay ];
   home.packages = with pkgs; [
     citrix_workspace
   ];

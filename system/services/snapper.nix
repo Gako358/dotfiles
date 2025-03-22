@@ -5,7 +5,7 @@
     configs = {
       root = {
         SUBVOLUME = "/";
-        ALLOW_USERS = ["merrinx"];
+        ALLOW_USERS = [ "merrinx" ];
         TIMELINE_CREATE = true;
         TIMELINE_CLEANUP = true;
         TIMELINE_LIMIT_HOURLY = "10";
@@ -23,7 +23,7 @@
       };
       home = {
         SUBVOLUME = "/home";
-        ALLOW_USERS = ["merrinx"];
+        ALLOW_USERS = [ "merrinx" ];
         TIMELINE_CREATE = true;
         TIMELINE_CLEANUP = true;
         TIMELINE_LIMIT_HOURLY = "10";
@@ -41,7 +41,7 @@
       };
       tmp = {
         SUBVOLUME = "/tmp";
-        ALLOW_USERS = ["merrinx"];
+        ALLOW_USERS = [ "merrinx" ];
         TIMELINE_CREATE = true;
         TIMELINE_CLEANUP = true;
         TIMELINE_LIMIT_HOURLY = "10";

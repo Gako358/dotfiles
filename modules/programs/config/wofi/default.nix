@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   opacity = "1";
   palette = {
     font = "RobotoMono Nerd Font";
@@ -23,12 +24,13 @@
     secondary_background_rgba = "rgba(59, 63, 76,${opacity})";
     tertiary_background_rgba = "rgba(33, 37, 43,${opacity})";
   };
-in {
+in
+{
   programs.wofi = {
     enable = true;
     package = pkgs.wofi.overrideAttrs (oa: {
       patches =
-        (oa.patches or [])
+        (oa.patches or [ ])
         ++ [
           ./wofi-run-shell.patch # Fix for https://todo.sr.ht/~scoopta/wofi/174
         ];

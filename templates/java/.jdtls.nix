@@ -1,9 +1,10 @@
-{
-  lib,
-  stdenv,
-  fetchurl,
-  writeScriptBin,
-}: let
+{ lib
+, stdenv
+, fetchurl
+, writeScriptBin
+,
+}:
+let
   jdtls = stdenv.mkDerivation rec {
     pname = "jdtls";
     version = "1.9.0";
@@ -26,23 +27,23 @@
     '';
   };
 in
-  # Since nvimlsp config does not support jdtls_config outside of JDTLS_HOME,
+# Since nvimlsp config does not support jdtls_config outside of JDTLS_HOME,
   # we manually build symlinks and copy config files. (Ideally, this should be
   # changed in nvimlsp but)
-  writeScriptBin "jdtls_build_links" ''
-    source="${jdtls}"
-    target="$1"
+writeScriptBin "jdtls_build_links" ''
+  source="${jdtls}"
+  target="$1"
 
-    [ -d "$target" ] && echo "Directory \"$target\" exists. Please remove it." && exit 1
+  [ -d "$target" ] && echo "Directory \"$target\" exists. Please remove it." && exit 1
 
-    mkdir -p "$target"
-    cd "$target"
+  mkdir -p "$target"
+  cd "$target"
 
-    for folder in bin plugins features; do
-      ln -s "$source/$folder" "$target/$folder"
-    done
+  for folder in bin plugins features; do
+    ln -s "$source/$folder" "$target/$folder"
+  done
 
-    cp -r "$source/config_"* "$target"
-    chmod +w -R "$target/config_"*
+  cp -r "$source/config_"* "$target"
+  chmod +w -R "$target/config_"*
 
-  ''
+''

@@ -1,6 +1,7 @@
 let
   tmpScreenshot = "/tmp/current_background.png";
-in {
+in
+{
   programs.hyprlock = {
     enable = true;
 

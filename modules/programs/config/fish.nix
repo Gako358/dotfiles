@@ -1,11 +1,13 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   fenv = {
     inherit (pkgs.fishPlugins.foreign-env) src;
     name = "foreign-env";
   };
-in {
+in
+{
   programs.fish = {
     enable = true;
-    plugins = [fenv];
+    plugins = [ fenv ];
   };
 }

@@ -1,6 +1,5 @@
 # Shell for bootstrapping flake-enabled nix and home-manager
-{
-  pkgs ? let
+{ pkgs ? let
     # If pkgs is not defined, instanciate nixpkgs from locked commit
     lock = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.nixpkgs.locked;
     nixpkgs = fetchTarball {
@@ -8,12 +7,12 @@
       sha256 = lock.narHash;
     };
   in
-    import nixpkgs {overlays = [];},
-  ...
+  import nixpkgs { overlays = [ ]; }
+, ...
 }: {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
-    nativeBuildInputs = with pkgs; [nix home-manager git];
+    nativeBuildInputs = with pkgs; [ nix home-manager git ];
   };
 }

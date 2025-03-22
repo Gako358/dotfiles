@@ -11,21 +11,14 @@ The configuration is setup using NixOS, check README.
 * Appearance
 Using the dashboard package with the kaolin-theme to enhance the startup experience and overall look of Emacs.
 
-** All-the-icons
-All-the-icons: Provides a rich set of icons for various file types and modes.
+** Bar
+The vim-tab-bar package is used for managing tabs, activated after initialization.
 
 #+begin_src emacs-lisp
-  (use-package all-the-icons
-    :ensure t)
-#+end_src
-
-** All-the-icons-ivy-rich
-All-the-icons-ivy-rich: Enhances Ivy's minibuffer completion with icons, activated on startup.
-
-#+begin_src emacs-lisp
-  (use-package all-the-icons-ivy-rich
+  (use-package vim-tab-bar
     :ensure t
-    :init (all-the-icons-ivy-rich-mode 1))
+    :commands vim-tab-bar-mode
+    :hook (after-init . vim-tab-bar-mode))
 #+end_src
 
 ** Dashboard
@@ -62,20 +55,23 @@ Custom fonts are set using "Iosevka Nerd Font" for both the main text and the mo
   (add-to-list 'default-frame-alist '(width . 370))
 #+end_src
 
-** Themes
-The kaolin-themes package is used with specific settings for a personalized look, loading the "kaolin-ocean" theme.
+** Icons
+
+All-the-icons: Provides a rich set of icons for various file types and modes.
 
 #+begin_src emacs-lisp
-  (use-package kaolin-themes
-    :config
-    (setq kaolin-ocean-alt-bg t)
-    (setq kaolin-themes-italic-comments t
-          kaolin-themes-hl-line-colored t
-          kaolin-themes-git-gutter-solid t)
-    (load-theme 'kaolin-ocean t))
+  (use-package all-the-icons
+    :ensure t)
 #+end_src
 
-** Nerd-icons
+All-the-icons-ivy-rich: Enhances Ivy's minibuffer completion with icons, activated on startup.
+
+#+begin_src emacs-lisp
+  (use-package all-the-icons-ivy-rich
+    :ensure t
+    :init (all-the-icons-ivy-rich-mode 1))
+#+end_src
+
 Nerd-icons: Sets "Iosevka Nerd Font" as the icon font family.
 Nerd-icons-completion: Integrates with Marginalia for enhanced completion visuals.
 Nerd-icons-corfu: Adds pretty icons to Corfu completion menus.
@@ -102,37 +98,20 @@ Nerd-icons-corfu: Adds pretty icons to Corfu completion menus.
 
 #+end_src
 
-** Transparency
-Frame transparency is set to 73%, with a function to toggle between transparent and opaque states using C-S-s.
+** Themes
+The kaolin-themes package is used with specific settings for a personalized look, loading the "kaolin-ocean" theme.
 
 #+begin_src emacs-lisp
-  (set-frame-parameter (selected-frame) 'alpha '(73 . 50))
-  (add-to-list 'default-frame-alist '(alpha . (73 . 50)))
-
-  (defun toggle-transparency ()
-    (interactive)
-    (let ((alpha (frame-parameter nil 'alpha)))
-      (set-frame-parameter
-       nil 'alpha
-       (if (eql (cond ((numberp alpha) alpha)
-                      ((numberp (car alpha)) (car alpha)))
-                100)
-           '(85 . 50) '(100 . 100)))))
-
-  (global-set-key (kbd "C-S-s") 'toggle-transparency)
+  (use-package kaolin-themes
+    :config
+    (setq kaolin-ocean-alt-bg t)
+    (setq kaolin-themes-italic-comments t
+          kaolin-themes-hl-line-colored t
+          kaolin-themes-git-gutter-solid t)
+    (load-theme 'kaolin-ocean t))
 #+end_src
 
-** Tab-Bar
-The vim-tab-bar package is used for managing tabs, activated after initialization.
-
-#+begin_src emacs-lisp
-  (use-package vim-tab-bar
-    :ensure t
-    :commands vim-tab-bar-mode
-    :hook (after-init . vim-tab-bar-mode))
-#+end_src
-
-** Undo-Session
+** Session
 The undo-fu-session package is configured for global session management, maintaining undo history across sessions.
 
 #+begin_src emacs-lisp
@@ -144,6 +123,14 @@ The undo-fu-session package is configured for global session management, maintai
 
 * Completion
 Using Corfu, vertico and cape for code completion.
+
+#+begin_src emacs-lisp
+  ;; Enable indentation and completion with the TAB key.
+  (setq tab-always-indent 'complete)
+
+  ;; Cycle with the TAB key if there are only few candidates.
+  (setq completion-cycle-threshold 3)
+#+end_src
 
 ** Cape
 Completion At Point Extensions:
@@ -351,7 +338,6 @@ Context Menu for Actions:
                    (window-parameters (mode-line-format . none)))))
 #+end_src
 
-** Embark-consult
 Integration with Consult:
 - Embark-consult: Enhances Embark by integrating it with Consult, providing additional context-sensitive actions during completion.
 
@@ -363,15 +349,9 @@ Integration with Consult:
     :hook (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
-** General Completion
-General Completion: Configures Emacs to enable indentation and completion with the TAB key, and sets completion cycle threshold for better usability.
-
+** Eldoc
 #+begin_src emacs-lisp
-  ;; Enable indentation and completion with the TAB key.
-  (setq tab-always-indent 'complete)
-
-  ;; Cycle with the TAB key if there are only few candidates.
-  (setq completion-cycle-threshold 3)
+  (use-package eldoc-box)
 #+end_src
 
 ** Marginalia
@@ -742,21 +722,6 @@ Formatters:
     (push '(nix-mode . nixpkgs-fmt) apheleia-mode-alist))
 
   (apheleia-global-mode +1)
-#+end_src
-
-** Dockerfile
-
-#+begin_src emacs-lisp
-  (use-package dockerfile-ts-mode)
-#+end_src
-
-** Markdown Mode
-Markdown Edit:
-- Markdown Mode: Provides support for editing markdown files, enhancing the writing and formatting experience.
-
-#+begin_src emacs-lisp
-  ;; Markdown edit
-  (use-package markdown-mode)
 #+end_src
 
 * Filetree
@@ -1136,8 +1101,10 @@ Keys that I have binded to my keyboard for easy navigation in emacs
 Using Eglot, Emacs built-in LSP client.
 Setup using:
 - C
+- Dockerfile
 - Haskell
 - Java
+- Markdown
 - Nix
 - Rust
 - SBT and Scala
@@ -1155,6 +1122,12 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
     :mode (("\\.c\\'" . c-ts-mode)
 	   ("\\.h\\'" . c-ts-mode)))
     #+end_src
+
+** Dockerfile
+
+#+begin_src emacs-lisp
+  (use-package dockerfile-ts-mode)
+#+end_src
 
 ** Haskell
 #+begin_src emacs-lisp
@@ -1181,19 +1154,41 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 
 #+end_src
 
+** Markdown Mode
+Markdown Edit:
+- Markdown Mode: Provides support for editing markdown files, enhancing the writing and formatting experience.
+
+#+begin_src emacs-lisp
+  ;; Markdown edit
+  (use-package markdown-mode)
+#+end_src
+
 ** Nix
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
+    :init
+    (setq nix-ts-indent-offset 2)
     :hook ((nix-ts-mode . eglot-ensure)
-           (before-save . nixpkgs-fmt-before-save)))
+	   (before-save . eglot-format-buffer)))
+
+  (with-eval-after-load 'eglot
+    (message "Loading eglot configuration for nix-ts-mode")
+    (add-to-list 'eglot-server-programs
+                 '(nix-ts-mode . ("nil" "--stdio")))
+
+    (setq eglot-workspace-configuration
+          '((:nil . ((formatting . ((command . "nixpkgs-fmt")))))))
+
+    (message "Eglot configuration set for nix-ts-mode"))
 
   (defun nixpkgs-fmt-before-save ()
     "Format the current buffer with nixpkgs-fmt before saving."
+    (message "Running nixpkgs-fmt-before-save")
     (when (eq major-mode 'nix-ts-mode)
       (let ((current-point (point))) ;; Save the current point
-	(shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" nil t)
-	(goto-char current-point)))) ;; Restore the point after formatting
+        (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" nil t)
+        (goto-char current-point)))) ;; Restore the point after formatting
 #+end_src
 
 ** Rust
@@ -1355,11 +1350,6 @@ Setting up eglot LSP
     (eglot-booster-mode))
 #+end_src
 
-** eldoc-box
-#+begin_src emacs-lisp
-  (use-package eldoc-box)
-#+end_src
-
 * ORG
 ** Dslide
 
@@ -1428,14 +1418,6 @@ Programmable Org Presentation
 Projectile is the go-to project package to use with Emacs.
 Easy to use and setup, easy use of buffers.
 
-** Counsel Projectile
-#+begin_src emacs-lisp
-  (use-package counsel-projectile
-    :after projectile
-    :config
-    (counsel-projectile-mode))
-#+end_src
-
 ** Projectile
 #+begin_src emacs-lisp
   (use-package projectile
@@ -1448,6 +1430,13 @@ Easy to use and setup, easy use of buffers.
           projectile-indexing-method 'alien
           projectile-sort-order 'recently-active
           projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package counsel-projectile
+    :after projectile
+    :config
+    (counsel-projectile-mode))
 #+end_src
 
 * Terminal
@@ -1575,10 +1564,7 @@ For forge, create a file called ~/.authinfo with the following:
     :hook (prog-mode . git-gutter-mode)
     :custom
     (git-gutter:update-interval 0.05))
-#+end_src
 
-** git-gutter-fringe
-#+begin_src emacs-lisp
   (use-package git-gutter-fringe
     :after git-gutter
     :config

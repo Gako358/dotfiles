@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   fontSize = "14px";
   iconSize = "17px";
   opacity = "0.46";
@@ -17,11 +18,12 @@
   };
   calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
-in {
+in
+{
   programs.waybar = {
     enable = true;
     package = pkgs.waybar.overrideAttrs (oa: {
-      mesonFlags = (oa.mesonFlags or []) ++ ["-Dexperimental=true"];
+      mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ];
     });
     systemd.enable = true;
     settings.mainBar = {
@@ -79,7 +81,7 @@ in {
         format-charging = "  {capacity}%";
         format-plugged = " {capacity}% ";
         format-alt = "{icon} {time}";
-        format-icons = ["" "" "" "" ""];
+        format-icons = [ "" "" "" "" "" ];
       };
       memory = {
         format = "󰍛 {}%";
@@ -108,7 +110,7 @@ in {
         format = "{icon} {volume}%";
         format-muted = "󰝟";
         format-icons = {
-          default = ["󰕿" "󰖀" "󰕾"];
+          default = [ "󰕿" "󰖀" "󰕾" ];
         };
         scroll-step = 5;
         on-click = "pavucontrol";

@@ -158,7 +158,6 @@ in
     pkgs.imagemagick
     pkgs.mediainfo
     pkgs.nil
-    pkgs.nixpkgs-fmt
     pkgs.poppler
   ];
 
