@@ -1168,15 +1168,17 @@ Markdown Edit:
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
     :hook ((nix-ts-mode . eglot-ensure)
-	   (before-save . eglot-format-buffer)
-	   (before-save . nixpkgs-fmt-before-save)))
+  	 (before-save . eglot-format-buffer)
+  	 (before-save . nixpkgs-fmt-before-save)))
 
   (defun nixpkgs-fmt-before-save ()
-    "Format the current buffer with nixpkgs-fmt."
+    "Format the current buffer with nixpkgs-fmt if it is available."
     (when (eq major-mode 'nix-ts-mode)
-      (let ((output-buffer (get-buffer-create "*nixpkgs-fmt*")))
-        (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" output-buffer t)
-        (kill-buffer output-buffer))))
+      (if (executable-find "nixpkgs-fmt")
+	  (let ((output-buffer (get-buffer-create "*nixpkgs-fmt*")))
+	    (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" output-buffer t)
+	    (kill-buffer output-buffer))
+	(message "nixpkgs-fmt not found in PATH, skipping formatting."))))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
