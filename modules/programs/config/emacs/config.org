@@ -1168,7 +1168,14 @@ Markdown Edit:
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
     :hook ((nix-ts-mode . eglot-ensure)
-	   (before-save . eglot-format-buffer)))
+	   (before-save . eglot-format-buffer)
+	   (before-save . nixpkgs-fmt-before-save)))
+
+  (defun nixpkgs-fmt-before-save ()
+    "Format the current buffer with nixpkgs-fmt."
+    (when (eq major-mode 'nix-ts-mode)
+      (shell-command-to-string (concat "nixpkgs-fmt " buffer-file-name))
+      (revert-buffer t t t)))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
