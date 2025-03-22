@@ -1167,28 +1167,12 @@ Markdown Edit:
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
-    :init
-    (setq nix-ts-indent-offset 2)
     :hook ((nix-ts-mode . eglot-ensure)
 	   (before-save . eglot-format-buffer)))
 
   (with-eval-after-load 'eglot
-    (message "Loading eglot configuration for nix-ts-mode")
     (add-to-list 'eglot-server-programs
-                 '(nix-ts-mode . ("nil" "--stdio")))
-
-    (setq eglot-workspace-configuration
-          '((:nil . ((formatting . ((command . "nixpkgs-fmt")))))))
-
-    (message "Eglot configuration set for nix-ts-mode"))
-
-  (defun nixpkgs-fmt-before-save ()
-    "Format the current buffer with nixpkgs-fmt before saving."
-    (message "Running nixpkgs-fmt-before-save")
-    (when (eq major-mode 'nix-ts-mode)
-      (let ((current-point (point))) ;; Save the current point
-        (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" nil t)
-        (goto-char current-point)))) ;; Restore the point after formatting
+                 '(nix-ts-mode . ("nil" "--stdio"))))
 #+end_src
 
 ** Rust
