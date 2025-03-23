@@ -968,10 +968,8 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     "rf" 'dirvish
 
     ;; Vterm
-    "tl" 'vterm-layout
-    "tr" 'toggle-vterm-right
-    "tk" 'kill-all-vterms-in-project
     "tt" 'toggle-vterm
+    "tl" 'toggle-vterm-layout
     "t1" (lambda () (interactive) (toggle-vterm 1))
     "t2" (lambda () (interactive) (toggle-vterm 2))
     "t3" (lambda () (interactive) (toggle-vterm 3))
@@ -980,7 +978,8 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     "t6" (lambda () (interactive) (toggle-vterm 6))
     "t7" (lambda () (interactive) (toggle-vterm 7))
     "t8" (lambda () (interactive) (toggle-vterm 8))
-    "t9" (lambda () (interactive) (toggle-vterm 9)))
+    "t9" (lambda () (interactive) (toggle-vterm 9))
+    "tk" 'kill-all-vterms-in-project)
 #+end_src
 
 ** Evil Collection
@@ -1446,6 +1445,7 @@ Setup vterm for project term
     (defvar vterm-layout-active nil "Flag to indicate if vterm layout is active.")
     (defvar previous-window-configuration nil "Stores the previous window configuration.")
     (defvar vterm-right-buffer nil "Holds the current right-side vterm buffer.")
+    (defvar last-vterm-buffer nil "Holds the last visited vterm buffer.")
 
     (defun toggle-vterm (&optional n)
       (interactive)
@@ -1458,18 +1458,21 @@ Setup vterm for project term
                (let ((buf (vterm (generate-new-buffer-name (format "*vterm-%s-%d*" project n)))))
                  (push buf project-vterms)
                  (puthash project project-vterms vterms)
-                 (switch-to-buffer buf)))
+                 (switch-to-buffer buf)
+                 (setq last-vterm-buffer buf)))
               ((null project-vterms)
                (let ((buf (vterm (generate-new-buffer-name (format "*vterm-%s-1*" project)))))
                  (push buf project-vterms)
                  (puthash project project-vterms vterms)
-                 (switch-to-buffer buf)))
-              ((seq-contains-p project-vterms (current-buffer))
-               (switch-to-buffer (car (seq-difference (buffer-list) project-vterms))))
+                 (switch-to-buffer buf)
+                 (setq last-vterm-buffer buf)))
+              ((and last-vterm-buffer (eq (current-buffer) last-vterm-buffer))
+               (switch-to-buffer (other-buffer)))
               (t
-               (switch-to-buffer (car (seq-intersection (buffer-list) project-vterms)))))))
+               (setq last-vterm-buffer (car (seq-intersection (buffer-list) project-vterms)))
+               (switch-to-buffer last-vterm-buffer)))))
 
-    (defun vterm-layout ()
+    (defun toggle-vterm-layout ()
       "Toggle a layout with three vterm buffers: one to the left and two to the right."
       (interactive)
       (let* ((project (projectile-project-name))
@@ -1497,26 +1500,6 @@ Setup vterm for project term
                 (balance-windows)
                 (select-window (get-buffer-window left-vterm))
                 (setq vterm-layout-active t)))))))
-
-    (defun toggle-vterm-right ()
-      "Toggle a vterm buffer on the right side of the screen."
-      (interactive)
-      (let* ((project (projectile-project-name))
-             (default-directory (or (vc-root-dir) default-directory))
-             (project-vterms (gethash project vterms)))
-        (if (and vterm-right-buffer (buffer-live-p vterm-right-buffer))
-            (if (eq (current-buffer) vterm-right-buffer)
-                (progn
-                  (delete-window)
-                  (bury-buffer vterm-right-buffer)
-                  (balance-windows))
-              (select-window (display-buffer vterm-right-buffer)))
-          (split-window-right)
-          (other-window 1)
-          (setq vterm-right-buffer (vterm (generate-new-buffer-name (format "*vterm-%s-right*" project))))
-          (push vterm-right-buffer project-vterms)
-          (puthash project project-vterms vterms)
-          (switch-to-buffer vterm-right-buffer))))
 
     (defun kill-all-vterms-in-project ()
       "Kill all vterm buffers associated with the current project."
