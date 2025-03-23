@@ -63,8 +63,6 @@ in
         vertico # Vertical interactive completion UI.
         marginalia # Annotations for completion candidates.
         embark # Context-sensitive actions.
-        embark-consult # Integration between embark and consult.
-        consult # Commands compatible with completing-read.
         corfu # Completion Overlay Region Function.
         cape # Completion At Point Extensions.
         yasnippet # Template system for Emacs.
