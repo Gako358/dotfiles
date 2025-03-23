@@ -1467,15 +1467,15 @@ Create a fun to kill all terminals in current project
       "Toggle a vterm buffer for the current projectile project."
       (interactive)
       (let* ((project (projectile-project-name))
-	   (default-directory (projectile-project-root))
-	   (buf-name (format "*vterm-%s*" project)))
+	     (default-directory (projectile-project-root))
+	     (buf-name (format "*vterm-%s*" project)))
 	(if project
-	  (if (get-buffer buf-name)
-	      (if (eq (current-buffer) (get-buffer buf-name))
-		  (switch-to-buffer (other-buffer))
-		(switch-to-buffer buf-name))
-	    (vterm buf-name))
-	(vterm))))
+	    (if (get-buffer buf-name)
+		(if (eq (current-buffer) (get-buffer buf-name))
+		    (switch-to-buffer (other-buffer))
+		  (switch-to-buffer buf-name))
+	      (vterm buf-name))
+	  (vterm))))
 
     (evil-leader/set-key
       "tt" 'projectile-vterm-toggle))
@@ -1491,21 +1491,21 @@ Create a fun to kill all terminals in current project
       "Toggle a vterm buffer for the current projectile project on the right."
       (interactive)
       (let* ((project (projectile-project-name))
-	   (default-directory (projectile-project-root))
-	   (buf-name (format "*vterm-toggle-%s*" project)))
+	     (default-directory (projectile-project-root))
+	     (buf-name (format "*vterm-toggle-%s*" project)))
 	(if project
-	  (if (get-buffer buf-name)
-	      (if (get-buffer-window buf-name)
-		  (delete-window (get-buffer-window buf-name))
-		(progn
-		  (display-buffer buf-name '((display-buffer-pop-up-window)))
-		  (select-window (get-buffer-window buf-name))))
-	    (progn
-	      (split-window-right)
-	      (other-window 1)
-	      (vterm buf-name)
-	      (select-window (get-buffer-window buf-name))))
-	(vterm-toggle))))
+	    (if (get-buffer buf-name)
+		(if (get-buffer-window buf-name)
+		    (delete-window (get-buffer-window buf-name))
+		  (progn
+		    (display-buffer buf-name '((display-buffer-pop-up-window)))
+		    (select-window (get-buffer-window buf-name))))
+	      (progn
+		(split-window-right)
+		(other-window 1)
+		(vterm buf-name)
+		(select-window (get-buffer-window buf-name))))
+	  (vterm-toggle))))
 
     (evil-leader/set-key
       "to" 'projectile-vterm-toggle-right))
@@ -1517,9 +1517,9 @@ Create a fun to kill all terminals in current project
     :ensure t
     :config
     (add-hook 'vterm-mode-hook
-	    (lambda ()
-	      (setq-local evil-insert-state-cursor 'box)
-	      (evil-insert-state)))
+	      (lambda ()
+		(setq-local evil-insert-state-cursor 'box)
+		(evil-insert-state)))
     (define-key vterm-mode-map [return] #'vterm-send-return)
     (setq vterm-keymap-exceptions nil)
     (evil-define-key 'insert vterm-mode-map (kbd "C-e") #'vterm--self-insert)
