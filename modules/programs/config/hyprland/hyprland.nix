@@ -11,7 +11,7 @@ in
       "wl-clip-persist --clipboard both &"
       "wl-paste --watch cliphist store &"
       "[workspace 1 silent] firefox"
-      "[workspace 2 silent] emacsclient"
+      "[workspace 2 silent] emacsclient -c -n"
       "[workspace 6 silent] chromium"
       "[workspace 7 silent] thunderbird"
     ];
