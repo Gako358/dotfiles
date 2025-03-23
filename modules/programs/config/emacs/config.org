@@ -225,7 +225,12 @@ Commands Compatible with Completing-read:
      consult--source-recent-file consult--source-project-recent-file
      ;; :preview-key "M-."
      :preview-key '(:debounce 0.4 any))
-    (setq consult-narrow-key "<"))
+    (setq consult-narrow-key "<")
+
+    (evil-leader/set-key
+      ;; Project
+      "fb" 'counsel-find-file
+      "fg" 'consult-grep))
 #+end_src
 
 ** Copilot
@@ -351,7 +356,11 @@ Integration with Consult:
 
 ** Eldoc
 #+begin_src emacs-lisp
-  (use-package eldoc-box)
+  (use-package eldoc-box
+    :ensure t
+    :config
+    (evil-leader/set-key
+      "lh" 'eldoc-box-help-at-point))
 #+end_src
 
 ** Marginalia
@@ -774,11 +783,14 @@ Config dirvish
            ("M-s" . dirvish-setup-menu)
            ("M-e" . dirvish-emerge-menu)
            ("M-q" . dirvish-quit)
-           ("M-j" . dirvish-fd-jump))))
+           ("M-j" . dirvish-fd-jump)))
 
-  (add-hook 'dirvish-setup-hook (lambda ()
-                                  (visual-line-mode -1)
-                                  (setq-local truncate-lines t)))
+    (add-hook 'dirvish-setup-hook (lambda ()
+                                    (visual-line-mode -1)
+                                    (setq-local truncate-lines t)))
+
+    (evil-leader/set-key
+      "rf" 'dirvish))
 #+end_src
 * General
 #+begin_src emacs-lisp
@@ -930,56 +942,10 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
-    ;; Project
-    "fb" 'counsel-find-file
-    "ff" 'projectile-find-file
-    "fg" 'consult-grep
-    "pp" 'projectile-switch-project
-    "pc" 'projectile-cleanup-known-projects
-
-    "<SPC>" 'projectile-switch-to-buffer
-
-    ;; Buffers
     "bb" 'switch-to-buffer
     "bd" 'kill-buffer
     "bn" 'next-buffer
-    "bp" 'previous-buffer
-
-    ;; Git
-    "/" 'magit-status
-    "bm" 'blamer-mode
-
-    ;; LSP
-    "lo" 'eglot
-    "la" 'eglot-code-actions
-    "lf" 'apheleia-format-buffer
-    "lr" 'eglot-rename
-    "lH" 'gelot-nlay-hints-mode
-    "ld" 'eglot-find-declaration
-    "li" 'egliot-find-implementation
-    "lt" 'eglot-find-typeDefinition
-    "lI" 'eglot-organize-import
-    "ln" 'flymake-goto-next-error
-    "lh"  'eldoc-box-help-at-point
-    "lwd" 'flymake-show-project-diagnostics
-    "lbd" 'flymake-show-buffer-diagnostics
-
-    ;; Dirvish
-    "rf" 'dirvish
-
-    ;; Vterm
-    "tt" 'toggle-vterm
-    "tl" 'toggle-vterm-layout
-    "t1" (lambda () (interactive) (toggle-vterm 1))
-    "t2" (lambda () (interactive) (toggle-vterm 2))
-    "t3" (lambda () (interactive) (toggle-vterm 3))
-    "t4" (lambda () (interactive) (toggle-vterm 4))
-    "t5" (lambda () (interactive) (toggle-vterm 5))
-    "t6" (lambda () (interactive) (toggle-vterm 6))
-    "t7" (lambda () (interactive) (toggle-vterm 7))
-    "t8" (lambda () (interactive) (toggle-vterm 8))
-    "t9" (lambda () (interactive) (toggle-vterm 9))
-    "tk" 'kill-all-vterms-in-project)
+    "bp" 'previous-buffer)
 #+end_src
 
 ** Evil Collection
@@ -1140,16 +1106,16 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
   ;; Java language server
   (use-package eglot-java
     :init
-    :hook (java-ts-mode . eglot-java-mode)
-    :config
-    (define-key eglot-java-mode-map (kbd "C-c l n") #'eglot-java-file-new)
-    (define-key eglot-java-mode-map (kbd "C-c l x") #'eglot-java-run-main)
-    (define-key eglot-java-mode-map (kbd "C-c l t") #'eglot-java-run-test)
-    (define-key eglot-java-mode-map (kbd "C-c l N") #'eglot-java-project-new)
-    (define-key eglot-java-mode-map (kbd "C-c l T") #'eglot-java-project-build-task)
-    (define-key eglot-java-mode-map (kbd "C-c l R") #'eglot-java-project-build-refresh))
+    :hook (java-ts-mode . eglot-java-mode))
 
-  (with-eval-after-load 'eglot-java)
+  (with-eval-after-load 'eglot-java
+    (evil-leader/set-key
+      "ljn" 'eglot-java-file-new
+      "ljx" 'eglot-java-run-main
+      "ljt" 'eglot-java-run-test
+      "ljN" 'eglot-java-project-new
+      "ljT" 'eglot-java-project-build-task
+      "ljR" 'eglot-java-project-build-refresh))
 
 #+end_src
 
@@ -1335,6 +1301,25 @@ Markdown Edit:
 * LSP
 Setting up eglot LSP
 
+** eglot
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure t
+    :config
+    (evil-leader/set-key
+      "lo" 'eglot
+      "la" 'eglot-code-actions
+      "lf" 'apheleia-format-buffer
+      "lr" 'eglot-rename
+      "lH" 'eglot-inlay-hints-mode
+      "ld" 'eglot-find-declaration
+      "li" 'eglot-find-implementation
+      "lt" 'eglot-find-typeDefinition
+      "lI" 'eglot-organize-imports
+      "ln" 'flymake-goto-next-error
+      "lwd" 'flymake-show-project-diagnostics
+      "lbd" 'flymake-show-buffer-diagnostics))
+#+end_src
 ** eglot-booster
 #+begin_src emacs-lisp
   (use-package eglot-booster
@@ -1419,10 +1404,18 @@ Easy to use and setup, easy use of buffers.
     (projectile-mode +1)
     :config
     (setq projectile-enable-caching t
-          projectile-completion-system 'ivy
-          projectile-indexing-method 'alien
-          projectile-sort-order 'recently-active
-          projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1))))
+	  projectile-completion-system 'ivy
+	  projectile-indexing-method 'alien
+	  projectile-sort-order 'recently-active
+	  projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1)))
+
+    (evil-leader/set-key
+      ;; Project
+      "ff" 'projectile-find-file
+      "pp" 'projectile-switch-project
+      "pc" 'projectile-cleanup-known-projects
+
+      "<SPC>" 'projectile-switch-to-buffer))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1433,91 +1426,163 @@ Easy to use and setup, easy use of buffers.
 #+end_src
 
 * Terminal
-** Vterm
-Setup vterm for project term
+Setup vterm as project term
+- Vterm
+- Vterm-toggle
+- Multi-vterm
 
+Create a fun to kill all terminals in current project
+#+begin_src emacs-lisp
+  (require 'cl-lib)
+
+  (defun kill-all-terminal-buffers-in-project ()
+    "Kill all terminal buffers in the current projectile project."
+    (interactive)
+    (let* ((project (projectile-project-name))
+           (buffers (buffer-list))
+           (buffer-patterns (list (format "*vterm-right-1-%s*" project)
+                                  (format "*vterm-left-%s*" project)
+                                  (format "*vterm-right-2-%s*" project)
+                                  (format "*vterm-%s*" project)
+                                  (format "*vterm-toggle-%s*" project))))
+      (dolist (buffer buffers)
+        (when (and (cl-some (lambda (pattern) (string-match-p pattern (buffer-name buffer))) buffer-patterns)
+                   (with-current-buffer buffer
+                     (string= (projectile-project-name) project)
+                     (derived-mode-p 'vterm-mode)))
+          (kill-buffer buffer)))))
+
+  (evil-leader/set-key
+    "tk" 'kill-all-terminal-buffers-in-project)
+
+#+end_src
+
+** Vterm
 #+begin_src emacs-lisp
   ;; A terminal via libvterm
   (use-package vterm
-    :defer t
-    :preface
-    (defvar vterms (make-hash-table :test 'equal))
-    (defvar vterm-layout-active nil "Flag to indicate if vterm layout is active.")
-    (defvar previous-window-configuration nil "Stores the previous window configuration.")
-    (defvar vterm-right-buffer nil "Holds the current right-side vterm buffer.")
-    (defvar last-vterm-buffer nil "Holds the last visited vterm buffer.")
-
-    (defun toggle-vterm (&optional n)
-      (interactive)
-      (let* ((project (projectile-project-name))
-             (project-vterms (gethash project vterms))
-             (default-directory (or (vc-root-dir) default-directory)))
-        (setq project-vterms (seq-filter 'buffer-live-p project-vterms))
-        (puthash project project-vterms vterms)
-        (cond ((numberp n)
-               (let ((buf (vterm (generate-new-buffer-name (format "*vterm-%s-%d*" project n)))))
-                 (push buf project-vterms)
-                 (puthash project project-vterms vterms)
-                 (switch-to-buffer buf)
-                 (setq last-vterm-buffer buf)))
-              ((null project-vterms)
-               (let ((buf (vterm (generate-new-buffer-name (format "*vterm-%s-1*" project)))))
-                 (push buf project-vterms)
-                 (puthash project project-vterms vterms)
-                 (switch-to-buffer buf)
-                 (setq last-vterm-buffer buf)))
-              ((and last-vterm-buffer (eq (current-buffer) last-vterm-buffer))
-               (switch-to-buffer (other-buffer)))
-              (t
-               (setq last-vterm-buffer (car (seq-intersection (buffer-list) project-vterms)))
-               (switch-to-buffer last-vterm-buffer)))))
-
-    (defun toggle-vterm-layout ()
-      "Toggle a layout with three vterm buffers: one to the left and two to the right."
-      (interactive)
-      (let* ((project (projectile-project-name))
-             (project-vterms (gethash project vterms))
-             (default-directory (or (vc-root-dir) default-directory)))
-        (if vterm-layout-active
-            (progn
-              (set-window-configuration previous-window-configuration)
-              (setq vterm-layout-active nil))
-          (setq previous-window-configuration (current-window-configuration))
-          (delete-other-windows)
-          (let ((left-vterm (vterm (generate-new-buffer-name (format "*vterm-%s-1*" project)))))
-            (push left-vterm project-vterms)
-            (puthash project project-vterms vterms)
-            (split-window-right)
-            (other-window 1)
-            (let ((top-right-vterm (vterm (generate-new-buffer-name (format "*vterm-%s-2*" project)))))
-              (push top-right-vterm project-vterms)
-              (puthash project project-vterms vterms)
-              (split-window-below)
-              (other-window 1)
-              (let ((bottom-right-vterm (vterm (generate-new-buffer-name (format "*vterm-%s-3*" project)))))
-                (push bottom-right-vterm project-vterms)
-                (puthash project project-vterms vterms)
-                (balance-windows)
-                (select-window (get-buffer-window left-vterm))
-                (setq vterm-layout-active t)))))))
-
-    (defun kill-all-vterms-in-project ()
-      "Kill all vterm buffers associated with the current project."
-      (interactive)
-      (let* ((project (projectile-project-name))
-             (project-vterms (gethash project vterms))
-             (project-root (or (vc-root-dir) default-directory)))
-        (setq project-vterms (seq-filter 'buffer-live-p project-vterms))
-        (dolist (vterm-buffer project-vterms)
-          (with-current-buffer vterm-buffer
-            (when (string-prefix-p project-root default-directory)
-              (kill-buffer vterm-buffer))))
-        (puthash project (seq-filter 'buffer-live-p project-vterms) vterms)))
-
+    :ensure t
     :config
-    ;; Don't query about killing vterm buffers, just kill it
-    (defadvice vterm (after kill-with-no-query nil activate)
-      (set-process-query-on-exit-flag (get-buffer-process ad-return-value) nil)))
+    (defun projectile-vterm-toggle ()
+      "Toggle a vterm buffer for the current projectile project."
+      (interactive)
+      (let* ((project (projectile-project-name))
+	   (default-directory (projectile-project-root))
+	   (buf-name (format "*vterm-%s*" project)))
+	(if project
+	  (if (get-buffer buf-name)
+	      (if (eq (current-buffer) (get-buffer buf-name))
+		  (switch-to-buffer (other-buffer))
+		(switch-to-buffer buf-name))
+	    (vterm buf-name))
+	(vterm))))
+
+    (evil-leader/set-key
+      "tt" 'projectile-vterm-toggle))
+
+#+end_src
+
+** Vterm-toggle
+#+begin_src emacs-lisp
+  (use-package vterm-toggle
+    :ensure t
+    :config
+    (defun projectile-vterm-toggle-right ()
+      "Toggle a vterm buffer for the current projectile project on the right."
+      (interactive)
+      (let* ((project (projectile-project-name))
+	   (default-directory (projectile-project-root))
+	   (buf-name (format "*vterm-toggle-%s*" project)))
+	(if project
+	  (if (get-buffer buf-name)
+	      (if (get-buffer-window buf-name)
+		  (delete-window (get-buffer-window buf-name))
+		(progn
+		  (display-buffer buf-name '((display-buffer-pop-up-window)))
+		  (select-window (get-buffer-window buf-name))))
+	    (progn
+	      (split-window-right)
+	      (other-window 1)
+	      (vterm buf-name)
+	      (select-window (get-buffer-window buf-name))))
+	(vterm-toggle))))
+
+    (evil-leader/set-key
+      "to" 'projectile-vterm-toggle-right))
+#+end_src
+
+** Multi-Vterm
+#+begin_src emacs-lisp
+  (use-package multi-vterm
+    :ensure t
+    :config
+    (add-hook 'vterm-mode-hook
+	    (lambda ()
+	      (setq-local evil-insert-state-cursor 'box)
+	      (evil-insert-state)))
+    (define-key vterm-mode-map [return] #'vterm-send-return)
+    (setq vterm-keymap-exceptions nil)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-e") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-f") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-a") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-v") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-b") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-w") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-u") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-d") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-n") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-m") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-p") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-j") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-k") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-r") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-t") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-g") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-c") #'vterm--self-insert)
+    (evil-define-key 'insert vterm-mode-map (kbd "C-SPC") #'vterm--self-insert)
+    (evil-define-key 'normal vterm-mode-map (kbd "C-d") #'vterm--self-insert)
+    (evil-define-key 'normal vterm-mode-map (kbd ",c") #'multi-vterm)
+    (evil-define-key 'normal vterm-mode-map (kbd ",n") #'multi-vterm-next)
+    (evil-define-key 'normal vterm-mode-map (kbd ",p") #'multi-vterm-prev)
+    (evil-define-key 'normal vterm-mode-map (kbd "i") #'evil-insert-resume)
+    (evil-define-key 'normal vterm-mode-map (kbd "o") #'evil-insert-resume)
+    (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume)
+
+    (defvar previous-buffer nil "Stores the previous buffer before switching to vterm layout.")
+
+    (defun projectile-multi-vterm-toggle ()
+      "Toggle three vterm buffers for the current projectile project."
+      (interactive)
+      (let* ((project (projectile-project-name))
+             (default-directory (projectile-project-root))
+             (buf-left (format "*vterm-left-%s*" project))
+             (buf-right-1 (format "*vterm-right-1-%s*" project))
+             (buf-right-2 (format "*vterm-right-2-%s*" project)))
+        (if (and (get-buffer buf-left)
+                 (get-buffer-window buf-left))
+            (progn
+              (delete-other-windows)
+              (switch-to-buffer previous-buffer))
+          (setq previous-buffer (current-buffer))
+          (delete-other-windows)
+          (split-window-right)
+          (other-window 1)
+          (split-window-below)
+          (if (get-buffer buf-right-1)
+              (switch-to-buffer buf-right-1)
+            (vterm buf-right-1))
+          (other-window 1)
+          (if (get-buffer buf-right-2)
+              (switch-to-buffer buf-right-2)
+            (vterm buf-right-2))
+          (other-window 1)
+          (if (get-buffer buf-left)
+              (switch-to-buffer buf-left)
+            (vterm buf-left))
+          (other-window 1))))
+
+    (evil-leader/set-key
+      "tl" 'projectile-multi-vterm-toggle))
 #+end_src
 
 * Version
@@ -1532,7 +1597,11 @@ For forge, create a file called ~/.authinfo with the following:
   (use-package blamer
     :custom
     (blamer-idle-time 0.3)
-    (blamer-min-offset 70))
+    (blamer-min-offset 70)
+
+    :config
+    (evil-leader/set-key
+      "bm" 'blamer-mode))
 #+end_src
 
 ** git-gutter
@@ -1555,4 +1624,13 @@ For forge, create a file called ~/.authinfo with the following:
     (define-fringe-bitmap 'git-gutter-fr:deleted
       [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
       nil nil 'center))
+#+end_src
+
+** magit
+#+begin_src emacs-lisp
+  (use-package magit
+    :ensure t
+    :config
+    (evil-leader/set-key
+      "/" 'magit-status))
 #+end_src
