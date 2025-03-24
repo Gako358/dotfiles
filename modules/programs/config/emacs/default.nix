@@ -145,7 +145,6 @@ in
         # Terminal
         vterm # A terminal emulator for Emacs
         vterm-toggle # Toggle vterm buffers
-        multi-vterm # Multiple vterm buffers
 
         # Version
         blamer # Show git blame information in the fringe
