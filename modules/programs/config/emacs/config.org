@@ -921,6 +921,26 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (global-set-key (kbd "C-S-<down>") 'shrink-window)
   (global-set-key (kbd "C-S-<up>") 'enlarge-window)
   (global-set-key (kbd "C-<tab>") 'evil-switch-to-windows-last-buffer)
+
+
+  ;; Buffers
+  (defun my/projectile-switch-to-buffer-with-term ()
+    "Switch to a buffer whose name includes 'term' using projectile."
+    (interactive)
+    (let ((buffers (projectile-project-buffer-names))
+	  (filtered-buffers '()))
+      (dolist (buffer buffers)
+	(when (string-match-p "term" buffer)
+	  (push buffer filtered-buffers)))
+      (if filtered-buffers
+	  (switch-to-buffer (completing-read "Switch to buffer: " filtered-buffers))
+	(message "No buffers found with term: %s" "term"))))
+
+  (evil-leader/set-key
+    "br" 'rename-buffer
+    "bd" 'evil-delete-buffer
+    "TAB" 'projectile-switch-to-buffer
+    "tb" 'my/projectile-switch-to-buffer-with-term)
 #+end_src
 
 * Languages
@@ -1265,12 +1285,20 @@ Easy to use and setup, easy use of buffers. Use counsel-projectile for more adva
 
     (evil-leader/set-key
       "ff" 'counsel-find-file
-      "fg" 'counsel-grep))
+      "fb" 'counsel-grep
+      "fg" 'counsel-git-grep
+      "SPC" 'counsel-git-grep-at-cursor))
 
   (use-package counsel-projectile
     :after projectile
     :config
     (counsel-projectile-mode))
+
+  (defun counsel-git-grep-at-cursor ()
+    "Search using counsel-git-grep on the word at the cursor."
+    (interactive)
+    (let ((word (thing-at-point 'word t)))
+      (counsel-git-grep word)))
 
 #+end_src
 
@@ -1282,17 +1310,15 @@ Easy to use and setup, easy use of buffers. Use counsel-projectile for more adva
     (projectile-mode +1)
     :config
     (setq projectile-enable-caching t
-  	projectile-completion-system 'ivy
-  	projectile-indexing-method 'alien
-  	projectile-sort-order 'recently-active
-  	projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1)))
+	    projectile-completion-system 'ivy
+	    projectile-indexing-method 'alien
+	    projectile-sort-order 'recently-active
+	    projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1)))
 
     (evil-leader/set-key
       "pf" 'projectile-find-file
       "pp" 'projectile-switch-project
-      "pc" 'projectile-cleanup-known-projects
-
-      "<SPC>" 'projectile-switch-to-buffer))
+      "pc" 'projectile-cleanup-known-projects))
 #+end_src
 
 * Terminal
