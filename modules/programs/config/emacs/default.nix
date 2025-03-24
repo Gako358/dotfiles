@@ -47,27 +47,29 @@ in
     extraPackages = epkgs:
       with epkgs; [
         # Appearande
+        all-the-icons # A package for inserting developer icons
+        all-the-icons-completion
+        all-the-icons-ivy-rich # More friendly display transformer for ivy
         dashboard # A startup screen extracted from Spacemacs
         kaolin-themes # A low contrast color theme for Emacs
         nerd-icons # Nerd icons for Emacs
         nerd-icons-completion # Nerd icons for completion
         nerd-icons-corfu # Nerd icons for corfu
-        all-the-icons-completion
         rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
         rainbow-mode # Colorize color names in buffers
-        all-the-icons # A package for inserting developer icons
-        all-the-icons-ivy-rich # More friendly display transformer for ivy
+        vim-tab-bar # Tab bar for Vim
 
         # Completion
+        cape # Completion At Point Extensions.
+        copilot # AI code completion.
+        corfu # Completion Overlay Region Function.
+        embark # Context-sensitive actions.
+        flycheck # On-the-fly syntax checking
+        marginalia # Annotations for completion candidates.
         orderless # Space-separated matching components.
         vertico # Vertical interactive completion UI.
-        marginalia # Annotations for completion candidates.
-        embark # Context-sensitive actions.
-        corfu # Completion Overlay Region Function.
-        cape # Completion At Point Extensions.
-        yasnippet # Template system for Emacs.
         wgrep # Writable grep buffer.
-        copilot # AI code completion.
+        yasnippet # Template system for Emacs.
 
         # Evil
         evil # Extensible vi layer for Emacs
@@ -80,9 +82,6 @@ in
         evil-surround # Surround text objects with punctuation
         evil-visualstar # Start a * or # search from the visual selection
         evil-numbers # Increment and decrement numbers in Emacs
-        vim-tab-bar # Tab bar for Vim
-        undo-fu # Undo framework for Emacs
-        undo-fu-session # Persistent undo for Emacs
 
         # Env
         envrc # .envrc support for Emacs
@@ -95,13 +94,20 @@ in
         dirvish # Directory viewer for Emacs
 
         # General
+        alert # Growl-like notifications
         dash # A modern list library for Emacs
         editorconfig # EditorConfig Emacs Plugin
         f # A modern API for working with files and directories in Emacs
+        fringe-helper # Helper functions for fringe bitmaps
         general # Provides a more convenient way to define keybindings
+        gntp # Growl Notification Transport Protocol
+        goto-chg # Goto the point of the most recent edit
         ligature # Ligature support for Emacs
+        log4e # Logging framework for Emacs
         s # The long lost Emacs string manipulation library
         password-store # Emacs interface for pass, the standard Unix password manager
+        undo-fu # Undo framework for Emacs
+        undo-fu-session # Persistent undo for Emacs
 
         # grammars
         treesit-grammars.with-all-grammars # Tree-sitter grammars

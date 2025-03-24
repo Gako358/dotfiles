@@ -111,16 +111,6 @@ The kaolin-themes package is used with specific settings for a personalized look
     (load-theme 'kaolin-ocean t))
 #+end_src
 
-** Session
-The undo-fu-session package is configured for global session management, maintaining undo history across sessions.
-
-#+begin_src emacs-lisp
-  (use-package undo-fu-session
-    :ensure t
-    :config
-    (undo-fu-session-global-mode))
-#+end_src
-
 * Completion
 Using Corfu, vertico and cape for code completion.
 
@@ -143,8 +133,6 @@ Completion At Point Extensions:
     :init
     (add-hook 'completion-at-point-functions #'cape-file)
     (add-hook 'completion-at-point-functions #'cape-elisp-block)
-    ;; (add-hook 'completion-at-point-functions #'cape-dabbrev) ;; Buffer completion
-    ;; (add-hook 'completion-at-point-functions #'cape-history)
     )
 #+end_src
 
@@ -163,15 +151,15 @@ AI-Powered Code Completion:
   (use-package copilot
     :ensure t
     :bind (:map copilot-completion-map
-  	      ("C-e" . copilot-accept-completion)
-  	      ("C-S-e" . copilot-accept-completion-by-word))
+		("C-e" . copilot-accept-completion)
+		("C-S-e" . copilot-accept-completion-by-word))
     :config
     (defun toggle-copilot-mode ()
       "Toggle Copilot mode on and off."
       (interactive)
       (if (bound-and-true-p copilot-mode)
-  	(copilot-mode -1)
-        (copilot-mode 1)))
+	  (copilot-mode -1)
+	(copilot-mode 1)))
 
     (global-set-key (kbd "C-c C-p") 'toggle-copilot-mode)
 
@@ -198,16 +186,15 @@ Completion Overlay Region Function:
     :init
     (global-corfu-mode 1)
     (setq global-corfu-minibuffer
-	  (lambda ()
-	    (not (or (bound-and-true-p mct--active)
-		     (bound-and-true-p vertico--input)
-		     (eq (current-local-map) read-passwd-map)))))
+  	(lambda ()
+  	  (not (or (bound-and-true-p mct--active)
+  		   (bound-and-true-p vertico--input)
+  		   (eq (current-local-map) read-passwd-map)))))
     :bind (:map corfu-map
-		("C-n" . corfu-next)
-		("C-p" . corfu-previous)
-		("C-h" . corfu-info-documentation)
-		;; Remove the C-y binding from here since Evil intercepts it
-		)
+  	      ("C-n" . corfu-next)
+  	      ("C-p" . corfu-previous)
+  	      ("C-h" . corfu-info-documentation)
+  	      )
 
     :custom
     (corfu-cycle t)
@@ -242,11 +229,11 @@ Context Menu for Actions:
     :ensure t
     :defer t
     :commands (embark-act
-	       embark-dwim
-	       embark-export
-	       embark-collect
-	       embark-bindings
-	       embark-prefix-help-command)
+  	     embark-dwim
+  	     embark-export
+  	     embark-collect
+  	     embark-bindings
+  	     embark-prefix-help-command)
     :init
     (setq prefix-help-command #'embark-prefix-help-command)
 
@@ -642,59 +629,49 @@ Config dirvish
 
 #+begin_src emacs-lisp
   (use-package dirvish
-    :ensure t
-    :init
-    (dirvish-override-dired-mode)
-    :custom
-    (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-     '(("h" "~/"                          "Home")
-       ("d" "~/Downloads/"                "Downloads")
-       ("m" "/mnt/"                       "Drives")
-       ("p" "~/src/"                      "Projects")
-       ("t" "~/.local/share/Trash/files/" "TrashCan")))
-
-    :config
-    ;; (dirvish-peek-mode)             ; Preview files in minibuffer
-    ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
-    (setq dirvish-mode-line-format
-          '(:left (sort symlink) :right (omit yank index)))
-    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
-          '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
-          dirvish-side-attributes
-          '(vc-state nerd-icons collapse file-size))
-    (setq delete-by-moving-to-trash t)
-    (setq dired-listing-switches
-          "-l --almost-all --human-readable --group-directories-first --no-group")
-    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
-    ((:map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
-           ;; ("M-?"   . dirvish-dispatch)     ; contains most of sub-menus in dirvish extensions
-           ("M-a"   . dirvish-quick-access)
-           ("M-f"   . dirvish-file-info-menu)
-           ("M-y"   . dirvish-yank-menu)
-           ;; ("N"   . dirvish-narrow)
-           ;; ("^"   . dirvish-history-last)
-           ("M-h" . dired-up-directory)
-           ("M-n" . dired-create-empty-file)
-           ;; ("H"   . dirvish-history-jump) ; remapped `describe-mode'
-           ;; ("s"   . dirvish-quicksort)    ; remapped `dired-sort-toggle-or-edit'
-           ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
-           ("M-o" . dirvish-subtree-toggle)
-           ;; ("M-f" . dirvish-history-go-forward)
-           ;; ("M-b" . dirvish-history-go-backward)
-           ("M-l" . dirvish-ls-switches-menu)
-           ("M-m" . dirvish-mark-menu)
-           ("M-t" . dirvish-layout-toggle)
-           ("M-s" . dirvish-setup-menu)
-           ("M-e" . dirvish-emerge-menu)
-           ("M-q" . dirvish-quit)
-           ("M-j" . dirvish-fd-jump)))
-
-    (add-hook 'dirvish-setup-hook (lambda ()
-                                    (visual-line-mode -1)
-                                    (setq-local truncate-lines t)))
-
-    (evil-leader/set-key
-      "rf" 'dirvish))
+   :ensure t
+   :init
+   (dirvish-override-dired-mode)
+   :custom
+   (dirvish-quick-access-entries ; it's a custom option, `setq' won't work
+    '(("h" "~/"                          "home")
+      ("d" "~/downloads/"                "downloads")
+      ("m" "/mnt/"                       "drives")
+      ("p" "~/src/"                      "projects")
+      ("t" "~/.local/share/trash/files/" "trashcan")))
+   :config
+   ;; (dirvish-peek-mode)             ; preview files in minibuffer
+   ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
+   (setq dirvish-mode-line-format
+         '(:left (sort symlink) :right (omit yank index)))
+   (setq dirvish-attributes           ; the order *matters* for some attributes
+         '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
+         dirvish-side-attributes
+         '(vc-state nerd-icons collapse file-size))
+   (setq delete-by-moving-to-trash t)
+   (setq dired-listing-switches
+         "-l --almost-all --human-readable --group-directories-first --no-group")
+   :bind
+   (:map dirvish-mode-map
+         ("m-a" . dirvish-quick-access)
+         ("m-f" . dirvish-file-info-menu)
+         ("m-y" . dirvish-yank-menu)
+         ("m-h" . dired-up-directory)
+         ("m-n" . dired-create-empty-file)
+         ("m-v" . dirvish-vc-menu)      ; remapped `dired-view-file'
+         ("m-o" . dirvish-subtree-toggle)
+         ("m-l" . dirvish-ls-switches-menu)
+         ("m-m" . dirvish-mark-menu)
+         ("m-t" . dirvish-layout-toggle)
+         ("m-s" . dirvish-setup-menu)
+         ("m-e" . dirvish-emerge-menu)
+         ("m-q" . dirvish-quit)
+         ("m-j" . dirvish-fd-jump))
+   (add-hook 'dirvish-setup-hook (lambda ()
+                                   (visual-line-mode -1)
+                                   (setq-local truncate-lines t)))
+   (evil-leader/set-key
+     "rf" 'dirvish))
 #+end_src
 
 * General
@@ -752,6 +729,10 @@ Config dirvish
   (use-package envrc
     :hook (after-init . envrc-global-mode))
 
+  (use-package undo-fu-session
+    :ensure t
+    :config
+    (undo-fu-session-global-mode))
 #+end_src
 * Grammars
 Setting up treesitter grammars
@@ -801,28 +782,29 @@ Keys that I have binded to my keyboard for easy navigation in emacs
   (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
   (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
   (define-key evil-insert-state-map (kbd "C-u")
-    	    (lambda ()
-    	      (interactive)
-    	      (evil-delete (point-at-bol) (point))))
+      	    (lambda ()
+      	      (interactive)
+      	      (evil-delete (point-at-bol) (point))))
 
   ;; Evil numbers inc and dec
   (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
   (define-key evil-visual-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
   (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
   (define-key evil-visual-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
-
+  ;; Redefine keys for switching windows
+  (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
+  (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
+  (define-key evil-normal-state-map (kbd "C-j") 'evil-window-down)
+  (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
 #+end_src
 
 ** Evil Leader
 #+begin_src emacs-lisp
-  (use-package evil-leader)
-  (global-evil-leader-mode)
-  (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key
-    "bb" 'switch-to-buffer
-    "bd" 'kill-buffer
-    "bn" 'next-buffer
-    "bp" 'previous-buffer)
+  (use-package evil-leader
+    :ensure t
+    :config
+    (global-evil-leader-mode)
+    (evil-leader/set-leader "<SPC>"))
 #+end_src
 
 ** Evil Collection
