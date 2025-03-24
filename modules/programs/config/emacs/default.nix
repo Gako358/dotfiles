@@ -62,20 +62,15 @@ let
 
   # Embeded packages
   emacsOnlyTools = [
+    metals
     pkgs.astyle
     pkgs.black
-    pkgs.nixpkgs-fmt
     pkgs.basedpyright
     pkgs.emacs-lsp-booster
     pkgs.nil
-    metals
+    pkgs.nixpkgs-fmt
     pkgs.typescript-language-server
     pkgs.vue-language-server
-    pkgs.ffmpegthumbnailer
-    pkgs.fd
-    pkgs.imagemagick
-    pkgs.mediainfo
-    pkgs.poppler
   ];
 
   # Create a PATH string for these tools

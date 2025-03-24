@@ -11,12 +11,15 @@ let
       dive # explore docker layers
       duf # disk usage/free utility
       eza # a better `ls`
+      ffmpegthumbnailer # thumbnailer for video files
       fd # "find" for files
       gimp # gnu image manipulation program
+      imagemagick # image manipulation
       jump # fast directory navigation
       headsetcontrol # control logitech headsets
       killall # kill processes by name
       libsecret # secret management
+      mediainfo # media information
       ncdu # disk space info (a better du)
       nitch # minimal system information fetch
       nix-index # locate packages containing certain nixpkgs
@@ -25,6 +28,7 @@ let
       ouch # painless compression and decompression for your terminal
       pavucontrol # pulseaudio volume control
       paprefs # pulseaudio preferences
+      poppler # pdf tools
       pulsemixer # pulseaudio volume control
       prettyping # a nicer ping
       rage # encryption tool for secrets management
