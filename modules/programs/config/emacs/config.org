@@ -629,49 +629,51 @@ Config dirvish
 
 #+begin_src emacs-lisp
   (use-package dirvish
-   :ensure t
-   :init
-   (dirvish-override-dired-mode)
-   :custom
-   (dirvish-quick-access-entries ; it's a custom option, `setq' won't work
-    '(("h" "~/"                          "home")
-      ("d" "~/downloads/"                "downloads")
-      ("m" "/mnt/"                       "drives")
-      ("p" "~/src/"                      "projects")
-      ("t" "~/.local/share/trash/files/" "trashcan")))
-   :config
-   ;; (dirvish-peek-mode)             ; preview files in minibuffer
-   ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
-   (setq dirvish-mode-line-format
-         '(:left (sort symlink) :right (omit yank index)))
-   (setq dirvish-attributes           ; the order *matters* for some attributes
-         '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
-         dirvish-side-attributes
-         '(vc-state nerd-icons collapse file-size))
-   (setq delete-by-moving-to-trash t)
-   (setq dired-listing-switches
-         "-l --almost-all --human-readable --group-directories-first --no-group")
-   :bind
-   (:map dirvish-mode-map
-         ("m-a" . dirvish-quick-access)
-         ("m-f" . dirvish-file-info-menu)
-         ("m-y" . dirvish-yank-menu)
-         ("m-h" . dired-up-directory)
-         ("m-n" . dired-create-empty-file)
-         ("m-v" . dirvish-vc-menu)      ; remapped `dired-view-file'
-         ("m-o" . dirvish-subtree-toggle)
-         ("m-l" . dirvish-ls-switches-menu)
-         ("m-m" . dirvish-mark-menu)
-         ("m-t" . dirvish-layout-toggle)
-         ("m-s" . dirvish-setup-menu)
-         ("m-e" . dirvish-emerge-menu)
-         ("m-q" . dirvish-quit)
-         ("m-j" . dirvish-fd-jump))
-   (add-hook 'dirvish-setup-hook (lambda ()
-                                   (visual-line-mode -1)
-                                   (setq-local truncate-lines t)))
-   (evil-leader/set-key
-     "rf" 'dirvish))
+    :ensure t
+    :init
+    (dirvish-override-dired-mode)
+    :custom
+    (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+     '(("h" "~/"                          "Home")
+       ("d" "~/Downloads/"                "Downloads")
+       ("m" "/mnt/"                       "Drives")
+       ("p" "~/src/"                      "Projects")
+       ("t" "~/.local/share/Trash/files/" "TrashCan")))
+
+    :config
+    (setq dirvish-mode-line-format
+          '(:left (sort symlink) :right (omit yank index)))
+    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
+          '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
+          dirvish-side-attributes
+          '(vc-state nerd-icons collapse file-size))
+    (setq delete-by-moving-to-trash t)
+    (setq dired-listing-switches
+          "-l --almost-all --human-readable --group-directories-first --no-group")
+    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
+    (
+     :map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
+     ("M-a"   . dirvish-quick-access)
+     ("M-f"   . dirvish-file-info-menu)
+     ("M-y"   . dirvish-yank-menu)
+     ("M-h" . dired-up-directory)
+     ("M-n" . dired-create-empty-file)
+     ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+     ("M-o" . dirvish-subtree-toggle)
+     ("M-l" . dirvish-ls-switches-menu)
+     ("M-m" . dirvish-mark-menu)
+     ("M-t" . dirvish-layout-toggle)
+     ("M-s" . dirvish-setup-menu)
+     ("M-e" . dirvish-emerge-menu)
+     ("M-q" . dirvish-quit)
+     ("M-j" . dirvish-fd-jump)))
+
+  (add-hook 'dirvish-setup-hook (lambda ()
+                                  (visual-line-mode -1)
+                                  (setq-local truncate-lines t)))
+
+  (evil-leader/set-key
+    "rf" 'dirvish)
 #+end_src
 
 * General
