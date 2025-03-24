@@ -1,6 +1,26 @@
 { pkgs, ... }:
 let
   metalsVersion = "1.5.1";
+  metals = pkgs.metals.overrideAttrs (
+    final: prev: {
+      deps = pkgs.stdenv.mkDerivation {
+        name = "${prev.pname}-deps-${metalsVersion}";
+        buildCommand = ''
+          export COURSIER_CACHE=$(pwd)
+          ${pkgs.pkgs.coursier}/bin/cs fetch org.scalameta:metals_2.13:${metalsVersion} \
+            -r bintray:scalacenter/releases \
+            -r sonatype:snapshots > deps
+          mkdir -p $out/share/java
+          cp $(< deps) $out/share/java/
+        '';
+        outputHashMode = "recursive";
+        outputHashAlgo = "sha256";
+        outputHash = "sha256-2FA2B/WzNGU4B785pn5zZ9Xj64huzbSbr2Or+CxUMlI=";
+      };
+      buildInputs = [ final.deps ];
+    }
+  );
+
   eglot-booster = pkgs.emacsPackages.melpaBuild {
     pname = "eglot-booster";
     version = "20241029";
@@ -21,6 +41,7 @@ let
       :files ("*.el"))
     '';
   };
+
   vue-ts-mode = pkgs.emacsPackages.melpaBuild {
     pname = "vue-ts-mode";
     version = "20231029";
@@ -38,6 +59,33 @@ let
       :files ("*.el"))
     '';
   };
+
+  # Embeded packages
+  emacsOnlyTools = [
+    pkgs.astyle
+    pkgs.black
+    pkgs.nixpkgs-fmt
+    pkgs.basedpyright
+    pkgs.emacs-lsp-booster
+    pkgs.nil
+    metals
+    pkgs.typescript-language-server
+    pkgs.vue-language-server
+    pkgs.ffmpegthumbnailer
+    pkgs.fd
+    pkgs.imagemagick
+    pkgs.mediainfo
+    pkgs.poppler
+  ];
+
+  # Create a PATH string for these tools
+  emacsOnlyPath = "${pkgs.lib.makeBinPath emacsOnlyTools}";
+
+  # Create a PATH string for system tools
+  systemToolsPath = "/run/current-system/sw/bin";
+
+  # Use the nix-profile path for Home Manager packages
+  homeManagerPath = "/home/merrinx/.nix-profile/bin";
 
 in
 {
@@ -155,17 +203,6 @@ in
     extraConfig = builtins.readFile ./init.el;
   };
 
-  home.packages = [
-    pkgs.astyle
-    pkgs.emacs-lsp-booster
-    pkgs.fd
-    pkgs.ffmpegthumbnailer
-    pkgs.imagemagick
-    pkgs.mediainfo
-    pkgs.nil
-    pkgs.poppler
-  ];
-
   home.file = {
     ".emacs.d" = {
       source = ./.;
@@ -173,10 +210,27 @@ in
     };
   };
 
+  # Set up the Emacs service
   services.emacs = {
     enable = true;
     client.enable = true;
     defaultEditor = true;
     socketActivation.enable = true;
   };
+
+  # Use a wrapper script for the Emacs service
+  systemd.user.services.emacs = {
+    Service = {
+      Environment = [ "PATH=${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH" ];
+    };
+  };
+
+  # Create a wrapper for emacsclient that adds tools to PATH
+  home.packages = [
+    (pkgs.writeShellScriptBin "ec" ''
+      # Add our specific tools to the front of the PATH but preserve the rest
+      export PATH="${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
+      exec ${pkgs.emacs30}/bin/emacsclient "$@"
+    '')
+  ];
 }
