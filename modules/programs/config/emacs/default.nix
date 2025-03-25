@@ -112,6 +112,7 @@ in
         marginalia # Annotations for completion candidates.
         orderless # Space-separated matching components.
         vertico # Vertical interactive completion UI.
+        vertico-posframe # Vertico completion UI with posframe.
         wgrep # Writable grep buffer.
         yasnippet # Template system for Emacs.
 
@@ -171,6 +172,10 @@ in
         eglot-booster # Eglot booster
         eldoc-box # Display function signatures at point
 
+        # Navigation
+        consult # Consulting completing-read
+        consult-projectile # Consult interface for Projectile
+
         # Org
         dslide # A presentation tool for Emacs
         org # For keeping notes, maintaining TODO lists, and project planning
@@ -182,13 +187,10 @@ in
         org-roam-ui # A graphical user interface for org-roam
 
         # Project
-        counsel # Various completion functions using Ivy
-        counsel-projectile # Ivy integration for Projectile
         projectile # Project Interaction Library for Emacs
 
         # Terminal
-        vterm # A terminal emulator for Emacs
-        vterm-toggle # Toggle vterm buffers
+        eat # Emacs Anywhere Terminal
 
         # Version
         blamer # Show git blame information in the fringe

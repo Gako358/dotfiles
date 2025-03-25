@@ -304,6 +304,7 @@ Flexible Matching:
 ** Vertico
 Vertical Interactive Completion UI:
 - Vertico: Offers a vertical completion interface, improving the user experience for navigating and selecting completion candidates.
+- Vertico-Posframe: Provides a posframe handler for Vertico, ensuring the completion interface is displayed in a consistent and visually appealing manner.
 
 #+begin_src emacs-lisp
   ;; Vertical interactive completion UI.
@@ -315,6 +316,14 @@ Vertical Interactive Completion UI:
     :defer t
     :commands vertico-mode
     :hook (after-init . vertico-mode))
+
+  (use-package vertico-posframe
+    :hook (vertico-mode . vertico-posframe-mode)
+    :config
+    (setq vertico-posframe-parameters
+	'((left-fringe . 8)
+	  (right-fringe . 8)))
+    (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-right-corner))
 #+end_src
 
 ** Grep
@@ -873,7 +882,7 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     :hook (after-init . global-evil-surround-mode))
 #+end_src
 
-** Evil Keybindings
+** Custom Keybindings
 #+begin_src emacs-lisp
   (with-eval-after-load "evil"
     (evil-define-operator my-evil-comment-or-uncomment (beg end)
@@ -947,14 +956,13 @@ Keys that I have binded to my keyboard for easy navigation in emacs
 	(when (string-match-p "term" buffer)
 	  (push buffer filtered-buffers)))
       (if filtered-buffers
-	  (switch-to-buffer (completing-read "Switch to buffer: " filtered-buffers))
+	  (switch-to-buffer (completing-read "Switch to terminal: " filtered-buffers))
 	(message "No buffers found with term: %s" "term"))))
 
   (evil-leader/set-key
     "br" 'rename-buffer
-    "bd" 'evil-delete-buffer
-    "TAB" 'projectile-switch-to-buffer
-    "tb" 'my/projectile-switch-to-buffer-with-term)
+    "bd" 'kill-matching-buffers
+    "SPC" 'my/projectile-switch-to-buffer-with-term)
 #+end_src
 
 * Languages
@@ -1223,6 +1231,28 @@ Setting up eglot LSP
     (eglot-booster-mode))
 #+end_src
 
+* Navigation
+Setting up Consult for better navigation in Emacs
+
+#+begin_src emacs-lisp
+  ;; Consulting completing-read
+  (use-package consult
+    :config
+
+    (evil-leader/set-key
+      "ff" 'consult-find
+      "fg" 'consult-ripgrep)
+    (setq consult-preview-key (list :debounce 0.1 'any)))
+
+  (use-package consult-projectile
+    :config
+
+    (evil-leader/set-key
+      "pf" 'consult-projectile-find-file
+      "pp" 'consult-projectile-switch-project
+      "TAB" 'consult-projectile-switch-to-buffer))
+#+end_src
+
 * ORG
 ** Dslide
 
@@ -1289,34 +1319,8 @@ Programmable Org Presentation
 
 * Projects
 Projectile is the go-to project package to use with Emacs.
-Easy to use and setup, easy use of buffers. Use counsel-projectile for more advanced features.
+- Easy to use and setup, easy use of buffers.
 
-** Counsel
-#+begin_src emacs-lisp
-  (use-package counsel
-    :ensure t
-    :config
-
-    (evil-leader/set-key
-      "ff" 'counsel-find-file
-      "fb" 'counsel-grep
-      "fg" 'counsel-git-grep
-      "SPC" 'counsel-git-grep-at-cursor))
-
-  (use-package counsel-projectile
-    :after projectile
-    :config
-    (counsel-projectile-mode))
-
-  (defun counsel-git-grep-at-cursor ()
-    "Search using counsel-git-grep on the word at the cursor."
-    (interactive)
-    (let ((word (thing-at-point 'word t)))
-      (counsel-git-grep word)))
-
-#+end_src
-
-** Projectile
 #+begin_src emacs-lisp
   (use-package projectile
     :ensure t
@@ -1330,95 +1334,35 @@ Easy to use and setup, easy use of buffers. Use counsel-projectile for more adva
 	    projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1)))
 
     (evil-leader/set-key
-      "pf" 'projectile-find-file
-      "pp" 'projectile-switch-project
       "pc" 'projectile-cleanup-known-projects))
 #+end_src
 
 * Terminal
-Setup vterm as project term
-- Vterm
-- Vterm-toggle
-- Multi-vterm
+Setup emacs-eat
+- Emulate a Terminal
 
-Create a fun to kill all terminals in current project
 #+begin_src emacs-lisp
-  (require 'cl-lib)
+  (use-package eat
+    :hook (eshell-load . eat-eshell-mode)
+    :commands eat-compile-terminfo
+    :custom (eat-enable-auto-line-mode t))
 
-  (defun kill-all-terminal-buffers-in-project ()
-    "Kill all terminal buffers in the current projectile project."
+  (defun my-toggle-eat-term ()
+    "Toggle eat terminal at the root of the project."
     (interactive)
-    (let* ((project (projectile-project-name))
-           (buffers (buffer-list))
-           (buffer-patterns (list (format "*vterm-right-1-%s*" project)
-                                  (format "*vterm-left-%s*" project)
-                                  (format "*vterm-right-2-%s*" project)
-                                  (format "*vterm-%s*" project)
-                                  (format "*vterm-toggle-%s*" project))))
-      (dolist (buffer buffers)
-        (when (and (cl-some (lambda (pattern) (string-match-p pattern (buffer-name buffer))) buffer-patterns)
-                   (with-current-buffer buffer
-                     (string= (projectile-project-name) project)
-                     (derived-mode-p 'vterm-mode)))
-          (kill-buffer buffer)))))
+    (let* ((project-root (projectile-project-root))
+           (eat-buffer-name (format "*eat: %s*" (projectile-project-name))))
+      (if (get-buffer eat-buffer-name)
+          (if (string= (buffer-name) eat-buffer-name)
+              (previous-buffer)
+            (switch-to-buffer eat-buffer-name))
+        (let ((default-directory project-root))
+          (eat)
+          (rename-buffer eat-buffer-name)))))
 
   (evil-leader/set-key
-    "tk" 'kill-all-terminal-buffers-in-project)
+    "tt" 'my-toggle-eat-term)
 
-#+end_src
-
-** Vterm
-#+begin_src emacs-lisp
-  ;; A terminal via libvterm
-  (use-package vterm
-    :ensure t
-    :config
-    (defun working-term ()
-      "Toggle a vterm buffer for the current projectile project."
-      (interactive)
-      (let* ((project (projectile-project-name))
-  	   (default-directory (projectile-project-root))
-  	   (buf-name (format "*working-term-%s*" project)))
-  	(if project
-  	  (if (get-buffer buf-name)
-  	      (if (eq (current-buffer) (get-buffer buf-name))
-  		  (switch-to-buffer (other-buffer))
-  		(switch-to-buffer buf-name))
-  	    (vterm buf-name))
-  	(vterm))))
-
-    (evil-leader/set-key
-      "tt" 'working-term))
-
-#+end_src
-
-** Vterm-toggle
-#+begin_src emacs-lisp
-  (use-package vterm-toggle
-    :ensure t
-    :config
-    (defun default-term ()
-      "Toggle a vterm buffer for the current projectile project on the right."
-      (interactive)
-      (let* ((project (projectile-project-name))
-	     (default-directory (projectile-project-root))
-	     (buf-name (format "*default-term-%s*" project)))
-	(if project
-	    (if (get-buffer buf-name)
-		(if (get-buffer-window buf-name)
-		    (delete-window (get-buffer-window buf-name))
-		  (progn
-		    (display-buffer buf-name '((display-buffer-pop-up-window)))
-		    (select-window (get-buffer-window buf-name))))
-	      (progn
-		(split-window-right)
-		(other-window 1)
-		(vterm buf-name)
-		(select-window (get-buffer-window buf-name))))
-	  (vterm-toggle))))
-
-    (evil-leader/set-key
-      "to" 'default-term))
 #+end_src
 
 * Version
