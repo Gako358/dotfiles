@@ -1359,22 +1359,22 @@ Create a fun to kill all terminals in current project
   (use-package vterm
     :ensure t
     :config
-    (defun projectile-vterm-toggle ()
+    (defun working-term ()
       "Toggle a vterm buffer for the current projectile project."
       (interactive)
       (let* ((project (projectile-project-name))
-	     (default-directory (projectile-project-root))
-	     (buf-name (format "*vterm-%s*" project)))
-	(if project
-	    (if (get-buffer buf-name)
-		(if (eq (current-buffer) (get-buffer buf-name))
-		    (switch-to-buffer (other-buffer))
-		  (switch-to-buffer buf-name))
-	      (vterm buf-name))
-	  (vterm))))
+  	   (default-directory (projectile-project-root))
+  	   (buf-name (format "*vterm-%s*" project)))
+  	(if project
+  	  (if (get-buffer buf-name)
+  	      (if (eq (current-buffer) (get-buffer buf-name))
+  		  (switch-to-buffer (other-buffer))
+  		(switch-to-buffer buf-name))
+  	    (vterm buf-name))
+  	(vterm))))
 
     (evil-leader/set-key
-      "tt" 'projectile-vterm-toggle))
+      "tt" 'working-term))
 
 #+end_src
 
@@ -1383,7 +1383,7 @@ Create a fun to kill all terminals in current project
   (use-package vterm-toggle
     :ensure t
     :config
-    (defun projectile-vterm-toggle-right ()
+    (defun default-term ()
       "Toggle a vterm buffer for the current projectile project on the right."
       (interactive)
       (let* ((project (projectile-project-name))
@@ -1404,7 +1404,7 @@ Create a fun to kill all terminals in current project
 	  (vterm-toggle))))
 
     (evil-leader/set-key
-      "to" 'projectile-vterm-toggle-right))
+      "to" 'default-term))
 #+end_src
 
 * Version
