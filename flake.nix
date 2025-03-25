@@ -104,7 +104,7 @@
             {
               home-manager = {
                 # useGlobalPkgs = true; # TODO: Fix this on new install
-                useUserPackages = true;
+                # useUserPackages = true;
                 extraSpecialArgs = {
                   inherit inputs outputs;
                   hidpi = false;
