@@ -1364,7 +1364,7 @@ Create a fun to kill all terminals in current project
       (interactive)
       (let* ((project (projectile-project-name))
   	   (default-directory (projectile-project-root))
-  	   (buf-name (format "*vterm-%s*" project)))
+  	   (buf-name (format "*working-term-%s*" project)))
   	(if project
   	  (if (get-buffer buf-name)
   	      (if (eq (current-buffer) (get-buffer buf-name))
@@ -1388,7 +1388,7 @@ Create a fun to kill all terminals in current project
       (interactive)
       (let* ((project (projectile-project-name))
 	     (default-directory (projectile-project-root))
-	     (buf-name (format "*vterm-toggle-%s*" project)))
+	     (buf-name (format "*default-term-%s*" project)))
 	(if project
 	    (if (get-buffer buf-name)
 		(if (get-buffer-window buf-name)
