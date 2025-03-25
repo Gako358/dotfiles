@@ -784,8 +784,6 @@ Setting up treesitter grammars
 #+end_src
 
 * Keybindings
-Keys that I have binded to my keyboard for easy navigation in emacs
-
 ** Evil Mode
 #+begin_src emacs-lisp
   ;; evil-want-keybinding must be declared before Evil and Evil Collection
@@ -830,6 +828,16 @@ Keys that I have binded to my keyboard for easy navigation in emacs
     :config
     (global-evil-leader-mode)
     (evil-leader/set-leader "<SPC>"))
+#+end_src
+
+** Evil Comment
+#+begin_src emacs-lisp
+  (with-eval-after-load "evil"
+    (evil-define-operator my-evil-comment-or-uncomment (beg end)
+      "Toggle comment for the region between BEG and END."
+      (interactive "<r>")
+      (comment-or-uncomment-region beg end))
+    (evil-define-key 'normal 'global (kbd "gc") 'my-evil-comment-or-uncomment))
 #+end_src
 
 ** Evil Collection
@@ -880,89 +888,6 @@ Keys that I have binded to my keyboard for easy navigation in emacs
        (?< . ("<" . ">"))
        (?> . ("<" . ">"))))
     :hook (after-init . global-evil-surround-mode))
-#+end_src
-
-** Custom Keybindings
-#+begin_src emacs-lisp
-  (with-eval-after-load "evil"
-    (evil-define-operator my-evil-comment-or-uncomment (beg end)
-      "Toggle comment for the region between BEG and END."
-      (interactive "<r>")
-      (comment-or-uncomment-region beg end))
-    (evil-define-key 'normal 'global (kbd "gc") 'my-evil-comment-or-uncomment))
-
-  (defun move-right-and-open-todo ()
-    (interactive)
-    (split-window-right)
-    (windmove-right)
-    (find-file "~/Documents/notes/org/todo.org"))
-
-  (defun replace-word-at-point ()
-    "Replace all occurrences of the word at point with a user-provided word in the current buffer."
-    (let ((old-word (thing-at-point 'word))
-          (new-word (read-string "Enter new word: ")))
-      (save-excursion
-        (goto-char (point-min))
-        (while (search-forward old-word nil t)
-          (replace-match new-word)))))
-
-  (global-set-key (kbd "C-S-i") 'move-right-and-open-todo)
-
-  (defun move-text-internal (arg)
-    (cond
-     ((and mark-active transient-mark-mode)
-      (if (> (point) (mark))
-          (exchange-point-and-mark))
-      (let ((column (current-column))
-            (text (delete-and-extract-region (point) (mark))))
-        (forward-line arg)
-        (move-to-column column t)
-        (set-mark (point))
-        (insert text)
-        (exchange-point-and-mark)
-        (setq deactivate-mark nil)))
-     (t
-      (beginning-of-line)
-      (when (or (> arg 0) (not (bobp)))
-        (forward-line)
-        (when (or (< arg 0) (not (eobp)))
-          (transpose-lines arg))
-        (forward-line -1)))))
-
-  (defun move-text-down (arg)
-    (interactive "*p")
-    (move-text-internal arg))
-
-  (defun move-text-up (arg)
-    (interactive "*p")
-    (move-text-internal (- arg)))
-
-  (global-set-key (kbd "S-<up>") 'move-text-up)
-  (global-set-key (kbd "S-<down>") 'move-text-down)
-  (global-set-key (kbd "C-S-<right>") 'enlarge-window-horizontally)
-  (global-set-key (kbd "C-S-<left>") 'shrink-window-horizontally)
-  (global-set-key (kbd "C-S-<down>") 'shrink-window)
-  (global-set-key (kbd "C-S-<up>") 'enlarge-window)
-  (global-set-key (kbd "C-<tab>") 'evil-switch-to-windows-last-buffer)
-
-
-  ;; Buffers
-  (defun my/projectile-switch-to-buffer-with-term ()
-    "Switch to a buffer whose name includes 'term' using projectile."
-    (interactive)
-    (let ((buffers (projectile-project-buffer-names))
-	  (filtered-buffers '()))
-      (dolist (buffer buffers)
-	(when (string-match-p "term" buffer)
-	  (push buffer filtered-buffers)))
-      (if filtered-buffers
-	  (switch-to-buffer (completing-read "Switch to terminal: " filtered-buffers))
-	(message "No buffers found with term: %s" "term"))))
-
-  (evil-leader/set-key
-    "br" 'rename-buffer
-    "bd" 'kill-matching-buffers
-    "SPC" 'my/projectile-switch-to-buffer-with-term)
 #+end_src
 
 * Languages
@@ -1251,6 +1176,27 @@ Setting up Consult for better navigation in Emacs
       "pf" 'consult-projectile-find-file
       "pp" 'consult-projectile-switch-project
       "TAB" 'consult-projectile-switch-to-buffer))
+
+  (defun my/projectile-switch-to-buffer-with-term ()
+    "Switch to a buffer whose name includes 'term' using consult-projectile."
+    (interactive)
+    (let ((filtered-buffers (seq-filter (lambda (buf)
+  					  (string-match-p "term" (buffer-name buf)))
+  					(projectile-project-buffers))))
+      (if filtered-buffers
+  	  (consult--read (mapcar #'buffer-name filtered-buffers)
+  			 :prompt "Switch to terminal: "
+  			 :require-match t
+  			 :sort nil
+  			 :category 'buffer
+  			 :history 'buffer-name-history
+  			 :state (consult--buffer-state))
+  	(message "No buffers found with term: %s" "term"))))
+
+  (evil-leader/set-key
+    "br" 'rename-buffer
+    "bd" 'kill-matching-buffers
+    "SPC" 'my/projectile-switch-to-buffer-with-term)
 #+end_src
 
 * ORG
