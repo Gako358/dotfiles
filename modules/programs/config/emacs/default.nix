@@ -69,6 +69,7 @@ let
     pkgs.emacs-lsp-booster
     pkgs.nil
     pkgs.nixpkgs-fmt
+    pkgs.nodePackages.prettier
     pkgs.typescript-language-server
     pkgs.vue-language-server
   ];

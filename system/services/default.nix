@@ -6,6 +6,7 @@
     ./nfc.nix
     ./openssh.nix
     ./pipwire.nix
+    ./scramgit.nix
     ./wally.nix
   ];
 }

@@ -1,6 +1,5 @@
 { lib
 , config
-, inputs
 , pkgs
 , ...
 }: {
@@ -10,31 +9,12 @@
     gnome-boxes
     gnome-weather
     gnome-system-monitor
-
-    inputs.scramgit.defaultPackage.${pkgs.system}
-    # inputs.emacsFlake.defaultPackage.${pkgs.system}
   ];
 
   security = {
     # unlock GPG keyring on login
     pam.services.greetd.enableGnomeKeyring = true;
     polkit.enable = true;
-  };
-
-  systemd = {
-    user.services.polkit-gnome-authentication-agent-1 = {
-      description = "polkit-gnome-authentication-agent-1";
-      wantedBy = [ "graphical-session.target" ];
-      wants = [ "graphical-session.target" ];
-      after = [ "graphical-session.target" ];
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
-      };
-    };
   };
 
   # Services needed for desktop
