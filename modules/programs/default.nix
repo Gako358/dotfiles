@@ -37,6 +37,7 @@ let
       rnote # terminal note taking
       scid-vs-pc # chess database with play and funtionality
       scrot # screenshot tool
+      slack # messaging app
       slurp # select a region in a wayland compositor
       spotify # music streaming
       tldr # summary of a man page
@@ -81,7 +82,6 @@ in
   ./browser/discord.nix
   ./browser/firefox.nix
   ./browser/nyxt.nix
-  ./browser/slack.nix
   ./config
   ./email
   ./alacritty.nix

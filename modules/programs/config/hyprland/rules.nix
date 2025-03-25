@@ -31,11 +31,12 @@
       windowrule = float, ^(org.pulseaudio.pavucontrol)$
 
       windowrule = workspace 1, ^(firefox)$
+      windowrule = workspace 2, ^(Emacs)$
       windowrule = workspace 5, ^(Wfica)$
       windowrule = workspace 6, ^(steam)$
       windowrule = workspace 6, ^(chromium-browser)$
       windowrule = workspace 7, ^(thunderbird)$
-      windowrule = workspace 8, title:^(app.slack.com_/client/T04MZPW21RA/C04MUBWKREZ)$
+      windowrule = workspace 8, ^(Slack)$
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
       windowrule = workspace 9, title:^(Friends List)$
 
@@ -76,11 +77,12 @@
       windowrule = float, ^(org.pulseaudio.pavucontrol)$
 
       windowrule = workspace 1, ^(firefox)$
+      windowrule = workspace 2, ^(Emacs)$
       windowrule = workspace 5, ^(Wfica)$
       windowrule = workspace 6, ^(steam)$
       windowrule = workspace 6, ^(chromium-browser)$
       windowrule = workspace 7, ^(thunderbird)$
-      windowrule = workspace 8, title:^(app.slack.com_/client/T04MZPW21RA/C04MUBWKREZ)$
+      windowrule = workspace 8, ^(Slack)$
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
       windowrule = workspace 9, title:^(Friends List)$
 

@@ -14,6 +14,7 @@ in
       "[workspace 2 silent] emacsclient -c -n"
       "[workspace 6 silent] chromium"
       "[workspace 7 silent] thunderbird"
+      "[workspace 8 silent] slack"
     ];
 
     general = {
