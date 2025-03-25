@@ -183,8 +183,7 @@ AI-Powered Code Completion:
       "ch" 'copilot-chat-hide
       "cl" 'copilot-chat-list
       "cL" 'copilot-chat-list-refresh
-      "cm" 'copilot-chat-model
-      "cM" 'copilot-chat-models
+      "cm" 'copilot-chat-set-model
       "cr" 'copilot-chat-reset
       "cv" 'copilot-chat-review
       "cV" 'copilot-chat-review-whole-buffer
