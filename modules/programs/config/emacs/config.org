@@ -154,15 +154,8 @@ AI-Powered Code Completion:
 		("C-e" . copilot-accept-completion)
 		("C-S-e" . copilot-accept-completion-by-word))
     :config
-    (defun toggle-copilot-mode ()
-      "Toggle Copilot mode on and off."
-      (interactive)
-      (if (bound-and-true-p copilot-mode)
-	  (copilot-mode -1)
-	(copilot-mode 1)))
-
     (evil-leader/set-key
-      "cp" 'toggle-copilot-mode)
+      "cp" 'copilot-mode)
 
     (add-to-list 'copilot-indentation-alist '(prog-mode . 2))
     (add-to-list 'copilot-indentation-alist '(org-mode . 2))
@@ -182,12 +175,19 @@ AI-Powered Code Completion:
   (use-package copilot-chat
     :config
     (evil-leader/set-key
-      "cf" 'copilot-chat-fix
+      "ca" 'copilot-chat-add-current-buffer
+      "cd" 'copilot-chat-del-current-buffer
       "ce" 'copilot-chat-explain
-      "cr" 'copilot-chat-reset
+      "cf" 'copilot-chat-fix
+      "cg" 'copilot-chat-insert-commit-message
+      "ch" 'copilot-chat-hide
       "cl" 'copilot-chat-list
       "cL" 'copilot-chat-list-refresh
-      "ch" 'copilot-chat-hide
+      "cm" 'copilot-chat-model
+      "cM" 'copilot-chat-models
+      "cr" 'copilot-chat-reset
+      "cv" 'copilot-chat-review
+      "cV" 'copilot-chat-review-whole-buffer
       "cc" 'copilot-chat-display))
 #+end_src
 
