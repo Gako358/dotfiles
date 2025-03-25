@@ -161,7 +161,8 @@ AI-Powered Code Completion:
 	  (copilot-mode -1)
 	(copilot-mode 1)))
 
-    (global-set-key (kbd "C-c C-p") 'toggle-copilot-mode)
+    (evil-leader/set-key
+      "cp" 'toggle-copilot-mode)
 
     (add-to-list 'copilot-indentation-alist '(prog-mode . 2))
     (add-to-list 'copilot-indentation-alist '(org-mode . 2))
@@ -174,6 +175,20 @@ AI-Powered Code Completion:
     (add-to-list 'copilot-indentation-alist '(java-ts-mode . 2))
     (add-to-list 'copilot-indentation-alist '(java-mode . 2))
     (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
+#+end_src
+
+** Copilot-Chat
+#+begin_src emacs-lisp
+  (use-package copilot-chat
+    :config
+    (evil-leader/set-key
+      "cf" 'copilot-chat-fix
+      "ce" 'copilot-chat-explain
+      "cr" 'copilot-chat-reset
+      "cl" 'copilot-chat-list
+      "cL" 'copilot-chat-list-refresh
+      "ch" 'copilot-chat-hide
+      "cc" 'copilot-chat-display))
 #+end_src
 
 ** Corfu

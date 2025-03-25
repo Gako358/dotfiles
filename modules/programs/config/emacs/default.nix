@@ -105,6 +105,7 @@ in
         # Completion
         cape # Completion At Point Extensions.
         copilot # AI code completion.
+        copilot-chat # Chat with Copilot.
         corfu # Completion Overlay Region Function.
         embark # Context-sensitive actions.
         flycheck # On-the-fly syntax checking
