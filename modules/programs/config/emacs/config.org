@@ -131,11 +131,16 @@ Completion At Point Extensions:
   (use-package cape
     :ensure t
     :init
-    (add-hook 'completion-at-point-functions #'cape-file)
-    (add-hook 'completion-at-point-functions #'cape-dabbrev)
-    (add-hook 'completion-at-point-functions #'cape-keyword)
-    (add-hook 'completion-at-point-functions #'cape-line)
-    (add-hook 'completion-at-point-functions #'cape-elisp-block))
+    (add-hook 'completion-at-point-functions
+  	      (cape-capf-accept-all #'cape-file))
+    (add-hook 'completion-at-point-functions
+  	      (cape-capf-accept-all #'cape-dabbrev))
+    (add-hook 'completion-at-point-functions
+  	      (cape-capf-accept-all #'cape-keyword))
+    (add-hook 'completion-at-point-functions
+  	      (cape-capf-accept-all #'cape-line))
+    (add-hook 'completion-at-point-functions
+  	      (cape-capf-accept-all #'cape-elisp-block)))
 #+end_src
 
 ** Copilot
