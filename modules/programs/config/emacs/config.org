@@ -775,19 +775,20 @@ Setting up treesitter grammars
     (treesit-font-lock-level 4) ;; Set font lock level for Tree-sitter
     :config
     (seq-do (lambda (it)
-	      (push it major-mode-remap-alist))
-	    '((css-mode . css-ts-mode) ;; Remap CSS mode to Tree-sitter mode
-	      (c-mode . c-ts-mode) ;; Remap C mode to Tree-sitter mode
-	      (dockerfile-mode . dockerfile-ts-mode) ;; Remap Dockerfile mode to Tree-sitter mode
-	      (haskell-mode . haskell-ts-mode) ;; Remap Haskell mode to Tree-sitter mode
-	      (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
-	      (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
-	      (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
-	      (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
-	      (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
-	      (shell-script-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
-	      (typescript-mode . typescript-ts-mode) ;; Remap TypeScript mode to Tree-sitter mode
-	      (yaml-mode . yaml-ts-mode)))) ;; Remap YAML mode to Tree-sitter mode
+  	    (push it major-mode-remap-alist))
+  	  '((css-mode . css-ts-mode) ;; Remap CSS mode to Tree-sitter mode
+  	    (c-mode . c-ts-mode) ;; Remap C mode to Tree-sitter mode
+  	    (dockerfile-mode . dockerfile-ts-mode) ;; Remap Dockerfile mode to Tree-sitter mode
+  	    (haskell-mode . haskell-ts-mode) ;; Remap Haskell mode to Tree-sitter mode
+  	    (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
+  	    (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
+  	    (kotlin-mode . kotlin-ts-mode) ;; Remap Kotlin mode to Tree-sitter mode
+  	    (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
+  	    (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
+  	    (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
+  	    (shell-script-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
+  	    (typescript-mode . typescript-ts-mode) ;; Remap TypeScript mode to Tree-sitter mode
+  	    (yaml-mode . yaml-ts-mode)))) ;; Remap YAML mode to Tree-sitter mode
 #+end_src
 
 * Keybindings
@@ -904,6 +905,7 @@ Setup using:
 - Dockerfile
 - Haskell
 - Java
+- Kotlin
 - Markdown
 - Nix
 - Rust
@@ -952,6 +954,18 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
       "ljT" 'eglot-java-project-build-task
       "ljR" 'eglot-java-project-build-refresh))
 
+#+end_src
+
+** Kotlin
+#+begin_src emacs-lisp
+  (use-package kotlin-ts-mode
+    :init
+    :hook (kotlin-ts-mode . eglot-ensure)
+    :mode "\\.kt\\'")
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+  	       '(kotlin-ts-mode .("kotlin-language-server"))))
 #+end_src
 
 ** Markdown

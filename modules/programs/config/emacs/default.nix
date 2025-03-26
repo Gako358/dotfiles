@@ -67,6 +67,7 @@ let
     pkgs.black
     pkgs.basedpyright
     pkgs.emacs-lsp-booster
+    pkgs.kotlin-language-server
     pkgs.nil
     pkgs.nixpkgs-fmt
     pkgs.nodePackages.prettier
@@ -161,6 +162,7 @@ in
         # Programming language packages.
         eglot-java # Java development environment
         haskell-ts-mode # Haskell development environment
+        kotlin-ts-mode # Kotlin development environment
         nix-ts-mode # Major mode for editing Nix files
         scala-ts-mode # Scala development environment
         sql-indent # Indentation for SQL files
