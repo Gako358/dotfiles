@@ -698,6 +698,7 @@ Config dirvish
      ("M-q" . dirvish-quit)
      ("M-j" . dirvish-fd-jump)))
 
+  (add-hook 'dired-mode-hook 'auto-revert-mode)
   (add-hook 'dirvish-setup-hook (lambda ()
                                   (visual-line-mode -1)
                                   (setq-local truncate-lines t)))
