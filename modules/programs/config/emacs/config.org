@@ -132,8 +132,10 @@ Completion At Point Extensions:
     :ensure t
     :init
     (add-hook 'completion-at-point-functions #'cape-file)
-    (add-hook 'completion-at-point-functions #'cape-elisp-block)
-    )
+    (add-hook 'completion-at-point-functions #'cape-dabbrev)
+    (add-hook 'completion-at-point-functions #'cape-keyword)
+    (add-hook 'completion-at-point-functions #'cape-line)
+    (add-hook 'completion-at-point-functions #'cape-elisp-block))
 #+end_src
 
 ** Copilot
@@ -1174,6 +1176,7 @@ Setting up Consult for better navigation in Emacs
 
     (evil-leader/set-key
       "pf" 'consult-projectile-find-file
+      "pw" 'consult-projectile-find-file-other-window
       "pp" 'consult-projectile-switch-project
       "TAB" 'consult-projectile-switch-to-buffer))
 
