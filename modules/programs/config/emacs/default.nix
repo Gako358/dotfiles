@@ -98,12 +98,13 @@ in
         all-the-icons-ivy-rich # More friendly display transformer for ivy
         dashboard # A startup screen extracted from Spacemacs
         kaolin-themes # A low contrast color theme for Emacs
+        spaceline # A mode-line theming package
         nerd-icons # Nerd icons for Emacs
         nerd-icons-completion # Nerd icons for completion
         nerd-icons-corfu # Nerd icons for corfu
+        powerline #A utility library for creating a custom mode-line
         rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
         rainbow-mode # Colorize color names in buffers
-        vim-tab-bar # Tab bar for Vim
 
         # Completion
         cape # Completion At Point Extensions.

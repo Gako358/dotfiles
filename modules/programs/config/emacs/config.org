@@ -11,16 +11,6 @@ The configuration is setup using NixOS, check README.
 * Appearance
 Using the dashboard package with the kaolin-theme to enhance the startup experience and overall look of Emacs.
 
-** Bar
-The vim-tab-bar package is used for managing tabs, activated after initialization.
-
-#+begin_src emacs-lisp
-  (use-package vim-tab-bar
-    :ensure t
-    :commands vim-tab-bar-mode
-    :hook (after-init . vim-tab-bar-mode))
-#+end_src
-
 ** Dashboard
 The dashboard package is configured to display a welcoming startup screen with a custom banner, recent files, bookmarks, projects, and agenda items.
 
@@ -96,6 +86,84 @@ Nerd-icons-corfu: Adds pretty icons to Corfu completion menus.
     :config
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
+#+end_src
+
+** Modeline
+
+This enables spaceline, it looks better and works very well with my theme of choice.
+
+#+begin_src emacs-lisp
+  (use-package spaceline
+    :ensure t
+    :init
+    (setq spaceline-buffer-encoding-abbrev-p nil
+  	  spaceline-line-column-p nil
+  	  spaceline-line-p nil
+  	  powerline-default-separator 'arrow
+  	  powerline-gui-use-vcs-glyph t
+  	  powerline-height 28
+  	  spaceline-highlight-face-func 'spaceline-highlight-face-modified
+  	  spaceline-workspace-numbers-unicode t
+  	  spaceline-window-numbers-unicode t
+  	  spaceline-separator-dir-left '(left . right)
+  	  spaceline-separator-dir-right '(right . left)
+  	  spaceline-flycheck-bullet "❀ %s")
+    :config
+    (require 'spaceline-config)
+    (spaceline-spacemacs-theme)
+
+    (spaceline-define-segment nasy:version-control
+      "Version control information."
+      (when vc-mode
+        (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
+          (powerline-raw
+           (s-trim (concat "  "
+                           branch
+                           (when (buffer-file-name)
+                             (pcase (vc-state (buffer-file-name))
+                               (`up-to-date " ✓")
+                               (`edited " ❓")
+                               (`added " ➕")
+                               (`unregistered " ■")
+                               (`removed " ✘")
+                               (`needs-merge " ↓")
+                               (`needs-update " ↑")
+                               (`ignored " ✦")
+                               (_ " ⁇")))))))))
+
+    (spaceline-define-segment nasy-time
+      "Time"
+      (format-time-string "%b %d, %Y - %H:%M ")
+      :tight-right t)
+
+    (spaceline-define-segment flycheck-status
+      "An `all-the-icons' representation of `flycheck-status'"
+      (let* ((text
+              (pcase flycheck-last-status-change
+                (`finished (if flycheck-current-errors
+                               (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
+                                              (+ (or .warning 0) (or .error 0)))))
+                                 (format "✖ %s Issue%s" count (if (eq 1 count) "" "s")))
+                             "✔ No Issues"))
+                (`running     "⟲ Running")
+                (`no-checker  "⚠")
+                (`not-checked "✣ Disabled")
+                (`errored     "⚠ Error")
+                (`interrupted "⛔ Interrupted")
+                (`suspicious  "")))
+             (f (cond
+                 ((string-match "⚠" text) `(:height 0.9 :foreground ,(face-attribute 'spaceline-flycheck-warning :foreground)
+                                                    :background "#1d5464"))
+                 ((string-match "✖ [0-9]" text) `(:height 0.9 :foreground ,(face-attribute 'spaceline-flycheck-error :foreground)
+                                                          :background "#333333"))
+                 ((string-match "✣ Disabled" text) `(:height 0.9))
+                 (t '(:height 0.9 :inherit)))))
+        (propertize (format " %s " text)
+                    'face f
+                    'help-echo "Show Flycheck Errors"
+                    'mouse-face '(:box 1)
+                    'local-map (make-mode-line-mouse-map 'mouse-1 (lambda () (interactive) (flycheck-list-errors)))))
+      :when active))
 #+end_src
 
 ** Themes
@@ -803,7 +871,6 @@ Setting up treesitter grammars
     :init
     (setq evil-undo-system 'undo-fu)
     (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
     :custom
     (evil-want-Y-yank-to-eol t)
     :config
@@ -830,13 +897,22 @@ Setting up treesitter grammars
   (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
 #+end_src
 
-** Evil Leader
+** Evil Collection
 #+begin_src emacs-lisp
-  (use-package evil-leader
+  (use-package evil-collection
+    :after evil
     :ensure t
+    :hook (evil-mode . evil-collection-init)
+    :bind (([remap evil-show-marks] . evil-collection-consult-mark)
+  	   ([remap evil-show-jumps] . evil-collection-consult-jump-list))
     :config
-    (global-evil-leader-mode)
-    (evil-leader/set-leader "<SPC>"))
+    ;; Make `evil-collection-consult-mark' and `evil-collection-consult-jump-list'
+    ;; immediately available.
+    (evil-collection-require 'consult)
+    :custom
+    (evil-collection-setup-debugger-keys nil)
+    (evil-collection-calendar-want-org-bindings t)
+    (evil-collection-unimpaired-want-repeat-mode-integration t))
 #+end_src
 
 ** Evil Comment
@@ -849,32 +925,13 @@ Setting up treesitter grammars
     (evil-define-key 'normal 'global (kbd "gc") 'my-evil-comment-or-uncomment))
 #+end_src
 
-** Evil Collection
+** Evil Leader
 #+begin_src emacs-lisp
-  (use-package evil-collection
-    :after evil
+  (use-package evil-leader
     :ensure t
-    :hook (evil-mode . evil-collection-init)
-    :bind (([remap evil-show-marks] . evil-collection-consult-mark)
-           ([remap evil-show-jumps] . evil-collection-consult-jump-list))
     :config
-    ;; Make `evil-collection-consult-mark' and `evil-collection-consult-jump-list'
-    ;; immediately available.
-    (evil-collection-require 'consult)
-    :custom
-    (evil-collection-setup-debugger-keys nil)
-    (evil-collection-calendar-want-org-bindings t)
-    (evil-collection-unimpaired-want-repeat-mode-integration t))
-#+end_src
-
-** Evil Visual Star
-#+begin_src emacs-lisp
-  (use-package evil-visualstar
-    :after evil
-    :ensure t
-    :defer t
-    :commands global-evil-visualstar-mode
-    :hook (after-init . global-evil-visualstar-mode))
+    (global-evil-leader-mode)
+    (evil-leader/set-leader "<SPC>"))
 #+end_src
 
 ** Evil Surround
@@ -897,6 +954,16 @@ Setting up treesitter grammars
        (?< . ("<" . ">"))
        (?> . ("<" . ">"))))
     :hook (after-init . global-evil-surround-mode))
+#+end_src
+
+** Evil Visual Star
+#+begin_src emacs-lisp
+  (use-package evil-visualstar
+    :after evil
+    :ensure t
+    :defer t
+    :commands global-evil-visualstar-mode
+    :hook (after-init . global-evil-visualstar-mode))
 #+end_src
 
 * Languages
