@@ -12,31 +12,31 @@
       workspace = 8, monitor:HDMI-A-1
       workspace = 9, monitor:HDMI-A-1
 
-      windowrule = float, ^(Rofi)$
-      windowrule = float, ^(eww)$
-      windowrule = float, ^(Gimp-2.10)$
-      windowrule = float, ^(org.gnome.Calculator)$
-      windowrule = float, ^(org.gnome.Calendar)$
-      windowrule = float, ^(gnome-system-monitor)$
-      windowrule = float, ^(pavucontrol)$
-      windowrule = float, ^(nm-connection-editor)$
-      windowrule = float, ^(Color Picker)$
-      windowrule = float, ^(Network)$
-      windowrule = float, ^(pcmanfm)$
-      windowrule = float, ^(com.github.flxzt.rnote)$
-      windowrule = float, ^(xdg-desktop-portal)$
-      windowrule = float, ^(xdg-desktop-portal-gnome)$
-      windowrule = float, ^(transmission-gtk)$
-      windowrule = float, ^(org.kde.kdeconnect-settings)$
-      windowrule = float, ^(org.pulseaudio.pavucontrol)$
+      windowrule = float, class:^(Rofi)$
+      windowrule = float, class:^(eww)$
+      windowrule = float, class:^(Gimp-2.10)$
+      windowrule = float, class:^(org.gnome.Calculator)$
+      windowrule = float, class:^(org.gnome.Calendar)$
+      windowrule = float, class:^(gnome-system-monitor)$
+      windowrule = float, class:^(pavucontrol)$
+      windowrule = float, class:^(nm-connection-editor)$
+      windowrule = float, class:^(Color Picker)$
+      windowrule = float, class:^(Network)$
+      windowrule = float, class:^(pcmanfm)$
+      windowrule = float, class:^(com.github.flxzt.rnote)$
+      windowrule = float, class:^(xdg-desktop-portal)$
+      windowrule = float, class:^(xdg-desktop-portal-gnome)$
+      windowrule = float, class:^(transmission-gtk)$
+      windowrule = float, class:^(org.kde.kdeconnect-settings)$
+      windowrule = float, class:^(org.pulseaudio.pavucontrol)$
 
-      windowrule = workspace 1, ^(firefox)$
-      windowrule = workspace 2, ^(Emacs)$
-      windowrule = workspace 5, ^(Wfica)$
-      windowrule = workspace 6, ^(steam)$
-      windowrule = workspace 6, ^(chromium-browser)$
-      windowrule = workspace 7, ^(thunderbird)$
-      windowrule = workspace 8, ^(Slack)$
+      windowrule = workspace 1, class:^(firefox)$
+      windowrule = workspace 2, class:^(Emacs)$
+      windowrule = workspace 5, class:^(Wfica)$
+      windowrule = workspace 6, class:^(steam)$
+      windowrule = workspace 6, class:^(chromium-browser)$
+      windowrule = workspace 7, class:^(thunderbird)$
+      windowrule = workspace 8, class:^(Slack)$
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
       windowrule = workspace 9, title:^(Friends List)$
 
@@ -45,7 +45,7 @@
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
 
-      windowrule = opacity 0.91 override 0.73 override, ^(Emacs)$
+      windowrule = opacity 0.91 override 0.73 override, class:^(Emacs)$
     ''
     else ''
       workspace = 1, monitor:DP-8
@@ -58,31 +58,31 @@
       workspace = 8, monitor:eDP-1
       workspace = 9, monitor:eDP-1
 
-      windowrule = float, ^(Rofi)$
-      windowrule = float, ^(eww)$
-      windowrule = float, ^(Gimp-2.10)$
-      windowrule = float, ^(org.gnome.Calculator)$
-      windowrule = float, ^(org.gnome.Calendar)$
-      windowrule = float, ^(gnome-system-monitor)$
-      windowrule = float, ^(pavucontrol)$
-      windowrule = float, ^(nm-connection-editor)$
-      windowrule = float, ^(Color Picker)$
-      windowrule = float, ^(Network)$
-      windowrule = float, ^(pcmanfm)$
-      windowrule = float, ^(com.github.flxzt.rnote)$
-      windowrule = float, ^(xdg-desktop-portal)$
-      windowrule = float, ^(xdg-desktop-portal-gnome)$
-      windowrule = float, ^(transmission-gtk)$
-      windowrule = float, ^(org.kde.kdeconnect-settings)$
-      windowrule = float, ^(org.pulseaudio.pavucontrol)$
+      windowrule = float, class:^(Rofi)$
+      windowrule = float, class:^(eww)$
+      windowrule = float, class:^(Gimp-2.10)$
+      windowrule = float, class:^(org.gnome.Calculator)$
+      windowrule = float, class:^(org.gnome.Calendar)$
+      windowrule = float, class:^(gnome-system-monitor)$
+      windowrule = float, class:^(pavucontrol)$
+      windowrule = float, class:^(nm-connection-editor)$
+      windowrule = float, class:^(Color Picker)$
+      windowrule = float, class:^(Network)$
+      windowrule = float, class:^(pcmanfm)$
+      windowrule = float, class:^(com.github.flxzt.rnote)$
+      windowrule = float, class:^(xdg-desktop-portal)$
+      windowrule = float, class:^(xdg-desktop-portal-gnome)$
+      windowrule = float, class:^(transmission-gtk)$
+      windowrule = float, class:^(org.kde.kdeconnect-settings)$
+      windowrule = float, class:^(org.pulseaudio.pavucontrol)$
 
-      windowrule = workspace 1, ^(firefox)$
-      windowrule = workspace 2, ^(Emacs)$
-      windowrule = workspace 5, ^(Wfica)$
-      windowrule = workspace 6, ^(steam)$
-      windowrule = workspace 6, ^(chromium-browser)$
-      windowrule = workspace 7, ^(thunderbird)$
-      windowrule = workspace 8, ^(Slack)$
+      windowrule = workspace 1, class:^(firefox)$
+      windowrule = workspace 2, class:^(Emacs)$
+      windowrule = workspace 5, class:^(Wfica)$
+      windowrule = workspace 6, class:^(steam)$
+      windowrule = workspace 6, class:^(chromium-browser)$
+      windowrule = workspace 7, class:^(thunderbird)$
+      windowrule = workspace 8, class:^(Slack)$
       windowrule = workspace 9, title:^(discord.com_/channels/@me)$
       windowrule = workspace 9, title:^(Friends List)$
 
@@ -91,6 +91,6 @@
       windowrule = float, title:^(ranger)$
       windowrule = float, title:^(btop)$
 
-      windowrule = opacity 0.91 override 0.73 override, ^(Emacs)$
+      windowrule = opacity 0.91 override 0.73 override, class:^(Emacs)$
     '';
 }

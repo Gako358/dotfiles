@@ -1267,40 +1267,40 @@ Setting up Consult for better navigation in Emacs
       "pp" 'consult-projectile-switch-project
       "TAB" 'consult-projectile-switch-to-buffer))
 
-  (defun my/projectile-switch-to-buffer-with-term ()
-    "Switch to a buffer whose name includes 'term' using consult-projectile."
+  (defun my/projectile-switch-to-buffer-with-eat ()
+    "Switch to a buffer whose name includes 'eat' using consult-projectile."
     (interactive)
     (let ((filtered-buffers (seq-filter (lambda (buf)
-      					(string-match-p "term" (buffer-name buf)))
-      				      (projectile-project-buffers))))
+  					  (string-match-p "eat" (buffer-name buf)))
+  					(projectile-project-buffers))))
       (if filtered-buffers
-      	(consult--read (mapcar #'buffer-name filtered-buffers)
-      		       :prompt "Switch to terminal: "
-      		       :require-match t
-      		       :sort nil
-      		       :category 'buffer
-      		       :history 'buffer-name-history
-      		       :state (consult--buffer-state))
-        (message "No buffers found with term: %s" "term"))))
+  	  (consult--read (mapcar #'buffer-name filtered-buffers)
+  			 :prompt "Switch to terminal: "
+  			 :require-match t
+  			 :sort nil
+  			 :category 'buffer
+  			 :history 'buffer-name-history
+  			 :state (consult--buffer-state))
+  	(message "No buffers found with term: %s" "eat"))))
 
   (defun my/consult-projectile-grep-at-point ()
     "Use consult to grep for the word at point within the projectile files. If a region is selected, use the selected text instead."
     (interactive)
     (let ((search-term (if (use-region-p)
-  			   (buffer-substring-no-properties (region-beginning) (region-end))
-  			 (let* ((word (thing-at-point 'word t))
-  				(bounds (bounds-of-thing-at-point 'symbol))
-  				(symbol (buffer-substring-no-properties (car bounds) (cdr bounds))))
-  			   (if (or (string-match-p "-" word) (string-match-p "_" word))
-  			       symbol
-  			     word)))))
+    			 (buffer-substring-no-properties (region-beginning) (region-end))
+    		       (let* ((word (thing-at-point 'word t))
+    			      (bounds (bounds-of-thing-at-point 'symbol))
+    			      (symbol (buffer-substring-no-properties (car bounds) (cdr bounds))))
+    			 (if (or (string-match-p "-" word) (string-match-p "_" word))
+    			     symbol
+    			   word)))))
       (consult-ripgrep (projectile-project-root) search-term)))
 
   (evil-leader/set-key
     "SPC" 'my/consult-projectile-grep-at-point
     "DEL" 'kill-buffer
     "tr" 'rename-buffer
-    "tl" 'my/projectile-switch-to-buffer-with-term)
+    "tl" 'my/projectile-switch-to-buffer-with-eat)
 #+end_src
 
 * ORG
@@ -1424,24 +1424,14 @@ Setup emacs-eat
   (use-package eat
     :hook (eshell-load . eat-eshell-mode)
     :commands eat-compile-terminfo
-    :custom (eat-enable-auto-line-mode t))
-
-  (defun my-toggle-eat-term ()
-    "Toggle eat terminal at the root of the project."
-    (interactive)
-    (let* ((project-root (projectile-project-root))
-           (eat-buffer-name (format "*eat: %s*" (projectile-project-name))))
-      (if (get-buffer eat-buffer-name)
-          (if (string= (buffer-name) eat-buffer-name)
-              (previous-buffer)
-            (switch-to-buffer eat-buffer-name))
-        (let ((default-directory project-root))
-          (eat)
-          (rename-buffer eat-buffer-name)))))
+    :custom
+    (eat-enable-auto-line-mode t)
+    (eat-kill-buffer-on-exit t))
 
   (evil-leader/set-key
-    "tt" 'my-toggle-eat-term)
-
+    "tt" 'eat-project
+    "to" 'eat-project-other-window
+    "tk" 'eat-kill-process)
 #+end_src
 
 * Version
