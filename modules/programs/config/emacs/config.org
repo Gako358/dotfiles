@@ -1321,6 +1321,35 @@ Projectile is the go-to project package to use with Emacs.
 #+end_src
 
 * Terminal
+** detached
+Setup emacs-detached
+
+#+begin_src emacs-lisp
+  (use-package detached
+    :init
+    (detached-init)
+    :bind (([remap async-shell-command] . detached-shell-command)
+  	   ([remap compile] . detached-compile)
+  	   ([remap recompile] . detached-compile-recompile)
+  	   ([remap detached-open-session] . detached-consult-session))
+    :custom ((detached-show-output-on-attach t)
+  	     (detached-terminal-data-command system-type)
+  	     (detached-shell-program "bash")))
+
+  (evil-leader/set-key
+    "da" 'detached-attach-session
+    "dd" 'detached-detach-session
+    "dk" 'detached-kill-session
+    "do" 'detached-open-session
+    "dr" 'detached-delete-session
+    "dR" 'detached-delete-sessions
+    "ds" 'detached-shell-command
+    "dv" 'detached-view-session
+    "dc" 'detached-copy-session-command)
+
+#+end_src
+
+** eat
 Setup emacs-eat
 - Emulate a Terminal
 

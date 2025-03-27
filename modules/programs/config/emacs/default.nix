@@ -64,8 +64,9 @@ let
   emacsOnlyTools = [
     metals
     pkgs.astyle
-    pkgs.black
     pkgs.basedpyright
+    pkgs.black
+    pkgs.dtach
     pkgs.emacs-lsp-booster
     pkgs.kotlin-language-server
     pkgs.nil
@@ -193,6 +194,7 @@ in
         projectile # Project Interaction Library for Emacs
 
         # Terminal
+        detached # Detached mode for Emacs
         eat # Emacs Anywhere Terminal
 
         # Version

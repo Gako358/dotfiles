@@ -2,13 +2,14 @@ name: "Update Flake Deps"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 2 * * *"
+    - cron: "0 2 * * 0"
 
 jobs:
   generate_matrix:
     runs-on: ubuntu-latest
     outputs:
-      nixos_configurations: ${{ steps.gen_nixos_configurations.outputs.nixos_configurations }}
+      nixos_configurations:
+        ${{ steps.gen_nixos_configurations.outputs.nixos_configurations }}
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
@@ -74,7 +75,8 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        nixos_configuration: ${{ fromJson(needs.generate_matrix.outputs.nixos_configurations) }}
+        nixos_configuration:
+          ${{ fromJson(needs.generate_matrix.outputs.nixos_configurations) }}
     steps:
       - name: Free diskspace
         uses: easimon/maximize-build-space@master
@@ -197,3 +199,4 @@ jobs:
           gh pr merge $PR --merge --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.TEST_TOKEN }}
+
