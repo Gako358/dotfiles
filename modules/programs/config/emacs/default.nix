@@ -60,6 +60,24 @@ let
     '';
   };
 
+  bivrost-theme = pkgs.emacsPackages.melpaBuild {
+    pname = "bivrost-theme";
+    version = "20250328";
+    commit = "156f82df911a4df20fde415e85de9719301d3188";
+    src = pkgs.fetchFromGitHub {
+      owner = "gako358";
+      repo = "bivrost";
+      rev = "156f82df911a4df20fde415e85de9719301d3188";
+      hash = "sha256-lZHlmRR/BY2Mje2jGI417iUuYbqze9sddjCwACuPyVg=";
+    };
+    recipe = pkgs.writeText "recipe" ''
+      (bivrost-theme
+      :repo "gako358/bivrost"
+      :fetcher github
+      :files ("*.el"))
+    '';
+  };
+
   # Embeded packages
   emacsOnlyTools = [
     metals
@@ -96,6 +114,7 @@ in
         all-the-icons # A package for inserting developer icons
         all-the-icons-completion
         all-the-icons-ivy-rich # More friendly display transformer for ivy
+        # bivrost-theme
         dashboard # A startup screen extracted from Spacemacs
         kaolin-themes # A low contrast color theme for Emacs
         spaceline # A mode-line theming package
