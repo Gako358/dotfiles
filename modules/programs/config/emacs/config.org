@@ -687,6 +687,55 @@ Snippet Expansion:
   (setq visible-bell       nil
         ring-bell-function #'ignore)
 
+
+  ;; Ensure Emacs loads the most recent byte-compiled files.
+  (setq load-prefer-newer t)
+
+  ;; Ensure JIT compilation is enabled for improved performance by
+  ;; native-compiling loaded .elc files asynchronously
+  (setq native-comp-jit-compilation t)
+                                          ;(setq native-comp-deferred-compilation t) ; Deprecated in Emacs > 29.1
+
+                                          ;(use-package compile-angel
+                                          ;  :ensure t
+                                          ;  :demand t
+                                          ;  :config
+                                          ;  (compile-angel-on-load-mode)
+                                          ;  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
+
+  ;; Auto-revert in Emacs is a feature that automatically updates the
+  ;; contents of a buffer to reflect changes made to the underlying file
+  ;; on disk.
+  (add-hook 'after-init-hook #'global-auto-revert-mode)
+
+  ;; recentf is an Emacs package that maintains a list of recently
+  ;; accessed files, making it easier to reopen files you have worked on
+  ;; recently.
+  (add-hook 'after-init-hook #'recentf-mode)
+
+  ;; savehist is an Emacs feature that preserves the minibuffer history between
+  ;; sessions. It saves the history of inputs in the minibuffer, such as commands,
+  ;; search strings, and other prompts, to a file. This allows users to retain
+  ;; their minibuffer history across Emacs restarts.
+  (add-hook 'after-init-hook #'savehist-mode)
+
+  ;; save-place-mode enables Emacs to remember the last location within a file
+  ;; upon reopening. This feature is particularly beneficial for resuming work at
+  ;; the precise point where you previously left off.
+  (add-hook 'after-init-hook #'save-place-mode)
+
+  ;; Turn on which-key-mode
+  (add-hook 'after-init-hook 'which-key-mode)
+
+  ;; Turn off autosave-mode
+  ;; turn off backup-files
+  (auto-save-mode -1)
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+
+  ;;; Line numbers
+  (setq display-line-numbers-type 'relative)
+  (global-display-line-numbers-mode)
 #+end_src
 
 * Edit
@@ -783,65 +832,13 @@ Config dirvish
 #+end_src
 
 * General
+** direnv
 #+begin_src emacs-lisp
-  ;; Ensure Emacs loads the most recent byte-compiled files.
-  (setq load-prefer-newer t)
-
-  ;; Ensure JIT compilation is enabled for improved performance by
-  ;; native-compiling loaded .elc files asynchronously
-  (setq native-comp-jit-compilation t)
-                                          ;(setq native-comp-deferred-compilation t) ; Deprecated in Emacs > 29.1
-
-                                          ;(use-package compile-angel
-                                          ;  :ensure t
-                                          ;  :demand t
-                                          ;  :config
-                                          ;  (compile-angel-on-load-mode)
-                                          ;  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
-
-  ;; Auto-revert in Emacs is a feature that automatically updates the
-  ;; contents of a buffer to reflect changes made to the underlying file
-  ;; on disk.
-  (add-hook 'after-init-hook #'global-auto-revert-mode)
-
-  ;; recentf is an Emacs package that maintains a list of recently
-  ;; accessed files, making it easier to reopen files you have worked on
-  ;; recently.
-  (add-hook 'after-init-hook #'recentf-mode)
-
-  ;; savehist is an Emacs feature that preserves the minibuffer history between
-  ;; sessions. It saves the history of inputs in the minibuffer, such as commands,
-  ;; search strings, and other prompts, to a file. This allows users to retain
-  ;; their minibuffer history across Emacs restarts.
-  (add-hook 'after-init-hook #'savehist-mode)
-
-  ;; save-place-mode enables Emacs to remember the last location within a file
-  ;; upon reopening. This feature is particularly beneficial for resuming work at
-  ;; the precise point where you previously left off.
-  (add-hook 'after-init-hook #'save-place-mode)
-
-  ;; Turn on which-key-mode
-  (add-hook 'after-init-hook 'which-key-mode)
-
-  ;; Turn off autosave-mode
-  ;; turn off backup-files
-  (auto-save-mode -1)
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)
-
-  ;;; Line numbers
-  (setq display-line-numbers-type 'relative)
-  (global-display-line-numbers-mode)
-
   ;;; Direnv integration
   (use-package envrc
     :hook (after-init . envrc-global-mode))
-
-  (use-package undo-fu-session
-    :ensure t
-    :config
-    (undo-fu-session-global-mode))
 #+end_src
+
 * Grammars
 Setting up treesitter grammars
 #+begin_src emacs-lisp
@@ -1253,7 +1250,9 @@ Setting up eglot LSP
 
 * Navigation
 Setting up Consult for better navigation in Emacs
+Vundo for undo-tree visualization
 
+** Consult
 #+begin_src emacs-lisp
   ;; Consulting completing-read
   (use-package consult
@@ -1307,6 +1306,23 @@ Setting up Consult for better navigation in Emacs
     "DEL" 'kill-buffer
     "tr" 'rename-buffer
     "tl" 'my/projectile-switch-to-buffer-with-eat)
+#+end_src
+
+** Vundo
+#+begin_src emacs-lisp
+  (use-package vundo
+    :demand
+    :general
+    (:keymaps 'vundo-mode-map
+  	      "h" 'vundo-backward
+  	      "j" 'vundo-next
+  	      "k" 'vundo-previous
+  	      "l" 'vundo-forward
+  	      "_" 'vundo-stem-root
+  	      "$" 'vundo-stem-end)
+
+    :custom
+    (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
 
 * ORG
@@ -1394,7 +1410,7 @@ Projectile is the go-to project package to use with Emacs.
 #+end_src
 
 * Terminal
-** detached
+** Detached
 Setup emacs-detached
 
 #+begin_src emacs-lisp
@@ -1422,7 +1438,7 @@ Setup emacs-detached
 
 #+end_src
 
-** eat
+** Eat
 Setup emacs-eat
 - Emulate a Terminal
 
@@ -1447,7 +1463,7 @@ For forge, create a file called ~/.authinfo with the following:
 
 - machine api.github.com login gako358^forge password ==secret-token==
 
-** blamer
+** Blamer
 #+begin_src emacs-lisp
   (use-package blamer
     :custom
@@ -1459,7 +1475,7 @@ For forge, create a file called ~/.authinfo with the following:
       "bm" 'blamer-mode))
 #+end_src
 
-** git-gutter
+** Git-gutter
 #+begin_src emacs-lisp
   (use-package git-gutter
     :hook (prog-mode . git-gutter-mode)
@@ -1481,7 +1497,7 @@ For forge, create a file called ~/.authinfo with the following:
       nil nil 'center))
 #+end_src
 
-** magit
+** Magit
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t

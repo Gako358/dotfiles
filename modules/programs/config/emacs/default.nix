@@ -180,6 +180,7 @@ in
         # Navigation
         consult # Consulting completing-read
         consult-projectile # Consult interface for Projectile
+        vundo # Undo tree visualizer
 
         # Org
         dslide # A presentation tool for Emacs
