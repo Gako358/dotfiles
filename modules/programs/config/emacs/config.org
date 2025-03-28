@@ -275,15 +275,16 @@ Completion Overlay Region Function:
     :init
     (global-corfu-mode 1)
     (setq global-corfu-minibuffer
-  	(lambda ()
-  	  (not (or (bound-and-true-p mct--active)
-  		   (bound-and-true-p vertico--input)
-  		   (eq (current-local-map) read-passwd-map)))))
+  	    (lambda ()
+  	      (not (or (bound-and-true-p mct--active)
+  		       (bound-and-true-p vertico--input)
+  		       (eq (current-local-map) read-passwd-map)))))
     :bind (:map corfu-map
-  	      ("C-n" . corfu-next)
-  	      ("C-p" . corfu-previous)
-  	      ("C-h" . corfu-info-documentation)
-  	      )
+  				  ("C-n" . corfu-next)
+  				  ("C-p" . corfu-previous)
+  				  ("C-h" . corfu-info-documentation)
+  				  ("C-S-t" . my/corfu-quit-or-abort)
+  				  )
 
     :custom
     (corfu-cycle t)
@@ -302,7 +303,12 @@ Completion Overlay Region Function:
                         (corfu-insert)
                       (evil-paste-before 1)))))
 
-
+    (defun my/corfu-quit-or-abort ()
+      "Abort Corfu if active, otherwise fall back to default behavior."
+      (interactive)
+      (if corfu--frame
+          (corfu-quit)
+        (keyboard-escape-quit)))
     )
 #+end_src
 
@@ -424,15 +430,15 @@ Snippet Expansion:
   (defvar minimal-emacs-ui-features '()
     "List of user interface features to disable in minimal Emacs setup.
 
-  This variable holds a list Emacs UI features that can be enabled:
-  - `context-menu`: Enables the context menu in graphical environments.
-  - `tool-bar`: Enables the tool bar in graphical environments.
-  - `menu-bar`: Enables the menu bar in graphical environments.
-  - `dialogs`: Enables both file dialogs and dialog boxes.
-  - `tooltips`: Enables tooltips.
+    This variable holds a list Emacs UI features that can be enabled:
+    - `context-menu`: Enables the context menu in graphical environments.
+    - `tool-bar`: Enables the tool bar in graphical environments.
+    - `menu-bar`: Enables the menu bar in graphical environments.
+    - `dialogs`: Enables both file dialogs and dialog boxes.
+    - `tooltips`: Enables tooltips.
 
-  Each feature in the list corresponds to a specific UI component that can be
-  turned on.")
+    Each feature in the list corresponds to a specific UI component that can be
+    turned on.")
 
   (defvar minimal-emacs-frame-title-format "%b – Emacs"
     "Template for displaying the title bar of visible and iconified frame.")
@@ -445,13 +451,13 @@ Snippet Expansion:
 
   (defvar minimal-emacs-package-initialize-and-refresh t
     "Whether to automatically initialize and refresh packages.
-  When set to non-nil, Emacs will automatically call `package-initialize' and
-  `package-refresh-contents' to set up and update the package system.")
+    When set to non-nil, Emacs will automatically call `package-initialize' and
+    `package-refresh-contents' to set up and update the package system.")
 
   (defvar minimal-emacs-user-directory user-emacs-directory
     "The default value of the `user-emacs-directory' variable.")
 
-  ;;; Load pre-early-init.el
+    ;;; Load pre-early-init.el
 
   (defun minimal-emacs-load-user-init (filename)
     "Execute a file of Lisp code named FILENAME."
@@ -467,7 +473,7 @@ Snippet Expansion:
         (expand-file-name "themes/" minimal-emacs-user-directory))
   (setq custom-file (expand-file-name "custom.el" minimal-emacs-user-directory))
 
-  ;;; Garbage collection
+    ;;; Garbage collection
   ;; Garbage collection significantly affects startup times. This setting delays
   ;; garbage collection during startup but will be reset later.
 
@@ -477,14 +483,14 @@ Snippet Expansion:
             (lambda ()
               (setq gc-cons-threshold minimal-emacs-gc-cons-threshold)))
 
-  ;;; Misc
+    ;;; Misc
 
   (set-language-environment "UTF-8")
 
   ;; Set-language-environment sets default-input-method, which is unwanted.
   (setq default-input-method nil)
 
-  ;;; Performance
+    ;;; Performance
 
   ;; Prefer loading newer compiled files
   (setq load-prefer-newer t)
@@ -602,7 +608,7 @@ Snippet Expansion:
         (unless (memq initial-window-system '(x pgtk))
           (setq command-line-x-option-alist nil)))))
 
-  ;;; Native compilation and Byte compilation
+    ;;; Native compilation and Byte compilation
 
   (if (and (featurep 'native-compile)
            (fboundp 'native-comp-available-p)
@@ -625,7 +631,7 @@ Snippet Expansion:
   (setq byte-compile-warnings minimal-emacs-debug)
   (setq byte-compile-verbose minimal-emacs-debug)
 
-  ;;; UI elements
+    ;;; UI elements
 
   (setq frame-title-format minimal-emacs-frame-title-format
         icon-title-format minimal-emacs-frame-title-format)
@@ -674,11 +680,12 @@ Snippet Expansion:
     (setq use-file-dialog nil)
     (setq use-dialog-box nil))
 
-  ;;; LSP
+    ;;; LSP
   (setenv "LSP_USE_PLISTS" "true")
 
   ;; Disable sound bell
-  (setq visible-bell 1)
+  (setq visible-bell       nil
+        ring-bell-function #'ignore)
 
 #+end_src
 
@@ -844,20 +851,19 @@ Setting up treesitter grammars
     (treesit-font-lock-level 4) ;; Set font lock level for Tree-sitter
     :config
     (seq-do (lambda (it)
-  	    (push it major-mode-remap-alist))
-  	  '((css-mode . css-ts-mode) ;; Remap CSS mode to Tree-sitter mode
-  	    (c-mode . c-ts-mode) ;; Remap C mode to Tree-sitter mode
-  	    (dockerfile-mode . dockerfile-ts-mode) ;; Remap Dockerfile mode to Tree-sitter mode
-  	    (haskell-mode . haskell-ts-mode) ;; Remap Haskell mode to Tree-sitter mode
-  	    (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
-  	    (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
-  	    (kotlin-mode . kotlin-ts-mode) ;; Remap Kotlin mode to Tree-sitter mode
-  	    (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
-  	    (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
-  	    (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
-  	    (shell-script-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
-  	    (typescript-mode . typescript-ts-mode) ;; Remap TypeScript mode to Tree-sitter mode
-  	    (yaml-mode . yaml-ts-mode)))) ;; Remap YAML mode to Tree-sitter mode
+  	      (push it major-mode-remap-alist))
+  	    '((css-mode . css-ts-mode) ;; Remap CSS mode to Tree-sitter mode
+  	      (c-mode . c-ts-mode) ;; Remap C mode to Tree-sitter mode
+  	      (dockerfile-mode . dockerfile-ts-mode) ;; Remap Dockerfile mode to Tree-sitter mode
+  	      (haskell-mode . haskell-ts-mode) ;; Remap Haskell mode to Tree-sitter mode
+  	      (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
+  	      (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
+  	      (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
+  	      (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
+  	      (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
+  	      (shell-script-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
+  	      (typescript-mode . typescript-ts-mode) ;; Remap TypeScript mode to Tree-sitter mode
+  	      (yaml-mode . yaml-ts-mode)))) ;; Remap YAML mode to Tree-sitter mode
 #+end_src
 
 * Keybindings
