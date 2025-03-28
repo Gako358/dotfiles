@@ -1312,15 +1312,6 @@ Vundo for undo-tree visualization
 #+begin_src emacs-lisp
   (use-package vundo
     :demand
-    :general
-    (:keymaps 'vundo-mode-map
-  	      "h" 'vundo-backward
-  	      "j" 'vundo-next
-  	      "k" 'vundo-previous
-  	      "l" 'vundo-forward
-  	      "_" 'vundo-stem-root
-  	      "$" 'vundo-stem-end)
-
     :custom
     (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
