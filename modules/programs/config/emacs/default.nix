@@ -62,13 +62,13 @@ let
 
   bivrost-theme = pkgs.emacsPackages.melpaBuild {
     pname = "bivrost-theme";
-    version = "20250328";
-    commit = "156f82df911a4df20fde415e85de9719301d3188";
+    version = "20250329";
+    commit = "06750c969fc450bec5cfc3cf11a0bff414d860e4";
     src = pkgs.fetchFromGitHub {
       owner = "gako358";
       repo = "bivrost";
-      rev = "156f82df911a4df20fde415e85de9719301d3188";
-      hash = "sha256-lZHlmRR/BY2Mje2jGI417iUuYbqze9sddjCwACuPyVg=";
+      rev = "06750c969fc450bec5cfc3cf11a0bff414d860e4";
+      hash = "sha256-pOWs5vsxfQVogtBi8PQ9yGk4g+icNMtGYiyjbq/aOZw=";
     };
     recipe = pkgs.writeText "recipe" ''
       (bivrost-theme
@@ -114,7 +114,7 @@ in
         all-the-icons # A package for inserting developer icons
         all-the-icons-completion
         all-the-icons-ivy-rich # More friendly display transformer for ivy
-        # bivrost-theme
+        bivrost-theme
         dashboard # A startup screen extracted from Spacemacs
         kaolin-themes # A low contrast color theme for Emacs
         spaceline # A mode-line theming package

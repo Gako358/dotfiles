@@ -170,13 +170,21 @@ This enables spaceline, it looks better and works very well with my theme of cho
 The kaolin-themes package is used with specific settings for a personalized look, loading the "kaolin-ocean" theme.
 
 #+begin_src emacs-lisp
-  (use-package kaolin-themes
+  (use-package bivrost-theme
+    :ensure t
     :config
-    (setq kaolin-ocean-alt-bg t)
-    (setq kaolin-themes-italic-comments t
-          kaolin-themes-hl-line-colored t
-          kaolin-themes-git-gutter-solid t)
-    (load-theme 'kaolin-ocean t))
+    ;; Load the theme
+    (load-theme 'bivrost t)
+
+    ;; Apply customizations
+    (setq bivrost-italic t           ; Enable italic style
+	  bivrost-bold t             ; Enable bold style
+	  bivrost-underline t        ; Enable underline style
+	  bivrost-underline-wave t   ; Use wave underline for warnings/errors
+	  bivrost-italic-comments t  ; Make comments italic
+	  bivrost-distinct-fringe t) ; Use distinct background for fringe
+
+    (add-hook 'after-init-hook (lambda () (bivrost))))
 #+end_src
 
 * Completion
