@@ -114,9 +114,8 @@ in
         all-the-icons # A package for inserting developer icons
         all-the-icons-completion
         all-the-icons-ivy-rich # More friendly display transformer for ivy
-        bivrost-theme
+        bivrost-theme # Custom theme
         dashboard # A startup screen extracted from Spacemacs
-        kaolin-themes # A low contrast color theme for Emacs
         spaceline # A mode-line theming package
         nerd-icons # Nerd icons for Emacs
         nerd-icons-completion # Nerd icons for completion
