@@ -1273,36 +1273,80 @@ Vundo for undo-tree visualization
     "Switch to a buffer whose name includes 'eat' using consult-projectile."
     (interactive)
     (let ((filtered-buffers (seq-filter (lambda (buf)
-  					  (string-match-p "eat" (buffer-name buf)))
-  					(projectile-project-buffers))))
+        					(string-match-p "eat" (buffer-name buf)))
+        				      (projectile-project-buffers))))
       (if filtered-buffers
-  	  (consult--read (mapcar #'buffer-name filtered-buffers)
-  			 :prompt "Switch to terminal: "
-  			 :require-match t
-  			 :sort nil
-  			 :category 'buffer
-  			 :history 'buffer-name-history
-  			 :state (consult--buffer-state))
-  	(message "No buffers found with term: %s" "eat"))))
+        	(consult--read (mapcar #'buffer-name filtered-buffers)
+        		       :prompt "Switch to terminal: "
+        		       :require-match t
+        		       :sort nil
+        		       :category 'buffer
+        		       :history 'buffer-name-history
+        		       :state (consult--buffer-state))
+        (message "No buffers found with term: %s" "eat"))))
 
   (defun my/consult-projectile-grep-at-point ()
     "Use consult to grep for the word at point within the projectile files. If a region is selected, use the selected text instead."
     (interactive)
     (let ((search-term (if (use-region-p)
-    			 (buffer-substring-no-properties (region-beginning) (region-end))
-    		       (let* ((word (thing-at-point 'word t))
-    			      (bounds (bounds-of-thing-at-point 'symbol))
-    			      (symbol (buffer-substring-no-properties (car bounds) (cdr bounds))))
-    			 (if (or (string-match-p "-" word) (string-match-p "_" word))
-    			     symbol
-    			   word)))))
+          		 (buffer-substring-no-properties (region-beginning) (region-end))
+          	       (let* ((word (thing-at-point 'word t))
+          		      (bounds (bounds-of-thing-at-point 'symbol))
+          		      (symbol (buffer-substring-no-properties (car bounds) (cdr bounds))))
+          		 (if (or (string-match-p "-" word) (string-match-p "_" word))
+          		     symbol
+          		   word)))))
       (consult-ripgrep (projectile-project-root) search-term)))
+
+
+  (defun my/consult-replace-word-with-preview ()
+    "Replace occurrences of word under cursor using consult for visualization."
+    (interactive)
+    (let* ((bounds (if (evil-visual-state-p)
+    		     (cons (region-beginning) (region-end))
+    		   (bounds-of-thing-at-point 'word)))
+    	 (word (when bounds
+    		 (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+      (when word
+        (if (evil-visual-state-p)
+    	  (evil-normal-state))
+        ;; First show the occurrences with consult-ripgrep
+        (consult-ripgrep nil (regexp-quote word))
+        ;; After viewing, prompt for replacement
+        (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
+    	(when new-word
+    	  (evil-ex (format "%%s/%s/%s/gc"
+    			   (regexp-quote word)
+    			   new-word)))))))
+
+
+  (defun my/consult-replace-word-in-buffer ()
+    "Replace word under cursor with preview using consult-line."
+    (interactive)
+    (let* ((bounds (if (evil-visual-state-p)
+  		       (cons (region-beginning) (region-end))
+  		     (bounds-of-thing-at-point 'word)))
+  	   (word (when bounds
+  		   (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+      (when word
+  	(if (evil-visual-state-p)
+  	    (evil-normal-state))
+  	;; Show occurrences with consult-line
+  	(consult-line (regexp-quote word))
+  	;; After viewing, prompt for replacement
+  	(let ((new-word (read-string (format "Replace \"%s\" with: " word))))
+  	  (when new-word
+  	    (evil-ex (format "%%s/%s/%s/gc"
+  			     (regexp-quote word)
+  			     new-word)))))))
 
   (evil-leader/set-key
     "SPC" 'my/consult-projectile-grep-at-point
     "DEL" 'kill-buffer
     "tr" 'rename-buffer
-    "tl" 'my/projectile-switch-to-buffer-with-eat)
+    "tl" 'my/projectile-switch-to-buffer-with-eat
+    "sb" 'my/consult-replace-word-with-preview
+    "sr" 'my/consult-replace-word-in-buffer)
 #+end_src
 
 ** Vundo
