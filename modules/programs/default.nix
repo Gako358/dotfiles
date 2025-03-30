@@ -81,7 +81,7 @@ in
   ./browser/chromium.nix
   ./browser/discord.nix
   ./browser/firefox.nix
-  ./browser/nyxt.nix
+  # ./browser/nyxt
   ./config
   ./email
   ./alacritty.nix
