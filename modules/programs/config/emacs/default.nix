@@ -62,19 +62,19 @@ let
 
   bivrost-theme = pkgs.emacsPackages.melpaBuild {
     pname = "bivrost-theme";
-    version = "20250329";
-    commit = "06750c969fc450bec5cfc3cf11a0bff414d860e4";
+    version = "20250330";
+    commit = "2e39148c56a0cda31c1d6853c991cb8e1da257d8";
     src = pkgs.fetchFromGitHub {
       owner = "gako358";
       repo = "bivrost";
-      rev = "06750c969fc450bec5cfc3cf11a0bff414d860e4";
-      hash = "sha256-pOWs5vsxfQVogtBi8PQ9yGk4g+icNMtGYiyjbq/aOZw=";
+      rev = "2e39148c56a0cda31c1d6853c991cb8e1da257d8";
+      hash = "sha256-BEfeVF9VBHFcwtynMOok26AtopE7JXjoPIaODdyKzOI=";
     };
     recipe = pkgs.writeText "recipe" ''
       (bivrost-theme
-      :repo "gako358/bivrost"
-      :fetcher github
-      :files ("*.el"))
+       :repo "gako358/bivrost"
+       :fetcher github
+       :files ("*.el"))
     '';
   };
 

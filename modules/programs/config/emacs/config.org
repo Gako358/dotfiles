@@ -173,18 +173,7 @@ The kaolin-themes package is used with specific settings for a personalized look
   (use-package bivrost-theme
     :ensure t
     :config
-    ;; Load the theme
-    (load-theme 'bivrost t)
-
-    ;; Apply customizations
-    (setq bivrost-italic t           ; Enable italic style
-	  bivrost-bold t             ; Enable bold style
-	  bivrost-underline t        ; Enable underline style
-	  bivrost-underline-wave t   ; Use wave underline for warnings/errors
-	  bivrost-italic-comments t  ; Make comments italic
-	  bivrost-distinct-fringe t) ; Use distinct background for fringe
-
-    (add-hook 'after-init-hook (lambda () (bivrost))))
+    (load-theme 'bivrost t))
 #+end_src
 
 * Completion
