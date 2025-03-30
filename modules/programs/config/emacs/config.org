@@ -19,14 +19,14 @@ The dashboard package is configured to display a welcoming startup screen with a
     :ensure t
     :config
     (setq dashboard-startup-banner 'logo
-          dashboard-banner-logo-title "Welcome back Master"
-          dashboard-set-file-icons t
-          dashboard-center-content t
-          dashboard-items '((recents  . 5)
-                            (bookmarks . 5)
-                            (projects . 5)
-                            (agenda . 5))
-          initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  	  dashboard-banner-logo-title "Welcome back Master"
+  	  dashboard-set-file-icons t
+  	  dashboard-center-content t
+  	  dashboard-items '((recents  . 5)
+  			    (bookmarks . 5)
+  			    (projects . 5)
+  			    (agenda . 5))
+  	  initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
     :init
     :hook (after-init . dashboard-setup-startup-hook))
 #+end_src
@@ -786,59 +786,6 @@ Formatters:
   (apheleia-global-mode +1)
 #+end_src
 
-* Filetree
-Config dirvish
-
-#+begin_src emacs-lisp
-  (use-package dirvish
-    :ensure t
-    :init
-    (dirvish-override-dired-mode)
-    :custom
-    (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-     '(("h" "~/"                          "Home")
-       ("d" "~/Downloads/"                "Downloads")
-       ("m" "/mnt/"                       "Drives")
-       ("p" "~/src/"                      "Projects")
-       ("t" "~/.local/share/Trash/files/" "TrashCan")))
-
-    :config
-    (setq dirvish-mode-line-format
-          '(:left (sort symlink) :right (omit yank index)))
-    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
-          '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
-          dirvish-side-attributes
-          '(vc-state nerd-icons collapse file-size))
-    (setq delete-by-moving-to-trash t)
-    (setq dired-listing-switches
-          "-l --almost-all --human-readable --group-directories-first --no-group")
-    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
-    (
-     :map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
-     ("M-a"   . dirvish-quick-access)
-     ("M-f"   . dirvish-file-info-menu)
-     ("M-y"   . dirvish-yank-menu)
-     ("M-h" . dired-up-directory)
-     ("M-n" . dired-create-empty-file)
-     ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
-     ("M-o" . dirvish-subtree-toggle)
-     ("M-l" . dirvish-ls-switches-menu)
-     ("M-m" . dirvish-mark-menu)
-     ("M-t" . dirvish-layout-toggle)
-     ("M-s" . dirvish-setup-menu)
-     ("M-e" . dirvish-emerge-menu)
-     ("M-q" . dirvish-quit)
-     ("M-j" . dirvish-fd-jump)))
-
-  (add-hook 'dired-mode-hook 'auto-revert-mode)
-  (add-hook 'dirvish-setup-hook (lambda ()
-                                  (visual-line-mode -1)
-                                  (setq-local truncate-lines t)))
-
-  (evil-leader/set-key
-    "rf" 'dirvish)
-#+end_src
-
 * General
 ** direnv
 #+begin_src emacs-lisp
@@ -880,7 +827,6 @@ Setting up treesitter grammars
   (use-package evil
     :ensure t
     :init
-    (setq evil-undo-system 'undo-fu)
     (setq evil-want-integration t)
     :custom
     (evil-want-Y-yank-to-eol t)

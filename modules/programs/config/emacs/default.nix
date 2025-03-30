@@ -158,9 +158,6 @@ in
         apheleia # A universal formatter interface
         markdown-mode # Major mode for editing Markdown files
 
-        # Filetree
-        dirvish # Directory viewer for Emacs
-
         # General
         alert # Growl-like notifications
         dash # A modern list library for Emacs
