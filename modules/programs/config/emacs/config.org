@@ -335,6 +335,17 @@ Context Menu for Actions:
                  '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                    nil
                    (window-parameters (mode-line-format . none)))))
+
+  (use-package embark-consult
+    :ensure t
+    :after (embark consult)
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
+
+
+  (evil-leader/set-key
+    "ea" 'embark-act
+    "ew" 'embark-dwim)
 #+end_src
 
 ** Eldoc

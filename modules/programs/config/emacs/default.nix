@@ -130,6 +130,7 @@ in
         copilot-chat # Chat with Copilot.
         corfu # Completion Overlay Region Function.
         embark # Context-sensitive actions.
+        embark-consult # Consult preview using embark
         flycheck # On-the-fly syntax checking
         marginalia # Annotations for completion candidates.
         orderless # Space-separated matching components.
