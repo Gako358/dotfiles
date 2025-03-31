@@ -825,15 +825,16 @@ Setting up treesitter grammars
     (evil-want-Y-yank-to-eol t)
     :config
     (evil-select-search-module 'evil-search-module 'evil-search)
+    (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1))
 
   ;; Define scroll up
   (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
   (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
   (define-key evil-insert-state-map (kbd "C-u")
-      	    (lambda ()
-      	      (interactive)
-      	      (evil-delete (point-at-bol) (point))))
+        	    (lambda ()
+        	      (interactive)
+        	      (evil-delete (point-at-bol) (point))))
 
   ;; Evil numbers inc and dec
   (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
