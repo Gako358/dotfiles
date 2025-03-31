@@ -15,7 +15,7 @@
                        :contrast-text-color "#b2b2b2"    ;; bivrost5 - Gray contrast
                        :primary-color "#719cd6"          ;; bivrost9 - Blue color
                        :secondary-color "#303035"        ;; bivrost2 - Dark text color
-                       :action-color "#8FBCBB"           ;; bivrost8 - Cyan color
+                       :action-color "#303035"           ;; bivrost2 - Dark hover color
                        :highlight-color "#B48EAD"        ;; bivrost16 - Purple color
                        :success-color "#A3BE8C"          ;; bivrost15 - Green color
                        :warning-color "#D08770"          ;; bivrost13 - Light orange color
