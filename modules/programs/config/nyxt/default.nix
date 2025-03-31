@@ -11,10 +11,10 @@
       ((theme
         (make-instance 'theme:theme
                        :background-color "#1a1a1a"       ;; bivrost0 - Base dark background
-                       :text-color "#b2b2b2"             ;; bivrost5 - Base foreground, warm white
-                       :contrast-text-color "#303035"    ;; bivrost7 - Alternative dark, subtle contrast to bivrost0
+                       :text-color "#4C566A"             ;; bivrost4 - Base foreground, warm white
+                       :contrast-text-color "#b2b2b2"    ;; bivrost5 - Gray contrast
                        :primary-color "#719cd6"          ;; bivrost9 - Blue color
-                       :secondary-color "#4C566A"        ;; bivrost4 - Grayish blue color
+                       :secondary-color "#303035"        ;; bivrost2 - Dark text color
                        :action-color "#8FBCBB"           ;; bivrost8 - Cyan color
                        :highlight-color "#B48EAD"        ;; bivrost16 - Purple color
                        :success-color "#A3BE8C"          ;; bivrost15 - Green color
