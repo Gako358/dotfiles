@@ -171,8 +171,6 @@ in
         log4e # Logging framework for Emacs
         s # The long lost Emacs string manipulation library
         password-store # Emacs interface for pass, the standard Unix password manager
-        undo-fu # Undo framework for Emacs
-        undo-fu-session # Persistent undo for Emacs
 
         # grammars
         treesit-grammars.with-all-grammars # Tree-sitter grammars
@@ -216,7 +214,6 @@ in
         eat # Emacs Anywhere Terminal
 
         # Version
-        blamer # Show git blame information in the fringe
         git-gutter # Show git diff in the fringe
         git-gutter-fringe # Fringe version of git-gutter.el
         magit # A Git porcelain inside Emacs
