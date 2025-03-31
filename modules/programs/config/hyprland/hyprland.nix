@@ -10,7 +10,7 @@ in
       "hyprctl setcursor capitaine-cursors-white 16"
       "wl-clip-persist --clipboard both &"
       "wl-paste --watch cliphist store &"
-      "[workspace 1 silent] firefox"
+      "[workspace 1 silent] nyxt"
       "[workspace 2 silent] emacsclient -c -n"
       "[workspace 5 silent] emacsclient -c -n"
       "[workspace 6 silent] chromium"

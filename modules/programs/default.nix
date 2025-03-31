@@ -80,8 +80,6 @@ in
 [
   ./browser/chromium.nix
   ./browser/discord.nix
-  ./browser/firefox.nix
-  # ./browser/nyxt
   ./config
   ./alacritty.nix
   ./git.nix
