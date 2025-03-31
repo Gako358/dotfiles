@@ -46,7 +46,6 @@ Custom fonts are set using "Iosevka Nerd Font" for both the main text and the mo
 #+end_src
 
 ** Icons
-
 All-the-icons: Provides a rich set of icons for various file types and modes.
 
 #+begin_src emacs-lisp
@@ -89,7 +88,6 @@ Nerd-icons-corfu: Adds pretty icons to Corfu completion menus.
 #+end_src
 
 ** Modeline
-
 This enables spaceline, it looks better and works very well with my theme of choice.
 
 #+begin_src emacs-lisp
@@ -167,7 +165,7 @@ This enables spaceline, it looks better and works very well with my theme of cho
 #+end_src
 
 ** Themes
-The kaolin-themes package is used with specific settings for a personalized look, loading the "kaolin-ocean" theme.
+The bivrost-theme.
 
 #+begin_src emacs-lisp
   (use-package bivrost-theme
