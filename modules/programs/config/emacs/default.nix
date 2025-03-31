@@ -136,8 +136,6 @@ in
         orderless # Space-separated matching components.
         vertico # Vertical interactive completion UI.
         vertico-posframe # Vertico completion UI with posframe.
-        wgrep # Writable grep buffer.
-        yasnippet # Template system for Emacs.
 
         # Evil
         evil # Extensible vi layer for Emacs
@@ -151,17 +149,14 @@ in
         evil-visualstar # Start a * or # search from the visual selection
         evil-numbers # Increment and decrement numbers in Emacs
 
-        # Env
-        envrc # .envrc support for Emacs
-
         # Edit
         apheleia # A universal formatter interface
-        markdown-mode # Major mode for editing Markdown files
 
         # General
         alert # Growl-like notifications
         dash # A modern list library for Emacs
         editorconfig # EditorConfig Emacs Plugin
+        envrc # .envrc support for Emacs
         f # A modern API for working with files and directories in Emacs
         fringe-helper # Helper functions for fringe bitmaps
         general # Provides a more convenient way to define keybindings
@@ -171,6 +166,7 @@ in
         log4e # Logging framework for Emacs
         s # The long lost Emacs string manipulation library
         password-store # Emacs interface for pass, the standard Unix password manager
+        wgrep # Writable grep buffer.
 
         # grammars
         treesit-grammars.with-all-grammars # Tree-sitter grammars
@@ -179,6 +175,7 @@ in
         eglot-java # Java development environment
         haskell-ts-mode # Haskell development environment
         kotlin-ts-mode # Kotlin development environment
+        markdown-mode # Major mode for editing Markdown files
         nix-ts-mode # Major mode for editing Nix files
         scala-ts-mode # Scala development environment
         sql-indent # Indentation for SQL files
@@ -194,7 +191,6 @@ in
         # Navigation
         consult # Consulting completing-read
         consult-projectile # Consult interface for Projectile
-        vundo # Undo tree visualizer
 
         # Org
         dslide # A presentation tool for Emacs
@@ -217,6 +213,7 @@ in
         git-gutter # Show git diff in the fringe
         git-gutter-fringe # Fringe version of git-gutter.el
         magit # A Git porcelain inside Emacs
+        vundo # Undo tree visualizer
       ];
     extraConfig = builtins.readFile ./init.el;
   };

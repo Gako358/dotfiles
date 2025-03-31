@@ -213,13 +213,6 @@ AI-Powered Code Completion:
 - Copilot: Integrates GitHub Copilot for AI-powered code completion, with custom keybindings and configuration for different modes.
 
 #+begin_src emacs-lisp
-  (use-package dash :ensure t)
-  (use-package s :ensure t)
-  (use-package editorconfig
-    :ensure t
-    :config
-    (editorconfig-mode 1))
-  (use-package f :ensure t)
   (use-package copilot
     :ensure t
     :bind (:map copilot-completion-map
@@ -413,24 +406,6 @@ Vertical Interactive Completion UI:
 	'((left-fringe . 8)
 	  (right-fringe . 8)))
     (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-right-corner))
-#+end_src
-
-** Grep
-Writable Grep:
-- wgrep: Allows editing of grep buffers, enabling changes to be applied directly to files.
-
-#+begin_src emacs-lisp
-  (use-package wgrep)
-#+end_src
-
-** Yasnippet
-Snippet Expansion:
-- Yasnippet: Provides support for snippet expansion, allowing predefined templates to be used for faster coding.
-#+begin_src emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :init
-    (yas-global-mode 1))
 #+end_src
 
 * Core
@@ -787,11 +762,30 @@ Formatters:
 #+end_src
 
 * General
+** Dependencies
+#+begin_src emacs-lisp
+  (use-package dash :ensure t)
+  (use-package s :ensure t)
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
+  (use-package f :ensure t)
+#+end_src
+
 ** direnv
 #+begin_src emacs-lisp
   ;;; Direnv integration
   (use-package envrc
     :hook (after-init . envrc-global-mode))
+#+end_src
+
+** Grep
+Writable Grep:
+- wgrep: Allows editing of grep buffers, enabling changes to be applied directly to files.
+
+#+begin_src emacs-lisp
+  (use-package wgrep)
 #+end_src
 
 * Grammars
@@ -810,6 +804,7 @@ Setting up treesitter grammars
   	      (haskell-mode . haskell-ts-mode) ;; Remap Haskell mode to Tree-sitter mode
   	      (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
   	      (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
+  	      (kotlin-mode . kotlin-ts-mode) ;; Remap Kotlin mode to Tree-sitter mode
   	      (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
   	      (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
   	      (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
@@ -1204,9 +1199,7 @@ Setting up eglot LSP
 
 * Navigation
 Setting up Consult for better navigation in Emacs
-Vundo for undo-tree visualization
 
-** Consult
 #+begin_src emacs-lisp
   ;; Consulting completing-read
   (use-package consult
@@ -1304,14 +1297,6 @@ Vundo for undo-tree visualization
     "tl" 'my/projectile-switch-to-buffer-with-eat
     "sb" 'my/consult-replace-word-with-preview
     "sr" 'my/consult-replace-word-in-buffer)
-#+end_src
-
-** Vundo
-#+begin_src emacs-lisp
-  (use-package vundo
-    :demand
-    :custom
-    (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
 
 * ORG
@@ -1520,18 +1505,6 @@ For forge, create a file called ~/.authinfo with the following:
 
 - machine api.github.com login gako358^forge password ==secret-token==
 
-** Blamer
-#+begin_src emacs-lisp
-  (use-package blamer
-    :custom
-    (blamer-idle-time 0.3)
-    (blamer-min-offset 70)
-
-    :config
-    (evil-leader/set-key
-      "bm" 'blamer-mode))
-#+end_src
-
 ** Git-gutter
 #+begin_src emacs-lisp
   (use-package git-gutter
@@ -1561,4 +1534,12 @@ For forge, create a file called ~/.authinfo with the following:
     :config
     (evil-leader/set-key
       "/" 'magit-status))
+#+end_src
+
+** Vundo
+#+begin_src emacs-lisp
+  (use-package vundo
+    :demand
+    :custom
+    (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
