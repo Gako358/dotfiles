@@ -83,11 +83,9 @@ in
   ./browser/firefox.nix
   # ./browser/nyxt
   ./config
-  ./email
   ./alacritty.nix
   ./git.nix
   ./neovim.nix
   ./network.nix
-  ./zellij.nix
   more
 ]
