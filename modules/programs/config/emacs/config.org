@@ -194,32 +194,31 @@ Completion At Point Extensions:
   (use-package cape
     :ensure t
     :init
-    ;; Add to the global default value of `completion-at-point-functions'
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions
+  		 (cape-capf-accept-all #'cape-dabbrev)) ;; This to get all from buffer
+    (add-to-list 'completion-at-point-functions #'cape-keyword)
     (add-to-list 'completion-at-point-functions #'cape-file)
     (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-    (add-to-list 'completion-at-point-functions #'cape-keyword)
 
     :config
-    ;; Set up evil-leader key bindings for Cape functions
-    (evil-leader/set-key
-      ;; Main completion commands
-      "co" 'completion-at-point   ;; Main completion function
-      "ct" 'complete-tag          ;; etags completion
+    ;; Make dabbrev check other buffers for more comprehensive completions
+    ;; (setq cape-dabbrev-check-other-buffers t) Not sure this will be a good idea
 
-      ;; Cape specific completions
-      "cd" 'cape-dabbrev          ;; Word completion
-      "cf" 'cape-file             ;; File path completion
-      "ch" 'cape-history          ;; History completion
-      "ck" 'cape-keyword          ;; Programming language keyword completion
-      "cs" 'cape-elisp-symbol     ;; Elisp symbol completion
-      "ce" 'cape-elisp-block      ;; Elisp block completion
-      "ca" 'cape-abbrev           ;; Abbreviation completion
-      "cl" 'cape-line             ;; Line completion
-      "cw" 'cape-dict             ;; Dictionary word completion
-      "c:" 'cape-emoji            ;; Emoji completion
-      "c&" 'cape-sgml             ;; SGML/HTML completion
-      "cr" 'cape-rfc1345))        ;; RFC 1345 completion
+    ;; Set up insert mode specific bindings
+    (with-eval-after-load 'evil
+      (define-key evil-insert-state-map (kbd "C-c p o") 'completion-at-point)
+      (define-key evil-insert-state-map (kbd "C-c p d") 'cape-dabbrev)
+      (define-key evil-insert-state-map (kbd "C-c p f") 'cape-file)
+      (define-key evil-insert-state-map (kbd "C-c p h") 'cape-history)
+      (define-key evil-insert-state-map (kbd "C-c p k") 'cape-keyword)
+      (define-key evil-insert-state-map (kbd "C-c p s") 'cape-elisp-symbol)
+      (define-key evil-insert-state-map (kbd "C-c p e") 'cape-elisp-block)
+      (define-key evil-insert-state-map (kbd "C-c p a") 'cape-abbrev)
+      (define-key evil-insert-state-map (kbd "C-c p l") 'cape-line)
+      (define-key evil-insert-state-map (kbd "C-c p w") 'cape-dict)
+      (define-key evil-insert-state-map (kbd "C-c p :") 'cape-emoji)
+      (define-key evil-insert-state-map (kbd "C-c p &") 'cape-sgml)
+      (define-key evil-insert-state-map (kbd "C-c p r") 'cape-rfc1345)))
 #+end_src
 
 *** Copilot
@@ -251,19 +250,19 @@ AI-Powered Code Completion:
   (use-package copilot-chat
     :config
     (evil-leader/set-key
-      "aa" 'copilot-chat-add-current-buffer
-      "ad" 'copilot-chat-del-current-buffer
-      "ae" 'copilot-chat-explain
-      "af" 'copilot-chat-fix
-      "ag" 'copilot-chat-insert-commit-message
-      "ah" 'copilot-chat-hide
-      "al" 'copilot-chat-list
-      "aL" 'copilot-chat-list-refresh
-      "am" 'copilot-chat-set-model
-      "ar" 'copilot-chat-reset
-      "av" 'copilot-chat-review
-      "aV" 'copilot-chat-review-whole-buffer
-      "ac" 'copilot-chat-display))
+      "ca" 'copilot-chat-add-current-buffer
+      "cd" 'copilot-chat-del-current-buffer
+      "ce" 'copilot-chat-explain
+      "cf" 'copilot-chat-fix
+      "cg" 'copilot-chat-insert-commit-message
+      "ch" 'copilot-chat-hide
+      "cl" 'copilot-chat-list
+      "cL" 'copilot-chat-list-refresh
+      "cm" 'copilot-chat-set-model
+      "cr" 'copilot-chat-reset
+      "cv" 'copilot-chat-review
+      "cV" 'copilot-chat-review-whole-buffer
+      "cc" 'copilot-chat-display))
 #+end_src
 
 *** Corfu
