@@ -90,7 +90,7 @@
                        (define-key map "M-o" 'set-url-from-bookmark)
                        (define-key map "M-x" 'delete-buffer)
                        (define-key map "M-q" 'delete-all-buffers)
-                       (define-key map "\"" 'search-buffers)
+                       (define-key map "M-s" 'search-buffers)
                        map))))
 
     ;; Prompt buffer configuration
@@ -115,6 +115,10 @@
 
     ;; News bookmarks
     (:url "https://www.reddit.com/" :title "Reddit" :date "2025-03-31T18:05:04Z" :tags ("news" "social"))
+
+    ;; Streaming
+    (:url "https://twitch.tv" :title "Twitch" :date "2025-03-31T18:05:04Z" :tags ("streaming" "social"))
+    (:url "https://www.youtube.com" :title "YouTube" :date "2025-03-31T18:05:04Z" :tags ("streaming" "social"))
     )
   '';
 }
