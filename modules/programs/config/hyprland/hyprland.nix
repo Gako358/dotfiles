@@ -15,6 +15,7 @@ in
       "[workspace 5 silent] emacsclient -c -n"
       "[workspace 6 silent] chromium"
       "[workspace 8 silent] slack"
+      "[workspace 9 silent] discord"
     ];
 
     general = {

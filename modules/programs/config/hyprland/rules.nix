@@ -33,12 +33,11 @@
       windowrule = workspace 1, class:^(firefox)$
       windowrule = workspace 2, class:^(Emacs)$
       windowrule = workspace 5, class:^(Wfica)$
-      windowrule = workspace 6, class:^(steam)$
       windowrule = workspace 6, class:^(chromium-browser)$
-      windowrule = workspace 7, class:^(thunderbird)$
+      windowrule = workspace 7, class:^(steam)$
+      windowrule = workspace 7, title:^(Friends List)$
       windowrule = workspace 8, class:^(Slack)$
-      windowrule = workspace 9, title:^(discord.com_/channels/@me)$
-      windowrule = workspace 9, title:^(Friends List)$
+      windowrule = workspace 9, class:^(discord)$
 
       windowrule = float, title:^(Spotify Premium)$
       windowrule = float, title:^(Spotify)$
@@ -79,12 +78,11 @@
       windowrule = workspace 1, class:^(firefox)$
       windowrule = workspace 2, class:^(Emacs)$
       windowrule = workspace 5, class:^(Wfica)$
-      windowrule = workspace 6, class:^(steam)$
       windowrule = workspace 6, class:^(chromium-browser)$
-      windowrule = workspace 7, class:^(thunderbird)$
+      windowrule = workspace 7, class:^(steam)$
+      windowrule = workspace 7, title:^(Friends List)$
       windowrule = workspace 8, class:^(Slack)$
-      windowrule = workspace 9, title:^(discord.com_/channels/@me)$
-      windowrule = workspace 9, title:^(Friends List)$
+      windowrule = workspace 9, class:^(discord)$
 
       windowrule = float, title:^(Spotify Premium)$
       windowrule = float, title:^(Spotify)$
