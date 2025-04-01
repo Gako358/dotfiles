@@ -35,7 +35,8 @@
        (external-editor-program '("emacsclient"))
        (override-map (let ((map (make-keymap "override-map")))
                     (define-key map "M-n" 'new)
-                    (define-key map "M-f" 'list-bookmarks)
+                    (define-key map "M-f" 'switch-buffer)
+                    (define-key map "M-b" 'list-bookmarks)
                     (define-key map "M-x" 'delete-buffer)
                     map))))
 

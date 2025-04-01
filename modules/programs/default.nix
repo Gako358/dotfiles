@@ -1,6 +1,7 @@
 let
   more = { pkgs, ... }: {
     home.packages = with pkgs; [
+      # Common packages
       any-nix-shell # fish support for nix shell
       acpi # battery info
       arandr # screen layout manager
@@ -11,12 +12,8 @@ let
       dive # explore docker layers
       duf # disk usage/free utility
       eza # a better `ls`
-      ffmpegthumbnailer # thumbnailer for video files
       fd # "find" for files
-      gimp # gnu image manipulation program
-      imagemagick # image manipulation
       jump # fast directory navigation
-      headsetcontrol # control logitech headsets
       killall # kill processes by name
       libsecret # secret management
       mediainfo # media information
@@ -26,27 +23,13 @@ let
       nix-output-monitor # nom: monitor nix commands
       nix-prefetch-git # prefetch git sources
       ouch # painless compression and decompression for your terminal
-      pavucontrol # pulseaudio volume control
-      paprefs # pulseaudio preferences
-      poppler # pdf tools
-      pulsemixer # pulseaudio volume control
       prettyping # a nicer ping
       rage # encryption tool for secrets management
       ranger # file manager
       ripgrep # fast grep
-      rnote # terminal note taking
-      scid-vs-pc # chess database with play and funtionality
-      scrot # screenshot tool
-      slack # messaging app
-      slurp # select a region in a wayland compositor
-      spotify # music streaming
       tldr # summary of a man page
       tree # display files in a tree view
       unzip # unzip files
-      wayshot # screenshot tool
-      wgetpaste # paste to pastebin
-      wl-gammactl # wayland gamma control
-      wl-clipboard # wayland clipboard manager
       xarchiver # archive manager
       zip # zip files
     ];
