@@ -26,76 +26,53 @@
                        :warning-color "#D08770"          ;; bivrost13 - Light orange color
                        :codeblock-color "#303035"        ;; bivrost2  - Alternative dark color
                        :error-color "#BF616A")           ;; bivrost12 - Red color
-        :doc "Custom Bivrost Dark Theme based on Emacs colors"))
-       (search-engines
-        (list
+        :doc "Custom Bivrost Dark Theme based on Emacs colors")))
 
-         (make-instance 'search-engine
-                        :name "QuickDocs"
-                        :shortcut "quickdocs"
-                        :search-url "http://quickdocs.org/search?q=~a"
-                        :fallback-url "http://quickdocs.org/")
-         (make-instance 'search-engine
-                        :name "Wikipedia"
-                        :shortcut "wiki"
-                        :search-url "https://en.wikipedia.org/w/index.php?search=~a"
-                        :fallback-url "https://en.wikipedia.org/"
-                        :completion-function
-                        (make-search-completion-function
-                         :base-url "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=~a"
-                         :processing-function (lambda (response)
-                                              (second (njson:decode response)))))
-         (make-instance 'search-engine
-                        :name "Wiktionary"
-                        :shortcut "define"
-                        :search-url "https://en.wiktionary.org/w/index.php?search=~a"
-                        :fallback-url "https://en.wiktionary.org/"
-                        :completion-function
-                        (make-search-completion-function
-                         :base-url "https://en.wiktionary.org/w/api.php?action=opensearch&format=json&search=~a"
-                         :processing-function (lambda (response)
-                                              (second (njson:decode response)))))
-         (make-instance 'search-engine
-                        :name "NixOS Packages"
-                        :shortcut "nix"
-                        :search-url "https://search.nixos.org/packages?query=~a"
-                        :fallback-url "https://search.nixos.org")
-         (make-instance 'search-engine
-                        :name "Reddit"
-                        :shortcut "reddit"
-                        :search-url "https://www.reddit.com/search/?q=~a"
-                        :fallback-url "https://www.reddit.com/search")
-         (make-instance 'search-engine
-                        :name "DuckDuckGo"
-                        :shortcut "duck"
-                        :search-url "https://duckduckgo.com/?q=~a"
-                        :fallback-url "https://duckduckgo.com"
-                        :completion-function
-                        (make-search-completion-function
-                         :base-url "https://duckduckgo.com/ac/?q=~a"
-                         :processing-function (lambda (response)
-                                              (mapcar (lambda (x) (gethash "phrase" x))
-                                                     (njson:decode response)))))
-         (make-instance 'search-engine
-                        :name "YouTube"
-                        :shortcut "yt"
-                        :search-url "https://www.youtube.com/results?search_query=~a"
-                        :fallback-url "https://www.youtube.com/"
-                        :completion-function
-                        (make-search-completion-function
-                         :base-url "https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=~a"
-                         :processing-function (lambda (response)
-                                              (mapcar #'first (second (njson:decode response))))))
-         (make-instance 'search-engine
-                        :name "Google"
-                        :shortcut "google"
-                        :search-url "https://www.google.com/search?q=~a"
-                        :fallback-url "https://www.google.com/"
-                        :completion-function
-                        (make-search-completion-function
-                         :base-url "https://suggestqueries.google.com/complete/search?client=firefox&q=~a"
-                         :processing-function (lambda (response)
-                                              (mapcar #'first (second (njson:decode response)))))))))
+    (defvar *my-search-engines*
+      (list
+       ;; NixOS Packages search
+       (list "NixOS Packages" "nix" "https://search.nixos.org/packages?query=~a"
+             "https://search.nixos.org")
+
+       ;; Reddit search
+       (list "Reddit" "reddit" "https://www.reddit.com/search/?q=~a"
+             "https://www.reddit.com/search")
+
+       ;; YouTube search
+       (list "YouTube" "yt" "https://www.youtube.com/results?search_query=~a"
+             "https://www.youtube.com/"
+             (make-search-completion-function
+              :base-url "https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=~a"
+              :processing-function (lambda (response)
+                                   (mapcar #'first (second (njson:decode response))))))
+
+       ;; GitHub search
+       (list "GitHub" "gh" "https://github.com/search?q=~a"
+             "https://github.com")
+
+       ;; Google search
+       (list "Google" "google" "https://www.google.com/search?q=~a"
+             "https://www.google.com/"
+             (make-search-completion-function
+              :base-url "https://suggestqueries.google.com/complete/search?client=firefox&q=~a"
+              :processing-function (lambda (response)
+                                   (mapcar #'first (second (njson:decode response)))))))
+      "List of search engines: name, shortcut, search URL, fallback URL, and optional completion function.")
+
+    (define-configuration context-buffer
+      "Configure search engines from the list above."
+      ((search-engines
+        (append
+         (mapcar (lambda (engine)
+                   (apply #'make-instance 'search-engine
+                          :name (first engine)
+                          :shortcut (second engine)
+                          :search-url (third engine)
+                          :fallback-url (fourth engine)
+                          (when (fifth engine)
+                            (list :completion-function (fifth engine)))))
+                 *my-search-engines*)
+         %slot-value%))))
 
     ;; Reroute bookmarks to a static file
     (defmethod files:resolve ((profile nyxt:nyxt-profile) (file nyxt/mode/bookmark:bookmarks-file))
