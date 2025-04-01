@@ -33,6 +33,7 @@
 
   home.packages = [
     inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
+    pkgs.discord # video streaming app
     pkgs.ffmpegthumbnailer # thumbnailer for video files
     pkgs.gimp # gnu image manipulation program
     pkgs.headsetcontrol # control logitech headsets

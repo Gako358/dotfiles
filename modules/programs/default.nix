@@ -61,12 +61,14 @@ let
   };
 in
 [
-  ./browser/chromium.nix
-  ./browser/discord.nix
   ./config
   ./alacritty.nix
+  ./fish.nix
   ./git.nix
+  ./mako.nix
   ./neovim.nix
   ./network.nix
+  ./starship.nix
+  ./waybar.nix
   more
 ]

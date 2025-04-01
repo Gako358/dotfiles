@@ -152,6 +152,9 @@ in
         # Edit
         apheleia # A universal formatter interface
 
+        # Filetree
+        dirvish # Directory viewer for Emacs
+
         # General
         alert # Growl-like notifications
         dash # A modern list library for Emacs

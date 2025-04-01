@@ -8,10 +8,10 @@ Git clone https://github.com/gako358/dotfiles.git.
 The configuration is setup using NixOS, check README.
 
 
-* Appearance
+** Appearance
 Using the dashboard package with the kaolin-theme to enhance the startup experience and overall look of Emacs.
 
-** Dashboard
+*** Dashboard
 The dashboard package is configured to display a welcoming startup screen with a custom banner, recent files, bookmarks, projects, and agenda items.
 
 #+begin_src emacs-lisp
@@ -31,7 +31,7 @@ The dashboard package is configured to display a welcoming startup screen with a
     :hook (after-init . dashboard-setup-startup-hook))
 #+end_src
 
-** Fonts
+*** Fonts
 Custom fonts are set using "Iosevka Nerd Font" for both the main text and the mode-line, ensuring a consistent and visually appealing interface across all frames.
 
 #+begin_src emacs-lisp
@@ -45,7 +45,7 @@ Custom fonts are set using "Iosevka Nerd Font" for both the main text and the mo
   (add-to-list 'default-frame-alist '(width . 370))
 #+end_src
 
-** Icons
+*** Icons
 All-the-icons: Provides a rich set of icons for various file types and modes.
 
 #+begin_src emacs-lisp
@@ -87,7 +87,7 @@ Nerd-icons-corfu: Adds pretty icons to Corfu completion menus.
 
 #+end_src
 
-** Modeline
+*** Modeline
 This enables spaceline, it looks better and works very well with my theme of choice.
 
 #+begin_src emacs-lisp
@@ -164,7 +164,7 @@ This enables spaceline, it looks better and works very well with my theme of cho
       :when active))
 #+end_src
 
-** Themes
+*** Themes
 The bivrost-theme.
 
 #+begin_src emacs-lisp
@@ -174,7 +174,7 @@ The bivrost-theme.
     (load-theme 'bivrost t))
 #+end_src
 
-* Completion
+** Completion
 Using Corfu, vertico and cape for code completion.
 
 #+begin_src emacs-lisp
@@ -185,7 +185,7 @@ Using Corfu, vertico and cape for code completion.
   (setq completion-cycle-threshold 3)
 #+end_src
 
-** Cape
+*** Cape
 Completion At Point Extensions:
 - Cape: Provides extensions for completion-at-point-functions to enhance the completion experience for files and Emacs Lisp blocks.
 
@@ -206,7 +206,7 @@ Completion At Point Extensions:
   	      (cape-capf-accept-all #'cape-elisp-block)))
 #+end_src
 
-** Copilot
+*** Copilot
 AI-Powered Code Completion:
 - Copilot: Integrates GitHub Copilot for AI-powered code completion, with custom keybindings and configuration for different modes.
 
@@ -233,7 +233,7 @@ AI-Powered Code Completion:
     (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
 #+end_src
 
-** Copilot-Chat
+*** Copilot-Chat
 #+begin_src emacs-lisp
   (use-package copilot-chat
     :config
@@ -253,7 +253,7 @@ AI-Powered Code Completion:
       "cc" 'copilot-chat-display))
 #+end_src
 
-** Corfu
+*** Corfu
 Completion Overlay Region Function:
 - Corfu: Provides a completion overlay for better in-line completion, with custom keybindings for navigation and configuration for an improved user experience.
 
@@ -300,7 +300,7 @@ Completion Overlay Region Function:
     )
 #+end_src
 
-** Embark
+*** Embark
 Context Menu for Actions:
 - Embark: Offers a context menu for performing actions on selected items directly from the completion interface.
 
@@ -339,7 +339,7 @@ Context Menu for Actions:
     "ew" 'embark-dwim)
 #+end_src
 
-** Eldoc
+*** Eldoc
 #+begin_src emacs-lisp
   (use-package eldoc-box
     :ensure t
@@ -348,7 +348,7 @@ Context Menu for Actions:
       "lh" 'eldoc-box-help-at-point))
 #+end_src
 
-** Marginalia
+*** Marginalia
 Annotations for Completion Candidates:
 - Marginalia: Adds rich annotations to completion candidates, enhancing the completion experience with additional context.
 
@@ -364,7 +364,7 @@ Annotations for Completion Candidates:
     :hook (after-init . marginalia-mode))
 #+end_src
 
-** Orderless
+*** Orderless
 Flexible Matching:
 - Orderless: Provides flexible matching capabilities for completion, allowing multiple patterns to be matched in any order.
 
@@ -381,7 +381,7 @@ Flexible Matching:
     (completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
-** Vertico
+*** Vertico
 Vertical Interactive Completion UI:
 - Vertico: Offers a vertical completion interface, improving the user experience for navigating and selecting completion candidates.
 - Vertico-Posframe: Provides a posframe handler for Vertico, ensuring the completion interface is displayed in a consistent and visually appealing manner.
@@ -406,7 +406,7 @@ Vertical Interactive Completion UI:
     (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-right-corner))
 #+end_src
 
-* Core
+** Core
 #+begin_src emacs-lisp
   (defvar minimal-emacs-ui-features '()
     "List of user interface features to disable in minimal Emacs setup.
@@ -719,10 +719,7 @@ Vertical Interactive Completion UI:
   (global-display-line-numbers-mode)
 #+end_src
 
-* Edit
-Edit, format, and grammar support for various programming languages and markdown.
-
-** Apheleia
+** Edit
 Formatters:
 - Apheleia: Provides on-the-fly code formatting using various formatters:
   -  Scalafmt for Scala
@@ -759,8 +756,8 @@ Formatters:
   (apheleia-global-mode +1)
 #+end_src
 
-* General
-** Dependencies
+** General
+*** Dependencies
 #+begin_src emacs-lisp
   (use-package dash :ensure t)
   (use-package s :ensure t)
@@ -771,14 +768,14 @@ Formatters:
   (use-package f :ensure t)
 #+end_src
 
-** direnv
+*** direnv
 #+begin_src emacs-lisp
   ;;; Direnv integration
   (use-package envrc
     :hook (after-init . envrc-global-mode))
 #+end_src
 
-** Grep
+*** Grep
 Writable Grep:
 - wgrep: Allows editing of grep buffers, enabling changes to be applied directly to files.
 
@@ -786,7 +783,7 @@ Writable Grep:
   (use-package wgrep)
 #+end_src
 
-* Grammars
+** Grammars
 Setting up treesitter grammars
 #+begin_src emacs-lisp
   (use-package treesit
@@ -810,9 +807,49 @@ Setting up treesitter grammars
   	      (typescript-mode . typescript-ts-mode) ;; Remap TypeScript mode to Tree-sitter mode
   	      (yaml-mode . yaml-ts-mode)))) ;; Remap YAML mode to Tree-sitter mode
 #+end_src
+** Filetree
+#+begin_src emacs-lisp
+  (use-package dirvish
+    :ensure t
+    :init
+    (dirvish-override-dired-mode)
+    :config
+    (setq dirvish-mode-line-format
+  	  '(:left (sort symlink) :right (omit yank index)))
+    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
+  	  '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
+  	  dirvish-side-attributes
+  	  '(vc-state nerd-icons collapse file-size))
+    (setq delete-by-moving-to-trash t)
+    (setq dired-listing-switches
+  	  "-l --almost-all --human-readable --group-directories-first --no-group")
+    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
+    (
+     :map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
+     ("M-f"   . dirvish-file-info-menu)
+     ("M-y"   . dirvish-yank-menu)
+     ("M-h" . dired-up-directory)
+     ("M-n" . dired-create-empty-file)
+     ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+     ("M-o" . dirvish-subtree-toggle)
+     ("M-l" . dirvish-ls-switches-menu)
+     ("M-m" . dirvish-mark-menu)
+     ("M-t" . dirvish-layout-toggle)
+     ("M-s" . dirvish-setup-menu)
+     ("M-e" . dirvish-emerge-menu)
+     ("M-q" . dirvish-quit)
+     ("M-j" . dirvish-fd-jump)))
 
-* Keybindings
-** Evil Mode
+  (add-hook 'dirvish-setup-hook (lambda ()
+                                  (visual-line-mode -1)
+                                  (setq-local truncate-lines t)))
+
+  (evil-leader/set-key
+    "rf" 'dirvish)
+#+end_src
+
+** Keybindings
+*** Evil Mode
 #+begin_src emacs-lisp
   ;; evil-want-keybinding must be declared before Evil and Evil Collection
   (setq evil-want-keybinding nil)
@@ -825,7 +862,6 @@ Setting up treesitter grammars
     (evil-want-Y-yank-to-eol t)
     :config
     (evil-select-search-module 'evil-search-module 'evil-search)
-    (evil-set-initial-state 'dired-mode 'emacs)
     (evil-mode 1))
 
   ;; Define scroll up
@@ -848,7 +884,7 @@ Setting up treesitter grammars
   (define-key evil-normal-state-map (kbd "C-k") 'evil-window-up)
 #+end_src
 
-** Evil Collection
+*** Evil Collection
 #+begin_src emacs-lisp
   (use-package evil-collection
     :after evil
@@ -866,7 +902,7 @@ Setting up treesitter grammars
     (evil-collection-unimpaired-want-repeat-mode-integration t))
 #+end_src
 
-** Evil Comment
+*** Evil Comment
 #+begin_src emacs-lisp
   (with-eval-after-load "evil"
     (evil-define-operator my-evil-comment-or-uncomment (beg end)
@@ -876,7 +912,7 @@ Setting up treesitter grammars
     (evil-define-key 'normal 'global (kbd "gc") 'my-evil-comment-or-uncomment))
 #+end_src
 
-** Evil Leader
+*** Evil Leader
 #+begin_src emacs-lisp
   (use-package evil-leader
     :ensure t
@@ -885,7 +921,7 @@ Setting up treesitter grammars
     (evil-leader/set-leader "<SPC>"))
 #+end_src
 
-** Evil Surround
+*** Evil Surround
 #+begin_src emacs-lisp
   (use-package evil-surround
     :after evil
@@ -907,7 +943,7 @@ Setting up treesitter grammars
     :hook (after-init . global-evil-surround-mode))
 #+end_src
 
-** Evil Visual Star
+*** Evil Visual Star
 #+begin_src emacs-lisp
   (use-package evil-visualstar
     :after evil
@@ -917,7 +953,7 @@ Setting up treesitter grammars
     :hook (after-init . global-evil-visualstar-mode))
 #+end_src
 
-* Languages
+** Languages
 Using Eglot, Emacs built-in LSP client.
 Setup using:
 - C
@@ -935,7 +971,7 @@ Setup using:
 
 Using own created web mode, for Vue, TypeScript, and Tailwind.
 
-** C
+*** C
 #+begin_src emacs-lisp
   ;; C language server
   (use-package c-ts-mode
@@ -944,20 +980,20 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 	   ("\\.h\\'" . c-ts-mode)))
     #+end_src
 
-** Dockerfile
+*** Dockerfile
 
 #+begin_src emacs-lisp
   (use-package dockerfile-ts-mode)
 #+end_src
 
-** Haskell
+*** Haskell
 #+begin_src emacs-lisp
   (use-package haskell-ts-mode
     :mode (("\\.hs\\'" . haskell-ts-mode)
 	   ("\\.cabal\\'" . haskell-ts-mode)))
 #+end_src
 
-** Java
+*** Java
 #+begin_src emacs-lisp
   ;; Java language server
   (use-package eglot-java
@@ -975,7 +1011,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 
 #+end_src
 
-** Kotlin
+*** Kotlin
 #+begin_src emacs-lisp
   (use-package kotlin-ts-mode
     :init
@@ -987,7 +1023,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
   	       '(kotlin-ts-mode .("kotlin-language-server"))))
 #+end_src
 
-** Markdown
+*** Markdown
 Markdown Edit:
 - Markdown Mode: Provides support for editing markdown files, enhancing the writing and formatting experience.
 
@@ -996,7 +1032,7 @@ Markdown Edit:
   (use-package markdown-mode)
 #+end_src
 
-** Nix
+*** Nix
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
@@ -1018,7 +1054,7 @@ Markdown Edit:
                  '(nix-ts-mode . ("nil" "--stdio"))))
 #+end_src
 
-** Rust
+*** Rust
 #+begin_src emacs-lisp
   ;; Rust language server
   (use-package rust-ts-mode
@@ -1030,7 +1066,7 @@ Markdown Edit:
       (cl-pushnew '("rust" . rust-ts-mode) org-src-lang-modes :test #'equal)))
 #+end_src
 
-** Scala
+*** Scala
 #+begin_src emacs-lisp
   ;; Scala language server
   (use-package scala-ts-mode
@@ -1044,7 +1080,7 @@ Markdown Edit:
                  '(scala-ts-mode . ("metals"))))
 #+end_src
 
-** SQL
+*** SQL
 #+begin_src emacs-lisp
   ;; SQL syntax-based indentation
   (use-package sql-indent
@@ -1055,7 +1091,7 @@ Markdown Edit:
     (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 #+end_src
 
-** TypeScript
+*** TypeScript
 #+begin_src emacs-lisp
   (defun setup-tide-mode ()
     (interactive)
@@ -1077,7 +1113,7 @@ Markdown Edit:
      ("\\.ts\\'" . js-ts-mode)))
 #+end_src
 
-** Vue
+*** Vue
 #+begin_src emacs-lisp
   ;; Vue language support
   (use-package vue-ts-mode
@@ -1087,7 +1123,7 @@ Markdown Edit:
     (("\\.vue\\'" . vue-ts-mode)))
 #+end_src
 
-** Web Mode
+*** Web Mode
 #+begin_src emacs-lisp
   (use-package web-mode
     :ensure t
@@ -1102,7 +1138,7 @@ Markdown Edit:
      ("\\.djhtml\\'" . web-mode)))
 #+end_src
 
-** Yaml
+*** Yaml
 #+begin_src emacs-lisp
   ;; Ensure yaml-ts-mode is always enabled for YAML files
   (use-package yaml-ts-mode
@@ -1166,10 +1202,10 @@ Markdown Edit:
 
   #+end_src
 
-* LSP
+** LSP
 Setting up eglot LSP
 
-** eglot
+*** eglot
 #+begin_src emacs-lisp
   (use-package eglot
     :ensure t
@@ -1188,7 +1224,7 @@ Setting up eglot LSP
       "lwd" 'flymake-show-project-diagnostics
       "lbd" 'flymake-show-buffer-diagnostics))
 #+end_src
-** eglot-booster
+*** eglot-booster
 #+begin_src emacs-lisp
   (use-package eglot-booster
     :after eglot
@@ -1196,7 +1232,7 @@ Setting up eglot LSP
     (eglot-booster-mode))
 #+end_src
 
-* Navigation
+** Navigation
 Setting up Consult for better navigation in Emacs
 
 #+begin_src emacs-lisp
@@ -1298,8 +1334,8 @@ Setting up Consult for better navigation in Emacs
     "sr" 'my/consult-replace-word-in-buffer)
 #+end_src
 
-* ORG
-** Dslide
+** ORG
+*** Dslide
 
 Programmable Org Presentation
 #+begin_src emacs-lisp
@@ -1324,7 +1360,7 @@ Programmable Org Presentation
    (define-key org-mode-map (kbd "C-c d e") 'enable-dslide-mode)
 #+end_src
 
-** Org-Roam
+*** Org-Roam
 #+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
@@ -1362,7 +1398,7 @@ Programmable Org Presentation
   (define-key org-prefix-map (kbd "c") 'org-roam-capture)
 #+end_src
 
-* Projects
+** Projects
 Projectile is the go-to project package to use with Emacs.
 - Easy to use and setup, easy use of buffers.
 
@@ -1382,8 +1418,8 @@ Projectile is the go-to project package to use with Emacs.
       "pc" 'projectile-cleanup-known-projects))
 #+end_src
 
-* Terminal
-** Detached
+** Terminal
+*** Detached
 Setup emacs-detached
 
 #+begin_src emacs-lisp
@@ -1479,7 +1515,7 @@ Setup emacs-detached
 
 #+end_src
 
-** Eat
+*** Eat
 Setup emacs-eat
 - Emulate a Terminal
 
@@ -1497,14 +1533,14 @@ Setup emacs-eat
     "tk" 'eat-kill-process)
 #+end_src
 
-* Version
+** Version
 Using magit with forge, creates the best environment for working with
 Git inside Emacs, the only thing missing here is a way to approve PR.
 For forge, create a file called ~/.authinfo with the following:
 
 - machine api.github.com login gako358^forge password ==secret-token==
 
-** Git-gutter
+*** Git-gutter
 #+begin_src emacs-lisp
   (use-package git-gutter
     :hook (prog-mode . git-gutter-mode)
@@ -1526,7 +1562,7 @@ For forge, create a file called ~/.authinfo with the following:
       nil nil 'center))
 #+end_src
 
-** Magit
+*** Magit
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t
@@ -1535,7 +1571,7 @@ For forge, create a file called ~/.authinfo with the following:
       "/" 'magit-status))
 #+end_src
 
-** Vundo
+*** Vundo
 #+begin_src emacs-lisp
   (use-package vundo
     :demand
