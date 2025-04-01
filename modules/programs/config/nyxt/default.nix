@@ -11,15 +11,16 @@
       ((theme
         (make-instance 'theme:theme
                        :background-color "#1a1a1a"       ;; bivrost0 - Base dark background
-                       :text-color "#4C566A"             ;; bivrost4 - Base foreground, warm white
-                       :contrast-text-color "#b2b2b2"    ;; bivrost5 - Gray contrast
+                       :text-color "#b2b2b2"             ;; bivrost5 - Base foreground, warm white
+                       :contrast-text-color "#303035"    ;; bivrost2 - Alternative dark color
                        :primary-color "#719cd6"          ;; bivrost9 - Blue color
-                       :secondary-color "#303035"        ;; bivrost2 - Dark text color
-                       :action-color "#303035"           ;; bivrost2 - Dark hover color
+                       :secondary-color "#303035"        ;; bivrost2 - Alternative dark color
+
+                       :action-color "#303035"           ;; bivrost2  - Alternative dark background
                        :highlight-color "#B48EAD"        ;; bivrost16 - Purple color
                        :success-color "#A3BE8C"          ;; bivrost15 - Green color
                        :warning-color "#D08770"          ;; bivrost13 - Light orange color
-                       :codeblock-color "#81A1C1"        ;; bivrost10 - Light blue color
+                       :codeblock-color "#303035"        ;; bivrost2  - Alternative dark color
                        :error-color "#BF616A")           ;; bivrost12 - Red color
         :doc "Custom Bivrost Dark Theme based on Emacs colors")))
 
@@ -30,7 +31,14 @@
 
     (define-configuration buffer
       ((default-modes
-         (pushnew 'nyxt/mode/vi:vi-normal-mode %slot-value%))))
+         (pushnew 'nyxt/mode/vi:vi-normal-mode %slot-value%))
+       (external-editor-program '("emacsclient"))
+       (override-map (let ((map (make-keymap "override-map")))
+                    (define-key map "M-n" 'new)
+                    (define-key map "M-f" 'list-bookmarks)
+                    (define-key map "M-x" 'delete-buffer)
+                    map))))
+
 
     (defvar *duckduckgo-keywords*
       '(:theme :dark
