@@ -795,8 +795,8 @@ Formatters:
   ;; Evil numbers inc and dec
   (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
   (define-key evil-visual-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
-  (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
-  (define-key evil-visual-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
+  (define-key evil-normal-state-map (kbd "C-i") 'evil-numbers/dec-at-pt)
+  (define-key evil-visual-state-map (kbd "C-i") 'evil-numbers/dec-at-pt)
   ;; Redefine keys for switching windows
   (define-key evil-normal-state-map (kbd "C-l") 'evil-window-right)
   (define-key evil-normal-state-map (kbd "C-h") 'evil-window-left)
