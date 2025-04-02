@@ -10,8 +10,8 @@ then {
 }
 else {
   wayland.windowManager.hyprland.extraConfig = ''
-    monitor=eDP-1,1920x1080,2560x1440,1
-    monitor=DP-7,2560x1440,0x0,1
+    monitor=eDP-1,1920x1200,2560x1440,1
+    monitor=DP-8,2560x1440,0x0,1
     monitor=DP-6,2560x1440,2560x0,1
     monitor=,highrr,auto,1
   '';
