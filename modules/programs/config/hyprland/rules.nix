@@ -31,7 +31,6 @@
       windowrule = float, class:^(org.pulseaudio.pavucontrol)$
 
       windowrule = workspace 1, class:^(firefox)$
-      windowrule = workspace 2, class:^(Emacs)$
       windowrule = workspace 5, class:^(Wfica)$
       windowrule = workspace 6, class:^(chromium-browser)$
       windowrule = workspace 7, class:^(steam)$
@@ -76,7 +75,6 @@
       windowrule = float, class:^(org.pulseaudio.pavucontrol)$
 
       windowrule = workspace 1, class:^(firefox)$
-      windowrule = workspace 2, class:^(Emacs)$
       windowrule = workspace 5, class:^(Wfica)$
       windowrule = workspace 6, class:^(chromium-browser)$
       windowrule = workspace 7, class:^(steam)$
