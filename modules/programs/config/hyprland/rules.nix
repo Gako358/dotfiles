@@ -50,11 +50,11 @@
       workspace = 2, monitor:DP-8
       workspace = 3, monitor:DP-8
       workspace = 4, monitor:DP-8
-      workspace = 5, monitor:DP-8
-      workspace = 6, monitor:eDP-1
-      workspace = 7, monitor:eDP-1
-      workspace = 8, monitor:eDP-1
-      workspace = 9, monitor:eDP-1
+      workspace = 5, monitor:DP-6
+      workspace = 6, monitor:DP-6
+      workspace = 7, monitor:DP-6
+      workspace = 8, monitor:DP-6
+      workspace = 9, monitor:DP-6
 
       windowrule = float, class:^(Rofi)$
       windowrule = float, class:^(eww)$

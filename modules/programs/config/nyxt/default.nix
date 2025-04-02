@@ -10,23 +10,51 @@
     nyxt
   ];
 
-  xdg.configFile."nyxt/config.lisp".text = /*lisp*/''
+  xdg.configFile."nyxt/config.lisp".text = /*common-lisp*/''
+    (in-package #:nyxt-user)
+
     ;; Define browser configuration
     (define-configuration browser
       ((theme
         (make-instance 'theme:theme
                        :background-color "#1a1a1a"       ;; bivrost0 - Base dark background
-                       :text-color "#b2b2b2"             ;; bivrost5 - Base foreground, warm white
-                       :contrast-text-color "#303035"    ;; bivrost2 - Alternative dark color
-                       :primary-color "#719cd6"          ;; bivrost9 - Blue color
+                       :text-color "#dfdfe0"             ;; bivrost5 - Base foreground, white
+                       :text-color+ "#b2b2b2"            ;; bivrost4 - Warm white color
+                       :contrast-text-color "#1a1a1a"    ;; bivrost2 - Alternative dark color
+                       :primary-color "#3b4252"          ;; bivrost1 - Dark blue color
+                       :on-primary-color "#d8dee9"       ;; bivrost4 - White color
                        :secondary-color "#303035"        ;; bivrost2 - Alternative dark color
+                       :on-secondary-color "#dfdfe0"     ;; bivrost5 - Base forground, warm white
+
                        :action-color "#303035"           ;; bivrost2  - Alternative dark background
-                       :highlight-color "#B48EAD"        ;; bivrost16 - Purple color
+                       :highlight-color "#88c0d0"        ;; bivrost-region-highlight - light blue
                        :success-color "#A3BE8C"          ;; bivrost15 - Green color
                        :warning-color "#D08770"          ;; bivrost13 - Light orange color
                        :codeblock-color "#303035"        ;; bivrost2  - Alternative dark color
+                       :on-codeblock-color "#d8dee9"     ;; bivrost4 - White color
                        :error-color "#BF616A")           ;; bivrost12 - Red color
         :doc "Custom Bivrost Dark Theme based on Emacs colors")))
+
+    (define-configuration status-buffer
+      ((style (str:concat
+               %slot-default%
+               "
+                #container {
+                  grid-template-columns: 0% 40% 0% 60%;
+                }
+                #controls {
+                  background-color: #303035;
+                  color: #b2b2b2;
+                }
+                #mode {
+                  color: #303035;
+                }
+                .tab {
+                  background-color: #719cd6;
+                  color: #1a1a1a;
+                }
+               "))))
+
 
     (defvar *my-search-engines*
       (list
