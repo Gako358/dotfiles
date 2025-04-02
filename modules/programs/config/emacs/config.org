@@ -768,100 +768,7 @@ Formatters:
   (apheleia-global-mode +1)
 #+end_src
 
-** General
-*** Dependencies
-#+begin_src emacs-lisp
-  (use-package dash :ensure t)
-  (use-package s :ensure t)
-  (use-package editorconfig
-    :ensure t
-    :config
-    (editorconfig-mode 1))
-  (use-package f :ensure t)
-#+end_src
-
-*** direnv
-#+begin_src emacs-lisp
-  ;;; Direnv integration
-  (use-package envrc
-    :hook (after-init . envrc-global-mode))
-#+end_src
-
-*** Grep
-Writable Grep:
-- wgrep: Allows editing of grep buffers, enabling changes to be applied directly to files.
-
-#+begin_src emacs-lisp
-  (use-package wgrep)
-#+end_src
-
-** Grammars
-Setting up treesitter grammars
-#+begin_src emacs-lisp
-  (use-package treesit
-    :ensure nil
-    :custom
-    (treesit-font-lock-level 4) ;; Set font lock level for Tree-sitter
-    :config
-    (seq-do (lambda (it)
-  	      (push it major-mode-remap-alist))
-  	    '((css-mode . css-ts-mode) ;; Remap CSS mode to Tree-sitter mode
-  	      (c-mode . c-ts-mode) ;; Remap C mode to Tree-sitter mode
-  	      (dockerfile-mode . dockerfile-ts-mode) ;; Remap Dockerfile mode to Tree-sitter mode
-  	      (haskell-mode . haskell-ts-mode) ;; Remap Haskell mode to Tree-sitter mode
-  	      (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
-  	      (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
-  	      (kotlin-mode . kotlin-ts-mode) ;; Remap Kotlin mode to Tree-sitter mode
-  	      (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
-  	      (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
-  	      (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
-  	      (shell-script-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
-  	      (typescript-mode . typescript-ts-mode) ;; Remap TypeScript mode to Tree-sitter mode
-  	      (yaml-mode . yaml-ts-mode)))) ;; Remap YAML mode to Tree-sitter mode
-#+end_src
-** Filetree
-#+begin_src emacs-lisp
-  (use-package dirvish
-    :ensure t
-    :init
-    (dirvish-override-dired-mode)
-    :config
-    (setq dirvish-mode-line-format
-  	  '(:left (sort symlink) :right (omit yank index)))
-    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
-  	  '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
-  	  dirvish-side-attributes
-  	  '(vc-state nerd-icons collapse file-size))
-    (setq delete-by-moving-to-trash t)
-    (setq dired-listing-switches
-  	  "-l --almost-all --human-readable --group-directories-first --no-group")
-    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
-    (
-     :map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
-     ("M-f"   . dirvish-file-info-menu)
-     ("M-y"   . dirvish-yank-menu)
-     ("M-h" . dired-up-directory)
-     ("M-n" . dired-create-empty-file)
-     ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
-     ("M-o" . dirvish-subtree-toggle)
-     ("M-l" . dirvish-ls-switches-menu)
-     ("M-m" . dirvish-mark-menu)
-     ("M-t" . dirvish-layout-toggle)
-     ("M-s" . dirvish-setup-menu)
-     ("M-e" . dirvish-emerge-menu)
-     ("M-q" . dirvish-quit)
-     ("M-j" . dirvish-fd-jump)))
-
-  (add-hook 'dired-mode-hook 'auto-revert-mode)
-  (add-hook 'dirvish-setup-hook (lambda ()
-                                  (visual-line-mode -1)
-                                  (setq-local truncate-lines t)))
-
-  (evil-leader/set-key
-    "rf" 'dirvish)
-#+end_src
-
-** Keybindings
+** Evil
 *** Evil Mode
 #+begin_src emacs-lisp
   ;; evil-want-keybinding must be declared before Evil and Evil Collection
@@ -964,6 +871,122 @@ Setting up treesitter grammars
     :defer t
     :commands global-evil-visualstar-mode
     :hook (after-init . global-evil-visualstar-mode))
+#+end_src
+
+** General
+*** Dependencies
+#+begin_src emacs-lisp
+  (use-package dash :ensure t)
+  (use-package s :ensure t)
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
+  (use-package f :ensure t)
+#+end_src
+
+*** direnv
+#+begin_src emacs-lisp
+  ;;; Direnv integration
+  (use-package envrc
+    :hook (after-init . envrc-global-mode))
+#+end_src
+
+*** Grep
+Writable Grep:
+- wgrep: Allows editing of grep buffers, enabling changes to be applied directly to files.
+
+#+begin_src emacs-lisp
+  (use-package wgrep)
+#+end_src
+
+** Grammars
+Setting up treesitter grammars
+#+begin_src emacs-lisp
+  (use-package treesit
+    :ensure nil
+    :custom
+    (treesit-font-lock-level 4) ;; Set font lock level for Tree-sitter
+    :config
+    (seq-do (lambda (it)
+  	      (push it major-mode-remap-alist))
+  	    '((css-mode . css-ts-mode) ;; Remap CSS mode to Tree-sitter mode
+  	      (c-mode . c-ts-mode) ;; Remap C mode to Tree-sitter mode
+  	      (dockerfile-mode . dockerfile-ts-mode) ;; Remap Dockerfile mode to Tree-sitter mode
+  	      (haskell-mode . haskell-ts-mode) ;; Remap Haskell mode to Tree-sitter mode
+  	      (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
+  	      (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
+  	      (kotlin-mode . kotlin-ts-mode) ;; Remap Kotlin mode to Tree-sitter mode
+  	      (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
+  	      (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
+  	      (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
+  	      (shell-script-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
+  	      (typescript-mode . typescript-ts-mode) ;; Remap TypeScript mode to Tree-sitter mode
+  	      (yaml-mode . yaml-ts-mode)))) ;; Remap YAML mode to Tree-sitter mode
+#+end_src
+** Filetree
+#+begin_src emacs-lisp
+  (use-package dirvish
+    :ensure t
+    :init
+    (dirvish-override-dired-mode)
+    :config
+    (setq dirvish-mode-line-format
+  	  '(:left (sort symlink) :right (omit yank index)))
+    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
+  	  '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
+  	  dirvish-side-attributes
+  	  '(vc-state nerd-icons collapse file-size))
+    (setq delete-by-moving-to-trash t)
+    (setq dired-listing-switches
+  	  "-l --almost-all --human-readable --group-directories-first --no-group")
+    :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
+    (
+     :map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
+     ("M-f"   . dirvish-file-info-menu)
+     ("M-y"   . dirvish-yank-menu)
+     ("M-h" . dired-up-directory)
+     ("M-n" . dired-create-empty-file)
+     ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
+     ("M-o" . dirvish-subtree-toggle)
+     ("M-l" . dirvish-ls-switches-menu)
+     ("M-m" . dirvish-mark-menu)
+     ("M-t" . dirvish-layout-toggle)
+     ("M-s" . dirvish-setup-menu)
+     ("M-e" . dirvish-emerge-menu)
+     ("M-q" . dirvish-quit)
+     ("M-j" . dirvish-fd-jump)))
+
+  (add-hook 'dired-mode-hook 'auto-revert-mode)
+  (add-hook 'dirvish-setup-hook (lambda ()
+                                  (visual-line-mode -1)
+                                  (setq-local truncate-lines t)))
+
+  (evil-leader/set-key
+    "rf" 'dirvish)
+#+end_src
+
+** Keybindings
+
+Custom keymaps
+#+begin_src emacs-lisp
+  ;; Kill all buffers except current working buffer
+  (defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+  ;; Kill all dired buffers
+  (defun kill-dired-buffers ()
+    (interactive)
+    (mapc (lambda (buffer)
+  	    (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+  	      (kill-buffer buffer)))
+  	(buffer-list)))
+
+  (evil-leader/set-key
+    "kb" 'kill-other-buffers
+    "kd" 'kill-dired-buffers)
 #+end_src
 
 ** Languages
