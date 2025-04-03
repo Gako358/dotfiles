@@ -19,15 +19,16 @@
         (make-instance 'theme:theme
                        :background-color "#1a1a1a"       ;; Base background, dark black color
                        :text-color "#dfdfe0"             ;; Base foreground, white color
-                       :text-color+ "#b2b2b2"            ;; Warm white color
                        :contrast-text-color "#1a1a1a"    ;; Dark black color
                        :primary-color "#484850"          ;; Lighter dark color
                        :on-primary-color "#d8dee9"       ;; White color
                        :secondary-color "#303035"        ;; Light dark color
                        :on-secondary-color "#dfdfe0"     ;; White color
 
-                       :action-color "#303035"           ;; Light dark color
-                       :highlight-color "#88c0d0"        ;; Light blue
+                       :action-color "#88c0d0"           ;; Light blue color
+                       :on-action-color "#1a1a1a"        ;; Black color
+                       :highlight-color "#88c0d0"        ;; Light blue color
+                       :on-highlight-color "#1a1a1a"     ;; Black color
                        :success-color "#A3BE8C"          ;; Green color
                        :warning-color "#D08770"          ;; Light orange color
                        :codeblock-color "#303035"        ;; Light dark color
