@@ -197,7 +197,8 @@ Completion At Point Extensions:
     (add-to-list 'completion-at-point-functions
   	       (cape-capf-accept-all #'cape-dabbrev)) ;; This to get all from buffer
     (add-to-list 'completion-at-point-functions
-		 (cape-capf-accept-all #'cape-keyword)) ;; To get all from language
+  		 (cape-capf-accept-all #'cape-keyword)) ;; To get all from language
+    (add-to-list 'completion-at-point-functions #'cape-history)
     (add-to-list 'completion-at-point-functions #'cape-abbrev)
     (add-to-list 'completion-at-point-functions #'cape-file)
     (add-to-list 'completion-at-point-functions #'cape-elisp-block)
