@@ -17,22 +17,23 @@
     (define-configuration browser
       ((theme
         (make-instance 'theme:theme
-                       :background-color "#1a1a1a"       ;; bivrost0 - Base dark background
-                       :text-color "#dfdfe0"             ;; bivrost5 - Base foreground, white
-                       :text-color+ "#b2b2b2"            ;; bivrost4 - Warm white color
-                       :contrast-text-color "#1a1a1a"    ;; bivrost2 - Alternative dark color
-                       :primary-color "#3b4252"          ;; bivrost1 - Dark blue color
-                       :on-primary-color "#d8dee9"       ;; bivrost4 - White color
-                       :secondary-color "#303035"        ;; bivrost2 - Alternative dark color
-                       :on-secondary-color "#dfdfe0"     ;; bivrost5 - Base forground, warm white
+                       :background-color "#1a1a1a"       ;; Base background, dark black color
+                       :text-color "#dfdfe0"             ;; Base foreground, white color
+                       :text-color+ "#b2b2b2"            ;; Warm white color
+                       :contrast-text-color "#1a1a1a"    ;; Dark black color
+                       :primary-color "#484850"          ;; Lighter dark color
+                       :on-primary-color "#d8dee9"       ;; White color
+                       :secondary-color "#303035"        ;; Light dark color
+                       :on-secondary-color "#dfdfe0"     ;; White color
 
-                       :action-color "#303035"           ;; bivrost2  - Alternative dark background
-                       :highlight-color "#88c0d0"        ;; bivrost-region-highlight - light blue
-                       :success-color "#A3BE8C"          ;; bivrost15 - Green color
-                       :warning-color "#D08770"          ;; bivrost13 - Light orange color
-                       :codeblock-color "#303035"        ;; bivrost2  - Alternative dark color
-                       :on-codeblock-color "#d8dee9"     ;; bivrost4 - White color
-                       :error-color "#BF616A")           ;; bivrost12 - Red color
+                       :action-color "#303035"           ;; Light dark color
+                       :highlight-color "#88c0d0"        ;; Light blue
+                       :success-color "#A3BE8C"          ;; Green color
+                       :warning-color "#D08770"          ;; Light orange color
+                       :codeblock-color "#303035"        ;; Light dark color
+                       :on-codeblock-color "#d8dee9"     ;; White color
+                       :error-color "#BF616A"            ;; Red color
+                       :on-error-color "#dfdfe0")        ;; White color
         :doc "Custom Bivrost Dark Theme based on Emacs colors")))
 
     (define-configuration status-buffer
@@ -50,8 +51,7 @@
                   color: #303035;
                 }
                 .tab {
-                  background-color: #719cd6;
-                  color: #1a1a1a;
+                  background-color: #3c3c42;
                 }
                "))))
 
