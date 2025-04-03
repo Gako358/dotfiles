@@ -7,7 +7,7 @@ let
     font = "RobotoMono Nerd Font";
     fontsize = fontSize;
     iconsize = iconSize;
-    background-color = "rgba(39, 39, 39, ${opacity})";
+    background-color = "rgba(26, 26, 26, ${opacity})";
     background = "#272727";
     foreground = "#aeafb0";
     dark = "#434343";

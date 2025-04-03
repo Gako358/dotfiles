@@ -983,9 +983,9 @@ Custom keymaps
   (defun kill-dired-buffers ()
     (interactive)
     (mapc (lambda (buffer)
-  	    (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
-  	      (kill-buffer buffer)))
-  	(buffer-list)))
+        	  (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+        	    (kill-buffer buffer)))
+        	(buffer-list)))
 
   (evil-leader/set-key
     "kb" 'kill-other-buffers
