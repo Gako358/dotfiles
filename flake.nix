@@ -14,12 +14,17 @@
     # Utilities for building our flake
     flake-utils.url = "github:numtide/flake-utils";
 
+    # Secrets management
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Extra flakes for modules, packages, etc
     hardware.url = "github:nixos/nixos-hardware"; # Convenience modules for hardware-specific quirks
     nur.url = "github:nix-community/NUR"; # User contributed pkgs and modules
     nix-colors.url = "github:misterio77/nix-colors"; # Color schemes for usage with home-manager
     impermanence.url = "github:riscadoa/impermanence"; # Utilities for opt-in persistance
-    agenix.url = "github:ryantm/agenix"; # Secrets management
 
     # Hyprland
     hyprland.url = "github:hyprwm/hyprland";
@@ -85,6 +90,9 @@
                   hidpi = true;
                 };
                 backupFileExtension = ".hm-backup";
+                sharedModules = [
+                  inputs.sops-nix.homeManagerModules.sops
+                ];
                 users.merrinx = { ... }: {
                   nixpkgs.config.allowUnfree = true;
                   imports = [ ./modules ];
