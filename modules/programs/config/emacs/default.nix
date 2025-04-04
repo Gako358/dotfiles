@@ -196,7 +196,6 @@ in
         consult-projectile # Consult interface for Projectile
 
         # Org
-        dslide # A presentation tool for Emacs
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
         org-modern # A modern org-mode distribution
