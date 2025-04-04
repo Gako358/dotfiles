@@ -2,7 +2,7 @@
 let
   gitConfig = {
     core = {
-      editor = "nvim";
+      editor = "emacsclient";
       pager = "diff-so-fancy | less --tabs=4 -RFX";
     };
     init.defaultBranch = "main";
