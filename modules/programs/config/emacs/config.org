@@ -987,9 +987,111 @@ Custom keymaps
         	    (kill-buffer buffer)))
         	(buffer-list)))
 
+
+  (defun my/projectile-switch-to-buffer-with-eat ()
+    "Switch to a buffer whose name includes 'eat' using consult-projectile."
+    (interactive)
+    (let ((filtered-buffers (seq-filter (lambda (buf)
+    					(string-match-p "eat" (buffer-name buf)))
+    				      (projectile-project-buffers))))
+      (if filtered-buffers
+    	(consult--read (mapcar #'buffer-name filtered-buffers)
+    		       :prompt "Switch to terminal: "
+    		       :require-match t
+    		       :sort nil
+    		       :category 'buffer
+    		       :history 'buffer-name-history
+    		       :state (consult--buffer-state))
+        (message "No buffers found with term: %s" "eat"))))
+
+  (defun my/consult-projectile-grep-at-point ()
+    "Use consult to grep for the word at point within the projectile files. If a region is selected, use the selected text instead."
+    (interactive)
+    (let ((search-term (if (use-region-p)
+              		 (buffer-substring-no-properties (region-beginning) (region-end))
+              	       (let* ((word (thing-at-point 'word t))
+              		      (bounds (bounds-of-thing-at-point 'symbol))
+              		      (symbol (buffer-substring-no-properties (car bounds) (cdr bounds))))
+              		 (if (or (string-match-p "-" word) (string-match-p "_" word))
+              		     symbol
+              		   word)))))
+      (consult-ripgrep (projectile-project-root) search-term)))
+
+  (defun my/switch-to-previous-buffer ()
+    "Switch to the most recently visited buffer in the current Projectile project.
+    If no previous buffer is detected in the same project, then call
+    `consult-projectile-switch-to-buffer' as a fallback."
+    (interactive)
+    (let* ((current-project (projectile-project-root))
+    	 ;; Get all buffers that are visiting files and belong to the current project.
+    	 (project-buffers
+    	  (seq-filter
+    	   (lambda (buf)
+    	     (with-current-buffer buf
+    	       (when (buffer-file-name)
+    		 (and current-project
+    		      (string= (projectile-project-root (buffer-file-name)) current-project))))
+    	     )
+    	   (buffer-list))))
+      (if (and project-buffers (> (length project-buffers) 1))
+    	;; "nth 1" gives the second most recent buffer since the current buffer is the first.
+    	(switch-to-buffer (nth 1 project-buffers))
+        (message "No previous buffer in the current project; using consult-projectile-switch-to-buffer.")
+        (call-interactively #'consult-projectile-switch-to-buffer))))
+
+
+  (defun my/consult-replace-word-with-preview ()
+    "Replace occurrences of word under cursor using consult for visualization."
+    (interactive)
+    (let* ((bounds (if (evil-visual-state-p)
+        		     (cons (region-beginning) (region-end))
+        		   (bounds-of-thing-at-point 'word)))
+        	 (word (when bounds
+        		 (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+      (when word
+        (if (evil-visual-state-p)
+        	  (evil-normal-state))
+        ;; First show the occurrences with consult-ripgrep
+        (consult-ripgrep nil (regexp-quote word))
+        ;; After viewing, prompt for replacement
+        (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
+        	(when new-word
+        	  (evil-ex (format "%%s/%s/%s/gc"
+        			   (regexp-quote word)
+        			   new-word)))))))
+
+
+  (defun my/consult-replace-word-in-buffer ()
+    "Replace word under cursor with preview using consult-line."
+    (interactive)
+    (let* ((bounds (if (evil-visual-state-p)
+      		     (cons (region-beginning) (region-end))
+      		   (bounds-of-thing-at-point 'word)))
+      	 (word (when bounds
+      		 (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+      (when word
+        (if (evil-visual-state-p)
+      	  (evil-normal-state))
+        ;; Show occurrences with consult-line
+        (consult-line (regexp-quote word))
+        ;; After viewing, prompt for replacement
+        (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
+      	(when new-word
+      	  (evil-ex (format "%%s/%s/%s/gc"
+      			   (regexp-quote word)
+      			   new-word)))))))
+
   (evil-leader/set-key
+    "SPC" 'my/consult-projectile-grep-at-point
+    "DEL" 'kill-buffer
     "kb" 'kill-other-buffers
-    "kd" 'kill-dired-buffers)
+    "kd" 'kill-dired-buffers
+    "tr" 'rename-buffer
+    "tl" 'my/projectile-switch-to-buffer-with-eat
+    "sb" 'my/consult-replace-word-with-preview
+    "sr" 'my/consult-replace-word-in-buffer)
+
+  (global-set-key (kbd "<C-tab>") #'my/switch-to-previous-buffer)
 #+end_src
 
 ** Languages
@@ -1293,84 +1395,6 @@ Setting up Consult for better navigation in Emacs
       "pp" 'consult-projectile-switch-project
       "TAB" 'consult-projectile-switch-to-buffer))
 
-  (defun my/projectile-switch-to-buffer-with-eat ()
-    "Switch to a buffer whose name includes 'eat' using consult-projectile."
-    (interactive)
-    (let ((filtered-buffers (seq-filter (lambda (buf)
-        					(string-match-p "eat" (buffer-name buf)))
-        				      (projectile-project-buffers))))
-      (if filtered-buffers
-        	(consult--read (mapcar #'buffer-name filtered-buffers)
-        		       :prompt "Switch to terminal: "
-        		       :require-match t
-        		       :sort nil
-        		       :category 'buffer
-        		       :history 'buffer-name-history
-        		       :state (consult--buffer-state))
-        (message "No buffers found with term: %s" "eat"))))
-
-  (defun my/consult-projectile-grep-at-point ()
-    "Use consult to grep for the word at point within the projectile files. If a region is selected, use the selected text instead."
-    (interactive)
-    (let ((search-term (if (use-region-p)
-          		 (buffer-substring-no-properties (region-beginning) (region-end))
-          	       (let* ((word (thing-at-point 'word t))
-          		      (bounds (bounds-of-thing-at-point 'symbol))
-          		      (symbol (buffer-substring-no-properties (car bounds) (cdr bounds))))
-          		 (if (or (string-match-p "-" word) (string-match-p "_" word))
-          		     symbol
-          		   word)))))
-      (consult-ripgrep (projectile-project-root) search-term)))
-
-
-  (defun my/consult-replace-word-with-preview ()
-    "Replace occurrences of word under cursor using consult for visualization."
-    (interactive)
-    (let* ((bounds (if (evil-visual-state-p)
-    		     (cons (region-beginning) (region-end))
-    		   (bounds-of-thing-at-point 'word)))
-    	 (word (when bounds
-    		 (buffer-substring-no-properties (car bounds) (cdr bounds)))))
-      (when word
-        (if (evil-visual-state-p)
-    	  (evil-normal-state))
-        ;; First show the occurrences with consult-ripgrep
-        (consult-ripgrep nil (regexp-quote word))
-        ;; After viewing, prompt for replacement
-        (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
-    	(when new-word
-    	  (evil-ex (format "%%s/%s/%s/gc"
-    			   (regexp-quote word)
-    			   new-word)))))))
-
-
-  (defun my/consult-replace-word-in-buffer ()
-    "Replace word under cursor with preview using consult-line."
-    (interactive)
-    (let* ((bounds (if (evil-visual-state-p)
-  		       (cons (region-beginning) (region-end))
-  		     (bounds-of-thing-at-point 'word)))
-  	   (word (when bounds
-  		   (buffer-substring-no-properties (car bounds) (cdr bounds)))))
-      (when word
-  	(if (evil-visual-state-p)
-  	    (evil-normal-state))
-  	;; Show occurrences with consult-line
-  	(consult-line (regexp-quote word))
-  	;; After viewing, prompt for replacement
-  	(let ((new-word (read-string (format "Replace \"%s\" with: " word))))
-  	  (when new-word
-  	    (evil-ex (format "%%s/%s/%s/gc"
-  			     (regexp-quote word)
-  			     new-word)))))))
-
-  (evil-leader/set-key
-    "SPC" 'my/consult-projectile-grep-at-point
-    "DEL" 'kill-buffer
-    "tr" 'rename-buffer
-    "tl" 'my/projectile-switch-to-buffer-with-eat
-    "sb" 'my/consult-replace-word-with-preview
-    "sr" 'my/consult-replace-word-in-buffer)
 #+end_src
 
 ** ORG

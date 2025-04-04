@@ -12,7 +12,6 @@ in
       "wl-paste --watch cliphist store &"
       "[workspace 1 silent] nyxt"
       "[workspace 2 silent] emacsclient -c -n"
-      "[workspace 5 silent] emacsclient -c -n"
       "[workspace 6 silent] chromium"
       "[workspace 8 silent] slack"
       "[workspace 9 silent] discord"

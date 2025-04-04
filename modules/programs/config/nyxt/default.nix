@@ -196,8 +196,8 @@
                          (define-key map "M-x" 'delete-buffer)
                          (define-key map "M-q" 'delete-all-buffers)
                          (define-key map "M-s" 'search-buffers)
-                         (define-key map "c u" 'copy-username)
-                         (define-key map "c p" 'copy-password)
+                         (define-key map "M-p" 'copy-password)
+                         (define-key map "M-u" 'copy-username)
                          map))))
 
       ;; Prompt buffer configuration
