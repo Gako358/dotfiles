@@ -1483,35 +1483,6 @@ Setting up Consult for better navigation in Emacs
     	  :history 'org-roam-node-history))
         (message "No non-daily nodes found"))))
 
-  (defun my/org-roam-node-insert-exclude-dailies-consult ()
-    "Insert a link to an Org-roam node using consult, excluding nodes from dailies."
-    (interactive)
-    (let* ((dailies-dir (expand-file-name org-roam-dailies-directory org-roam-directory))
-           (nodes (org-roam-node-list))
-           (filtered-nodes (seq-filter
-                            (lambda (node)
-                              (not (string-prefix-p
-                                    dailies-dir
-                                    (org-roam-node-file node))))
-                            nodes))
-           (node-display-formatter (lambda (node)
-                                     (format "%s %s"
-                                             (org-roam-node-title node)
-                                             (propertize (or (org-roam-node-file-title node) "")
-                                                         'face 'font-lock-comment-face)))))
-      (if filtered-nodes
-          (let ((node (consult--read
-                       (mapcar (lambda (node)
-                                 (cons (funcall node-display-formatter node) node))
-                               filtered-nodes)
-                       :prompt "Node to insert: "
-                       :category 'org-roam-node
-                       :sort nil
-                       :require-match t
-                       :history 'org-roam-node-history)))
-            (org-roam-node-insert nil nil node))
-        (message "No non-daily nodes found"))))
-
   ;; Define a prefix command for org-mode related commands
   (define-prefix-command 'org-prefix-map)
 
@@ -1519,7 +1490,7 @@ Setting up Consult for better navigation in Emacs
   (global-set-key (kbd "C-x o") 'org-prefix-map)
   (define-key org-prefix-map (kbd "c") 'org-roam-capture)
   (define-key org-prefix-map (kbd "f") 'my/org-roam-node-find-exclude-dailies-consult)
-  (define-key org-prefix-map (kbd "i") 'my/org-roam-node-insert-exclude-dailies-consult)
+  (define-key org-prefix-map (kbd "i") 'org-roam-node-insert)
   (define-key org-prefix-map (kbd "d") 'org-roam-dailies-capture-date)
   (define-key org-prefix-map (kbd "t") 'org-roam-dailies-goto-today)
   (define-key org-prefix-map (kbd "y") 'org-roam-dailies-goto-yesterday)
