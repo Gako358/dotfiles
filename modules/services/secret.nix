@@ -1,10 +1,26 @@
 { config
+, inputs
 , pkgs
 , ...
 }: {
+  imports = [ inputs.sops-nix.homeManagerModules.sops ];
   home.packages = with pkgs; [
     seahorse
   ];
+
+  sops = {
+    age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
+    defaultSopsFile = ../../secrets/default.yaml;
+    validateSopsFiles = false;
+    secrets = {
+      email-private = { };
+      email-user = { };
+      email-passwd = { };
+      email-alias-private = { };
+      email-alias-service = { };
+      email-alias-social = { };
+    };
+  };
 
   programs = {
     gpg = {

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   metalsVersion = "1.5.1";
   metals = pkgs.metals.overrideAttrs (
@@ -101,7 +101,8 @@ let
   systemToolsPath = "/run/current-system/sw/bin";
 
   # Use the nix-profile path for Home Manager packages
-  homeManagerPath = "/home/merrinx/.nix-profile/bin";
+  # homeManagerPath = "/home/merrinx/.nix-profile/bin";
+  homeManagerPath = "${config.home.homeDirectory}/.nix-profile/bin";
 
 in
 {
@@ -190,6 +191,9 @@ in
         # LSP
         eglot-booster # Eglot booster
         eldoc-box # Display function signatures at point
+
+        # Mail
+        mu4e # Emacs mail client
 
         # Navigation
         consult # Consulting completing-read

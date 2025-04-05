@@ -6,6 +6,7 @@ let
   };
 in
 [
+  ./mail.nix
   ./secret.nix
   more
 ]

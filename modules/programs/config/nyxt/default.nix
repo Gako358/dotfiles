@@ -223,7 +223,11 @@
     ;; News bookmarks
     (:url "https://www.reddit.com/" :title "Reddit" :date "2025-03-31T18:05:04Z" :tags ("news" "social"))
 
-    ;; Streaming
+    ;; Mail bookmarks
+    (:url "https://pass.proton.me/" :title "Proton Pass" :date "2025-03-31T18:05:04Z" :tags ("mail" "social"))
+    (:url "https://mail.proton.me/" :title "Proton Mail" :date "2025-03-31T18:05:04Z" :tags ("mail" "social"))
+
+    ;; Streaming bookmarks
     (:url "https://twitch.tv" :title "Twitch" :date "2025-03-31T18:05:04Z" :tags ("streaming" "social"))
     (:url "https://www.youtube.com" :title "YouTube" :date "2025-03-31T18:05:04Z" :tags ("streaming" "social"))
     )
