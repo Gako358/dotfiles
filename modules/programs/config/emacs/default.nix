@@ -194,6 +194,7 @@ in
 
         # Mail
         mu4e # Emacs mail client
+        mu4e-alert # Emacs notification daemon for mu4e
 
         # Navigation
         consult # Consulting completing-read
@@ -202,6 +203,7 @@ in
         # Org
         org # For keeping notes, maintaining TODO lists, and project planning
         org-drill # A spaced repetition system for Emacs
+        org-msg # A msg system used to compose emails for Emacs
         org-modern # A modern org-mode distribution
         org-pomodoro # Pomodoro technique implementation
         org-present # A simple org-mode presentation tool

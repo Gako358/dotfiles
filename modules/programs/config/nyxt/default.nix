@@ -200,9 +200,6 @@
                          (define-key map "M-u" 'copy-username)
                          map))))
 
-      ;; Prompt buffer configuration
-      (define-configuration prompt-buffer
-        ((default-modes (append '(nyxt/mode/vi:vi-insert-mode) %slot-default%))))
   '';
 
   xdg.configFile."nyxt/bookmarks.lisp".text = /*lisp*/''

@@ -13,8 +13,6 @@
     defaultSopsFile = ../../secrets/default.yaml;
     validateSopsFiles = false;
     secrets = {
-      email-private = { };
-      email-user = { };
       email-passwd = { };
       email-alias-private = { };
       email-alias-service = { };

@@ -20,7 +20,6 @@ with lib; {
     ./fonts.nix
     ./qemu.nix
     ./shell.nix
-    ./sops.nix
     ./xdg.nix
   ];
 }

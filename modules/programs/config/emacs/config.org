@@ -774,36 +774,66 @@ Formatters:
 
 ** Email
 
-Setting up mu4e as my mail client, using mbsync and protonmail
+#+BEGIN_QUOTE
+Email should be a seamless part of your workflow, not a constant distraction. This setup combines the power of mu4e, mbsync, and msmtp to create a fast, efficient, and distraction-free email experience directly in Emacs.
+#+END_QUOTE
+
+My email configuration transforms Emacs into a powerful email client with several key advantages:
+
++ *Efficiency*: Read, compose, and organize email without leaving Emacs
++ *Speed*: Direct access to local mail storage for instant searches and views
++ *Privacy*: Complete control over your email data with encryption support
++ *Integration*: Seamlessly connect email with notes, tasks, and calendar
++ *Distraction-free*: Batch process email on your schedule, not the inbox's
+
+*** Mu4e
 #+begin_src emacs-lisp
-  ;; (use-package mu4e
-  ;;   :ensure t
-  ;;   :defer 20 ; Wait until 20 seconds after startup
-  ;;   :config
+  (use-package mu4e
+    :ensure t
+    :defer 20
+    :config
+    (setq mu4e-change-filenames-when-moving t
+  	  mu4e-update-interval (* 10 60)
+  	  mu4e-compose-format-flowed t
+  	  mu4e-get-mail-command "mbsync -a"
+  	  mu4e-maildir "~/Mail")
 
-  ;;   (setq mu4e-change-filenames-when-moving t ; avoid sync conflicts
-  ;; 	mu4e-update-interval (* 10 60) ; check mail 10 minutes
-  ;; 	mu4e-compose-format-flowed t ; re-flow mail so it's not hard wrapped
-  ;; 	mu4e-get-mail-command "mbsync -a"
-  ;; 	mu4e-maildir "~/mail/proton")
+    (setq mu4e-drafts-folder "/personal/Drafts"
+          mu4e-sent-folder   "/personal/Sent"
+          mu4e-trash-folder  "/personal/Trash"
+          mu4e-refile-folder "/personal/Archive")
 
-  ;;   (setq mu4e-drafts-folder "/proton/Drafts"
-  ;; 	mu4e-sent-folder   "/proton/Sent"
-  ;; 	mu4e-refile-folder "/proton/All Mail"
-  ;; 	mu4e-trash-folder  "/proton/Trash")
+    (setq mu4e-maildir-shortcuts
+          '(("/personal/INBOX"     . ?i)
+            ("/personal/Sent"      . ?s)
+            ("/personal/Trash"     . ?t)
+            ("/personal/Drafts"    . ?d)
+            ("/personal/Archive"   . ?a)
+            ("/personal/All Mail"  . ?m)
+            ("/personal/Spam"      . ?j)
+            ("/personal/Starred"   . ?★)))
 
-  ;;   (setq mu4e-maildir-shortcuts
-  ;; 	'(("/proton/inbox"     . ?i)
-  ;;           ("/proton/Sent"      . ?s)
-  ;;           ("/proton/Trash"     . ?t)
-  ;;           ("/proton/Drafts"    . ?d)
-  ;;           ("/proton/All Mail"  . ?a)))
+    (setq message-send-mail-function 'message-send-mail-with-sendmail
+          sendmail-program "msmtp"
+          mail-specify-envelope-from t
+          message-sendmail-envelope-from 'header
+          mail-envelope-from 'header)
 
-  ;;   (setq message-send-mail-function 'smtpmail-send-it
-  ;; 	auth-sources '("~/.authinfo") ;need to use gpg version but only local smtp stored for now
-  ;; 	smtpmail-smtp-server "127.0.0.1"
-  ;; 	smtpmail-smtp-service 1025
-  ;; 	smtpmail-stream-type  'ssl))
+    (setq user-mail-address "merrinx@proton.me"
+          user-full-name "merrinx"))
+#+end_src
+*** Mu4e-Alert
+#+begin_src emacs-lisp
+  (use-package mu4e-alert
+    :ensure t
+    :after mu4e
+    :config
+    (mu4e-alert-set-default-style 'notifications)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+    (setq mu4e-alert-email-notification-types '(count subjects))
+    (setq mu4e-alert-interesting-mail-query
+  	  "flag:unread AND NOT flag:trashed"))
 #+end_src
 
 ** Evil
@@ -1014,6 +1044,15 @@ Custom keymaps
     (interactive)
     (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
+  (defun projectile-kill-other-buffers ()
+    "Kill all buffers in current project except for current buffer."
+    (interactive)
+    (let* ((current-buffer (current-buffer))
+  	 (buffers (projectile-project-buffers)))
+      (dolist (buffer buffers)
+        (unless (eq buffer current-buffer)
+  	(kill-buffer buffer)))))
+
   ;; Kill all dired buffers
   (defun kill-dired-buffers ()
     (interactive)
@@ -1119,7 +1158,8 @@ Custom keymaps
   (evil-leader/set-key
     "SPC" 'my/consult-projectile-grep-at-point
     "DEL" 'kill-buffer
-    "kb" 'kill-other-buffers
+    "ka" 'kill-other-buffers
+    "kp" 'projectile-kill-other-buffers
     "kd" 'kill-dired-buffers
     "tr" 'rename-buffer
     "tl" 'my/projectile-switch-to-buffer-with-eat
@@ -1433,6 +1473,51 @@ Setting up Consult for better navigation in Emacs
 #+end_src
 
 ** ORG
+
+This configuration integrates powerful Org-mode tools for both knowledge management (Org-Roam) and rich email composition (Org-msg). Together, they form a comprehensive personal information system within Emacs.
+#+BEGIN_QUOTE
+Org-msg transforms email composition in Emacs by leveraging Org Mode's formatting capabilities to create beautiful HTML emails while maintaining plain text alternatives.
+#+END_QUOTE
+
+**Key features:**
+
++ Write emails using familiar Org markup (headlines, lists, links, code blocks)
++ Automatic conversion to HTML with proper styling
++ Maintains plain text version for compatibility
++ Customized signature with formatting
++ Seamless integration with mu4e mail client
+
+*** Org-Msg
+#+BEGIN_SRC emacs-lisp
+  (use-package org-msg
+    :ensure t
+    :after mu4e
+    :config
+    (setq mail-user-agent 'mu4e-user-agent)
+    (require 'org-msg)
+    (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+  	  org-msg-startup "hidestars indent inlineimages"
+  	  org-msg-default-alternatives '((new               . (text html))
+  					 (reply-to-html     . (text html))
+  					 (reply-to-text     . (text)))
+  	  org-msg-convert-citation t)
+
+    (defun my-org-msg-signature ()
+      "Return a formatted signature for org-msg emails."
+      (concat "\n\n"
+              "Best regards,\n"
+              "*Knut Oien*\n"
+              "/Senior Software Engineer HNIKT/\n"))
+
+    (setq org-msg-signature (my-org-msg-signature))
+
+    (add-hook 'org-msg-edit-mode-hook
+              (lambda ()
+                (setq org-msg-signature (my-org-msg-signature))))
+
+    (org-msg-mode))
+#+END_SRC
+
 *** Org-Roam
 #+begin_src emacs-lisp
   (use-package org-roam

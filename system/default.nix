@@ -5,6 +5,7 @@
 , ...
 }: {
   imports = [
+    inputs.sops-nix.nixosModules.sops
     ./hardware
     ./programs
     ./services
@@ -46,6 +47,19 @@
     pam.services.swaylock = { };
   };
 
+  # Secret managed by sops-nix
+  sops = {
+    defaultSopsFile = ../secrets/default.yaml;
+    validateSopsFiles = false;
+    secrets = {
+      email-passwd = { };
+      email-user = { };
+    };
+
+    age = {
+      sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    };
+  };
   # Set default shell to fish global
   users.defaultUserShell = pkgs.fish;
 }
