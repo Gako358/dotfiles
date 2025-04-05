@@ -1,5 +1,5 @@
 { specialArgs, ... }:
-if specialArgs.hidpi
+if specialArgs.master
 then {
   wayland.windowManager.hyprland.extraConfig = ''
     monitor=DP-3,2560x1440,0x0,1

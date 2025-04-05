@@ -1,6 +1,6 @@
 { specialArgs, ... }: {
   wayland.windowManager.hyprland.extraConfig =
-    if specialArgs.hidpi
+    if specialArgs.master
     then ''
       workspace = 1, monitor:DP-2
       workspace = 2, monitor:DP-3

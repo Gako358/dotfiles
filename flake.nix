@@ -87,7 +87,7 @@
               home-manager = {
                 extraSpecialArgs = {
                   inherit inputs outputs;
-                  hidpi = true;
+                  master = true;
                 };
                 backupFileExtension = ".hm-backup";
                 sharedModules = [
@@ -115,7 +115,7 @@
                 # useUserPackages = true;
                 extraSpecialArgs = {
                   inherit inputs outputs;
-                  hidpi = false;
+                  master = false;
                 };
                 backupFileExtension = ".hm-backup";
                 users.merrinx = { ... }: {
