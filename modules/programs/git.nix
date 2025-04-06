@@ -89,7 +89,7 @@ in
           condition = "gitdir:~/Projects/workspace/";
           contents = {
             user = {
-              name = "Knut Øien";
+              name = "Knut Oien";
               email = "knut.andre.gulseth.oien@hnikt.no";
             };
           };
