@@ -13,7 +13,8 @@
     defaultSopsFile = ../../secrets/default.yaml;
     validateSopsFiles = false;
     secrets = {
-      email-passwd = { };
+      email-master-passwd = { };
+      email-work-passwd = { };
       email-alias-private = { };
       email-alias-service = { };
       email-alias-social = { };

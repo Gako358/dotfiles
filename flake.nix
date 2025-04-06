@@ -78,6 +78,7 @@
         terangreal = lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
+            master = true;
           };
           modules = [
             inputs.home-manager.nixosModules.home-manager
@@ -104,6 +105,7 @@
         tuathaan = lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
+            master = false;
           };
           modules = [
             inputs.home-manager.nixosModules.home-manager

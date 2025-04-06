@@ -1,6 +1,13 @@
-{ pkgs, config, ... }:
+{ pkgs, config, specialArgs, ... }:
 let
   cat = "${pkgs.coreutils}/bin/cat";
+
+  passwd =
+    if specialArgs.master then
+      "${cat} ${config.sops.secrets.email-master-passwd.path}"
+    else
+      "${cat} ${config.sops.secrets.email-work-passwd.path}";
+
 in
 {
   programs.msmtp = {
@@ -14,7 +21,7 @@ in
       tls = true;
       tls_starttls = true;
       tls_trust_file = "/etc/ssl/certs/ca-certificates.crt";
-      passwordeval = "${cat} ${config.sops.secrets.email-passwd.path}";
+      passwordeval = passwd;
     };
   };
 }

@@ -2,66 +2,69 @@
 let
   cat = "${pkgs.coreutils}/bin/cat";
 
-  emailConfig =
-    if specialArgs.master then {
-      maildirBasePath = "Mail";
-      accounts = {
-        personal = {
-          primary = true;
-          # TODO: Figure out why mu wont allow aliases
-          # aliases = [
-          #   "${cat} ${config.sops.secrets.email-alias-private.path}"
-          #   "${cat} ${config.sops.secrets.email-alias-service.path}"
-          #   "${cat} ${config.sops.secrets.email-alias-social.path}"
-          # ];
-          address = "merrinx@proton.me";
-          userName = "merrinx@proton.me";
-          passwordCommand = "${cat} ${config.sops.secrets.email-passwd.path}";
-          realName = "merrinx";
-          folders = {
-            inbox = "INBOX";
-            drafts = "Drafts";
-            sent = "Sent";
-            trash = "Trash";
-          };
-          mbsync = {
-            enable = true;
-            create = "both";
-            expunge = "both";
-            patterns = [ "*" ];
-            subFolders = "Verbatim";
-          };
-          mu.enable = true;
-          imap = {
-            host = "127.0.0.1";
-            port = 1143;
-            tls = {
-              enable = true;
-              useStartTls = true;
-              # Use protonmail-bride -c and cert export
-              certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
-            };
-          };
-          smtp = {
-            host = "127.0.0.1";
-            port = 1025;
-            tls = {
-              enable = true;
-              useStartTls = true;
-              certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
-            };
-          };
-          msmtp.enable = true;
-        };
-      };
-    } else { };
+  passwd =
+    if specialArgs.master then
+      "${cat} ${config.sops.secrets.email-master-passwd.path}"
+    else
+      "${cat} ${config.sops.secrets.email-work-passwd.path}";
 in
 {
   home.packages = with pkgs; [
     protonmail-bridge
   ];
 
-  accounts.email = emailConfig;
+  accounts.email = {
+    maildirBasePath = "Mail";
+    accounts = {
+      personal = {
+        primary = true;
+        # TODO: Figure out why mu wont allow aliases
+        # aliases = [
+        #   "${cat} ${config.sops.secrets.email-alias-private.path}"
+        #   "${cat} ${config.sops.secrets.email-alias-service.path}"
+        #   "${cat} ${config.sops.secrets.email-alias-social.path}"
+        # ];
+        address = "merrinx@proton.me";
+        userName = "merrinx@proton.me";
+        passwordCommand = passwd;
+        realName = "merrinx";
+        folders = {
+          inbox = "INBOX";
+          drafts = "Drafts";
+          sent = "Sent";
+          trash = "Trash";
+        };
+        mbsync = {
+          enable = true;
+          create = "both";
+          expunge = "both";
+          patterns = [ "*" ];
+          subFolders = "Verbatim";
+        };
+        mu.enable = true;
+        imap = {
+          host = "127.0.0.1";
+          port = 1143;
+          tls = {
+            enable = true;
+            useStartTls = true;
+            # Use protonmail-bride -c and cert export
+            certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
+          };
+        };
+        smtp = {
+          host = "127.0.0.1";
+          port = 1025;
+          tls = {
+            enable = true;
+            useStartTls = true;
+            certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
+          };
+        };
+        msmtp.enable = true;
+      };
+    };
+  };
 
   programs.mbsync.enable = true;
   programs.mu.enable = true;
