@@ -94,6 +94,15 @@ in
             };
           };
         }
+        {
+          condition = "hasconfig:remote.*.url:ssh://git@github.com:HNIKT-Tjenesteutvikling-Systemutvikling/**";
+          contents = {
+            user = {
+              name = "Knut Oien";
+              email = "knut.andre.gulseth.oien@hnikt.no";
+            };
+          };
+        }
       ];
     }
     // (pkgs.sxm.git or { });

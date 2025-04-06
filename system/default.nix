@@ -52,9 +52,9 @@
     defaultSopsFile = ../secrets/default.yaml;
     validateSopsFiles = false;
     secrets = {
-      email-master-passwd = { };
-      email-work-passwd = { };
-      email-user = { };
+      "email_keys/master-passwd" = { };
+      "email_keys/work-passwd" = { };
+      "email_keys/user" = { };
     };
 
     age = {
