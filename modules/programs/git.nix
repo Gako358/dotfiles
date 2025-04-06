@@ -81,13 +81,18 @@ in
         "*.mill-version" # used by metals
         "*.jvmopts" # should be local to every project
       ];
-      userEmail = "gako358@outlook.com";
+      userEmail = "gako.footwork856@passinbox.com";
       userName = "merrinx";
 
       includes = [
         {
-          path = "~/Projects/workspace/.gitconfig-work";
           condition = "gitdir:~/Projects/workspace/";
+          contents = {
+            user = {
+              name = "Knut Øien";
+              email = "knut.andre.gulseth.oien@hnikt.no";
+            };
+          };
         }
       ];
     }
