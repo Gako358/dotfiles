@@ -1,6 +1,8 @@
 keys:
-  - &users:
-    - &merrinx age13krpm9nls3799yaw3tl83rcmpykc75fxt7v48rvevx3ta5v42ayqsk5umc
+  - &admin:
+    - &master age13krpm9nls3799yaw3tl83rcmpykc75fxt7v48rvevx3ta5v42ayqsk5umc
+  - &users
+    - &merrinx age1rn9ttgtglurwksgfgary4v5t8qqeqqqack4g2v7qge4z7z97meyq4w8hmq
   - &hosts:
     - &terangreal age1yrlm5lvttp2awkp63gmkg4jeca9zfzxwkejyxpsv7t09cqxefpys7g4ylk
     - &tuathaan age1zspv49cc4dr0klgun0c7xvk0pmeqrh9k0024eepf7j47rayk9pcq08f52t
@@ -9,6 +11,7 @@ creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
+          - *master
           - *merrinx
           - *terangreal
           - *tuathaan
