@@ -13,18 +13,16 @@
     defaultSopsFile = ../../secrets/default.yaml;
     validateSopsFiles = false;
     secrets = {
-      "email_keys/master-passwd" = { };
-      "email_keys/work-passwd" = { };
-      "email_keys/alias-private" = { };
-      "email_keys/alias-service" = { };
-      "email_keys/alias-social" = { };
+      "email_home-passwd" = { };
+      "email_work-passwd" = { };
+      "email_alias-private" = { };
+      "email_alias-service" = { };
+      "email_alias-social" = { };
       "private_keys/gako" = {
-        mode = "0600";
-        path = "${config.home.homeDirectory}/.ssh/id_gako";
+        path = "${config.home.homeDirectory}/.ssh/id_rsa";
       };
       "public_keys/gako" = {
-        mode = "0600";
-        path = "${config.home.homeDirectory}/.ssh/id_gako.pub";
+        path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
       };
     };
   };

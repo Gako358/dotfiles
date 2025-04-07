@@ -7,6 +7,6 @@ let
 in
 [
   ./mail.nix
-  ./secret.nix
+  ./secrets.nix
   more
 ]

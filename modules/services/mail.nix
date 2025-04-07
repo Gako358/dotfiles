@@ -4,9 +4,9 @@ let
 
   passwd =
     if specialArgs.master then
-      "${cat} ${config.sops.secrets."email_keys/master-passwd".path}"
+      "${cat} ${config.sops.secrets."email_home-passwd".path}"
     else
-      "${cat} ${config.sops.secrets."email_keys/work-passwd".path}";
+      "${cat} ${config.sops.secrets."email_work-passwd".path}";
 in
 {
   home.packages = with pkgs; [

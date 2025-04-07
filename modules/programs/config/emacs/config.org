@@ -1623,85 +1623,38 @@ Setup emacs-detached
   	     (detached-terminal-data-command system-type)
   	     (detached-shell-program "bash")))
 
+  (defun my/detached-run-command-git-root (command)
+    "Run COMMAND in the project root directory using detached-shell-command."
+    (interactive "sCommand: ")
+    (let* ((root-dir (locate-dominating-file default-directory ".git"))
+           (default-directory (or root-dir default-directory)))
+      (detached-shell-command command)))
+
+  (defun my/detached-run-command-git-root-with-path (path-and-command)
+    "Run command in the project root directory using detached-shell-command.
+      PATH-AND-COMMAND should be in format 'path command', e.g. 'modules/app npm run dev'.
+    The first argument is treated as the relative path from git root, the rest as the command."
+    (interactive "sPath and Command: ")
+    (let* ((parts (split-string path-and-command " " t))
+           (path (car parts))
+           (command (string-join (cdr parts) " "))
+           (root-dir (locate-dominating-file default-directory ".git"))
+           (full-path (and root-dir (expand-file-name path root-dir)))
+           (default-directory (or full-path default-directory)))
+      (detached-shell-command command)))
+
   (evil-leader/set-key
     "da" 'detached-attach-session
     "dd" 'detached-detach-session
     "dk" 'detached-kill-session
-    "dl" 'detached-consult-commands
+    "dl" 'detached-list-sessions
     "do" 'detached-open-session
     "dr" 'detached-delete-session
     "dR" 'detached-delete-sessions
-    "ds" 'detached-shell-command
+    "ds" 'my/detached-run-command-git-root
+    "dS" 'my/detached-run-command-git-root-with-path
     "dv" 'detached-view-session
     "dc" 'detached-copy-session-command)
-
-  ;; Define a custom variable to store commands
-  (defvar detached-custom-commands nil
-    "List of custom commands with their directories.
-    Each element is a list (name dir command) where:
-      - name is the display name for the command
-      - dir is the directory where the command should be run
-      - command is the shell command to execute")
-
-  ;; Function to add a new command
-  (defun detached-add-command (name dir command)
-    "Add a new command to the list of custom commands."
-    (interactive "sName: \nDDirectory: \nsCommand: ")
-    (add-to-list 'detached-custom-commands (list name dir command))
-    (message "Command '%s' added" name))
-
-  ;; Function to remove a command
-  (defun detached-remove-command (name)
-    "Remove a command from the list of custom commands."
-    (interactive
-     (list
-      (completing-read "Remove command: "
-                       (mapcar #'car detached-custom-commands))))
-    (setq detached-custom-commands
-          (cl-remove-if (lambda (cmd) (string= (car cmd) name))
-                        detached-custom-commands))
-    (message "Command '%s' removed" name))
-
-  ;; Function to run a command with detached
-  (defun detached-run-custom-command (cmd)
-    "Run a custom command using detached-shell-command."
-    (let* ((dir (nth 1 cmd))
-           (command (nth 2 cmd))
-           (default-directory dir))
-      (detached-shell-command command (concat "*detached: " (car cmd) "*"))))
-
-  ;; Consult integration for command selection and execution
-  (defun detached-consult-commands ()
-    "Select and run a custom command using consult."
-    (interactive)
-    (if (null detached-custom-commands)
-        (message "No custom commands defined. Use M-x detached-add-command to add one.")
-      (let* ((candidates (mapcar (lambda (cmd)
-                                   (cons (format "%-20s %s (in %s)"
-                                                 (car cmd) (nth 2 cmd) (nth 1 cmd))
-                                         cmd))
-                                 detached-custom-commands))
-             (selected (cdr (assoc (completing-read "Run command: " candidates nil t) candidates))))
-        (when selected
-          (detached-run-custom-command selected)))))
-
-  ;; Custom commands to run different applications
-
-  ;; Roskva bleep run server
-  (detached-add-command "Bleep Server"
-  		      "/home/merrinx/Projects/workspace/roskva/"
-  		      "bleep run server")
-
-  ;; Roskva bleep link app
-  (detached-add-command "Bleep Link"
-  		      "/home/merrinx/Projects/workspace/roskva/"
-  		      "bleep link app -w --release")
-
-  ;; Roskva npm
-  (detached-add-command "Bleep App"
-  		      "/home/merrinx/Projects/workspace/roskva/app/"
-  		      "npm run dev")
-
 #+end_src
 
 *** Eat

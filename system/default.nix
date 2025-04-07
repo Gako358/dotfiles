@@ -47,20 +47,6 @@
     pam.services.swaylock = { };
   };
 
-  # Secret managed by sops-nix
-  sops = {
-    defaultSopsFile = ../secrets/default.yaml;
-    validateSopsFiles = false;
-    secrets = {
-      "email_keys/master-passwd" = { };
-      "email_keys/work-passwd" = { };
-      "email_keys/user" = { };
-    };
-
-    age = {
-      sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-    };
-  };
   # Set default shell to fish global
   users.defaultUserShell = pkgs.fish;
 }
