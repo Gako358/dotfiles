@@ -30,7 +30,7 @@
     hyprland.url = "github:hyprwm/hyprland";
     hyprland-contrib = {
       url = "github:hyprwm/contrib";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "hyprland/nixpkgs";
     };
 
     hyprland-plugins = {
@@ -114,6 +114,8 @@
             {
               home-manager = {
                 # useGlobalPkgs = true; # TODO: Fix this on new install
+                # Packages are then in ~/.local/state/home-manager/gcroots/current-home
+                # Or /etc/profiles if enabled useUserPackages
                 # useUserPackages = true;
                 extraSpecialArgs = {
                   inherit inputs outputs;
