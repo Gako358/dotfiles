@@ -81,6 +81,7 @@ in
     Service = {
       Restart = "always";
       RestartSec = 5;
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
       ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --noninteractive --log-level debug";
     };
     Install.WantedBy = [ "default.target" ];
