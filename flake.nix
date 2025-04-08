@@ -130,6 +130,33 @@
             }
           ];
         };
+        # Profile for testing in KVM
+        seanchan = lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+            master = false;
+          };
+          modules = [
+            inputs.home-manager.nixosModules.home-manager
+            ./system
+            ./hosts/seanchan
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {
+                  inherit inputs outputs;
+                  master = false;
+                };
+                backupFileExtension = ".hm-backup";
+                users.merrinx = { ... }: {
+                  nixpkgs.config.allowUnfree = true;
+                  imports = [ ./modules ];
+                };
+              };
+            }
+          ];
+        };
       };
     };
 }
