@@ -14,7 +14,6 @@ function create_partitions {
   parted --script -a optimal "${DEVICE_NAME}" mkpart nixos "${SWAP_SIZE}" 100%
   parted --script -a optimal "${DEVICE_NAME}" set 1 boot on
 
-  clear
   echo "Partitions created"
 
   # Print table
@@ -84,20 +83,11 @@ function setup_filesystems {
   # Enable swap
   swapon "${DEVICE_NAME}2"
 
-  clear
-  echo "Filesystems set up with tmpfs root and BTRFS subvolumes on encrypted LUKS container:"
+  echo "Filesystems set up with BTRFS subvolumes on encrypted LUKS container:"
   echo ""
-  echo "BTRFS subvolumes:"
-  btrfs subvolume list /mnt/nix
-  echo ""
-  echo "Mount points:"
-  df -Th | grep -v tmpfs | sort
-  echo ""
-  echo "Tmpfs mounts:"
-  df -Th | grep tmpfs
-  echo ""
-  echo "Memory usage:"
+  df -Th
   free -h
+  echo "Run: nixos-install --flake .#seanchan"
 }
 
 function create_keyfile {
