@@ -23,15 +23,15 @@ function create_partitions {
 
 function setup_encryption {
   # Encrypt the nixos partition
-  echo "Setting up LUKS encryption on ${DEVICE_NAME}p3"
+  echo "Setting up LUKS encryption on ${DEVICE_NAME}3"
   echo "You will be prompted to enter and confirm a passphrase for encryption."
 
   # Format the partition with LUKS
-  cryptsetup luksFormat "${DEVICE_NAME}p3"
+  cryptsetup luksFormat "${DEVICE_NAME}3"
 
   # Open the encrypted partition
   echo "Opening the encrypted partition"
-  cryptsetup open "${DEVICE_NAME}p3" "${LUKS_NAME}"
+  cryptsetup open "${DEVICE_NAME}3" "${LUKS_NAME}"
 
   # Show the mapped device
   echo "Encrypted partition mapped to /dev/mapper/${LUKS_NAME}"
@@ -39,8 +39,8 @@ function setup_encryption {
 
 function setup_filesystems {
   # Format EFI and swap partitions
-  mkfs.fat -F32 -n EFI "${DEVICE_NAME}p1"
-  mkswap -L SWAP "${DEVICE_NAME}p2"
+  mkfs.fat -F32 -n EFI "${DEVICE_NAME}1"
+  mkswap -L SWAP "${DEVICE_NAME}2"
 
   # Format the encrypted partition with BTRFS
   mkfs.btrfs -L "${LABEL_NAME}" -f "/dev/mapper/${LUKS_NAME}"
@@ -82,7 +82,7 @@ function setup_filesystems {
   mount -o bind /mnt/persist/var/log /mnt/var/log
 
   # Enable swap
-  swapon "${DEVICE_NAME}p2"
+  swapon "${DEVICE_NAME}2"
 
   clear
   echo "Filesystems set up with tmpfs root and BTRFS subvolumes on encrypted LUKS container:"
@@ -107,7 +107,7 @@ function create_keyfile {
   dd if=/dev/urandom of=/mnt/boot/keys/luks-key bs=1 count=4096
   chmod 600 /mnt/boot/keys/luks-key
 
-  cryptsetup luksAddKey "${DEVICE_NAME}p3" /mnt/boot/keys/luks-key
+  cryptsetup luksAddKey "${DEVICE_NAME}3" /mnt/boot/keys/luks-key
 }
 
 create_partitions
