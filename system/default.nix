@@ -3,7 +3,12 @@
 , lib
 , pkgs
 , ...
-}: {
+}:
+let
+  cat = "${pkgs.coreutils}/bin/cat";
+
+in
+{
   imports = [
     inputs.sops-nix.nixosModules.sops
     ./hardware
@@ -39,14 +44,16 @@
     "en_US.UTF-8/UTF-8"
   ];
   console.useXkbConfig = true;
-
-  # Set the default editor
-  environment.variables.EDITOR = "nvim";
   security = {
     rtkit.enable = true;
     pam.services.swaylock = { };
   };
 
-  # Set default shell to fish global
-  users.defaultUserShell = pkgs.fish;
+  users = {
+    # Set default shell to fish global
+    defaultUserShell = pkgs.fish;
+    # Only immutable users
+    mutableUsers = false;
+    users.root.initialHashedPassword = "${cat} ${config.sops.secrets.user_password.path}";
+  };
 }

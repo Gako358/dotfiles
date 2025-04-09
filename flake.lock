@@ -658,7 +658,8 @@
         "nixpkgs": "nixpkgs_2",
         "nur": "nur",
         "scramgit": "scramgit",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "zen-browser": "zen-browser"
       }
     },
     "scramgit": {
@@ -804,6 +805,26 @@
       "original": {
         "owner": "hyprwm",
         "repo": "xdg-desktop-portal-hyprland",
+        "type": "github"
+      }
+    },
+    "zen-browser": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1743912348,
+        "narHash": "sha256-Ui+kUYOhkQ0wkoJbCPLN/LpYQGp+R5sNVsawZWZsEcQ=",
+        "owner": "youwen5",
+        "repo": "zen-browser-flake",
+        "rev": "75acddf6a50f3a4dd920a3a7220828605ba91090",
+        "type": "github"
+      },
+      "original": {
+        "owner": "youwen5",
+        "repo": "zen-browser-flake",
         "type": "github"
       }
     }

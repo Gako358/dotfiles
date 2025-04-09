@@ -65,7 +65,7 @@
   fileSystems."/" = {
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
-    options = [ "subvol=nix" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
+    options = [ "subvol=root" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
   };
 
   fileSystems."/nix" = {

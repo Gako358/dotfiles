@@ -40,13 +40,17 @@
 
     # Scramgit
     scramgit.url = "github:gako358/scram";
+
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     { self
     , nixpkgs
     , home-manager
-    , nix-colors
     , ...
     } @ inputs:
     let
@@ -134,8 +138,8 @@
             master = false;
           };
           modules = [
-            inputs.home-manager.nixosModules.home-manager
             inputs.impermanence.nixosModules.impermanence
+            inputs.home-manager.nixosModules.home-manager
             ./system
             ./hosts/seanchan
             {

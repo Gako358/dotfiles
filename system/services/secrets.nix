@@ -23,6 +23,7 @@
         owner = "merrinx";
         group = "users";
       };
+      user_password = { };
     };
 
     age = {

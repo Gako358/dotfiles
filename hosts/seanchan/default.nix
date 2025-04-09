@@ -1,3 +1,7 @@
+{ pkgs, config, ... }:
+let
+  cat = "${pkgs.coreutils}/bin/cat";
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -6,6 +10,7 @@
   users.users = {
     merrinx = {
       isNormalUser = true;
+      initialhasedpassword = "${cat} ${config.sops.secrets.user_password.path}";
       openssh.authorizedKeys.keys = [
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
