@@ -91,9 +91,6 @@
                   master = true;
                 };
                 backupFileExtension = ".hm-backup";
-                sharedModules = [
-                  inputs.sops-nix.homeManagerModules.sops
-                ];
                 users.merrinx = { ... }: {
                   nixpkgs.config.allowUnfree = true;
                   imports = [ ./modules ];
@@ -138,6 +135,7 @@
           };
           modules = [
             inputs.home-manager.nixosModules.home-manager
+            inputs.impermanence.nixosModules.impermanence
             ./system
             ./hosts/seanchan
             {
