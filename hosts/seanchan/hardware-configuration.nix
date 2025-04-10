@@ -34,7 +34,7 @@
       luks.devices."crypted" = {
         device = "/dev/vda2";
         preLVM = true;
-        allowDiscards = true;
+        allowDiscards = false;
       };
       systemd = {
         enable = true;
@@ -77,8 +77,8 @@
       };
     };
 
-    plymouth.enable = true;
-    kernelParams = [ "quiet" "splash" ];
+    # plymouth.enable = true;
+    # kernelParams = [ "quiet" "splash" ];
     kernelModules = [ ];
     extraModulePackages = [ ];
   };
@@ -111,7 +111,7 @@
   fileSystems."/boot/efi" = {
     device = "/dev/vda1";
     fsType = "vfat";
-    options = [ "umask=0077" ];
+    options = [ "fmask=0077" "dmask=0077" "defaults" ];
   };
 
   swapDevices = [
