@@ -55,11 +55,7 @@ in
         smtp = {
           host = "127.0.0.1";
           port = 1025;
-          tls = {
-            enable = true;
-            useStartTls = true;
-            certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
-          };
+          tls.enable = false;
         };
         msmtp.enable = true;
       };

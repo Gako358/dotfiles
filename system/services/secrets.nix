@@ -23,6 +23,11 @@
         owner = "merrinx";
         group = "users";
       };
+      "email_username" = {
+        mode = "0600";
+        owner = "merrinx";
+        group = "users";
+      };
     };
 
     age = {

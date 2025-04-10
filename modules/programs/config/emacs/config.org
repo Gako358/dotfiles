@@ -786,7 +786,7 @@ My email configuration transforms Emacs into a powerful email client with severa
 + *Integration*: Seamlessly connect email with notes, tasks, and calendar
 + *Distraction-free*: Batch process email on your schedule, not the inbox's
 
-*** Mu4e
+** Mu4e
 #+begin_src emacs-lisp
   (use-package mu4e
     :ensure t
