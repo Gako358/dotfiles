@@ -1,6 +1,7 @@
 {
   imports = [
     ./bluetooth.nix
+    ./btrbk.nix
     ./dbus.nix
     ./gnome.nix
     ./msmtp.nix
