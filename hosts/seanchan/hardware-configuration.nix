@@ -22,11 +22,13 @@
       availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" ];
       kernelModules = [ ];
       luks.devices = {
-        crypted = {
+        cryptroot = {
           device = "/dev/vda3";
           preLVM = false; # VM
           allowDiscards = false; # Enable if using SSD for TRIM support
-          keyFile = "/keys/luks-key"; # Path to keyfile in initrd
+        };
+        cryptswap = {
+          device = "/dev/vda2";
         };
       };
       postResumeCommands = lib.mkAfter ''
@@ -59,26 +61,26 @@
   };
 
   fileSystems."/" = {
-    device = "/dev/mapper/crypted";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = [ "subvol=root" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
   };
 
   fileSystems."/nix" = {
-    device = "/dev/mapper/crypted";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = [ "subvol=nix" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
   };
 
   fileSystems."/persist" = {
     neededForBoot = true;
-    device = "/dev/mapper/crypted";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = [ "subvol=persist" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
   };
 
   fileSystems."/home" = {
-    device = "/dev/mapper/crypted";
+    device = "/dev/mapper/cryptroot";
     fsType = "btrfs";
     options = [ "subvol=home" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
   };
@@ -101,9 +103,8 @@
     options = [ "bind" ];
   };
 
-  # Swap configuration
   swapDevices = [
-    { device = "/dev/vda2"; }
+    { device = "/dev/mapper/cryptswap"; }
   ];
 
   # Enables DHCP on each ethernet and wireless interface.
