@@ -2,17 +2,14 @@
 
 DEVICE_NAME="/dev/vda"
 EFI_SIZE="512MiB"
-SWAP_SIZE="1.9GiB"
 LABEL_NAME="NIXOS"
 CRYPTROOT_NAME="cryptroot"
-CRYPTSWAP_NAME="cryptswap"
 
 function create_partitions {
   # Create partitions
   parted --script -a optimal "${DEVICE_NAME}" mklabel gpt
   parted --script -a optimal "${DEVICE_NAME}" mkpart efi 0% "${EFI_SIZE}"
-  parted --script -a optimal "${DEVICE_NAME}" mkpart swap "${EFI_SIZE}" "${SWAP_SIZE}"
-  parted --script -a optimal "${DEVICE_NAME}" mkpart nixos "${SWAP_SIZE}" 100%
+  parted --script -a optimal "${DEVICE_NAME}" mkpart nixos "${EFI_SIZE}" 100%
   parted --script -a optimal "${DEVICE_NAME}" set 1 boot on
 
   echo "Partitions created"
@@ -23,20 +20,15 @@ function create_partitions {
 
 function setup_encryption {
   # Encrypt the root partition
-  cryptsetup --verify-passphrase -v luksFormat "${DEVICE_NAME}3"
-  cryptsetup open "${DEVICE_NAME}3" "${CRYPTROOT_NAME}"
-
-  # Encrypt the swap partition
   cryptsetup --verify-passphrase -v luksFormat "${DEVICE_NAME}2"
-  cryptsetup open "${DEVICE_NAME}2" "${CRYPTSWAP_NAME}"
+  cryptsetup open "${DEVICE_NAME}2" "${CRYPTROOT_NAME}"
 
   echo "LUKS setup completed"
 }
 
 function setup_filesystems {
-  # Format EFI and swap partitions
+  # Format EFI partition
   mkfs.fat -F32 -n EFI "${DEVICE_NAME}1"
-  mkswap -L SWAP "${DEVICE_NAME}2"
   mkfs.btrfs -L "${LABEL_NAME}" -f "/dev/mapper/${CRYPTROOT_NAME}"
 
   echo "Partitions formatted"
@@ -60,7 +52,6 @@ function setup_filesystems {
 
   # Mount EFI partition
   mount "${DEVICE_NAME}1" /mnt/boot/efi
-  swapon "/dev/mapper/${CRYPTSWAP_NAME}"
 
   # Create directories for persistent data
   mkdir -p /mnt/persist/var/log

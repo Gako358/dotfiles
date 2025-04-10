@@ -23,12 +23,9 @@
       kernelModules = [ ];
       luks.devices = {
         cryptroot = {
-          device = "/dev/vda3";
+          device = "/dev/vda2";
           preLVM = false; # VM
           allowDiscards = false; # Enable if using SSD for TRIM support
-        };
-        cryptswap = {
-          device = "/dev/vda2";
         };
       };
       postResumeCommands = lib.mkAfter ''
@@ -88,6 +85,7 @@
   fileSystems."/boot/efi" = {
     device = "/dev/vda1";
     fsType = "vfat";
+    options = [ "umask=0077" ];
   };
 
   # Persistent bind mounts
@@ -102,10 +100,6 @@
     fsType = "none";
     options = [ "bind" ];
   };
-
-  swapDevices = [
-    { device = "/dev/mapper/cryptswap"; }
-  ];
 
   # Enables DHCP on each ethernet and wireless interface.
   networking.useDHCP = lib.mkDefault true;
