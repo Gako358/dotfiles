@@ -70,7 +70,7 @@ function setup_filesystems {
   mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=home "/dev/mapper/${LUKS_NAME}" /mnt/home
 
   # Mount EFI partition
-  mount "${DEVICE_NAME}p1" /mnt/boot/efi
+  mount "${DEVICE_NAME}1" /mnt/boot/efi
 
   # Create directories for persistent data
   mkdir -p /mnt/persist/var/log
