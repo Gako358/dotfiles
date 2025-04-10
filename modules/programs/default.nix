@@ -70,5 +70,6 @@ in
   ./network.nix
   ./starship.nix
   ./waybar.nix
+  ./zen.nix
   more
 ]

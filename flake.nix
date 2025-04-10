@@ -38,6 +38,11 @@
       inputs.hyprland.follows = "hyprland";
     };
 
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Scramgit
     scramgit.url = "github:gako358/scram";
   };

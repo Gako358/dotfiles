@@ -43,9 +43,8 @@
         windowrule = float, class:^(org.kde.kdeconnect-settings)$
         windowrule = float, class:^(org.pulseaudio.pavucontrol)$
 
-        windowrule = workspace 1, class:^(nyxt)$
+        windowrule = workspace 1, class:^(zen)$
         windowrule = workspace 5, class:^(Wfica)$
-        windowrule = workspace 6, class:^(chromium-browser)$
         windowrule = workspace 7, class:^(steam)$
         windowrule = workspace 7, title:^(Friends List)$
         windowrule = workspace 8, class:^(Slack)$
