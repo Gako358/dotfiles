@@ -36,34 +36,45 @@
         preLVM = true;
         allowDiscards = true;
       };
-      systemd.enable = true;
-      postDeviceCommands = lib.mkAfter ''
-        mkdir -p /tmp/btrfs_tmp
-        mount -o subvol=/ /dev/mapper/crypted /tmp/btrfs_tmp
-        if [[ -e /tmp/btrfs_tmp/root ]]; then
-            mkdir -p /tmp/btrfs_tmp/old_roots
-            timestamp=$(date --date="@$(stat -c %Y /tmp/btrfs_tmp/root)" "+%Y-%m-%-d_%H:%M:%S")
-            mv /tmp/btrfs_tmp/root "/tmp/btrfs_tmp/old_roots/$timestamp"
-        fi
+      systemd = {
+        enable = true;
+        services.btrfs-prepare = {
+          description = "Prepare btrfs subvolumes for root";
+          wantedBy = [ "initrd.target" ];
+          after = [ "dev-mapper-crypted.device" ];
+          before = [ "sysroot.mount" ];
+          unitConfig.DefaultDependencies = "no";
+          serviceConfig.Type = "oneshot";
+          path = [ "/bin" config.system.build.extraUtils ];
+          script = ''
+            mkdir -p /tmp/btrfs_tmp
+            mount -o subvol=/ /dev/mapper/crypted /tmp/btrfs_tmp
+            if [[ -e /tmp/btrfs_tmp/root ]]; then
+                mkdir -p /tmp/btrfs_tmp/old_roots
+                timestamp=$(date --date="@$(stat -c %Y /tmp/btrfs_tmp/root)" "+%Y-%m-%-d_%H:%M:%S")
+                mv /tmp/btrfs_tmp/root "/tmp/btrfs_tmp/old_roots/$timestamp"
+            fi
 
-        delete_subvolume_recursively() {
-            IFS=$'\n'
-            for subvol in $(btrfs subvolume list -o "$1" | cut -f 9- -d ' '); do
-                delete_subvolume_recursively "/tmp/btrfs_tmp/$subvol"
+            delete_subvolume_recursively() {
+                IFS=$'\n'
+                for subvol in $(btrfs subvolume list -o "$1" | cut -f 9- -d ' '); do
+                    delete_subvolume_recursively "/tmp/btrfs_tmp/$subvol"
+                done
+                btrfs subvolume delete "$1"
+            }
+
+            # Delete old roots after 30 days
+            for old_root in $(find /tmp/btrfs_tmp/old_roots/ -maxdepth 1 -mtime +30); do
+                delete_subvolume_recursively "$old_root"
             done
-            btrfs subvolume delete "$1"
-        }
 
-        # Delete old roots after 30 days
-        for old_root in $(find /tmp/btrfs_tmp/old_roots/ -maxdepth 1 -mtime +30); do
-            delete_subvolume_recursively "$old_root"
-        done
-
-        # Create new root subvolume
-        btrfs subvolume create /tmp/btrfs_tmp/root
-        umount /tmp/btrfs_tmp
-        rmdir /tmp/btrfs_tmp
-      '';
+            # Create new root subvolume
+            btrfs subvolume create /tmp/btrfs_tmp/root
+            umount /tmp/btrfs_tmp
+            rmdir /tmp/btrfs_tmp
+          '';
+        };
+      };
     };
 
     plymouth.enable = true;
