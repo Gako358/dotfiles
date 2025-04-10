@@ -19,12 +19,12 @@
       };
     };
     initrd = {
-      availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" ];
+      availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" "aes_x86_64" "cryptd" "crypto_simd" ];
       kernelModules = [ ];
       luks.devices = {
         cryptroot = {
           device = "/dev/vda2";
-          preLVM = false; # VM
+          preLVM = true;
           allowDiscards = false; # Enable if using SSD for TRIM support
         };
       };
