@@ -54,6 +54,7 @@ in
     defaultUserShell = pkgs.fish;
     # Only immutable users
     mutableUsers = false;
-    users.root.initialHashedPassword = "${cat} ${config.sops.secrets.user_password.path}";
+    # users.root.initialHashedPassword = "${cat} ${config.sops.secrets.user_password.path}";
+    users.root.initialHashedPassword = "$6$q55Gre13G5rj57hp$F6fAXY09o.PcFv3TALyVB.B1JDntOC4ZSLDSKXfYyMpCDpV4MS.rL.gl3hcV6y6JmzOjzd16TQFNb.HPGP6z2.";
   };
 }

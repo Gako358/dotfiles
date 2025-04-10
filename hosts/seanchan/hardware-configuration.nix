@@ -69,12 +69,14 @@
   };
 
   fileSystems."/nix" = {
+    neededForBoot = true;
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
     options = [ "subvol=nix" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
   };
 
   fileSystems."/persist" = {
+    neededForBoot = true;
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
     options = [ "subvol=persist" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];

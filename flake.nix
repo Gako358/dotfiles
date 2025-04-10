@@ -24,7 +24,7 @@
     hardware.url = "github:nixos/nixos-hardware"; # Convenience modules for hardware-specific quirks
     nur.url = "github:nix-community/NUR"; # User contributed pkgs and modules
     nix-colors.url = "github:misterio77/nix-colors"; # Color schemes for usage with home-manager
-    impermanence.url = "github:riscadoa/impermanence"; # Utilities for opt-in persistance
+    impermanence.url = "github:nix-community/impermanence"; # Utilities for opt-in persistance
 
     # Hyprland
     hyprland.url = "github:hyprwm/hyprland";
