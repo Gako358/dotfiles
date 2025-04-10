@@ -50,16 +50,10 @@ function setup_filesystems {
   btrfs subvolume create /mnt/persist
   btrfs subvolume create /mnt/home
 
-  # Unmount the temporary mount
   umount /mnt
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=root "/dev/mapper/${CRYPTROOT_NAME}" /mnt
 
-  # Mount the root subvolume first
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=@ "/dev/mapper/${CRYPTROOT_NAME}" /mnt
-
-  # Create necessary directories in the tmpfs root
   mkdir -p /mnt/{boot/efi,nix,persist,etc/nixos,var/log,home}
-
-  # Mount BTRFS subvolumes
   mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=nix "/dev/mapper/${CRYPTROOT_NAME}" /mnt/nix
   mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=persist "/dev/mapper/${CRYPTROOT_NAME}" /mnt/persist
   mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=home "/dev/mapper/${CRYPTROOT_NAME}" /mnt/home
