@@ -3,7 +3,6 @@
 DEVICE_NAME="/dev/vda"
 EFI_SIZE="512MiB"
 LABEL_NAME="NIXOS"
-CRYPTROOT_NAME="cryptroot"
 
 function create_partitions {
   # Create partitions
@@ -18,23 +17,15 @@ function create_partitions {
   lsblk
 }
 
-function setup_encryption {
-  # Encrypt the root partition
-  cryptsetup --verify-passphrase -v luksFormat "${DEVICE_NAME}2"
-  cryptsetup open "${DEVICE_NAME}2" "${CRYPTROOT_NAME}"
-
-  echo "LUKS setup completed"
-}
-
 function setup_filesystems {
   # Format EFI partition
   mkfs.fat -F32 -n EFI "${DEVICE_NAME}1"
-  mkfs.btrfs -L "${LABEL_NAME}" -f "/dev/mapper/${CRYPTROOT_NAME}"
+  mkfs.btrfs -L "${LABEL_NAME}" -f "${DEVICE_NAME}2"
 
   echo "Partitions formatted"
 
   # Mount the btrfs partition temporarily for subvolume creation
-  mount "/dev/mapper/${CRYPTROOT_NAME}" /mnt
+  mount "${DEVICE_NAME}2" /mnt
 
   # Create BTRFS subvolumes
   btrfs subvolume create /mnt/root
@@ -43,12 +34,12 @@ function setup_filesystems {
   btrfs subvolume create /mnt/home
 
   umount /mnt
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=root "/dev/mapper/${CRYPTROOT_NAME}" /mnt
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=root "${DEVICE_NAME}2" /mnt
 
   mkdir -p /mnt/{boot/efi,nix,persist,etc/nixos,var/log,home}
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=nix "/dev/mapper/${CRYPTROOT_NAME}" /mnt/nix
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=persist "/dev/mapper/${CRYPTROOT_NAME}" /mnt/persist
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=home "/dev/mapper/${CRYPTROOT_NAME}" /mnt/home
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=nix "${DEVICE_NAME}2" /mnt/nix
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=persist "${DEVICE_NAME}2" /mnt/persist
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=home "${DEVICE_NAME}2" /mnt/home
 
   # Mount EFI partition
   mount "${DEVICE_NAME}1" /mnt/boot/efi
@@ -61,7 +52,7 @@ function setup_filesystems {
   mount -o bind /mnt/persist/etc/nixos /mnt/etc/nixos
   mount -o bind /mnt/persist/var/log /mnt/var/log
 
-  echo "Filesystems set up with BTRFS subvolumes on encrypted LUKS container:"
+  echo "Filesystems set up with BTRFS subvolumes:"
   echo ""
   df -Th
   free -h
@@ -69,7 +60,6 @@ function setup_filesystems {
 }
 
 create_partitions
-setup_encryption
 setup_filesystems
 
 echo ""
