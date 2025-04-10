@@ -4,7 +4,8 @@ DEVICE_NAME="/dev/vda"
 EFI_SIZE="512MiB"
 SWAP_SIZE="1.9GiB"
 LABEL_NAME="NIXOS"
-LUKS_NAME="crypted"
+CRYPTROOT_NAME="cryptroot"
+CRYPTSWAP_NAME="cryptswap"
 
 function create_partitions {
   # Create partitions
@@ -21,33 +22,27 @@ function create_partitions {
 }
 
 function setup_encryption {
-  # Encrypt the nixos partition
-  echo "Setting up LUKS encryption on ${DEVICE_NAME}3"
-  echo "You will be prompted to enter and confirm a passphrase for encryption."
+  # Encrypt the root partition
+  cryptsetup --verify-passphrase -v luksFormat "${DEVICE_NAME}3"
+  cryptsetup open "${DEVICE_NAME}3" "${CRYPTROOT_NAME}"
 
-  # Format the partition with LUKS
-  cryptsetup luksFormat "${DEVICE_NAME}3"
+  # Encrypt the swap partition
+  cryptsetup --verify-passphrase -v luksFormat "${DEVICE_NAME}2"
+  cryptsetup open "${DEVICE_NAME}2" "${CRYPTSWAP_NAME}"
 
-  # Open the encrypted partition
-  echo "Opening the encrypted partition"
-  cryptsetup open "${DEVICE_NAME}3" "${LUKS_NAME}"
-
-  # Show the mapped device
-  echo "Encrypted partition mapped to /dev/mapper/${LUKS_NAME}"
+  echo "LUKS setup completed"
 }
 
 function setup_filesystems {
   # Format EFI and swap partitions
   mkfs.fat -F32 -n EFI "${DEVICE_NAME}1"
   mkswap -L SWAP "${DEVICE_NAME}2"
-
-  # Format the encrypted partition with BTRFS
-  mkfs.btrfs -L "${LABEL_NAME}" -f "/dev/mapper/${LUKS_NAME}"
+  mkfs.btrfs -L "${LABEL_NAME}" -f "/dev/mapper/${CRYPTROOT_NAME}"
 
   echo "Partitions formatted"
 
   # Mount the btrfs partition temporarily for subvolume creation
-  mount "/dev/mapper/${LUKS_NAME}" /mnt
+  mount "/dev/mapper/${CRYPTROOT_NAME}" /mnt
 
   # Create BTRFS subvolumes
   btrfs subvolume create /mnt/root
@@ -59,18 +54,19 @@ function setup_filesystems {
   umount /mnt
 
   # Mount the root subvolume first
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=@ "/dev/mapper/${LUKS_NAME}" /mnt
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=@ "/dev/mapper/${CRYPTROOT_NAME}" /mnt
 
   # Create necessary directories in the tmpfs root
   mkdir -p /mnt/{boot/efi,nix,persist,etc/nixos,var/log,home}
 
   # Mount BTRFS subvolumes
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=nix "/dev/mapper/${LUKS_NAME}" /mnt/nix
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=persist "/dev/mapper/${LUKS_NAME}" /mnt/persist
-  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=home "/dev/mapper/${LUKS_NAME}" /mnt/home
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=nix "/dev/mapper/${CRYPTROOT_NAME}" /mnt/nix
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=persist "/dev/mapper/${CRYPTROOT_NAME}" /mnt/persist
+  mount -o noatime,compress=zstd,ssd,space_cache=v2,subvol=home "/dev/mapper/${CRYPTROOT_NAME}" /mnt/home
 
   # Mount EFI partition
   mount "${DEVICE_NAME}1" /mnt/boot/efi
+  swapon "/dev/mapper/${CRYPTSWAP_NAME}"
 
   # Create directories for persistent data
   mkdir -p /mnt/persist/var/log
@@ -80,30 +76,16 @@ function setup_filesystems {
   mount -o bind /mnt/persist/etc/nixos /mnt/etc/nixos
   mount -o bind /mnt/persist/var/log /mnt/var/log
 
-  # Enable swap
-  swapon "${DEVICE_NAME}2"
-
   echo "Filesystems set up with BTRFS subvolumes on encrypted LUKS container:"
   echo ""
   df -Th
   free -h
-  echo "Run: nixos-install --flake .#seanchan"
-}
-
-function create_keyfile {
-  echo "Creating a keyfile for automatic unlocking during boot..."
-
-  mkdir -p /mnt/boot/keys
-  dd if=/dev/urandom of=/mnt/boot/keys/luks-key bs=1 count=4096
-  chmod 600 /mnt/boot/keys/luks-key
-
-  cryptsetup luksAddKey "${DEVICE_NAME}3" /mnt/boot/keys/luks-key
+  echo "Run: nixos-install --flake .#seanchan --no-root-password"
 }
 
 create_partitions
 setup_encryption
 setup_filesystems
-create_keyfile
 
 echo ""
 echo "Setup complete!"

@@ -29,10 +29,6 @@
           keyFile = "/keys/luks-key"; # Path to keyfile in initrd
         };
       };
-      secrets = {
-        "/keys/luks-key" = "/boot/keys/luks-key";
-      };
-
       postResumeCommands = lib.mkAfter ''
         mkdir /btrfs_tmp
             mount /dev/mapper/crypted /btrfs_tmp
@@ -69,7 +65,6 @@
   };
 
   fileSystems."/nix" = {
-    neededForBoot = true;
     device = "/dev/mapper/crypted";
     fsType = "btrfs";
     options = [ "subvol=nix" "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
