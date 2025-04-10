@@ -1,8 +1,7 @@
 { pkgs
-, lib
 , ...
 }:
-with lib; {
+{
   imports = [
     ./cachix
     ./desktop.nix
