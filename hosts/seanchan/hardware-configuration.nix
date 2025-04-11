@@ -14,11 +14,11 @@
       postResumeCommands = lib.mkAfter ''
         mkdir -p /btrfs_tmp
         mount -o subvolid=5 /dev/mapper/crypted /btrfs_tmp
-        mkdir -p /btrfs_tmp/persist/root_snapshots
+        mkdir -p /btrfs_tmp/persist/snapshots/root
 
         if [[ -e /btrfs_tmp/root ]]; then
             timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
-            mv /btrfs_tmp/root "/btrfs_tmp/persist/root_snapshots/$timestamp"
+            mv /btrfs_tmp/root "/btrfs_tmp/persist/snapshots/root/$timestamp"
         fi
 
         delete_subvolume_recursively() {
@@ -28,10 +28,7 @@
             done
             btrfs subvolume delete "$1"
         }
-
-        for i in $(find /btrfs_tmp/persist/root_snapshots/ -maxdepth 1 -mtime +30); do
-            delete_subvolume_recursively "$i"
-        done
+        btrbk run
 
         btrfs subvolume create /btrfs_tmp/root
         umount /btrfs_tmp

@@ -11,7 +11,12 @@
         volume."/persist" = {
           snapshot_create = "always";
           subvolume = ".";
-          snapshot_dir = ".snapshots";
+          snapshot_dir = "snapshots/persist";
+        };
+        volume."/btrfs_tmp" = {
+          snapshot_create = "no";
+          subvolume = "root";
+          snapshot_dir = "/persist/snapshots/root";
         };
       };
     };
