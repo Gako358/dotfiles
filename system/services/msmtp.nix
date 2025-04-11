@@ -12,8 +12,8 @@ in
       port = 1025;
       from = "${cat} ${config.sops.secrets."email_username".path}";
       user = "${cat} ${config.sops.secrets."email_username".path}";
-      tls = false;
-      tls_starttls = false;
+      tls = true;
+      tls_starttls = true;
       passwordeval = "${cat} ${config.sops.secrets."email_home-passwd".path}";
     };
   };
