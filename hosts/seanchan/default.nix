@@ -1,9 +1,10 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 let
   cat = "${pkgs.coreutils}/bin/cat";
 in
 {
   imports = [
+    ./disko.nix
     ./hardware-configuration.nix
   ];
   networking.hostName = "seanchan";
@@ -16,20 +17,6 @@ in
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
       extraGroups = [ "wheel" "networkmanager" "docker" "video" "audio" "plugdev" ];
-    };
-  };
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        Name = "Computer";
-        ControllerMode = "dual";
-        FastConnectable = "true";
-        Experimental = "true";
-      };
-      Policy = { AutoEnable = "true"; };
-      LE = { EnableAdvMonInterleaveScan = "true"; };
     };
   };
 }
