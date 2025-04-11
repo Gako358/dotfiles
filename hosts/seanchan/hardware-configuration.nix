@@ -12,11 +12,11 @@
       availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
       kernelModules = [ ];
       postResumeCommands = lib.mkAfter ''
-        mkdir /btrfs_tmp
-        mount /dev/root_vg/root /btrfs_tmp
+        mkdir -p /btrfs_tmp
+        mount -o subvolid=5 /dev/mapper/crypted /btrfs_tmp
         if [[ -e /btrfs_tmp/root ]]; then
             mkdir -p /btrfs_tmp/old_roots
-            timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%-d_%H:%M:%S")
+            timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
             mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
         fi
 
