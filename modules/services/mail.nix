@@ -73,17 +73,17 @@ in
     frequency = "*:0/1";
   };
 
-  systemd.user.services.protonmail-bridge = {
-    Unit = {
-      Description = "Proton Mail Bridge";
-      After = [ "network.target" ];
-    };
-    Service = {
-      Restart = "always";
-      RestartSec = 5;
-      ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
-      ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --noninteractive --log-level debug";
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
+  # systemd.user.services.protonmail-bridge = {
+  #   Unit = {
+  #     Description = "Proton Mail Bridge";
+  #     After = [ "network.target" ];
+  #   };
+  #   Service = {
+  #     Restart = "always";
+  #     RestartSec = 10;
+  #     ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
+  #     ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --noninteractive --log-level debug";
+  #   };
+  #   Install.WantedBy = [ "default.target" ];
+  # };
 }

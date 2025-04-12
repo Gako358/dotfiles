@@ -47,11 +47,14 @@
           ".cargo"
           ".m2"
           ".npm"
+          ".zen"
 
           ".config/discord"
           ".config/protonmail"
           ".config/Slack"
           ".config/spotify"
+          ".config/sops"
+          ".config/sops-nix"
         ];
         files = [
           ".screenrc"
