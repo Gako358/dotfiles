@@ -49,7 +49,9 @@ in
         ".pulumi"
         ".zen"
 
+        ".config/copilot-chat"
         ".config/discord"
+        ".config/github-copilot"
         ".config/protonmail"
         ".config/Slack"
         ".config/spotify"
