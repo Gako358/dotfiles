@@ -143,7 +143,10 @@
                 backupFileExtension = ".hm-backup";
                 users.merrinx = { ... }: {
                   nixpkgs.config.allowUnfree = true;
-                  imports = [ ./modules ];
+                  imports = [
+                    inputs.impermanence.homeManagerModules.impermanence
+                    ./modules
+                  ];
                 };
               };
             }

@@ -30,7 +30,44 @@ in
   home = {
     inherit username homeDirectory;
     stateVersion = "24.11";
+
+    # Impermanence
+    persistence."/persist/dotfiles" = {
+      removePrefixDirectory = true;
+      allowOther = true;
+      directories = [
+        "Documents"
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Projects"
+        "Sources"
+
+        ".local/share/direnv"
+
+        ".cargo"
+        ".m2"
+        ".npm"
+        ".zen"
+        ".gnupg"
+        ".ssh"
+        ".nixops"
+        ".local/share/keyrings"
+        ".pulumi"
+
+        ".config/discord"
+        ".config/protonmail"
+        ".config/Slack"
+        ".config/spotify"
+        ".config/sops"
+        ".config/sops-nix"
+      ];
+      files = [
+        ".screenrc"
+      ];
+    };
   };
+
 
   # restart services on change
   systemd.user.startServices = "sd-switch";

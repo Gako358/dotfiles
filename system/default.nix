@@ -4,10 +4,6 @@
 , pkgs
 , ...
 }:
-let
-  cat = "${pkgs.coreutils}/bin/cat";
-
-in
 {
   imports = [
     inputs.sops-nix.nixosModules.sops
@@ -47,6 +43,20 @@ in
   security = {
     rtkit.enable = true;
     pam.services.swaylock = { };
+  };
+
+  # Impermanence
+  environment.persistence."/persist" = {
+    hideMounts = true;
+    directories = [
+      "/var/log"
+      "/var/lib"
+      "/etc/ssh"
+      "/etc/NetworkManager/system-connections"
+    ];
+    files = [
+      "/etc/machine-id"
+    ];
   };
 
   users = {
