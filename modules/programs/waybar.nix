@@ -8,11 +8,6 @@ let
     fontsize = fontSize;
     iconsize = iconSize;
     background-color = "rgba(26, 26, 26, ${opacity})";
-    background = "#272727";
-    foreground = "#aeafb0";
-    dark = "#434343";
-    red = "#c94f6d";
-    yellow = "#dbc074";
     blue = "#719cd6";
     grey = "#665c54";
   };
