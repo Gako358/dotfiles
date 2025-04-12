@@ -9,7 +9,6 @@ let
   swappy = "${pkgs.swappy}/bin/swappy";
   wofi = "${pkgs.wofi}/bin/wofi";
   terminal = "${pkgs.alacritty}/bin/alacritty";
-  tmpScreenshot = "/tmp/current_background.png";
   lockScreen = "${pkgs.hyprlock}/bin/hyprlock";
 in
 {
@@ -21,7 +20,7 @@ in
     bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
 
     # Lockscreen with screenshot
-    bind = ${mainMod} ${SECONDARY}, L, exec, rm -f ${tmpScreenshot} && ${grimshot} save screen ${tmpScreenshot} && ${lockScreen}
+    bind = ${mainMod} ${SECONDARY}, L, exec, ${lockScreen}
 
     # Screenshot
     bind = ${mainMod} ${SECONDARY}, P, exec, ${grimshot} --notify save area - | ${swappy} -f -

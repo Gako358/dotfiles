@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 let
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   hyprlock = "${pkgs.hyprlock}/bin/hyprlock";
@@ -7,6 +7,7 @@ in
 {
   services.hypridle = {
     enable = true;
+    package = inputs.hypridle.packages.${pkgs.system}.hypridle;
 
     settings = {
       general = {

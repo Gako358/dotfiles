@@ -50,13 +50,9 @@ in
         ".pulumi"
         ".zen"
 
-        ".cache/copilot-chat"
-        ".cache/spotify"
-
         ".config/copilot-chat"
         ".config/discord"
         ".config/github-copilot"
-        ".config/hypr"
         ".config/protonmail"
         ".config/Slack"
         ".config/spotify"
@@ -67,9 +63,6 @@ in
     stateVersion = "24.11";
   };
 
-  # restart services on change
   systemd.user.startServices = "sd-switch";
-
-  # notifications about home-manager news
   news.display = "silent";
 }
