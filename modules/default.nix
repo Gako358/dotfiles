@@ -45,6 +45,7 @@ in
         ".cargo"
         ".m2"
         ".npm"
+        ".password-store"
         ".pulumi"
         ".zen"
 
