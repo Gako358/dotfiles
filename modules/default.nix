@@ -37,7 +37,7 @@ in
         "Music"
         "Pictures"
         "Projects"
-        "Sources/dotfiles"
+        "Sources"
 
         ".local/share/direnv"
         ".local/share/fish"
