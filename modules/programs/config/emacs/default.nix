@@ -212,6 +212,7 @@ in
 
         # Project
         projectile # Project Interaction Library for Emacs
+        projectile-ripgrep # Ripgrep integration for Projectile
 
         # Terminal
         detached # Detached mode for Emacs

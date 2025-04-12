@@ -8,6 +8,7 @@
   ];
 
   boot = {
+    consoleLogLevel = 3;
     extraModulePackages = [ ];
     initrd = {
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
@@ -27,9 +28,16 @@
         btrfs subvolume create /btrfs_tmp/root
         umount /btrfs_tmp
       '';
+      verbose = false;
     };
     kernelModules = [ "kvm-amd" ];
-    # kernelParams = [ "quiet" "splash" ];
+    kernelParams = [
+      "quiet"
+      "splash"
+      "boot.shell_on_fail"
+      "udev.log_priority=3"
+      "rd.systemd.show_status=auto"
+    ];
     loader = {
       efi = {
         canTouchEfiVariables = true;
@@ -37,7 +45,7 @@
       };
       systemd-boot.enable = true;
     };
-    # plymouth.enable = true;
+    plymouth.enable = true;
   };
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
