@@ -43,15 +43,19 @@ in
         ".local/share/fish"
 
         ".cargo"
+        ".emacs.d"
         ".m2"
         ".npm"
         ".password-store"
         ".pulumi"
         ".zen"
 
+        ".cache/copilot-chat"
+        ".cache/spotify"
+
         ".config/copilot-chat"
         ".config/discord"
-        ".config/github-copilot"
+        ".config/hypr"
         ".config/protonmail"
         ".config/Slack"
         ".config/spotify"
