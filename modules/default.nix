@@ -55,6 +55,7 @@ in
 
         ".config/copilot-chat"
         ".config/discord"
+        ".config/github-copilot"
         ".config/hypr"
         ".config/protonmail"
         ".config/Slack"

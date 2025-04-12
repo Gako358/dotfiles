@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 let
   metalsVersion = "1.5.1";
   metals = pkgs.metals.overrideAttrs (
@@ -102,7 +102,6 @@ let
 
   # Use the nix-profile path for Home Manager packages
   homeManagerPath = "/etc/profiles/per-user/merrinx/bin";
-  # homeManagerPath = "${config.home.homeDirectory}/.nix-profile/bin";
 
 in
 {
@@ -170,6 +169,7 @@ in
         log4e # Logging framework for Emacs
         s # The long lost Emacs string manipulation library
         password-store # Emacs interface for pass, the standard Unix password manager
+        ripgrep #Ripgrep for Emacs
         wgrep # Writable grep buffer.
 
         # grammars
