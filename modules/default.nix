@@ -29,8 +29,7 @@ in
 
   home = {
     inherit username homeDirectory;
-    persistence."/persist/dotfiles" = {
-      removePrefixDirectory = true;
+    persistence."/persist/home/merrinx" = {
       allowOther = true;
       directories = [
         "Documents"
@@ -38,9 +37,10 @@ in
         "Music"
         "Pictures"
         "Projects"
-        "Sources"
+        "Sources/dotfiles"
 
         ".local/share/direnv"
+        ".local/share/fish"
 
         ".cargo"
         ".m2"
@@ -52,7 +52,7 @@ in
         ".config/protonmail"
         ".config/Slack"
         ".config/spotify"
-        ".config/sops"
+        ".config/sops/age"
         ".config/sops-nix"
       ];
     };

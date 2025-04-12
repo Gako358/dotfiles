@@ -70,6 +70,7 @@
     };
   };
 
+  programs.fuse.userAllowOther = true;
   users = {
     defaultUserShell = pkgs.fish;
     mutableUsers = false;
