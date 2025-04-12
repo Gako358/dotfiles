@@ -101,8 +101,8 @@ let
   systemToolsPath = "/run/current-system/sw/bin";
 
   # Use the nix-profile path for Home Manager packages
-  # homeManagerPath = "/home/merrinx/.nix-profile/bin";
-  homeManagerPath = "${config.home.homeDirectory}/.nix-profile/bin";
+  homeManagerPath = "/etc/profiles/per-user/merrinx/bin";
+  # homeManagerPath = "${config.home.homeDirectory}/.nix-profile/bin";
 
 in
 {

@@ -29,6 +29,33 @@ in
 
   home = {
     inherit username homeDirectory;
+    persistence."/persist/dotfiles" = {
+      removePrefixDirectory = true;
+      allowOther = true;
+      directories = [
+        "Documents"
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Projects"
+        "Sources"
+
+        ".local/share/direnv"
+
+        ".cargo"
+        ".m2"
+        ".npm"
+        ".pulumi"
+        ".zen"
+
+        ".config/discord"
+        ".config/protonmail"
+        ".config/Slack"
+        ".config/spotify"
+        ".config/sops"
+        ".config/sops-nix"
+      ];
+    };
     stateVersion = "24.11";
   };
 

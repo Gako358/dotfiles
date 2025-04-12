@@ -8,65 +8,38 @@
   ];
 
   boot = {
+    extraModulePackages = [ ];
+    initrd = {
+      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      kernelModules = [ "amdgpu" ];
+      postResumeCommands = lib.mkAfter ''
+        mkdir -p /btrfs_tmp
+        mount -o subvolid=5 /dev/mapper/crypted_root /btrfs_tmp
+        mkdir -p /btrfs_tmp/persist/snapshots/root
+
+        if [[ -e /btrfs_tmp/root ]]; then
+            timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%d_%H:%M:%S")
+            mv /btrfs_tmp/root "/btrfs_tmp/persist/snapshots/root/$timestamp"
+        fi
+
+        btrbk run
+
+        btrfs subvolume create /btrfs_tmp/root
+        umount /btrfs_tmp
+      '';
+    };
+    kernelModules = [ "kvm-amd" ];
+    # kernelParams = [ "quiet" "splash" ];
     loader = {
-      systemd-boot.enable = true;
       efi = {
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
       };
+      systemd-boot.enable = true;
     };
-    initrd = {
-      availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-      kernelModules = [ "amdgpu" ];
-      luks.devices = {
-        cryptroot = {
-          device = "/dev/nvme0n1p3";
-          preLVM = true;
-        };
-        cryptswap = {
-          device = "/dev/nvme0n1p2";
-        };
-      };
-    };
-    kernelModules = [ "kvm-amd" ];
-    extraModulePackages = [ ];
+    # plymouth.enable = true;
   };
-
-  fileSystems."/" = {
-    device = "/dev/mapper/cryptroot";
-    fsType = "btrfs";
-    options = [ "subvol=root" "noatime" "compress=zstd" "ssd" ];
-  };
-
-  fileSystems."/home" = {
-    device = "/dev/mapper/cryptroot";
-    fsType = "btrfs";
-    options = [ "subvol=home" "noatime" "compress=zstd" "ssd" ];
-  };
-
-  fileSystems."/tmp" = {
-    device = "/dev/mapper/cryptroot";
-    fsType = "btrfs";
-    options = [ "subvol=tmp" "noatime" "compress=zstd" "ssd" ];
-  };
-
-  fileSystems."/nix" = {
-    device = "/dev/nvme1n1p1";
-    fsType = "btrfs";
-    options = [ "noatime" "compress=zstd" "ssd" ];
-  };
-
-  fileSystems."/boot/efi" = {
-    device = "/dev/nvme0n1p1";
-    fsType = "vfat";
-  };
-
-  swapDevices = [
-    { device = "/dev/mapper/cryptswap"; }
-  ];
-
   networking.useDHCP = lib.mkDefault true;
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

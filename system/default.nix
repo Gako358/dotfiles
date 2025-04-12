@@ -5,7 +5,6 @@
 , ...
 }: {
   imports = [
-    inputs.sops-nix.nixosModules.sops
     ./hardware
     ./programs
     ./services
@@ -47,6 +46,33 @@
     pam.services.swaylock = { };
   };
 
-  # Set default shell to fish global
-  users.defaultUserShell = pkgs.fish;
+  # Impermanence
+  environment.persistence."/persist" = {
+    hideMounts = true;
+    directories = [
+      "/etc/NetworkManager/system-connections"
+      "/etc/ssh"
+      "/var/lib/nixos"
+      "/var/lib/systemd/coredump"
+      "/var/log"
+
+      # Systemd requires /usr dir to be populated
+      # See: https://github.com/nix-community/impermanence/issues/253
+      "/usr/systemd-placeholder"
+    ];
+    users.merrinx = {
+      directories = [
+        { directory = ".gnupg"; mode = "0700"; }
+        { directory = ".ssh"; mode = "0700"; }
+        { directory = ".nixops"; mode = "0700"; }
+        { directory = ".local/share/keyrings"; mode = "0700"; }
+      ];
+    };
+  };
+
+  users = {
+    defaultUserShell = pkgs.fish;
+    mutableUsers = false;
+    users.root.initialHashedPassword = "$6$pbE4rcxk1KsvypJn$ZJlFtw85hgSWzdJnAuZr935zmm6Qc974ehL13/8WGPKnxX4epK5FiP2BBM/q89Gii9Xk0hxVvVKOkdkZuR2xE0";
+  };
 }
