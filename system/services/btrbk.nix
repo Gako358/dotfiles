@@ -1,4 +1,4 @@
-{ specialArgs, ... }: {
+{
   services.btrbk = {
     instances."btrbak" = {
       onCalendar = "*-*-* *:00:00";
@@ -13,12 +13,6 @@
           subvolume = ".";
           snapshot_dir = "snapshots/persist";
         };
-        volume."/nix" =
-          if specialArgs.master then {
-            snapshot_create = "always";
-            subvolume = ".";
-            snapshot_dir = "/persist/snapshots/nix";
-          } else { };
       };
     };
   };
