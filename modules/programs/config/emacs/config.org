@@ -1598,13 +1598,16 @@ Projectile is the go-to project package to use with Emacs.
     (projectile-mode +1)
     :config
     (setq projectile-enable-caching t
-  	projectile-completion-system 'ivy
-  	projectile-indexing-method 'alien
-  	projectile-sort-order 'recently-active
-  	projectile-project-search-path '("~/Projects/" ("~/Projects/workspace/" . 1)))
+  	  projectile-completion-system 'ivy
+  	  projectile-indexing-method 'alien
+  	  projectile-sort-order 'recently-active
+  	  projectile-project-search-path '(("~/Projects/" . 1)
+  					   ("~/Projects/workspace/" . 1)
+  					   ("~/Sources/" . 1)))
 
     (evil-leader/set-key
-      "pc" 'projectile-cleanup-known-projects))
+      "pc" 'projectile-cleanup-known-projects
+      "pd" 'projectile-discover-projects-in-search-path))
 #+end_src
 
 ** Terminal

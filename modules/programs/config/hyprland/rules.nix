@@ -13,11 +13,11 @@
           workspace = 8, monitor:DP-3
           workspace = 9, monitor:DP-3
         '' else ''
-          workspace = 1, monitor:DP-8
+          workspace = 1, monitor:DP-6
           workspace = 2, monitor:DP-8
           workspace = 3, monitor:DP-8
           workspace = 4, monitor:DP-8
-          workspace = 5, monitor:DP-6
+          workspace = 5, monitor:DP-8
           workspace = 6, monitor:DP-6
           workspace = 7, monitor:DP-6
           workspace = 8, monitor:DP-6

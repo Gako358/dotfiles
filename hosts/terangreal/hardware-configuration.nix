@@ -1,6 +1,7 @@
 { modulesPath
 , config
 , lib
+, pkgs
 , ...
 }: {
   imports = [
@@ -45,7 +46,11 @@
       };
       systemd-boot.enable = true;
     };
-    plymouth.enable = true;
+    plymouth = {
+      enable = true;
+      theme = "nixos-bgrt";
+      themePackages = [ pkgs.nixos-bgrt-plymouth ];
+    };
   };
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

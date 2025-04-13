@@ -43,7 +43,6 @@ in
         ".local/share/fish"
 
         ".cargo"
-        ".emacs.d"
         ".m2"
         ".npm"
         ".password-store"
