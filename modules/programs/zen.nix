@@ -15,5 +15,12 @@ let
   };
 in
 {
-  home.packages = [ zenWithWayland ];
+  home = {
+    packages = [ zenWithWayland ];
+    persistence."/persist/home/merrinx" = {
+      directories = [
+        ".zen"
+      ];
+    };
+  };
 }

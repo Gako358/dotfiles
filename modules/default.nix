@@ -39,24 +39,13 @@ in
         "Projects"
         "Sources"
 
-        ".local/share/direnv"
-        ".local/share/fish"
-
         ".cargo"
         ".m2"
         ".npm"
-        ".password-store"
         ".pulumi"
-        ".zen"
 
         ".config/copilot-chat"
-        ".config/discord"
         ".config/github-copilot"
-        ".config/protonmail"
-        ".config/Slack"
-        ".config/spotify"
-        ".config/sops/age"
-        ".config/sops-nix"
       ];
     };
     stateVersion = "24.11";

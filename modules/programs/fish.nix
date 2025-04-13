@@ -6,6 +6,11 @@ let
   };
 in
 {
+  home.persistence."/persist/home/merrinx" = {
+    directories = [
+      ".local/share/fish"
+    ];
+  };
   programs.fish = {
     enable = true;
     plugins = [ fenv ];

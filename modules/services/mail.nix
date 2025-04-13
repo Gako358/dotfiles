@@ -9,9 +9,16 @@ let
       "${cat} ${config.sops.secrets."email_work-passwd".path}";
 in
 {
-  home.packages = with pkgs; [
-    protonmail-bridge
-  ];
+  home = {
+    packages = with pkgs; [
+      protonmail-bridge
+    ];
+    persistence."/persist/home/merrinx" = {
+      directories = [
+        ".config/protonmail"
+      ];
+    };
+  };
 
   accounts.email = {
     maildirBasePath = "Mail";

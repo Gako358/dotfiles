@@ -4,9 +4,18 @@
 , ...
 }: {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
-  home.packages = with pkgs; [
-    seahorse
-  ];
+  home = {
+    packages = with pkgs; [
+      seahorse
+    ];
+    persistence."/persist/home/merrinx" = {
+      directories = [
+        ".config/sops/age"
+        ".config/sops-nix"
+        ".password-store"
+      ];
+    };
+  };
 
   sops = {
     age.keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
@@ -32,7 +41,7 @@
       enable = true;
       homedir = "${config.home.homeDirectory}/.gnupg";
     };
-
+    ssh.enable = true;
     password-store = {
       enable = true;
       package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);

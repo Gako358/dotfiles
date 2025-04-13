@@ -1,6 +1,7 @@
-{
+{ lib, ... }: {
   networking = {
     networkmanager.enable = true;
+    useDHCP = lib.mkDefault true;
     firewall.enable = false;
     extraHosts = ''
       127.0.0.1 tuathaan

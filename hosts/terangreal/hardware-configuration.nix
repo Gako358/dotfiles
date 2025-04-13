@@ -1,7 +1,5 @@
 { modulesPath
-, config
 , lib
-, pkgs
 , ...
 }: {
   imports = [
@@ -9,7 +7,6 @@
   ];
 
   boot = {
-    consoleLogLevel = 3;
     extraModulePackages = [ ];
     initrd = {
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
@@ -29,31 +26,7 @@
         btrfs subvolume create /btrfs_tmp/root
         umount /btrfs_tmp
       '';
-      verbose = false;
     };
     kernelModules = [ "kvm-amd" ];
-    kernelParams = [
-      "quiet"
-      "splash"
-      "boot.shell_on_fail"
-      "udev.log_priority=3"
-      "rd.systemd.show_status=auto"
-    ];
-    loader = {
-      efi = {
-        canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot/efi";
-      };
-      systemd-boot.enable = true;
-    };
-    plymouth = {
-      enable = true;
-      theme = "nixos-bgrt";
-      themePackages = [ pkgs.nixos-bgrt-plymouth ];
-    };
   };
-  networking.useDHCP = lib.mkDefault true;
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
