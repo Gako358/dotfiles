@@ -63,11 +63,15 @@ in
 [
   ./config
   ./alacritty.nix
+  ./discord.nix
   ./fish.nix
+  ./gimp.nix
   ./git.nix
   ./mako.nix
   ./neovim.nix
   ./network.nix
+  ./slack.nix
+  ./spotify.nix
   ./starship.nix
   ./waybar.nix
   ./zen.nix
