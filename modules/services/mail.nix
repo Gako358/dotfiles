@@ -13,7 +13,7 @@ in
     packages = with pkgs; [
       protonmail-bridge
     ];
-    persistence."/persist/home/merrinx" = {
+    persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".config/protonmail"
       ];

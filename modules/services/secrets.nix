@@ -8,7 +8,7 @@
     packages = with pkgs; [
       seahorse
     ];
-    persistence."/persist/home/merrinx" = {
+    persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".config/sops/age"
         ".config/sops-nix"

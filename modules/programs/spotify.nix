@@ -1,10 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   home = {
     packages = [
       pkgs.spotifywm
     ];
-    persistence."/persist/home/merrinx" = {
+    persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".config/spotify"
       ];

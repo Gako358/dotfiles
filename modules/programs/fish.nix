@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   fenv = {
     inherit (pkgs.fishPlugins.foreign-env) src;
@@ -6,7 +6,7 @@ let
   };
 in
 {
-  home.persistence."/persist/home/merrinx" = {
+  home.persistence."/persist/${config.home.homeDirectory}" = {
     directories = [
       ".local/share/fish"
     ];

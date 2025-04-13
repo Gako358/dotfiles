@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 let
   username = "merrinx";
   homeDirectory = "/home/${username}";
@@ -29,7 +29,7 @@ in
 
   home = {
     inherit username homeDirectory;
-    persistence."/persist/home/merrinx" = {
+    persistence."/persist/${config.home.homeDirectory}" = {
       allowOther = true;
       directories = [
         "Documents"

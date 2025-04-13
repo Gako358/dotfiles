@@ -1,6 +1,6 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, config, ... }:
 let
-  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/dark_moon.jpg";
+  wallpaper = "${config.home.homeDirectory}/Sources/archive/images/wallpapers/dark_moon.jpg";
 in
 {
   services.hyprpaper = {

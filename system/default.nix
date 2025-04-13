@@ -39,13 +39,6 @@
   ];
   console.useXkbConfig = true;
 
-  # Set the default editor
-  environment.variables.EDITOR = "nvim";
-  security = {
-    rtkit.enable = true;
-    pam.services.swaylock = { };
-  };
-
   # Impermanence
   environment.persistence."/persist" = {
     hideMounts = true;
@@ -64,13 +57,13 @@
       directories = [
         { directory = ".gnupg"; mode = "0700"; }
         { directory = ".ssh"; mode = "0700"; }
-        { directory = ".nixops"; mode = "0700"; }
         { directory = ".local/share/keyrings"; mode = "0700"; }
       ];
     };
   };
 
   programs.fuse.userAllowOther = true;
+
   users = {
     defaultUserShell = pkgs.fish;
     mutableUsers = false;

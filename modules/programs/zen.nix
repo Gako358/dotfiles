@@ -1,4 +1,5 @@
 { inputs
+, config
 , pkgs
 , ...
 }:
@@ -17,7 +18,7 @@ in
 {
   home = {
     packages = [ zenWithWayland ];
-    persistence."/persist/home/merrinx" = {
+    persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".zen"
       ];

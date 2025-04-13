@@ -12,9 +12,12 @@
   ];
 
   security = {
-    # unlock GPG keyring on login
-    pam.services.greetd.enableGnomeKeyring = true;
+    pam = {
+      services.greetd.enableGnomeKeyring = true;
+      services.swaylock = { };
+    };
     polkit.enable = true;
+    rtkit.enable = true;
   };
 
   # Services needed for desktop

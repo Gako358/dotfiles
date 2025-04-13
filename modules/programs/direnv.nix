@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   programs = {
     direnv = {
       enable = true;
@@ -6,7 +6,7 @@
     };
   };
 
-  home.persistence."/persist/home/merrinx" = {
+  home.persistence."/persist/${config.home.homeDirectory}" = {
     directories = [
       ".local/share/direnv"
     ];
