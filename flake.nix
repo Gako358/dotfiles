@@ -123,7 +123,6 @@
                   inputs.sops-nix.homeManagerModules.sops
                 ];
                 users.merrinx = { ... }: {
-                  nixpkgs.config.allowUnfree = true;
                   imports = [
                     inputs.impermanence.homeManagerModules.impermanence
                     ./modules
@@ -139,23 +138,26 @@
             master = false;
           };
           modules = [
+            inputs.disko.nixosModules.disko
             inputs.home-manager.nixosModules.home-manager
+            inputs.impermanence.nixosModules.impermanence
+            inputs.sops-nix.nixosModules.sops
             ./system
             ./hosts/tuathaan
             {
               home-manager = {
-                # useGlobalPkgs = true; # TODO: Fix this on new install
-                # Packages are then in ~/.local/state/home-manager/gcroots/current-home
-                # Or /etc/profiles if enabled useUserPackages
-                # useUserPackages = true;
+                useGlobalPkgs = true;
+                useUserPackages = true;
                 extraSpecialArgs = {
                   inherit inputs outputs;
                   master = false;
                 };
                 backupFileExtension = ".hm-backup";
                 users.merrinx = { ... }: {
-                  nixpkgs.config.allowUnfree = true;
-                  imports = [ ./modules ];
+                  imports = [
+                    inputs.impermanence.homeManagerModules.impermanence
+                    ./modules
+                  ];
                 };
               };
             }
