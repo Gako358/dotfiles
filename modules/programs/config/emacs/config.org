@@ -786,7 +786,7 @@ My email configuration transforms Emacs into a powerful email client with severa
 + *Integration*: Seamlessly connect email with notes, tasks, and calendar
 + *Distraction-free*: Batch process email on your schedule, not the inbox's
 
-** Mu4e
+*** Mu4e
 #+begin_src emacs-lisp
   (use-package mu4e
     :ensure t
@@ -813,11 +813,11 @@ My email configuration transforms Emacs into a powerful email client with severa
             ("/personal/Spam"      . ?j)
             ("/personal/Starred"   . ?★)))
 
-    (setq message-send-mail-function 'message-send-mail-with-sendmail
-          sendmail-program "msmtp"
-          mail-specify-envelope-from t
-          message-sendmail-envelope-from 'header
-          mail-envelope-from 'header)
+    (setq send-mail-function 'sendmail-send-it
+  	message-send-mail-function 'sendmail-send-it
+  	sendmail-program "msmtp"
+  	message-sendmail-extra-arguments '("--read-envelope-from")
+  	message-sendmail-f-is-evil t)
 
     (setq user-mail-address "merrinx@proton.me"
           user-full-name "merrinx"))

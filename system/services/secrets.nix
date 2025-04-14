@@ -1,6 +1,7 @@
 {
   sops = {
     defaultSopsFile = ../../secrets/default.yaml;
+    age.keyFile = "/home/merrinx/.config/sops/age/keys.txt";
     validateSopsFiles = false;
     secrets = {
       "email_master-passwd" = {

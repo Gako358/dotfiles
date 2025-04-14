@@ -1,6 +1,7 @@
 { pkgs, config, specialArgs, ... }:
 let
   cat = "${pkgs.coreutils}/bin/cat";
+  certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
 
   passwd =
     if specialArgs.master then
@@ -56,13 +57,17 @@ in
             enable = true;
             useStartTls = true;
             # Use protonmail-bride -c and cert export
-            certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
+            inherit certificatesFile;
           };
         };
         smtp = {
           host = "127.0.0.1";
           port = 1025;
-          tls.enable = false;
+          tls = {
+            enable = true;
+            useStartTls = true;
+            inherit certificatesFile;
+          };
         };
         msmtp.enable = true;
       };
@@ -70,6 +75,7 @@ in
   };
 
   programs.mbsync.enable = true;
+  programs.msmtp.enable = true;
   programs.mu.enable = true;
   services.mbsync = {
     enable = true;

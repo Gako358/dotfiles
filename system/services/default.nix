@@ -3,7 +3,6 @@
     ./btrbk.nix
     ./dbus.nix
     ./gnome.nix
-    ./msmtp.nix
     ./nfc.nix
     ./openssh.nix
     ./pipwire.nix
