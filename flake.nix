@@ -119,9 +119,6 @@
                   master = true;
                 };
                 backupFileExtension = ".hm-backup";
-                sharedModules = [
-                  inputs.sops-nix.homeManagerModules.sops
-                ];
                 users.merrinx = { ... }: {
                   imports = [
                     inputs.impermanence.homeManagerModules.impermanence
