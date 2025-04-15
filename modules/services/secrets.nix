@@ -22,6 +22,7 @@
     defaultSopsFile = ../../secrets/default.yaml;
     validateSopsFiles = false;
     secrets = {
+      "email_user" = { };
       "email_home-passwd" = { };
       "email_work-passwd" = { };
       "email_alias-private" = { };

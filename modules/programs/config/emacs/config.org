@@ -814,13 +814,28 @@ My email configuration transforms Emacs into a powerful email client with severa
             ("/personal/Starred"   . ?★)))
 
     (setq send-mail-function 'sendmail-send-it
-  	message-send-mail-function 'sendmail-send-it
-  	sendmail-program "msmtp"
-  	message-sendmail-extra-arguments '("--read-envelope-from")
-  	message-sendmail-f-is-evil t)
+          message-send-mail-function 'sendmail-send-it
+          sendmail-program "msmtp"
+          message-sendmail-extra-arguments '("--read-envelope-from")
+          message-sendmail-f-is-evil t)
 
     (setq user-mail-address "merrinx@proton.me"
-          user-full-name "merrinx"))
+          user-full-name "merrinx")
+
+    (defun my-set-alias-when-replying ()
+      "Automatically set the From address to match the To address of the message being replied to."
+      (when mu4e-compose-parent-message
+        (let* ((to-field (mu4e-message-field mu4e-compose-parent-message :to))
+               (to-addr (when to-field
+                          (caar to-field)))
+               (aliases '("mugge.acrobat989@passinbox.com"
+                          "gako.footwork856@passinbox.com"
+                          "knut.sly692@passinbox.com")))
+          (when (and to-addr (member to-addr aliases))
+            (setq user-mail-address to-addr)
+            (message "Replying with alias: %s" to-addr)))))
+
+    (add-hook 'mu4e-compose-pre-hook 'my-set-alias-when-replying))
 #+end_src
 *** Mu4e-Alert
 #+begin_src emacs-lisp
@@ -1511,10 +1526,15 @@ Org-msg transforms email composition in Emacs by leveraging Org Mode's formattin
 
     (setq org-msg-signature (my-org-msg-signature))
 
-    (add-hook 'org-msg-edit-mode-hook
-              (lambda ()
-                (setq org-msg-signature (my-org-msg-signature))))
+    (defun my-update-from-header-in-org-msg ()
+      "Update the From header in org-msg buffer to use the current user-mail-address."
+      (setq org-msg-signature (my-org-msg-signature))
+      (save-excursion
+        (goto-char (point-min))
+        (when (re-search-forward "^From: .*$" nil t)
+          (replace-match (format "From: %s <%s>" user-full-name user-mail-address)))))
 
+    (add-hook 'org-msg-edit-mode-hook 'my-update-from-header-in-org-msg)
     (org-msg-mode))
 #+END_SRC
 

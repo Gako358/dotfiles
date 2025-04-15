@@ -26,12 +26,11 @@ in
     accounts = {
       personal = {
         primary = true;
-        # TODO: Figure out why mu wont allow aliases
-        # aliases = [
-        #   "${cat} ${config.sops.secrets.email-alias-private.path}"
-        #   "${cat} ${config.sops.secrets.email-alias-service.path}"
-        #   "${cat} ${config.sops.secrets.email-alias-social.path}"
-        # ];
+        aliases = [
+          "mugge.acrobat989@passinbox.com"
+          "gako.footwork856@passinbox.com"
+          "knut.sly692@passinbox.com"
+        ];
         address = "merrinx@proton.me";
         userName = "merrinx@proton.me";
         passwordCommand = passwd;
@@ -46,7 +45,7 @@ in
           enable = true;
           create = "both";
           expunge = "both";
-          patterns = [ "*" ];
+          patterns = [ "*" "!All Mail" ];
           subFolders = "Verbatim";
         };
         mu.enable = true;
