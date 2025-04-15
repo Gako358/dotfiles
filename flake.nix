@@ -122,6 +122,7 @@
                 users.merrinx = { ... }: {
                   imports = [
                     inputs.impermanence.homeManagerModules.impermanence
+                    inputs.sops-nix.homeManagerModules.sops
                     ./modules
                   ];
                 };
@@ -153,6 +154,7 @@
                 users.merrinx = { ... }: {
                   imports = [
                     inputs.impermanence.homeManagerModules.impermanence
+                    inputs.sops-nix.homeManagerModules.sops
                     ./modules
                   ];
                 };
