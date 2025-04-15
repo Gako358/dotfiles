@@ -94,4 +94,10 @@ in
     };
     Install.WantedBy = [ "default.target" ];
   };
+
+  # Wait for protonbridge service has started
+  systemd.user.services.mbsync.Unit = {
+    After = [ "protonmail-bridge.service" ];
+    Requires = [ "protonmail-bridge.service" ];
+  };
 }
