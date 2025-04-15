@@ -327,11 +327,11 @@ Context Menu for Actions:
     :ensure t
     :defer t
     :commands (embark-act
-  	     embark-dwim
-  	     embark-export
-  	     embark-collect
-  	     embark-bindings
-  	     embark-prefix-help-command)
+  		       embark-dwim
+  		       embark-export
+  		       embark-collect
+  		       embark-bindings
+  		       embark-prefix-help-command)
     :init
     (setq prefix-help-command #'embark-prefix-help-command)
 
@@ -340,18 +340,17 @@ Context Menu for Actions:
     (add-to-list 'display-buffer-alist
                  '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                    nil
-                   (window-parameters (mode-line-format . none)))))
+                   (window-parameters (mode-line-format . none))))
+    :bind (:map minibuffer-local-map
+                ("M-o"     . embark-act)
+                ("C-c C-c" . embark-export)
+                ("C-c C-o" . embark-collect)))
 
   (use-package embark-consult
     :ensure t
     :after (embark consult)
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
-
-
-  (evil-leader/set-key
-    "ea" 'embark-act
-    "ew" 'embark-dwim)
 #+end_src
 
 *** Eldoc
