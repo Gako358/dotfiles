@@ -1,3 +1,43 @@
+{ specialArgs, ... }:
+let
+  mainNixSubvol =
+    if !specialArgs.master then {
+      "/nix" = {
+        mountpoint = "/nix";
+        mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+      };
+    } else { };
+
+  storeDisk =
+    if specialArgs.master then {
+      store = {
+        type = "disk";
+        device = "/dev/nvme1n1";
+        content = {
+          type = "gpt";
+          partitions = {
+            nix = {
+              size = "100%";
+              content = {
+                type = "luks";
+                name = "crypted_store";
+                content = {
+                  type = "btrfs";
+                  extraArgs = [ "-L" "STORE" ];
+                  subvolumes = {
+                    "/nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    } else { };
+in
 {
   disko.devices.disk = {
     main = {
@@ -33,21 +73,18 @@
                     mountpoint = "/persist";
                     mountOptions = [ "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
                   };
-                  "/nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [ "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
-                  };
                   "/swap" = {
                     mountpoint = "/.swapvol";
                     swap.swapfile.size = "32G";
                   };
-                };
+                } // mainNixSubvol;
               };
             };
           };
         };
       };
     };
-  };
+  } // storeDisk;
+
   fileSystems."/persist".neededForBoot = true;
 }

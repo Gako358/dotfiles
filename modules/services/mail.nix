@@ -99,5 +99,6 @@ in
   systemd.user.services.mbsync.Unit = {
     After = [ "protonmail-bridge.service" ];
     Requires = [ "protonmail-bridge.service" ];
+    PartOf = [ "protonmail-bridge.service" ];
   };
 }
