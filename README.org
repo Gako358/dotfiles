@@ -12,14 +12,6 @@
 
 Welcome to my compilation of dotfiles, the secret sauce behind the construction and configuration of my Linux systems. For a deeper dive into NixOS, the innovative Linux distribution I use, and Nix, the powerful package management tool and language that this repository is primarily written in, click [[https://nixos.org][Nix]].
 
-*** Sneak Peek
-
-[[https://github.com/Gako358/archive/blob/main/images/config/main.png][screenshot]]
-
-#+BEGIN_QUOTE
-*Neovim Users:* _My Neovim flake is available:_ [[https://github.com/Gako358/neovim][here]]
-#+END_QUOTE
-
 *** How To Install
 
 There are two main ways to deploy these dotfiles on a system:
