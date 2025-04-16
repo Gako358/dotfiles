@@ -9,6 +9,7 @@ in
   ./hypridle.nix
   ./hyprpaper.nix
   ./mail.nix
-  ./secrets.nix
+  ./persist.nix
+  ./privacy.nix
   more
 ]

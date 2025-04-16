@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 let
   username = "merrinx";
   homeDirectory = "/home/${username}";
@@ -29,25 +29,6 @@ in
 
   home = {
     inherit username homeDirectory;
-    persistence."/persist/${config.home.homeDirectory}" = {
-      allowOther = true;
-      directories = [
-        "Documents"
-        "Downloads"
-        "Music"
-        "Pictures"
-        "Projects"
-        "Sources"
-
-        ".cargo"
-        ".m2"
-        ".npm"
-        ".pulumi"
-
-        ".config/copilot-chat"
-        ".config/github-copilot"
-      ];
-    };
     stateVersion = "24.11";
   };
 
