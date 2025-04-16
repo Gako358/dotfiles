@@ -1,25 +1,25 @@
 { ... }: {
   colorScheme = {
-    slug = "nightfox";
-    name = "Nightfox";
+    slug = "bivrost";
+    name = "Bivrost";
     author = "MerrinX";
-    colors = {
-      base00 = "131a24"; # Dark bg (status line and float)
-      base01 = "192330"; # Default bg
-      base02 = "212e3f"; # Lighter bg (colorcolm folds)
-      base03 = "29394f"; # Lighter bg (cursor line)
-      base04 = "39506d"; # Conceal, border fg
-      base05 = "cdcecf"; # Default fg
-      base06 = "d6d6d7"; # Lighter fg
-      base07 = "dfdfe0"; # White
-      base08 = "c94f6d"; # Red
-      base09 = "f4a261"; # Orange
-      base0A = "dbc074"; # Yellow
-      base0B = "81b29a"; # Green
-      base0C = "63cdcf"; # Cyan
-      base0D = "719cd6"; # Blue
-      base0E = "9d79d6"; # Magenta
-      base0F = "d67ad2"; # Pink
+    palette = {
+      base00 = "1a1a1a"; # bivrost0 - Base dark background color
+      base01 = "303035"; # bivrost2 - Alternate dark background
+      base02 = "3B4252"; # bivrost1 - Dark bluish color
+      base03 = "434C5E"; # bivrost3 - Lighter blue color
+      base04 = "4C566A"; # bivrost4 - Grayish blue color
+      base05 = "cbcbcb"; # bivrost5 - Base foreground, warm white
+      base06 = "E5E9F0"; # bivrost6 - White bluish color
+      base07 = "ECEFF4"; # bivrost7 - Grayish white color
+      base08 = "BF616A"; # bivrost12 - Red
+      base09 = "D08770"; # bivrost13 - Light orange
+      base0A = "EBCB8B"; # bivrost14 - Yellow
+      base0B = "A3BE8C"; # bivrost15 - Green
+      base0C = "8FBCBB"; # bivrost8 - Cyan
+      base0D = "719cd6"; # bivrost9 - Blue
+      base0E = "B48EAD"; # bivrost16 - Lime green / Magenta
+      base0F = "5E81AC"; # bivrost11 - Gray blue
     };
   };
 }

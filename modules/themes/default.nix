@@ -1,4 +1,5 @@
 let
+  colors = import ./colors.nix;
   themes = { pkgs, ... }: {
     gtk = {
       enable = true;
@@ -18,4 +19,4 @@ let
     };
   };
 in
-[ themes ]
+[ themes colors ]

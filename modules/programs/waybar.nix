@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   fontSize = "14px";
   iconSize = "17px";
@@ -8,8 +8,8 @@ let
     fontsize = fontSize;
     iconsize = iconSize;
     background-color = "rgba(26, 26, 26, ${opacity})";
-    blue = "#719cd6";
-    grey = "#665c54";
+    blue = "#${config.colorScheme.palette.base0D}";
+    grey = "#${config.colorScheme.palette.base04}";
   };
   calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";

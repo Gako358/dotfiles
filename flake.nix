@@ -69,7 +69,6 @@
     { self
     , nixpkgs
     , home-manager
-    , nix-colors
     , ...
     } @ inputs:
     let
@@ -121,6 +120,7 @@
                 backupFileExtension = ".hm-backup";
                 users.merrinx = { ... }: {
                   imports = [
+                    inputs.nix-colors.homeManagerModules.default
                     inputs.impermanence.homeManagerModules.impermanence
                     inputs.sops-nix.homeManagerModules.sops
                     ./modules
@@ -153,6 +153,7 @@
                 backupFileExtension = ".hm-backup";
                 users.merrinx = { ... }: {
                   imports = [
+                    inputs.nix-colors.homeManagerModules.default
                     inputs.impermanence.homeManagerModules.impermanence
                     inputs.sops-nix.homeManagerModules.sops
                     ./modules

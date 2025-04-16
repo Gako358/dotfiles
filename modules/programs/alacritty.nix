@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   fontSize = 10;
 in
@@ -13,70 +13,70 @@ in
       };
       colors = {
         primary = {
-          background = "#1a1a1a";
-          foreground = "#c5c8c6";
+          background = "#${config.colorScheme.palette.base00}";
+          foreground = "#${config.colorScheme.palette.base05}";
         };
         cursor = {
-          text = "#cdcecf";
-          cursor = "#aeafb0";
+          text = "#${config.colorScheme.palette.base06}";
+          cursor = "#${config.colorScheme.palette.base05}";
         };
         vi_mode_cursor = {
-          text = "#cdcecf";
-          cursor = "#63cdcf";
+          text = "#${config.colorScheme.palette.base06}";
+          cursor = "#${config.colorScheme.palette.base0C}";
         };
         search = {
           matches = {
-            foreground = "#cdcecf";
-            background = "#3c5372";
+            foreground = "#${config.colorScheme.palette.base06}";
+            background = "#${config.colorScheme.palette.base03}";
           };
           focused_match = {
-            foreground = "#cdcecf";
-            background = "#81b29a";
+            foreground = "#${config.colorScheme.palette.base06}";
+            background = "#${config.colorScheme.palette.base0B}";
           };
         };
         footer_bar = {
-          foreground = "#cdcecf";
-          background = "#29394f";
+          foreground = "#${config.colorScheme.palette.base06}";
+          background = "#${config.colorScheme.palette.base01}";
         };
         hints = {
           start = {
-            foreground = "#cdcecf";
-            background = "#f4a261";
+            foreground = "#${config.colorScheme.palette.base06}";
+            background = "#${config.colorScheme.palette.base09}";
           };
           end = {
-            foreground = "#cdcecf";
-            background = "#29394f";
+            foreground = "#${config.colorScheme.palette.base06}";
+            background = "#${config.colorScheme.palette.base01}";
           };
         };
         normal = {
-          black = "#393b44";
-          red = "#c94f6d";
-          green = "#81b29a";
-          yellow = "#dbc074";
-          blue = "#719cd6";
-          magenta = "#9d79d6";
-          cyan = "#63cdcf";
-          white = "#dfdfe0";
+          black = "#${config.colorScheme.palette.base00}";
+          red = "#${config.colorScheme.palette.base08}";
+          green = "#${config.colorScheme.palette.base0B}";
+          yellow = "#${config.colorScheme.palette.base0A}";
+          blue = "#${config.colorScheme.palette.base0D}";
+          magenta = "#${config.colorScheme.palette.base0E}";
+          cyan = "#${config.colorScheme.palette.base0C}";
+          white = "#${config.colorScheme.palette.base05}";
         };
         bright = {
-          black = "#575860";
-          red = "#d16983";
-          green = "#8ebaa4";
-          yellow = "#e0c989";
-          blue = "#86abdc";
-          magenta = "#baa1e2";
-          cyan = "#7ad5d6";
-          white = "#e4e4e5";
+          black = "#${config.colorScheme.palette.base01}";
+          red = "#${config.colorScheme.palette.base08}";
+          green = "#${config.colorScheme.palette.base0B}";
+          yellow = "#${config.colorScheme.palette.base0A}";
+          blue = "#${config.colorScheme.palette.base0D}";
+          magenta = "#${config.colorScheme.palette.base0E}";
+          cyan = "#${config.colorScheme.palette.base0C}";
+          white = "#${config.colorScheme.palette.base07}";
         };
         dim = {
-          black = "#30323a";
-          red = "#ab435d";
-          green = "#6e9783";
-          yellow = "#baa363";
-          blue = "#6085b6";
-          magenta = "#8567b6";
-          cyan = "#54aeb0";
-          white = "#bebebe";
+          black = "#${config.colorScheme.palette.base02}";
+          red = "#${config.colorScheme.palette.base08}";
+          green = "#${config.colorScheme.palette.base0B}";
+          yellow = "#${config.colorScheme.palette.base0A}";
+          blue = "#${config.colorScheme.palette.base0D}";
+          magenta = "#${config.colorScheme.palette.base0E}";
+          cyan = "#${config.colorScheme.palette.base0C}";
+          white = "#${config.colorScheme.palette.base04}";
         };
       };
       font = {
