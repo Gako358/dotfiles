@@ -1,3 +1,4 @@
+{ config, ... }:
 let
   defaultLayout = ''
     layout {
@@ -116,7 +117,7 @@ let
     default_mode "normal"
     default_shell "fish"
     scrollback_editor "hx"
-    layout_dir "/home/merrinx/.config/zellij/layouts"
+    layout_dir "${config.xdg.configHome}/zellij/layouts"
   '';
 in
 {

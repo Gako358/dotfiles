@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   programs.wezterm = {
     enable = true;
 
@@ -80,7 +80,7 @@
           action = act.SwitchToWorkspace {
             name = "default",
             spawn = {
-              cwd = "/home/merrinx"
+              cwd = "${config.home.homeDirectory}"
             },
           },
         },
@@ -91,7 +91,7 @@
           action = act.SwitchToWorkspace {
             name = "dotfiles",
             spawn = {
-              cwd = "/home/merrinx/Sources/dotfiles",
+              cwd = "${config.home.homeDirectory}/Sources/dotfiles",
             },
           },
         },
@@ -102,7 +102,7 @@
           action = act.SwitchToWorkspace {
             name = "org",
             spawn = {
-              cwd = "/home/merrinx/Documents/notes",
+              cwd = "${config.home.homeDirectory}/Documents/notes",
             },
           },
         },
@@ -113,7 +113,7 @@
           action = act.SwitchToWorkspace {
             name = "work",
             spawn = {
-              cwd = "/home/merrinx/Projects/workspace",
+              cwd = "${config.home.homeDirectory}/Projects/workspace",
             },
           },
         },
