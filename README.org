@@ -1,0 +1,69 @@
+*** NixOS Unstable Badge
+
+[[https://nixos.org][https://img.shields.io/badge/NixOS-unstable-blue.svg?style=flat-square&logo=NixOS&logoColor=white]]
+
+*** Disclaimer
+
+#+BEGIN_QUOTE
+*Disclaimer:* _This is not a community framework or distribution._ It's a private configuration and an ongoing experiment to feel out NixOS. I make no guarantees that it will work out of the box for anyone but myself. It may also change drastically and without warning.
+#+END_QUOTE
+
+*** My NixOS Configuration
+
+Welcome to my compilation of dotfiles, the secret sauce behind the construction and configuration of my Linux systems. For a deeper dive into NixOS, the innovative Linux distribution I use, and Nix, the powerful package management tool and language that this repository is primarily written in, click [[https://nixos.org][Nix]].
+
+*** Sneak Peek
+
+[[https://github.com/Gako358/archive/blob/main/images/config/main.png][screenshot]]
+
+#+BEGIN_QUOTE
+*Neovim Users:* _My Neovim flake is available:_ [[https://github.com/Gako358/neovim][here]]
+#+END_QUOTE
+
+*** How To Install
+
+There are two main ways to deploy these dotfiles on a system:
+
+**** On an existing NixOS system
+
+If you have set up a NixOS system with a ~configuration.nix~ file, it's possible to switch over to this Nix config with the following commands:
+
+#+BEGIN_SRC shell
+nix-shell
+nixos-rebuild switch --flake .#
+#+END_SRC
+
+~Note: This assumes your computer name matches one of the configurations in the flake.~
+
+*** Repository Structure
+
++ ~flake.nix~: Entrypoint for hosts and home configurations. Also exposes a devshell for bootstrapping (~nix develop~ or ~nix-shell~).
++ ~hosts~: NixOS Configurations, accessible via ~nixos-rebuild --flake~.
+  + ~terangreal~: Desktop PC - 48GB RAM, Ryzon7 5600
+  + ~tuathaan~: HP work laptop
++ ~modules~: My Home-manager configuration, accessible via ~home-manager --flake~
+  + Each directory here is a "feature" each ~hm~ configuration can toggle, thus customizing my setup for each machine (be it a server, desktop, laptop, anything really).
++ ~overlay~: Patches and version overrides for some packages. Accessible via ~nix build~.
++ ~pkgs~: My custom packages. Also accessible via ~nix build~. You can compose these into your own configuration by using my flake's overlay or consume them through NUR.
++ ~secrets~: My ~sops~ secrets, used in the configuration.
++ ~system~: Modules that are the "system/nixpkgs," configuration. ~flake.nix~.
++ ~templates~: A couple of project templates for different languages. Accessible via ~nix init~.
+  + ~C~ - C development environment
+  + ~devshell~ - Basic development shell, to be bootstrapped to anything
+  + ~latex~ - LaTeX development environment
+  + ~python~ - Python development environment
+  + ~rust~ - Rust development environment
+  + ~wasm~ - WebAssembly development environment
+  + ~java~ - Java development environment
+
+**** Installation via Media
+
+Alternatively, you can install these configurations via the install media from the ~nix-install~ repo as follows:
+
+1. Boot off the install media.
+2. Create the partition schedule and mount it to ~/mnt~.
+3. Run:
+
+#+BEGIN_SRC shell
+nixos-install --flake github:gako358/dotfiles#terangreal
+#+END_SRC
