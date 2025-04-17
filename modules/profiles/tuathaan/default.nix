@@ -6,7 +6,6 @@ in
 {
   imports = [ ../../default.nix ];
 
-  programs.hyprlock.settings.input-field = [{ monitor = "DP-8"; }];
   wayland.windowManager.hyprland.extraConfig = ''
     monitor=eDP-1,1920x1200,2560x1440,1
     monitor=DP-8,2560x1440,0x0,1
@@ -23,6 +22,17 @@ in
     workspace = 8, monitor:DP-6
     workspace = 9, monitor:DP-6
   '';
+
+  program.hyprlock = {
+    enable = true;
+    defaultMonitor = "DP-8";
+  };
+
+  service.hypridle = {
+    enable = true;
+    timeout = 600;
+    suspend = 600;
+  };
 
   service.mail = {
     enable = true;

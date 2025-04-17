@@ -6,7 +6,6 @@ in
 {
   imports = [ ../../default.nix ];
 
-  programs.hyprlock.settings.input-field = [{ monitor = "DP-2"; }];
   wayland.windowManager.hyprland.extraConfig = ''
     monitor=DP-2,2560x1440,0x0,1
     monitor=DP-3,2560x1440,2560x0,1
@@ -22,6 +21,17 @@ in
     workspace = 8, monitor:DP-3
     workspace = 9, monitor:DP-3
   '';
+
+  program.hyprlock = {
+    enable = true;
+    defaultMonitor = "DP-2";
+  };
+
+  service.hypridle = {
+    enable = true;
+    timeout = 3600;
+    suspend = 600;
+  };
 
   service.mail = {
     enable = true;
