@@ -22,19 +22,22 @@ in
     workspace = 9, monitor:DP-3
   '';
 
+  # Home modules to load
   program.hyprlock = {
     enable = true;
     defaultMonitor = "DP-2";
   };
 
-  service.hypridle = {
-    enable = true;
-    timeout = 3600;
-    suspend = 600;
+  service = {
+    hypridle = {
+      enable = true;
+      timeout = 3600;
+      suspend = 600;
+    };
+    mail = {
+      enable = true;
+      password = "${cat} ${config.sops.secrets."email_home-passwd".path}";
+    };
   };
 
-  service.mail = {
-    enable = true;
-    password = "${cat} ${config.sops.secrets."email_home-passwd".path}";
-  };
 }
