@@ -1,5 +1,6 @@
 {
   imports = [
+    ./blueman.nix
     ./btrbk.nix
     ./dbus.nix
     ./gnome.nix
@@ -9,6 +10,7 @@
     ./pipwire.nix
     ./scramgit.nix
     ./sops.nix
+    ./touchpad.nix
     ./wally.nix
   ];
 }

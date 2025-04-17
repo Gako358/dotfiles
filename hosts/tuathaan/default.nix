@@ -15,31 +15,14 @@
     };
   };
 
-  environment.persistence."/persist" = {
-    directories = [
-      "/var/lib/bluetooth"
-    ];
+  # Modules loaded
+  system = {
+    extraStoreDisk.enable = false;
+    bluetooth.enable = true;
   };
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        Name = "Computer";
-        ControllerMode = "dual";
-        FastConnectable = "true";
-        Experimental = "true";
-      };
-      Policy = { AutoEnable = "true"; };
-      LE = { EnableAdvMonInterleaveScan = "true"; };
-    };
-  };
-
-  services = {
-    libinput.enable = true;
+  service = {
     blueman.enable = true;
+    touchpad.enable = true;
   };
-
-  system.extraStoreDisk.enable = false;
 }

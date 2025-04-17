@@ -40,6 +40,7 @@ let
 in
 {
   imports = [
+    ./bluetooth.nix
     ./disko.nix
     ./graphics.nix
     ./network.nix
