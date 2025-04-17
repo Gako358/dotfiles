@@ -34,4 +34,6 @@
     libinput.enable = true;
     blueman.enable = true;
   };
+
+  system.extraStoreDisk.enable = false;
 }

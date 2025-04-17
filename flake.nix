@@ -100,7 +100,6 @@
         terangreal = lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
-            master = true;
           };
           modules = [
             inputs.disko.nixosModules.disko
@@ -115,7 +114,6 @@
                 useUserPackages = true;
                 extraSpecialArgs = {
                   inherit inputs outputs;
-                  master = true;
                 };
                 backupFileExtension = ".hm-backup";
                 users.merrinx = { ... }: {
@@ -123,7 +121,7 @@
                     inputs.nix-colors.homeManagerModules.default
                     inputs.impermanence.homeManagerModules.impermanence
                     inputs.sops-nix.homeManagerModules.sops
-                    ./modules
+                    ./modules/profiles/terangreal
                   ];
                 };
               };
@@ -133,7 +131,6 @@
         tuathaan = lib.nixosSystem {
           specialArgs = {
             inherit inputs outputs;
-            master = false;
           };
           modules = [
             inputs.disko.nixosModules.disko
@@ -148,7 +145,6 @@
                 useUserPackages = true;
                 extraSpecialArgs = {
                   inherit inputs outputs;
-                  master = false;
                 };
                 backupFileExtension = ".hm-backup";
                 users.merrinx = { ... }: {
@@ -156,7 +152,7 @@
                     inputs.nix-colors.homeManagerModules.default
                     inputs.impermanence.homeManagerModules.impermanence
                     inputs.sops-nix.homeManagerModules.sops
-                    ./modules
+                    ./modules/profiles/tuathaan
                   ];
                 };
               };

@@ -6,7 +6,6 @@
     ./binds.nix
     ./hyprland.nix
     ./hyprlock.nix
-    ./monitors.nix
     ./rules.nix
     ./systemd-fixes.nix
     ./tty.nix

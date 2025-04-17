@@ -1,5 +1,4 @@
-{ specialArgs
-, inputs
+{ inputs
 , config
 , pkgs
 , ...
@@ -35,11 +34,6 @@ in
 
       input-field = [
         {
-          monitor =
-            if specialArgs.master
-            then "DP-2"
-            else "DP-8";
-
           size = "300, 50";
           valign = "bottom";
           position = "0%, 10%";
