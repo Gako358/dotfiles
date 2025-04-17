@@ -6,6 +6,7 @@
     ];
     persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
+        ".cache/spotify"
         ".config/spotify"
       ];
     };
