@@ -1,9 +1,12 @@
-{ config, lib, ... }:
-
+{ config
+, lib
+, ...
+}:
 with lib;
 let
+  cfg = config.system.disks.extraStoreDisk;
+  extraStoreDevicePath = config.system.disks.extraStoreDevice;
 
-  cfg = config.system.extraStoreDisk;
   mainNixSubvol =
     if !cfg.enable then {
       "/nix" = {
@@ -13,25 +16,27 @@ let
     } else { };
 
   storeDisk =
-    if cfg.enable then {
-      store = {
-        type = "disk";
-        device = "/dev/nvme1n1";
-        content = {
-          type = "gpt";
-          partitions = {
-            nix = {
-              size = "100%";
-              content = {
-                type = "luks";
-                name = "crypted_store";
+    if cfg.enable then
+      assert extraStoreDevicePath != null; {
+        store = {
+          type = "disk";
+          device = extraStoreDevicePath;
+          content = {
+            type = "gpt";
+            partitions = {
+              nix = {
+                size = "100%";
                 content = {
-                  type = "btrfs";
-                  extraArgs = [ "-L" "STORE" ];
-                  subvolumes = {
-                    "/nix" = {
-                      mountpoint = "/nix";
-                      mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                  type = "luks";
+                  name = "crypted_store";
+                  content = {
+                    type = "btrfs";
+                    extraArgs = [ "-L" "STORE" ];
+                    subvolumes = {
+                      "/nix" = {
+                        mountpoint = "/nix";
+                        mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                      };
                     };
                   };
                 };
@@ -39,22 +44,32 @@ let
             };
           };
         };
-      };
-    } else { };
+      } else { };
 in
-
 {
-  options.system.extraStoreDisk.enable = mkOption {
-    type = types.bool;
-    default = true;
-    description = "Enable extra /nix store disk";
+  options = {
+    system.disks.mainDevice = mkOption {
+      type = types.str;
+      default = "/dev/nvme0n1";
+      description = "The block device path for the main system disk (containing root, boot, etc.).";
+    };
+    system.disks.extraStoreDevice = mkOption {
+      type = types.nullOr types.str;
+      default = "/dev/nvme1n1";
+      description = "The block device path for the dedicated extra Nix store disk. Set to null if not used.";
+    };
+    system.disks.extraStoreDisk.enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable extra /nix store disk";
+    };
   };
 
   config = {
     disko.devices.disk = {
       main = {
         type = "disk";
-        device = "/dev/nvme0n1";
+        device = config.system.disks.mainDevice;
         content = {
           type = "gpt";
           partitions = {

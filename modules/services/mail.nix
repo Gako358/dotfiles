@@ -1,20 +1,20 @@
-{ lib, pkgs, config, ... }:
+{ lib
+, pkgs
+, config
+, ...
+}:
 with lib;
 let
-
   certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
   cfg = config.service.mail;
-
 in
 {
-
   options.service.mail = {
     enable = mkOption {
       type = types.bool;
-      default = false;
+      default = true;
       description = "Enable email configuration.";
     };
-
     password = mkOption {
       type = types.str;
       default = "";

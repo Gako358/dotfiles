@@ -23,21 +23,13 @@ in
   '';
 
   # Home modules to load
-  program.hyprlock = {
-    enable = true;
-    defaultMonitor = "DP-2";
-  };
+  program.hyprlock.defaultMonitor = "DP-2";
 
   service = {
     hypridle = {
-      enable = true;
       timeout = 3600;
       suspend = 600;
     };
-    mail = {
-      enable = true;
-      password = "${cat} ${config.sops.secrets."email_home-passwd".path}";
-    };
+    mail.password = "${cat} ${config.sops.secrets."email_home-passwd".path}";
   };
-
 }

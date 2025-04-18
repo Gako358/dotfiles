@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{ lib
+, pkgs
+, config
+, ...
+}:
+with lib;
 let
   metalsVersion = "1.5.1";
   metals = pkgs.metals.overrideAttrs (
@@ -103,158 +108,173 @@ let
   # Use the nix-profile path for Home Manager packages
   homeManagerPath = "/etc/profiles/per-user/merrinx/bin";
 
+  cfg = config.program.emacs;
+
 in
 {
-  programs.emacs = {
-    enable = true;
-    package = pkgs.emacs30;
-    extraPackages = epkgs:
-      with epkgs; [
-        # Appearande
-        all-the-icons # A package for inserting developer icons
-        all-the-icons-completion
-        all-the-icons-ivy-rich # More friendly display transformer for ivy
-        bivrost-theme # Custom theme
-        dashboard # A startup screen extracted from Spacemacs
-        spaceline # A mode-line theming package
-        nerd-icons # Nerd icons for Emacs
-        nerd-icons-completion # Nerd icons for completion
-        nerd-icons-corfu # Nerd icons for corfu
-        powerline #A utility library for creating a custom mode-line
-        rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
-        rainbow-mode # Colorize color names in buffers
-
-        # Completion
-        cape # Completion At Point Extensions.
-        copilot # AI code completion.
-        copilot-chat # Chat with Copilot.
-        corfu # Completion Overlay Region Function.
-        embark # Context-sensitive actions.
-        embark-consult # Consult preview using embark
-        flycheck # On-the-fly syntax checking
-        marginalia # Annotations for completion candidates.
-        orderless # Space-separated matching components.
-        vertico # Vertical interactive completion UI.
-        vertico-posframe # Vertico completion UI with posframe.
-
-        # Evil
-        evil # Extensible vi layer for Emacs
-        evil-collection # A set of keybindings for evil-mode
-        evil-commentary # Comment stuff out
-        evil-leader # A set of keybindings for evil-mode
-        evil-matchit # Matchit for evil-mode
-        evil-org # Org-mode keybindings for evil-mode
-        evil-snipe # Snipe text objects
-        evil-surround # Surround text objects with punctuation
-        evil-visualstar # Start a * or # search from the visual selection
-        evil-numbers # Increment and decrement numbers in Emacs
-
-        # Edit
-        apheleia # A universal formatter interface
-
-        # Filetree
-        dirvish # Directory viewer for Emacs
-
-        # General
-        alert # Growl-like notifications
-        dash # A modern list library for Emacs
-        editorconfig # EditorConfig Emacs Plugin
-        envrc # .envrc support for Emacs
-        f # A modern API for working with files and directories in Emacs
-        fringe-helper # Helper functions for fringe bitmaps
-        general # Provides a more convenient way to define keybindings
-        gntp # Growl Notification Transport Protocol
-        goto-chg # Goto the point of the most recent edit
-        ligature # Ligature support for Emacs
-        log4e # Logging framework for Emacs
-        s # The long lost Emacs string manipulation library
-        password-store # Emacs interface for pass, the standard Unix password manager
-        ripgrep #Ripgrep for Emacs
-        wgrep # Writable grep buffer.
-
-        # grammars
-        treesit-grammars.with-all-grammars # Tree-sitter grammars
-
-        # Programming language packages.
-        eglot-java # Java development environment
-        haskell-ts-mode # Haskell development environment
-        kotlin-ts-mode # Kotlin development environment
-        markdown-mode # Major mode for editing Markdown files
-        nix-ts-mode # Major mode for editing Nix files
-        scala-ts-mode # Scala development environment
-        sql-indent # Indentation for SQL files
-        tide # TypeScript Interactive Development Environment
-        web-mode # Major mode for editing web templates
-        vue-ts-mode # Major mode for editing Vue3 files
-        yaml-pro # Major mode for editing YAML files
-
-        # LSP
-        eglot-booster # Eglot booster
-        eldoc-box # Display function signatures at point
-
-        # Mail
-        mu4e # Emacs mail client
-        mu4e-alert # Emacs notification daemon for mu4e
-
-        # Navigation
-        consult # Consulting completing-read
-        consult-projectile # Consult interface for Projectile
-
-        # Org
-        org # For keeping notes, maintaining TODO lists, and project planning
-        org-drill # A spaced repetition system for Emacs
-        org-msg # A msg system used to compose emails for Emacs
-        org-modern # A modern org-mode distribution
-        org-pomodoro # Pomodoro technique implementation
-        org-present # A simple org-mode presentation tool
-        org-roam # A note-taking tool based on the principles of networked thought
-        org-roam-ui # A graphical user interface for org-roam
-
-        # Project
-        projectile # Project Interaction Library for Emacs
-        projectile-ripgrep # Ripgrep integration for Projectile
-
-        # Terminal
-        detached # Detached mode for Emacs
-        eat # Emacs Anywhere Terminal
-
-        # Version
-        git-gutter # Show git diff in the fringe
-        git-gutter-fringe # Fringe version of git-gutter.el
-        magit # A Git porcelain inside Emacs
-        vundo # Undo tree visualizer
-      ];
-    extraConfig = builtins.readFile ./init.el;
-  };
-
-  home.file = {
-    ".emacs.d" = {
-      source = ./.;
-      recursive = true;
+  options.program.emacs = {
+    enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable Emacs configuration.";
     };
   };
 
-  # Set up the Emacs service
-  services.emacs = {
-    enable = true;
-    client.enable = true;
-    defaultEditor = true;
-    socketActivation.enable = true;
-  };
+  config = mkIf cfg.enable {
+    programs.emacs = {
+      enable = true;
+      package = pkgs.emacs30;
+      extraPackages = epkgs:
+        with epkgs; [
+          # Appearande
+          all-the-icons # A package for inserting developer icons
+          all-the-icons-completion
+          all-the-icons-ivy-rich # More friendly display transformer for ivy
+          bivrost-theme # Custom theme
+          dashboard # A startup screen extracted from Spacemacs
+          spaceline # A mode-line theming package
+          nerd-icons # Nerd icons for Emacs
+          nerd-icons-completion # Nerd icons for completion
+          nerd-icons-corfu # Nerd icons for corfu
+          powerline #A utility library for creating a custom mode-line
+          rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
+          rainbow-mode # Colorize color names in buffers
 
-  # Use a wrapper script for the Emacs service
-  systemd.user.services.emacs = {
-    Service = {
-      Environment = [ "PATH=${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH" ];
+          # Completion
+          cape # Completion At Point Extensions.
+          copilot # AI code completion.
+          copilot-chat # Chat with Copilot.
+          corfu # Completion Overlay Region Function.
+          embark # Context-sensitive actions.
+          embark-consult # Consult preview using embark
+          flycheck # On-the-fly syntax checking
+          marginalia # Annotations for completion candidates.
+          orderless # Space-separated matching components.
+          vertico # Vertical interactive completion UI.
+          vertico-posframe # Vertico completion UI with posframe.
+
+          # Evil
+          evil # Extensible vi layer for Emacs
+          evil-collection # A set of keybindings for evil-mode
+          evil-commentary # Comment stuff out
+          evil-leader # A set of keybindings for evil-mode
+          evil-matchit # Matchit for evil-mode
+          evil-org # Org-mode keybindings for evil-mode
+          evil-snipe # Snipe text objects
+          evil-surround # Surround text objects with punctuation
+          evil-visualstar # Start a * or # search from the visual selection
+          evil-numbers # Increment and decrement numbers in Emacs
+
+          # Edit
+          apheleia # A universal formatter interface
+
+          # Filetree
+          dirvish # Directory viewer for Emacs
+
+          # General
+          alert # Growl-like notifications
+          dash # A modern list library for Emacs
+          editorconfig # EditorConfig Emacs Plugin
+          envrc # .envrc support for Emacs
+          f # A modern API for working with files and directories in Emacs
+          fringe-helper # Helper functions for fringe bitmaps
+          general # Provides a more convenient way to define keybindings
+          gntp # Growl Notification Transport Protocol
+          goto-chg # Goto the point of the most recent edit
+          ligature # Ligature support for Emacs
+          log4e # Logging framework for Emacs
+          s # The long lost Emacs string manipulation library
+          password-store # Emacs interface for pass, the standard Unix password manager
+          ripgrep #Ripgrep for Emacs
+          wgrep # Writable grep buffer.
+
+          # grammars
+          treesit-grammars.with-all-grammars # Tree-sitter grammars
+
+          # Programming language packages.
+          eglot-java # Java development environment
+          haskell-ts-mode # Haskell development environment
+          kotlin-ts-mode # Kotlin development environment
+          markdown-mode # Major mode for editing Markdown files
+          nix-ts-mode # Major mode for editing Nix files
+          scala-ts-mode # Scala development environment
+          sql-indent # Indentation for SQL files
+          tide # TypeScript Interactive Development Environment
+          web-mode # Major mode for editing web templates
+          vue-ts-mode # Major mode for editing Vue3 files
+          yaml-pro # Major mode for editing YAML files
+
+          # LSP
+          eglot-booster # Eglot booster
+          eldoc-box # Display function signatures at point
+
+          # Mail
+          mu4e # Emacs mail client
+          mu4e-alert # Emacs notification daemon for mu4e
+
+          # Navigation
+          consult # Consulting completing-read
+          consult-projectile # Consult interface for Projectile
+
+          # Org
+          org # For keeping notes, maintaining TODO lists, and project planning
+          org-drill # A spaced repetition system for Emacs
+          org-msg # A msg system used to compose emails for Emacs
+          org-modern # A modern org-mode distribution
+          org-pomodoro # Pomodoro technique implementation
+          org-present # A simple org-mode presentation tool
+          org-roam # A note-taking tool based on the principles of networked thought
+          org-roam-ui # A graphical user interface for org-roam
+
+          # Project
+          projectile # Project Interaction Library for Emacs
+          projectile-ripgrep # Ripgrep integration for Projectile
+
+          # SSH
+          tramp # Transparently access remote machines
+
+          # Terminal
+          detached # Detached mode for Emacs
+          eat # Emacs Anywhere Terminal
+
+          # Version
+          git-gutter # Show git diff in the fringe
+          git-gutter-fringe # Fringe version of git-gutter.el
+          magit # A Git porcelain inside Emacs
+          vundo # Undo tree visualizer
+        ];
+      extraConfig = builtins.readFile ./init.el;
     };
-  };
 
-  # Create a wrapper for emacsclient that adds tools to PATH
-  home.packages = [
-    (pkgs.writeShellScriptBin "ec" ''
-      # Add our specific tools to the front of the PATH but preserve the rest
-      export PATH="${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
-      exec ${pkgs.emacs30}/bin/emacsclient "$@"
-    '')
-  ];
+    home.file = {
+      ".emacs.d" = {
+        source = ./.;
+        recursive = true;
+      };
+    };
+
+    # Set up the Emacs service
+    services.emacs = {
+      enable = true;
+      client.enable = true;
+      defaultEditor = true;
+      socketActivation.enable = true;
+    };
+
+    # Use a wrapper script for the Emacs service
+    systemd.user.services.emacs = {
+      Service = {
+        Environment = [ "PATH=${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH" ];
+      };
+    };
+
+    # Create a wrapper for emacsclient that adds tools to PATH
+    home.packages = [
+      (pkgs.writeShellScriptBin "ec" ''
+        # Add our specific tools to the front of the PATH but preserve the rest
+        export PATH="${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
+        exec ${pkgs.emacs30}/bin/emacsclient "$@"
+      '')
+    ];
+  };
 }

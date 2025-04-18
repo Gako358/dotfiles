@@ -15,16 +15,14 @@ in
   options.service.hypridle = {
     enable = mkOption {
       type = types.bool;
-      default = false;
+      default = true;
       description = "Enable hypridle";
     };
-
     timeout = mkOption {
       type = types.int;
       default = 3600;
       description = "Idle timeout in seconds before DPMS off and suspend actions.";
     };
-
     suspend = mkOption {
       type = types.int;
       default = 300;

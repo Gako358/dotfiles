@@ -1630,6 +1630,17 @@ Projectile is the go-to project package to use with Emacs.
       "pd" 'projectile-discover-projects-in-search-path))
 #+end_src
 
+** SSH
+
+Tramp is for tranparently accessing remote files from within Emacs
+
+#+begin_src emacs-lisp
+  (use-package tramp
+    :ensure t
+    :config
+    (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+#+end_src
+
 ** Terminal
 *** Detached
 Setup emacs-detached

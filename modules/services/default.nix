@@ -6,10 +6,11 @@ let
   };
 in
 [
+  ./gpg.nix
   ./hypridle.nix
   ./hyprpaper.nix
   ./mail.nix
   ./persist.nix
-  ./privacy.nix
+  ./secrets.nix
   more
 ]

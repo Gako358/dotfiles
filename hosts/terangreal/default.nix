@@ -14,4 +14,7 @@
       extraGroups = [ "wheel" "networkmanager" "docker" "libvirtd" "video" "audio" "plugdev" ];
     };
   };
+
+  # Modules loaded
+  program.qemu.enable = true;
 }

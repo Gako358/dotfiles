@@ -14,7 +14,7 @@ in
   options.program.hyprlock = {
     enable = mkOption {
       type = types.bool;
-      default = false;
+      default = true;
       description = "Enable hyprlock";
     };
 

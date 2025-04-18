@@ -17,7 +17,7 @@
 
   # Modules loaded
   system = {
-    extraStoreDisk.enable = false;
+    disks.extraStoreDisk.enable = false;
     bluetooth.enable = true;
   };
 
