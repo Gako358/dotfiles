@@ -121,6 +121,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.persistence."/persist/${config.home.homeDirectory}" = {
+      directories = [
+        ".config/copilot-chat"
+        ".config/github-copilot"
+      ];
+    };
+
     programs.emacs = {
       enable = true;
       package = pkgs.emacs30;

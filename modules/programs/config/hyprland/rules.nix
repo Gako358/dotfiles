@@ -27,6 +27,7 @@
 
     windowrule = float, title:^(Spotify Premium)$
     windowrule = float, title:^(Spotify)$
+    windowrule = float, title:^(spotify_player)$
     windowrule = float, title:^(ranger)$
     windowrule = float, title:^(btop)$
 

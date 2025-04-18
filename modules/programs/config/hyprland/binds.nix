@@ -18,6 +18,7 @@ in
     bind = ${mainMod}, D, exec, ${wofi} --show drun
     bind = ${mainMod}, B, exec, ${terminal} -t btop -e btm
     bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
+    bind = ${mainMod}, M, exec, ${terminal} -t spotify-player -e spotify-player
 
     # Lockscreen with screenshot
     bind = ${mainMod} ${SECONDARY}, L, exec, ${lockScreen}

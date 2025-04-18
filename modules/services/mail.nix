@@ -34,6 +34,15 @@ in
       };
     };
 
+    sops.secrets = {
+      "email_user" = { };
+      "email_home-passwd" = { };
+      "email_work-passwd" = { };
+      "email_alias-private" = { };
+      "email_alias-service" = { };
+      "email_alias-social" = { };
+    };
+
     accounts.email = {
       maildirBasePath = "Mail";
       accounts = {
