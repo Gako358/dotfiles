@@ -10,9 +10,9 @@ in
     gh.enable = true;
   };
   imports = builtins.concatMap import [
-    ./cli
-    ./environment
+    ./environments
     ./programs
+    ./scripts
     ./services
     ./themes
   ];
