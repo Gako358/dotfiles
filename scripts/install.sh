@@ -32,7 +32,7 @@ install_nixos() {
         exit 0
     fi
 
-    disko_path="./hosts/$machine/disko.nix"
+    disko_path="./system/hardware/disko.nix"
     flake_target=".#$machine"
 
     if [ ! -f "$disko_path" ]; then

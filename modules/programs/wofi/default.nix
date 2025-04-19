@@ -4,29 +4,10 @@
 , ...
 }:
 let
-  opacity = "1";
-  palette = {
+  commonSettings = {
     font = "RobotoMono Nerd Font";
     fontsize = "15";
-    primary_accent = "cba6f7";
-    secondary_accent = "89b4fa";
-    tertiary_accent = "f5f5f5";
-    background = "282c34";
     cursor = "Numix-Cursor";
-
-    primary_accent_hex = "cba6f7";
-    secondary_accent_hex = "89b4fa";
-    tertiary_accent_hex = "f5f5f5";
-    primary_background_hex = "11111B";
-    secondary_background_hex = "1b1b2b";
-    tertiary_background_hex = "21252b";
-
-    primary_accent_rgba = "rgba(203,166,247,${opacity})";
-    secondary_accent_rgba = "rgba(137,180,250,${opacity})";
-    tertiary_accent_rgba = "rgba(245,245,245,${opacity})";
-    primary_background_rgba = "rgba(40, 44, 52,${opacity})";
-    secondary_background_rgba = "rgba(59, 63, 76,${opacity})";
-    tertiary_background_rgba = "rgba(33, 37, 43,${opacity})";
   };
 in
 {
@@ -47,34 +28,58 @@ in
     };
     style = ''
       * {
-        font-family: ${palette.font},monospace;
+        font-family: ${commonSettings.font}, monospace;
         font-weight: bold;
+        color: #${config.colorScheme.palette.base05};
       }
+
       #window {
         border-radius: 40px;
-        background: ${palette.primary_background_rgba}
+        background-color: #${config.colorScheme.palette.base00};
+        border: 2px solid #${config.colorScheme.palette.base0D};
       }
+
       #input {
         border-radius: 100px;
         margin: 20px;
         padding: 15px 25px;
-        background: ${palette.tertiary_background_rgba};
-        color: #${palette.tertiary_accent};
+        background-color: #${config.colorScheme.palette.base01};
+        color: #${config.colorScheme.palette.base07};
+        border: none;
       }
+
+      #input:focus {
+         border: 1px solid #${config.colorScheme.palette.base0D};
+      }
+
       #outer-box {
         font-weight: bold;
-        font-size: ${palette.fontsize};
+        font-size: ${commonSettings.fontsize}px;
+        margin: 5px;
+        padding: 10px;
       }
+
+      #text {
+         color: #${config.colorScheme.palette.base05};
+      }
+
       #entry {
-        margin: 10px 80px;
-        padding: 20px 20px;
-        border-radius: 200px;
+        margin: 5px 40px;
+        padding: 10px 15px;
+        border-radius: 100px;
+        border: none;
+        background-color: transparent;
       }
-      #entry:selected{
-        background-color:#${palette.primary_accent};
-        color: #${palette.background};
+
+      #entry:selected {
+        background-color: #${config.colorScheme.palette.base0D};
+        color: #${config.colorScheme.palette.base00};
+        border: none;
       }
+
       #entry:hover {
+         background-color: #${config.colorScheme.palette.base02};
+         color: #${config.colorScheme.palette.base06};
       }
     '';
   };

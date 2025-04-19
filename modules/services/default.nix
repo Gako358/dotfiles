@@ -6,6 +6,7 @@ let
   };
 in
 [
+  ./dconf.nix
   ./gpg.nix
   ./hypridle.nix
   ./hyprpaper.nix
