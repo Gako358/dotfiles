@@ -3,7 +3,7 @@
 , ...
 }:
 {
-  config = lib.mkIf config.desktop.environment.enable {
+  config = lib.mkIf config.environment.desktop.enable {
     sops.secrets = {
       "spotify_id" = { };
       "spotify_secret" = { };

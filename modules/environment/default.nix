@@ -1,6 +1,6 @@
 let
-  more = { config, lib, ... }: {
-    options.desktop.environment = {
+  more = { lib, ... }: {
+    options.environment.desktop = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;

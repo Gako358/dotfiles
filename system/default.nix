@@ -5,6 +5,7 @@
 , ...
 }: {
   imports = [
+    ./environment
     ./hardware
     ./programs
     ./services

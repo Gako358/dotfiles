@@ -4,7 +4,7 @@
 , ...
 }:
 {
-  config = lib.mkIf config.desktop.environment.enable {
+  config = lib.mkIf config.environment.desktop.enable {
     home = {
       packages = [
         pkgs.discord

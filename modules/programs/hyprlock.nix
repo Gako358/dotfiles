@@ -25,7 +25,7 @@ in
   };
 
   config = lib.mkIf
-    (cfg.enable && config.desktop.environment.windowManager == "hyprland")
+    (cfg.enable && config.environment.desktop.windowManager == "hyprland")
     {
       programs.hyprlock = {
         enable = true;

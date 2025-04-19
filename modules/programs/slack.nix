@@ -4,7 +4,7 @@
 , ...
 }:
 {
-  home = lib.mkIf config.desktop.environment.enable {
+  home = lib.mkIf config.environment.desktop.enable {
     packages = [
       pkgs.slack
     ];

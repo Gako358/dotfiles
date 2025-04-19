@@ -3,20 +3,19 @@
 , config
 , ...
 }:
-with lib;
 let
   cfg = config.program.qemu;
 in
 {
   options.program.qemu = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = false;
       description = "Enable Virt-Manager.";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && config.environment.desktop.enable) {
     programs = {
       virt-manager.enable = true;
     };

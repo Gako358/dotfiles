@@ -2,21 +2,19 @@
 , lib
 , ...
 }:
-with lib;
 let
   cfg = config.system.bluetooth;
 in
 {
   options.system.bluetooth = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = false;
       description = "Enable bluetooth";
     };
   };
 
-  config = mkIf cfg.enable {
-
+  config = lib.mkIf cfg.enable {
     environment.persistence."/persist" = {
       directories = [
         "/var/lib/bluetooth"

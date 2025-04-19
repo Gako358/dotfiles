@@ -109,7 +109,7 @@ let
 
 in
 {
-  config = lib.mkIf config.desktop.environment.enable {
+  config = lib.mkIf config.environment.desktop.enable {
     home.persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".config/copilot-chat"

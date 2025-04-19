@@ -1,8 +1,7 @@
 { pkgs
-, lib
 , ...
 }:
-with lib; {
+{
   # Core pakages for system
   environment = {
     systemPackages = with pkgs; [
@@ -19,7 +18,7 @@ with lib; {
 
   imports = [
     ./cachix
-    ./desktop.nix
+    ./dconf.nix
     ./docker.nix
     ./fonts.nix
     ./qemu.nix

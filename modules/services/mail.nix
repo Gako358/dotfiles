@@ -21,7 +21,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && config.desktop.environment.enable) {
+  config = lib.mkIf (cfg.enable && config.environment.desktop.enable) {
     home = {
       packages = with pkgs; [
         protonmail-bridge

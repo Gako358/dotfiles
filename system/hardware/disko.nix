@@ -2,7 +2,6 @@
 , lib
 , ...
 }:
-with lib;
 let
   cfg = config.system.disks.extraStoreDisk;
   extraStoreDevicePath = config.system.disks.extraStoreDevice;
@@ -48,18 +47,18 @@ let
 in
 {
   options = {
-    system.disks.mainDevice = mkOption {
-      type = types.str;
+    system.disks.mainDevice = lib.mkOption {
+      type = lib.types.str;
       default = "/dev/nvme0n1";
       description = "The block device path for the main system disk (containing root, boot, etc.).";
     };
-    system.disks.extraStoreDevice = mkOption {
-      type = types.nullOr types.str;
+    system.disks.extraStoreDevice = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
       default = "/dev/nvme1n1";
       description = "The block device path for the dedicated extra Nix store disk. Set to null if not used.";
     };
-    system.disks.extraStoreDisk.enable = mkOption {
-      type = types.bool;
+    system.disks.extraStoreDisk.enable = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Enable extra /nix store disk";
     };

@@ -2,20 +2,19 @@
 , lib
 , ...
 }:
-with lib;
 let
   cfg = config.service.sops;
 in
 {
   options.service.sops = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Enable Sops secrets";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     sops = {
       defaultSopsFile = ../../secrets/default.yaml;
       age.keyFile = "${config.users.users.merrinx.home}/.config/sops/age/keys.txt";

@@ -14,7 +14,7 @@
     ./variables.nix
   ];
 
-  config = lib.mkIf (config.desktop.environment.windowManager == "hyprland") {
+  config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     # Enable hyprland
     wayland.windowManager.hyprland = {
       enable = true;
@@ -35,6 +35,11 @@
     home.packages = [
       inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
       pkgs.ffmpegthumbnailer # thumbnailer for video files
+      pkgs.glib # Core application building blocks library (used by GTK/GNOME apps)
+      pkgs.gnome-calendar # Calendar application from the GNOME desktop
+      pkgs.gnome-boxes # Simple virtual machine manager from GNOME
+      pkgs.gnome-weather # Weather application from the GNOME desktop
+      pkgs.gnome-system-monitor # System resource monitor from GNOME
       pkgs.headsetcontrol # control logitech headsets
       pkgs.imagemagick # image manipulation
       pkgs.paprefs # pulseaudio preferences

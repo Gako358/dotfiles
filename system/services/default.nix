@@ -2,8 +2,8 @@
   imports = [
     ./blueman.nix
     ./btrbk.nix
-    ./dbus.nix
     ./gnome.nix
+    ./greetd.nix
     ./impermanence.nix
     ./nfc.nix
     ./openssh.nix

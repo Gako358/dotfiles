@@ -4,7 +4,7 @@
 , ...
 }:
 {
-  home.packages = lib.mkIf config.desktop.environment.enable [
+  home.packages = lib.mkIf config.environment.desktop.enable [
     pkgs.gimp
   ];
 }

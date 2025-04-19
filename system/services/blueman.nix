@@ -2,20 +2,19 @@
 , lib
 , ...
 }:
-with lib;
 let
   cfg = config.service.blueman;
 in
 {
   options.service.blueman = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = false;
       description = "Enable blueman";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     services.blueman.enable = true;
   };
 }

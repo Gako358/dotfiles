@@ -19,7 +19,7 @@ let
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
 in
 {
-  programs.waybar = lib.mkIf (config.desktop.environment.windowManager == "hyprland") {
+  programs.waybar = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     enable = true;
     package = pkgs.waybar.overrideAttrs (oa: {
       mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ];

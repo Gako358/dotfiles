@@ -3,20 +3,19 @@
 , pkgs
 , ...
 }:
-with lib;
 let
   cfg = config.service.wally;
 in
 {
   options.service.wally = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Enable Wally";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     services = {
       udev.packages = [
         (pkgs.writeTextFile {

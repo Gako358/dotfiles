@@ -29,7 +29,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && config.desktop.environment.windowManager == "hyprland") {
+  config = lib.mkIf (cfg.enable && config.environment.desktop.windowManager == "hyprland") {
     services.hypridle = {
       enable = true;
       package = inputs.hypridle.packages.${pkgs.system}.hypridle;
