@@ -1,6 +1,7 @@
 { inputs
 , config
 , pkgs
+, lib
 , ...
 }:
 let
@@ -16,7 +17,7 @@ let
   };
 in
 {
-  home = {
+  home = lib.mkIf config.desktop.environment.enable {
     packages = [ zenWithWayland ];
     persistence."/persist/${config.home.homeDirectory}" = {
       directories = [

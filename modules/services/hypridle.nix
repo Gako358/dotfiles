@@ -4,7 +4,6 @@
 , inputs
 , ...
 }:
-with lib;
 let
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   lock = "${pkgs.systemd}/bin/systemctl suspend";
@@ -13,24 +12,24 @@ let
 in
 {
   options.service.hypridle = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Enable hypridle";
     };
-    timeout = mkOption {
-      type = types.int;
+    timeout = lib.mkOption {
+      type = lib.types.int;
       default = 3600;
       description = "Idle timeout in seconds before DPMS off and suspend actions.";
     };
-    suspend = mkOption {
-      type = types.int;
+    suspend = lib.mkOption {
+      type = lib.types.int;
       default = 300;
       description = "Idle timeout in seconds before suspend actions.";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && config.desktop.environment.windowManager == "hyprland") {
     services.hypridle = {
       enable = true;
       package = inputs.hypridle.packages.${pkgs.system}.hypridle;

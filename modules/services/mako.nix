@@ -1,9 +1,12 @@
-{ config, ... }:
+{ config
+, lib
+, ...
+}:
 let
   fontType = "RobotoMono Nerd Font 12";
 in
 {
-  services.mako = {
+  services.mako = lib.mkIf (config.desktop.environment.windowManager == "hyprland") {
     enable = true;
     iconPath = "${config.gtk.iconTheme.package}/share/icons/Papirus-Dark";
     font = fontType;

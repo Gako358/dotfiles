@@ -1,23 +1,29 @@
-{ pkgs, config, ... }:
+{ config
+, pkgs
+, lib
+, ...
+}:
 {
-  home = {
-    packages = [
-      pkgs.discord
-    ];
-    persistence."/persist/${config.home.homeDirectory}" = {
-      directories = [
-        ".config/discord"
+  config = lib.mkIf config.desktop.environment.enable {
+    home = {
+      packages = [
+        pkgs.discord
       ];
+      persistence."/persist/${config.home.homeDirectory}" = {
+        directories = [
+          ".config/discord"
+        ];
+      };
     };
-  };
 
-  xdg.configFile = {
-    "discord/settings.json" = {
-      text = ''
-        {
-          "SKIP_HOST_UPDATE": true
-        }
-      '';
+    xdg.configFile = {
+      "discord/settings.json" = {
+        text = ''
+          {
+            "SKIP_HOST_UPDATE": true
+          }
+        '';
+      };
     };
   };
 }

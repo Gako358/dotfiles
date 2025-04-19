@@ -2,21 +2,8 @@
 , lib
 , ...
 }:
-with lib;
-let
-  cfg = config.program.spotify;
-in
 {
-
-  options.program.spotify = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable Spotify TUI.";
-    };
-  };
-
-  config = mkIf cfg.enable {
+  config = lib.mkIf config.desktop.environment.enable {
     sops.secrets = {
       "spotify_id" = { };
       "spotify_secret" = { };

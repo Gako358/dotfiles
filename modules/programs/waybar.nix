@@ -1,4 +1,8 @@
-{ pkgs, config, ... }:
+{ lib
+, pkgs
+, config
+, ...
+}:
 let
   fontSize = "14px";
   iconSize = "17px";
@@ -15,7 +19,7 @@ let
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
 in
 {
-  programs.waybar = {
+  programs.waybar = lib.mkIf (config.desktop.environment.windowManager == "hyprland") {
     enable = true;
     package = pkgs.waybar.overrideAttrs (oa: {
       mesonFlags = (oa.mesonFlags or [ ]) ++ [ "-Dexperimental=true" ];

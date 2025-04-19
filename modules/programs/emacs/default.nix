@@ -3,7 +3,6 @@
 , config
 , ...
 }:
-with lib;
 let
   metalsVersion = "1.5.1";
   metals = pkgs.metals.overrideAttrs (
@@ -108,19 +107,9 @@ let
   # Use the nix-profile path for Home Manager packages
   homeManagerPath = "/etc/profiles/per-user/merrinx/bin";
 
-  cfg = config.program.emacs;
-
 in
 {
-  options.program.emacs = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable Emacs configuration.";
-    };
-  };
-
-  config = mkIf cfg.enable {
+  config = lib.mkIf config.desktop.environment.enable {
     home.persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".config/copilot-chat"

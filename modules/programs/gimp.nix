@@ -1,6 +1,10 @@
-{ pkgs, ... }:
+{ config
+, pkgs
+, lib
+, ...
+}:
 {
-  home.packages = [
+  home.packages = lib.mkIf config.desktop.environment.enable [
     pkgs.gimp
   ];
 }

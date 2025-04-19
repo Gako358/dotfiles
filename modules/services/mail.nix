@@ -3,26 +3,25 @@
 , config
 , ...
 }:
-with lib;
 let
   certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
   cfg = config.service.mail;
 in
 {
   options.service.mail = {
-    enable = mkOption {
-      type = types.bool;
+    enable = lib.mkOption {
+      type = lib.types.bool;
       default = true;
       description = "Enable email configuration.";
     };
-    password = mkOption {
-      type = types.str;
+    password = lib.mkOption {
+      type = lib.types.str;
       default = "";
       description = "Password for the email account.";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && config.desktop.environment.enable) {
     home = {
       packages = with pkgs; [
         protonmail-bridge

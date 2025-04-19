@@ -11,6 +11,7 @@ in
   };
   imports = builtins.concatMap import [
     ./cli
+    ./desktops
     ./programs
     ./services
     ./themes

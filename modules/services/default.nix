@@ -10,6 +10,8 @@ in
   ./hypridle.nix
   ./hyprpaper.nix
   ./mail.nix
+  ./mako.nix
+  ./network.nix
   ./persist.nix
   ./secrets.nix
   more

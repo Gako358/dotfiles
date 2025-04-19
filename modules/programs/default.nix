@@ -1,9 +1,8 @@
 let
   more = { pkgs, ... }: {
     home.packages = with pkgs; [
-      # Common packages
-      any-nix-shell # fish support for nix shell
       acpi # battery info
+      any-nix-shell # fish support for nix shell
       arandr # screen layout manager
       brightnessctl # control screen brightness
       bottom # alternative to htop & ytop
@@ -13,6 +12,9 @@ let
       duf # disk usage/free utility
       eza # a better `ls`
       fd # "find" for files
+      ffmpegthumbnailer # thumbnailer for video files
+      headsetcontrol # control logitech headsets
+      imagemagick # image manipulation
       jump # fast directory navigation
       killall # kill processes by name
       libsecret # secret management
@@ -23,7 +25,10 @@ let
       nix-output-monitor # nom: monitor nix commands
       nix-prefetch-git # prefetch git sources
       ouch # painless compression and decompression for your terminal
+      paprefs # pulseaudio preferences
+      pavucontrol # pulseaudio volume control
       prettyping # a nicer ping
+      poppler # pdf tools
       rage # encryption tool for secrets management
       ranger # file manager
       ripgrep # fast grep
@@ -33,31 +38,24 @@ let
       xarchiver # archive manager
       zip # zip files
     ];
-
-    programs = {
-      bat.enable = true;
-      broot.enable = true;
-      fzf = {
-        enable = true;
-        defaultCommand = "fd --type file --follow"; # FZF_DEFAULT_COMMAND
-        defaultOptions = [ "--height 20%" ]; # FZF_DEFAULT_OPTS
-        fileWidgetCommand = "fd --type file --follow"; # FZF_CTRL_T_COMMAND
-      };
-      jq.enable = true;
-    };
   };
 in
 [
-  ./config
+  ./emacs
+  ./neofetch
+  ./wofi
   ./alacritty.nix
+  ./bat.nix
+  ./broot.nix
   ./direnv.nix
   ./discord.nix
   ./fish.nix
+  ./fzf.nix
   ./gimp.nix
   ./git.nix
-  ./mako.nix
+  ./hyprlock.nix
+  ./jq.nix
   ./neovim.nix
-  ./network.nix
   ./slack.nix
   ./spotify.nix
   ./starship.nix

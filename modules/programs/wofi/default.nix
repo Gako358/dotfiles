@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{ config
+, pkgs
+, lib
+, ...
+}:
 let
   opacity = "1";
   palette = {
@@ -26,7 +30,7 @@ let
   };
 in
 {
-  programs.wofi = {
+  programs.wofi = lib.mkIf (config.desktop.environment.windowManager == "hyprland") {
     enable = true;
     package = pkgs.wofi.overrideAttrs (oa: {
       patches =
