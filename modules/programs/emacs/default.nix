@@ -118,6 +118,12 @@ in
       ];
     };
 
+    sops.secrets = lib.mkIf osConfig.service.sops.enable {
+      "forge_auth" = {
+        path = "${config.home.homeDirectory}/.authinfo";
+      };
+    };
+
     programs.emacs = {
       enable = true;
       package = pkgs.emacs30;
@@ -235,6 +241,7 @@ in
           eat # Emacs Anywhere Terminal
 
           # Version
+          forge # Work with github forges
           git-gutter # Show git diff in the fringe
           git-gutter-fringe # Fringe version of git-gutter.el
           magit # A Git porcelain inside Emacs

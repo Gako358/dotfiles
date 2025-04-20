@@ -1716,6 +1716,14 @@ For forge, create a file called ~/.authinfo with the following:
 
 - machine api.github.com login gako358^forge password ==secret-token==
 
+*** Forge
+#+begin_src emacs-lisp
+  (use-package forge
+    :after magit
+    :config
+    (setq auth-sources '("~/.authinfo")))
+#+end_src
+
 *** Git-gutter
 #+begin_src emacs-lisp
   (use-package git-gutter
