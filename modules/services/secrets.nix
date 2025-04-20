@@ -1,20 +1,10 @@
-{ config
+{ osConfig
+, config
 , lib
 , ...
 }:
-let
-  cfg = config.service.secrets;
-in
 {
-  options.service.secrets = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Enable Sops secrets";
-    };
-  };
-
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf osConfig.service.sops.enable {
     home.persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".config/sops/age"

@@ -5,7 +5,7 @@
 }:
 {
   config = lib.mkIf osConfig.environment.desktop.enable {
-    sops.secrets = {
+    sops.secrets = lib.mkIf osConfig.service.sops.enable {
       "spotify_id" = { };
       "spotify_secret" = { };
     };

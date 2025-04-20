@@ -31,11 +31,16 @@ in
   # Home modules to load
   program.hyprlock.defaultMonitor = "DP-8";
 
-  service = {
-    hypridle = {
-      timeout = 600;
-      suspend = 600;
-    };
-    mail.password = "${cat} ${config.sops.secrets."email_work-passwd".path}";
-  };
+  service = lib.mkMerge [
+    {
+      hypridle = {
+        timeout = 600;
+        suspend = 600;
+      };
+    }
+
+    (lib.mkIf osConfig.service.sops.enable {
+      mail.password = "${cat} ${config.sops.secrets."email_work-passwd".path}";
+    })
+  ];
 }

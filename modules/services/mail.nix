@@ -34,7 +34,7 @@ in
       };
     };
 
-    sops.secrets = {
+    sops.secrets = lib.mkIf osConfig.service.sops.enable {
       "email_user" = { };
       "email_home-passwd" = { };
       "email_work-passwd" = { };
