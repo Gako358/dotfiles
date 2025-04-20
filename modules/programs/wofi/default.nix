@@ -1,4 +1,5 @@
-{ config
+{ osConfig
+, config
 , pkgs
 , lib
 , ...
@@ -11,7 +12,7 @@ let
   };
 in
 {
-  programs.wofi = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
+  programs.wofi = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
     enable = true;
     package = pkgs.wofi.overrideAttrs (oa: {
       patches =

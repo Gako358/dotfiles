@@ -1,9 +1,10 @@
-{ config
+{ osConfig
+, config
 , lib
 , ...
 }:
 {
-  config = lib.mkIf config.environment.desktop.enable {
+  config = lib.mkIf osConfig.environment.desktop.enable {
     sops.secrets = {
       "spotify_id" = { };
       "spotify_secret" = { };

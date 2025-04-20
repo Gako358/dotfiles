@@ -1,10 +1,11 @@
-{ config
+{ osConfig
+, config
 , pkgs
 , lib
 , ...
 }:
 {
-  home = lib.mkIf config.environment.desktop.enable {
+  home = lib.mkIf osConfig.environment.desktop.enable {
     packages = [
       pkgs.slack
     ];

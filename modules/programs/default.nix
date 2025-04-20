@@ -42,6 +42,7 @@ let
 in
 [
   ./emacs
+  ./hyprland
   ./neofetch
   ./wofi
   ./alacritty.nix

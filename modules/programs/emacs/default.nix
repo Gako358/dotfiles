@@ -1,6 +1,7 @@
 { lib
 , pkgs
 , config
+, osConfig
 , ...
 }:
 let
@@ -109,7 +110,7 @@ let
 
 in
 {
-  config = lib.mkIf config.environment.desktop.enable {
+  config = lib.mkIf osConfig.environment.desktop.enable {
     home.persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
         ".config/copilot-chat"

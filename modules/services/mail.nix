@@ -1,6 +1,7 @@
 { lib
 , pkgs
 , config
+, osConfig
 , ...
 }:
 let
@@ -21,7 +22,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && config.environment.desktop.enable) {
+  config = lib.mkIf (cfg.enable && osConfig.environment.desktop.enable) {
     home = {
       packages = with pkgs; [
         protonmail-bridge

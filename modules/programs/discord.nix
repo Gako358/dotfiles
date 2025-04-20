@@ -1,10 +1,11 @@
-{ config
+{ osConfig
+, config
 , pkgs
 , lib
 , ...
 }:
 {
-  config = lib.mkIf config.environment.desktop.enable {
+  config = lib.mkIf osConfig.environment.desktop.enable {
     home = {
       packages = [
         pkgs.discord

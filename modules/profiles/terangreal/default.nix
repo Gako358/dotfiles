@@ -1,4 +1,5 @@
-{ config
+{ osConfig
+, config
 , pkgs
 , lib
 , ...
@@ -10,7 +11,7 @@ in
 {
   imports = [ ../../default.nix ];
 
-  wayland.windowManager.hyprland.extraConfig = lib.mkIf (config.environment.desktop.windowManager == "hyprland") ''
+  wayland.windowManager.hyprland.extraConfig = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") ''
     monitor=DP-2,2560x1440,0x0,1
     monitor=DP-3,2560x1440,2560x0,1
     monitor=,highrr,auto,1

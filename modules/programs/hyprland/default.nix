@@ -1,7 +1,7 @@
 { lib
 , pkgs
-, config
 , inputs
+, osConfig
 , ...
 }:
 {
@@ -14,7 +14,7 @@
     ./variables.nix
   ];
 
-  config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
+  config = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
     # Enable hyprland
     wayland.windowManager.hyprland = {
       enable = true;

@@ -1,4 +1,5 @@
-{ inputs
+{ osConfig
+, inputs
 , config
 , pkgs
 , lib
@@ -25,7 +26,7 @@ in
   };
 
   config = lib.mkIf
-    (cfg.enable && config.environment.desktop.windowManager == "hyprland")
+    (cfg.enable && osConfig.environment.desktop.windowManager == "hyprland")
     {
       programs.hyprlock = {
         enable = true;
