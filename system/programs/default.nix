@@ -48,7 +48,7 @@
     # # "rsync"
     # # "strace"
     #
-    # Your explicit list starts here:
+    # Explicit list starts here:
     systemPackages = with pkgs; [
       wget
       git
