@@ -95,6 +95,7 @@ let
     pkgs.nil
     pkgs.nixpkgs-fmt
     pkgs.nodePackages.prettier
+    pkgs.nodePackages.nodejs
     pkgs.typescript-language-server
     pkgs.vue-language-server
   ];
