@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config
+, pkgs
+, lib
+, ...
+}:
 let
-
   cleanup = ''
     mkdir -p /btrfs_tmp
     echo "[cleanup] Created /btrfs_tmp"
@@ -43,7 +46,9 @@ in
     ./bluetooth.nix
     ./disko.nix
     ./graphics.nix
+    ./locale.nix
     ./network.nix
+    ./nix.nix
   ];
   boot = {
     consoleLogLevel = 3;
@@ -94,4 +99,10 @@ in
   };
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   system.stateVersion = "24.11";
+
+  users = {
+    defaultUserShell = pkgs.fish;
+    mutableUsers = false;
+    users.root.initialHashedPassword = "$6$pbE4rcxk1KsvypJn$ZJlFtw85hgSWzdJnAuZr935zmm6Qc974ehL13/8WGPKnxX4epK5FiP2BBM/q89Gii9Xk0hxVvVKOkdkZuR2xE0";
+  };
 }

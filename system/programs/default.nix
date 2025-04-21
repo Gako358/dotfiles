@@ -20,9 +20,17 @@
     ./cachix
     ./dconf.nix
     ./docker.nix
+    ./fish.nix
     ./fonts.nix
     ./qemu.nix
-    ./shell.nix
     ./xdg.nix
   ];
+
+  programs = {
+    # Allow non-root users to specify the allow_other or allow_root mount options
+    fuse.userAllowOther = true;
+    # Nano is enabled by default, but not anymore...
+    nano.enable = false;
+  };
+
 }

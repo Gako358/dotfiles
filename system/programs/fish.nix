@@ -52,7 +52,6 @@ in
 
       ".." = "cd ..";
 
-      zz = "zellij";
       ping = "${pkgs.prettyping}/bin/prettyping";
       tree = "${pkgs.eza}/bin/eza -T";
       xdg-open = "${pkgs.mimeo}/bin/mimeo";
