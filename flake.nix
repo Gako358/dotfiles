@@ -1,13 +1,32 @@
 {
   description = "MerrinX Flake";
 
+  outputs = inputs@{ self, nixpkgs, flake-parts, home-manager, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      imports = [
+        ./hosts
+        ./pkgs
+      ];
+      perSystem = { config, self', inputs', pkgs, system, ... }:
+        {
+          devShells.default = pkgs.mkShell {
+            name = "merrinx-dev-shell";
+            inputsFrom = [ ];
+            nativeBuildInputs = with pkgs; [
+              nixpkgs-fmt
+            ];
+          };
+        };
+    };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     hardware.url = "github:nixos/nixos-hardware";
     hyprland.url = "github:hyprwm/hyprland";
     hypridle = {
@@ -64,101 +83,4 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
-  outputs =
-    { self
-    , nixpkgs
-    , home-manager
-    , ...
-    } @ inputs:
-    let
-      inherit (self) outputs;
-      lib = nixpkgs.lib // home-manager.lib;
-      systems = [ "x86_64-linux" "aarch64-linux" ];
-      forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
-      pkgsFor = lib.genAttrs systems (system:
-        import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        });
-    in
-    {
-      inherit lib;
-      overlays = {
-        default = import ./overlay { inherit inputs outputs; };
-      };
-      templates = import ./templates;
-      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
-      devShells = forEachSystem (pkgs:
-        import ./shell.nix {
-          inherit pkgs;
-          buildInputs = [
-          ];
-        });
-
-      nixosConfigurations = {
-        terangreal = lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = [
-            inputs.disko.nixosModules.disko
-            inputs.home-manager.nixosModules.home-manager
-            inputs.impermanence.nixosModules.impermanence
-            inputs.sops-nix.nixosModules.sops
-            ./system
-            ./hosts/terangreal
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  inherit inputs outputs;
-                };
-                backupFileExtension = ".hm-backup";
-                users.merrinx = { ... }: {
-                  imports = [
-                    inputs.nix-colors.homeManagerModules.default
-                    inputs.impermanence.homeManagerModules.impermanence
-                    inputs.sops-nix.homeManagerModules.sops
-                    ./modules/profiles/terangreal
-                  ];
-                };
-              };
-            }
-          ];
-        };
-        tuathaan = lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = [
-            inputs.disko.nixosModules.disko
-            inputs.home-manager.nixosModules.home-manager
-            inputs.impermanence.nixosModules.impermanence
-            inputs.sops-nix.nixosModules.sops
-            ./system
-            ./hosts/tuathaan
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  inherit inputs outputs;
-                };
-                backupFileExtension = ".hm-backup";
-                users.merrinx = { ... }: {
-                  imports = [
-                    inputs.nix-colors.homeManagerModules.default
-                    inputs.impermanence.homeManagerModules.impermanence
-                    inputs.sops-nix.homeManagerModules.sops
-                    ./modules/profiles/tuathaan
-                  ];
-                };
-              };
-            }
-          ];
-        };
-      };
-    };
 }

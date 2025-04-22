@@ -38,14 +38,6 @@ nixos-rebuild switch --flake .#
 + ~pkgs~: My custom packages. Also accessible via ~nix build~. You can compose these into your own configuration by using my flake's overlay or consume them through NUR.
 + ~secrets~: My ~sops~ secrets, used in the configuration.
 + ~system~: Modules that are the "system/nixpkgs," configuration. ~flake.nix~.
-+ ~templates~: A couple of project templates for different languages. Accessible via ~nix init~.
-  + ~C~ - C development environment
-  + ~devshell~ - Basic development shell, to be bootstrapped to anything
-  + ~latex~ - LaTeX development environment
-  + ~python~ - Python development environment
-  + ~rust~ - Rust development environment
-  + ~wasm~ - WebAssembly development environment
-  + ~java~ - Java development environment
 
 **** Installation via Media
 
