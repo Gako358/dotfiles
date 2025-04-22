@@ -34,7 +34,6 @@ nixos-rebuild switch --flake .#
   + ~tuathaan~: HP work laptop
 + ~modules~: My Home-manager configuration, accessible via ~home-manager --flake~
   + Each directory here is a "feature" each ~hm~ configuration can toggle, thus customizing my setup for each machine (be it a server, desktop, laptop, anything really).
-+ ~overlay~: Patches and version overrides for some packages. Accessible via ~nix build~.
 + ~pkgs~: My custom packages. Also accessible via ~nix build~. You can compose these into your own configuration by using my flake's overlay or consume them through NUR.
 + ~secrets~: My ~sops~ secrets, used in the configuration.
 + ~system~: Modules that are the "system/nixpkgs," configuration. ~flake.nix~.
