@@ -74,5 +74,4 @@
     # Nano is enabled by default, but not anymore...
     nano.enable = false;
   };
-
 }

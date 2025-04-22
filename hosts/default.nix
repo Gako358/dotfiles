@@ -20,7 +20,7 @@ let
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            extraSpecialArgs = { inherit inputs; };
+            extraSpecialArgs = { inherit inputs self; };
             backupFileExtension = ".hm-backup";
             users.merrinx = { ... }: {
               imports = [

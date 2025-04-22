@@ -57,6 +57,7 @@ in
   ./hyprlock.nix
   ./jq.nix
   ./neovim.nix
+  ./repl.nix
   ./slack.nix
   ./spotify.nix
   ./starship.nix
