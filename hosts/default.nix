@@ -6,7 +6,6 @@ in
 {
   flake = {
     lib = nixpkgs.lib // home-manager.lib;
-    overlays.default = import "${self}/overlay" { inherit inputs; };
     nixosConfigurations =
       let
         mkNixosSystem = { hostName, profilePath }:
