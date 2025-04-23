@@ -62,9 +62,9 @@
     ./cachix
     ./dconf.nix
     ./docker.nix
+    ./fish.nix
     ./fonts.nix
     ./qemu.nix
-    ./shell.nix
     ./xdg.nix
   ];
 
