@@ -1219,8 +1219,12 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 *** Haskell
 #+begin_src emacs-lisp
   (use-package haskell-ts-mode
+    :ensure t
+    :custom
+    (haskell-ts-use-indent t)
+    (haskell-ts-ghci "ghci")
     :mode (("\\.hs\\'" . haskell-ts-mode)
-	   ("\\.cabal\\'" . haskell-ts-mode)))
+  	 ("\\.cabal\\'" . haskell-ts-mode)))
 #+end_src
 
 *** Java
