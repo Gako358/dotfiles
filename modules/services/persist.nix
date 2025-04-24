@@ -4,6 +4,7 @@
     directories = [
       "Documents"
       "Downloads"
+      "Gulag"
       "Music"
       "Pictures"
       "Projects"
