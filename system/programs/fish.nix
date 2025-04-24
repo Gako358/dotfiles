@@ -64,7 +64,7 @@ in
       dot = "cd ~/Sources/dotfiles";
       doc = "cd ~/Documents";
       neovim = "cd ~/Projects/neovim";
-      work = "cd ~/Gulag";
+      work = "cd ~/Workflow";
       www = "cd ~/Projects/wwwsite/";
 
       update = "nix flake update";

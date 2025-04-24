@@ -4,11 +4,11 @@
     directories = [
       "Documents"
       "Downloads"
-      "Gulag"
       "Music"
       "Pictures"
       "Projects"
       "Sources"
+      "Workflow"
 
       ".cargo"
       ".m2"
