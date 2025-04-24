@@ -1620,8 +1620,8 @@ Projectile is the go-to project package to use with Emacs.
   	  projectile-completion-system 'ivy
   	  projectile-indexing-method 'alien
   	  projectile-sort-order 'recently-active
-  	  projectile-project-search-path '(("~/Projects/" . 1)
-  					   ("~/Projects/workspace/" . 1)
+  	  projectile-project-search-path '(("~/Gulag/" . 1)
+  					   ("~/Projects/" . 1)
   					   ("~/Projects/forks/" . 1)
   					   ("~/Sources/" . 1)))
 
