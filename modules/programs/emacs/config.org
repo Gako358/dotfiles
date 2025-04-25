@@ -733,6 +733,20 @@ Vertical Interactive Completion UI:
   (global-display-line-numbers-mode)
 #+end_src
 
+** Document
+
+Document reader using pdf-tools and org-pdfview
+
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :ensure t
+    :hook (pdf-view-mode . (lambda ()
+  			     (display-line-numbers-mode -1)))
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-page))
+#+end_src
+
 ** Edit
 
 Formatters:
