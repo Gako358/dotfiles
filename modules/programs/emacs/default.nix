@@ -157,6 +157,9 @@ in
           vertico # Vertical interactive completion UI.
           vertico-posframe # Vertico completion UI with posframe.
 
+          # Documentation
+          pdf-tools # Document viewer
+
           # Evil
           evil # Extensible vi layer for Emacs
           evil-collection # A set of keybindings for evil-mode
