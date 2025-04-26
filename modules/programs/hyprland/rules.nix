@@ -20,6 +20,7 @@
 
     windowrule = workspace 1, class:^(zen)$
     windowrule = workspace 5, class:^(Wfica)$
+    windowrule = workspace 5, class:^(.virt-manager-wrapped)$
     windowrule = workspace 7, class:^(steam)$
     windowrule = workspace 7, title:^(Friends List)$
     windowrule = workspace 8, class:^(Slack)$
