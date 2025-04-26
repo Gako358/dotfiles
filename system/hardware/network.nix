@@ -1,4 +1,6 @@
-{ lib, ... }: {
+{ lib
+, ...
+}: {
   networking = {
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
@@ -8,4 +10,6 @@
       104.199.65.124 ap-gew4.spotify.com
     '';
   };
+
+  users.users.merrinx.extraGroups = [ "networkmanager" ];
 }

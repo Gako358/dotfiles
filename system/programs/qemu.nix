@@ -51,5 +51,7 @@ in
       win-spice
       win-virtio
     ];
+
+    users.users.merrinx.extraGroups = [ "libvirtd" ];
   };
 }

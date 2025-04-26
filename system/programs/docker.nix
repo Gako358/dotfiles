@@ -1,4 +1,6 @@
-{ pkgs, ... }: {
+{ pkgs
+, ...
+}: {
   virtualisation = {
     podman.enable = true;
     docker = {
@@ -11,4 +13,6 @@
   environment.systemPackages = with pkgs; [
     docker-compose
   ];
+
+  users.users.merrinx.extraGroups = [ "docker" ];
 }
