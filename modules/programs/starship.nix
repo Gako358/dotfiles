@@ -69,7 +69,7 @@ in
         "School" = "󰑴 ";
         "GitHub" = "";
         ".config" = " ";
-        "workspace" = "󱌢 ";
+        "Workflow" = "󱌢 ";
       };
       git_branch = {
         symbol = "";
