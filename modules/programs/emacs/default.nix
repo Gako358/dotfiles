@@ -118,6 +118,7 @@ in
         ".cargo"
         ".config/copilot-chat"
         ".config/github-copilot"
+        ".emacs.d"
         ".m2"
         ".npm"
         ".pulumi"
