@@ -109,13 +109,18 @@ let
   # Use the nix-profile path for Home Manager packages
   homeManagerPath = "/etc/profiles/per-user/merrinx/bin";
 
+  desktop = osConfig.environment.desktop;
 in
 {
-  config = lib.mkIf osConfig.environment.desktop.enable {
+  config = lib.mkIf (desktop.enable && desktop.develop) {
     home.persistence."/persist/${config.home.homeDirectory}" = {
       directories = [
+        ".cargo"
         ".config/copilot-chat"
         ".config/github-copilot"
+        ".m2"
+        ".npm"
+        ".pulumi"
       ];
     };
 

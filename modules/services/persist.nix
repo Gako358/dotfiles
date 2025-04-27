@@ -9,14 +9,6 @@
       "Projects"
       "Sources"
       "Workflow"
-
-      ".cargo"
-      ".m2"
-      ".npm"
-      ".pulumi"
-
-      ".config/copilot-chat"
-      ".config/github-copilot"
     ];
   };
 }

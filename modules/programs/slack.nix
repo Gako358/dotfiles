@@ -4,8 +4,11 @@
 , lib
 , ...
 }:
+let
+  desktop = osConfig.environment.desktop;
+in
 {
-  home = lib.mkIf osConfig.environment.desktop.enable {
+  home = lib.mkIf (desktop.enable && desktop.develop) {
     packages = [
       pkgs.slack
     ];

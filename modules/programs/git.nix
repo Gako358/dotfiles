@@ -86,7 +86,7 @@ in
 
       includes = [
         {
-          condition = "gitdir:~/Projects/workspace/";
+          condition = "gitdir:~/Workflow/";
           contents = {
             user = {
               name = "Knut Oien";

@@ -1,9 +1,14 @@
-{ pkgs, config, ... }:
+{ osConfig
+, config
+, pkgs
+, lib
+, ...
+}:
 let
   fontSize = 10;
 in
 {
-  programs.alacritty = {
+  programs.alacritty = lib.mkIf (osConfig.environment.desktop.enable) {
     enable = true;
     settings = {
       bell = {
