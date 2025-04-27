@@ -44,8 +44,8 @@ install_nixos() {
         exit 0
     fi
 
-    disko_path="./system/hardware/disko.nix"
     flake_target=".#$machine"
+    disko_path="./hosts/$machine/disks.nix"
 
     if [ ! -f "$disko_path" ]; then
         echo "Error: Disk configuration file not found at $disko_path"
