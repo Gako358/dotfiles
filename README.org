@@ -30,7 +30,9 @@ nixos-rebuild switch --flake .#
 
 + ~flake.nix~: Entrypoint for hosts and home configurations. Also exposes a devshell for bootstrapping (~nix develop~ or ~nix-shell~).
 + ~hosts~: NixOS Configurations, accessible via ~nixos-rebuild --flake~.
-  + ~tanchico~: HP server
+  + ~aanallein~: HP Server
+  + ~rhuidean~: Virtual Machine - Used for tesing
+  + ~tanchico~: Gaming PC - 32GB RAM, Ryzon7 5800X3D
   + ~terangreal~: Desktop PC - 48GB RAM, Ryzon7 5600
   + ~tuathaan~: HP work laptop
 + ~modules~: My Home-manager configuration, accessible via ~home-manager --flake~

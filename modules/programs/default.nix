@@ -48,12 +48,14 @@ in
   ./git.nix
   ./hyprlock.nix
   ./jq.nix
+  ./lutris.nix
   ./neovim.nix
   ./repl.nix
   ./slack.nix
   ./spotify.nix
   ./starship.nix
   ./waybar.nix
+  ./wine.nix
   ./zen.nix
   more
 ]

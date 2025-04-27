@@ -65,6 +65,7 @@
     ./fish.nix
     ./fonts.nix
     ./qemu.nix
+    ./steam.nix
     ./xdg.nix
   ];
 

@@ -3,7 +3,7 @@
     ./hardware-configuration.nix
   ];
 
-  networking.hostName = "tanchico";
+  networking.hostName = "rhuidean";
   users.users = {
     merrinx = {
       isNormalUser = true;
@@ -15,5 +15,13 @@
   };
 
   # Modules loaded
-  environment.gaming.enable = true;
+  environment = {
+    desktop.develop = false;
+    gaming.enable = true;
+  };
+
+  system.disks = {
+    mainDevice = "/dev/vda";
+    extraStoreDisk.enable = false;
+  };
 }

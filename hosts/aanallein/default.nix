@@ -3,7 +3,7 @@
     ./hardware-configuration.nix
   ];
 
-  networking.hostName = "tanchico";
+  networking.hostName = "aanallein";
   users.users = {
     merrinx = {
       isNormalUser = true;
@@ -15,5 +15,6 @@
   };
 
   # Modules loaded
-  environment.gaming.enable = true;
+  environment.server.enable = true;
+  environment.desktop.enable = false;
 }

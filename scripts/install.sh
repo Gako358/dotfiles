@@ -7,20 +7,32 @@ install_nixos() {
     echo "NixOS Installation Script"
     echo "=================================="
     echo "Please select a machine to install:"
-    echo "1) terangreal"
-    echo "2) tuathaan"
+    echo "1) aanallein"
+    echo "2) rhuidean"
+    echo "3) tanchico"
+    echo "4) terangreal"
+    echo "5) tuathaan"
     echo "=================================="
     read -p "Enter your choice (1 or 2): " choice
 
     case $choice in
         1)
-            machine="terangreal"
+            machine="aanallein"
             ;;
         2)
+            machine="rhuidean"
+            ;;
+        3)
+            machine="tanchico"
+            ;;
+        4)
+            machine="terangreal"
+            ;;
+        5)
             machine="tuathaan"
             ;;
         *)
-            echo "Invalid choice. Please select 1 or 2."
+            echo "Invalid choice. Please select 1 and 5."
             exit 1
             ;;
     esac
