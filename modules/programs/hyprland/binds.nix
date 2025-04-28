@@ -17,10 +17,10 @@ in
     # Launchers
     bind = ${mainMod}, Return, exec, ${terminal}
     bind = ${mainMod}, D, exec, ${wofi} --show drun
-    bind = ${mainMod}, P, exec, ${pcmanfm}
     bind = ${mainMod}, B, exec, ${terminal} -t btop -e btm
     bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
     bind = ${mainMod}, S, exec, ${terminal} -t spotify_player -e spotify_player
+    bind = ${mainMod} ${SECONDARY}, D, exec, ${pcmanfm}
 
     # Lockscreen with screenshot
     bind = ${mainMod} ${SECONDARY}, L, exec, ${lockScreen}
