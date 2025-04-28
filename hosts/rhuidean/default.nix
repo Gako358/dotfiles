@@ -24,4 +24,6 @@
     mainDevice = "/dev/vda";
     extraStoreDisk.enable = false;
   };
+
+  service.sops.enable = false;
 }
