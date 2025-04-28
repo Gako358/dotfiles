@@ -17,7 +17,7 @@
       ];
       persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
-          # TODO: Add lutris needed folders
+          ".local/share/lutris"
         ];
       };
     };

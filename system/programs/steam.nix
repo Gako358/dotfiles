@@ -17,7 +17,8 @@
     environment.persistence."/persist" = {
       users.merrinx = {
         directories = [
-          # TODO: Add Steam needed folders
+          ".steam"
+          ".local/share/Steam"
         ];
       };
     };
