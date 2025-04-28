@@ -8,6 +8,7 @@ let
   grimshot = "${pkgs.sway-contrib.grimshot}/bin/grimshot";
   swappy = "${pkgs.swappy}/bin/swappy";
   wofi = "${pkgs.wofi}/bin/wofi";
+  pcmanfm = "${pkgs.pcmanfm}/bin/pcmanfm";
   terminal = "${pkgs.alacritty}/bin/alacritty";
   lockScreen = "${pkgs.hyprlock}/bin/hyprlock";
 in
@@ -16,6 +17,7 @@ in
     # Launchers
     bind = ${mainMod}, Return, exec, ${terminal}
     bind = ${mainMod}, D, exec, ${wofi} --show drun
+    bind = ${mainMod}, P, exec, ${pcmanfm}
     bind = ${mainMod}, B, exec, ${terminal} -t btop -e btm
     bind = ${mainMod}, R, exec, ${terminal} -t ranger -e ranger
     bind = ${mainMod}, S, exec, ${terminal} -t spotify_player -e spotify_player

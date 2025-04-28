@@ -50,6 +50,7 @@ in
   ./jq.nix
   ./lutris.nix
   ./neovim.nix
+  ./pcmanfm.nix
   ./repl.nix
   ./slack.nix
   ./spotify.nix
