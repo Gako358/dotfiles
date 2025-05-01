@@ -21,7 +21,10 @@
   '';
 
   # Home modules to load
-  program.hyprlock.defaultMonitor = "HDMI-A-1";
+  program = {
+    alacritty.fontSize = 12;
+    hyprlock.defaultMonitor = "HDMI-A-1";
+  };
 
   service.hypridle = {
     timeout = 3600;
