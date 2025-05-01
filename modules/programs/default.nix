@@ -47,6 +47,7 @@ in
   ./gimp.nix
   ./git.nix
   ./hyprlock.nix
+  ./icue.nix
   ./jq.nix
   ./neovim.nix
   ./pcmanfm.nix
