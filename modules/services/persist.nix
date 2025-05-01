@@ -8,7 +8,6 @@
       "Pictures"
       "Projects"
       "Sources"
-      "Workflow"
     ];
   };
 }
