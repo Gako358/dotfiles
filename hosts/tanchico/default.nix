@@ -15,5 +15,16 @@
   };
 
   # Modules loaded
-  environment.gaming.enable = true;
+  environment = {
+    desktop.develop = false;
+    gaming.enable = true;
+  };
+
+  system.disks = {
+    mainDevice = "/dev/sda";
+    extraSteamDisk.enable = true;
+    extraSteamDevice = "/dev/nvme0n1";
+  };
+
+  service.sops.enable = false;
 }

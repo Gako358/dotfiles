@@ -3,11 +3,13 @@
 , ...
 }:
 let
-  cfg = config.system.disks.extraStoreDisk;
+  storeCfg = config.system.disks.extraStoreDisk;
+  steamCfg = config.system.disks.extraSteamDisk;
   extraStoreDevicePath = config.system.disks.extraStoreDevice;
+  extraSteamDevicePath = config.system.disks.extraSteamDevice;
 
   mainNixSubvol =
-    if !cfg.enable then {
+    if !storeCfg.enable then {
       "/nix" = {
         mountpoint = "/nix";
         mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
@@ -15,7 +17,7 @@ let
     } else { };
 
   storeDisk =
-    if cfg.enable then
+    if storeCfg.enable then
       assert extraStoreDevicePath != null; {
         store = {
           type = "disk";
@@ -44,6 +46,33 @@ let
           };
         };
       } else { };
+
+  steamDisk =
+    if steamCfg.enable then
+      assert extraSteamDevicePath != null; {
+        steam = {
+          type = "disk";
+          device = extraSteamDevicePath;
+          content = {
+            type = "gpt";
+            partitions = {
+              opt = {
+                size = "100%";
+                content = {
+                  type = "btrfs";
+                  extraArgs = [ "-L" "STEAM" ];
+                  subvolumes = {
+                    "/opt" = {
+                      mountpoint = "/opt";
+                      mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      } else { };
 in
 {
   options = {
@@ -54,15 +83,25 @@ in
           default = "/dev/nvme0n1";
           description = "The block device path for the main system disk (containing root, boot, etc.).";
         };
+        extraStoreDisk.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enable extra /nix store disk";
+        };
         extraStoreDevice = lib.mkOption {
           type = lib.types.nullOr lib.types.str;
           default = "/dev/nvme1n1";
           description = "The block device path for the dedicated extra Nix store disk. Set to null if not used.";
         };
-        extraStoreDisk.enable = lib.mkOption {
+        extraSteamDisk.enable = lib.mkOption {
           type = lib.types.bool;
-          default = true;
-          description = "Enable extra /nix store disk";
+          default = false;
+          description = "Enable extra /steam store disk";
+        };
+        extraSteamDevice = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = "/dev/nvme0n1";
+          description = "The block device path for the dedicated extra steam store disk. Set to null if not used.";
         };
       };
     };
@@ -114,7 +153,7 @@ in
           };
         };
       };
-    } // storeDisk;
+    } // storeDisk // steamDisk;
 
     fileSystems."/persist".neededForBoot = true;
   };
