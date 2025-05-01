@@ -25,6 +25,4 @@
     extraSteamDisk.enable = true;
     extraSteamDevice = "/dev/nvme0n1";
   };
-
-  service.sops.enable = false;
 }

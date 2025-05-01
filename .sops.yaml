@@ -6,6 +6,7 @@ keys:
   - &hosts:
     - &terangreal age160ts305y3y3w899tvtccladc4ylvzfr6xcc7mq0re0h28t2qacksajh76m
     - &tuathaan age1w0axgtcwyectqp0jkn5u8ujsxkr0uan559xcpujq9wdrfzwtvdhs7nsj8n
+    - &tanchico age1azldnluhrefkfnt0cl63met4mhpnhtyg07ms9yc4ajwdqc7zqqzsz45tpr
 
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
@@ -15,4 +16,5 @@ creation_rules:
           - *merrinx
           - *terangreal
           - *tuathaan
+          - *tanchico
 
