@@ -44,6 +44,7 @@ in
   ./discord.nix
   ./fish.nix
   ./fzf.nix
+  ./games.nix
   ./gimp.nix
   ./git.nix
   ./hyprlock.nix
