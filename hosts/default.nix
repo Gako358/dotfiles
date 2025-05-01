@@ -1,7 +1,6 @@
 { self, inputs, ... }:
 let
-  nixpkgs = inputs.nixpkgs;
-  home-manager = inputs.home-manager;
+  inherit (inputs) nixpkgs home-manager;
   lib = nixpkgs.lib // home-manager.lib;
 
   mkNixosSystem = { hostName, profilePath }:
@@ -38,7 +37,7 @@ let
   discoverHosts = path:
     let
       hostEntries = builtins.readDir path;
-      hostDirs = lib.filterAttrs (name: type: type == "directory") hostEntries;
+      hostDirs = lib.filterAttrs (_: type: type == "directory") hostEntries;
       hostNames = lib.attrNames hostDirs;
     in
     lib.listToAttrs (

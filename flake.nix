@@ -1,14 +1,17 @@
 {
   description = "MerrinX Flake";
 
-  outputs = inputs@{ self, nixpkgs, flake-parts, home-manager, ... }:
+  outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" ];
       imports = [
         ./hosts
         ./pkgs
       ];
-      perSystem = { config, self', inputs', pkgs, system, ... }:
+      perSystem = { pkgs, system, ... }:
+        let
+          pre-commit-lib = inputs.pre-commit-hooks-nix.lib.${system};
+        in
         {
           devShells.default = pkgs.mkShell {
             name = "merrinx-dev-shell";
@@ -16,6 +19,26 @@
             nativeBuildInputs = with pkgs; [
               nixpkgs-fmt
             ];
+          };
+
+          formatter = pkgs.nixpkgs-fmt;
+          checks = {
+            pre-commit-check = pre-commit-lib.run {
+              src = ./.;
+              hooks = {
+                statix.enable = true;
+                deadnix.enable = true;
+                nil.enable = true;
+                nixpkgs-fmt.enable = true;
+
+                shellcheck = {
+                  enable = true;
+                };
+                beautysh = {
+                  enable = true;
+                };
+              };
+            };
           };
         };
     };
@@ -76,6 +99,10 @@
     scramgit.url = "github:gako358/scram";
     sops-nix = {
       url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    pre-commit-hooks-nix = {
+      url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {

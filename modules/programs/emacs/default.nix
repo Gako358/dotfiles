@@ -109,22 +109,10 @@ let
   # Use the nix-profile path for Home Manager packages
   homeManagerPath = "/etc/profiles/per-user/merrinx/bin";
 
-  desktop = osConfig.environment.desktop;
+  inherit (osConfig.environment) desktop;
 in
 {
   config = lib.mkIf (desktop.enable && desktop.develop) {
-    home.persistence."/persist/${config.home.homeDirectory}" = {
-      directories = [
-        ".cargo"
-        ".config/copilot-chat"
-        ".config/github-copilot"
-        ".emacs.d"
-        ".m2"
-        ".npm"
-        ".pulumi"
-      ];
-    };
-
     sops.secrets = lib.mkIf osConfig.service.sops.enable {
       "forge_auth" = {
         path = "${config.home.homeDirectory}/.authinfo";
@@ -260,13 +248,6 @@ in
       extraConfig = builtins.readFile ./init.el;
     };
 
-    home.file = {
-      ".emacs.d" = {
-        source = ./.;
-        recursive = true;
-      };
-    };
-
     # Set up the Emacs service
     services.emacs = {
       enable = true;
@@ -282,13 +263,33 @@ in
       };
     };
 
-    # Create a wrapper for emacsclient that adds tools to PATH
-    home.packages = [
-      (pkgs.writeShellScriptBin "ec" ''
-        # Add our specific tools to the front of the PATH but preserve the rest
-        export PATH="${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
-        exec ${pkgs.emacs30}/bin/emacsclient "$@"
-      '')
-    ];
+    home = {
+      file = {
+        ".emacs.d" = {
+          source = ./.;
+          recursive = true;
+        };
+      };
+      persistence."/persist/${config.home.homeDirectory}" = {
+        directories = [
+          ".cargo"
+          ".config/copilot-chat"
+          ".config/github-copilot"
+          ".emacs.d"
+          ".m2"
+          ".npm"
+          ".pulumi"
+        ];
+      };
+      # Create a wrapper for emacsclient that adds tools to PATH
+      packages = [
+        (pkgs.writeShellScriptBin "ec" ''
+          # Add our specific tools to the front of the PATH but preserve the rest
+          export PATH="${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
+          exec ${pkgs.emacs30}/bin/emacsclient "$@"
+        '')
+      ];
+    };
+
   };
 }

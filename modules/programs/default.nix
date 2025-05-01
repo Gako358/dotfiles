@@ -48,7 +48,6 @@ in
   ./git.nix
   ./hyprlock.nix
   ./jq.nix
-  ./lutris.nix
   ./neovim.nix
   ./pcmanfm.nix
   ./repl.nix

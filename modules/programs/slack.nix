@@ -5,7 +5,7 @@
 , ...
 }:
 let
-  desktop = osConfig.environment.desktop;
+  inherit (osConfig.environment) desktop;
 in
 {
   home = lib.mkIf (desktop.enable && desktop.develop) {

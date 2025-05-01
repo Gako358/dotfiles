@@ -44,7 +44,7 @@ in
         };
         listener = [
           {
-            timeout = cfg.timeout;
+            inherit (cfg) timeout;
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
           }

@@ -13,7 +13,7 @@ install_nixos() {
     echo "4) terangreal"
     echo "5) tuathaan"
     echo "=================================="
-    read -p "Enter your choice (1 or 2): " choice
+    read -r -p "Enter your choice (1-5): " choice
 
     case $choice in
         1)
@@ -32,13 +32,13 @@ install_nixos() {
             machine="tuathaan"
             ;;
         *)
-            echo "Invalid choice. Please select 1 and 5."
+            echo "Invalid choice. Please select 1-5."
             exit 1
             ;;
     esac
 
     echo "You selected: $machine"
-    read -p "Continue with installation? (y/n): " confirm
+    read -r -p "Continue with installation? (y/n): " confirm
     if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
         echo "Installation aborted."
         exit 0
@@ -53,14 +53,10 @@ install_nixos() {
     fi
 
     echo "Starting disk formatting with disko for $machine..."
-    nix --experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount "$disko_path"
-
-    if [ $? -eq 0 ]; then
+    if nix --experimental-features "nix-command flakes" run github:nix-community/disko -- --mode zap_create_mount "$disko_path"; then
         echo "Disk formatting completed successfully."
         echo "Installing NixOS on $machine..."
-        nixos-install --flake "$flake_target" --no-root-password
-
-        if [ $? -eq 0 ]; then
+        if nixos-install --flake "$flake_target" --no-root-password; then
             echo "NixOS installation completed successfully on $machine."
         else
             echo "Error: NixOS installation failed."

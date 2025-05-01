@@ -8,7 +8,7 @@ let
   fontSize = 10;
 in
 {
-  programs.alacritty = lib.mkIf (osConfig.environment.desktop.enable) {
+  programs.alacritty = lib.mkIf osConfig.environment.desktop.enable {
     enable = true;
     settings = {
       bell = {

@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   colorScheme = {
     slug = "bivrost";
     name = "Bivrost";

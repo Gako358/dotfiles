@@ -3,7 +3,7 @@
 , lib
 , ...
 }: {
-  config = lib.mkIf (config.environment.desktop.enable) {
+  config = lib.mkIf config.environment.desktop.enable {
     services = {
       dbus = {
         enable = true;

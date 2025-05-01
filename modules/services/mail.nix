@@ -94,10 +94,11 @@ in
         };
       };
     };
-
-    programs.mbsync.enable = true;
-    programs.msmtp.enable = true;
-    programs.mu.enable = true;
+    programs = {
+      mbsync.enable = true;
+      msmtp.enable = true;
+      mu.enable = true;
+    };
     services.mbsync = {
       enable = true;
       frequency = "*:0/1";
