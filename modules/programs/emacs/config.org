@@ -994,6 +994,10 @@ Writable Grep:
 
 #+begin_src emacs-lisp
   (use-package wgrep)
+
+  (evil-leader/set-key
+    "we" 'wgrep-change-to-wgrep-mode
+    "ws" 'wgrep-finish-edit)
 #+end_src
 
 ** Grammars
