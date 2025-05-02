@@ -77,8 +77,8 @@
             "user-theme@gnome-shell-extensions.gcampax.github.com"
           ];
           favorite-apps = [
-            "Console.desktop"
-            "Discord.desktop"
+            "kgx.desktop"
+            "discord.desktop"
             "gimp.desktop"
             "spotify.desktop"
             "steam.desktop"
