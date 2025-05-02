@@ -23,11 +23,17 @@
         };
         "org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
-          enable-hot-corners = false;
+          enable-hot-corners = true;
+        };
+        "org/gnome/desktop/input-sources" = {
+          sources = [
+            [ "xkb" "us" ]
+            [ "xkb" "no" ]
+          ];
         };
         "org/gnome/desktop/screensaver" = {
-          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/vnc-d.png";
-          primary-color = "#3465a4";
+          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-l.jxl";
+          primary-color = "#B9B5AE";
           secondary-color = "#000000";
         };
         "org/gnome/desktop/session" = {
@@ -62,8 +68,8 @@
         };
         "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
           binding = "<Super>Return";
-          command = "ghostty";
-          name = "term";
+          command = "kgx";
+          name = "console";
         };
         "org/gnome/shell" = {
           disable-user-extensions = false;
@@ -73,16 +79,16 @@
             "user-theme@gnome-shell-extensions.gcampax.github.com"
           ];
           favorite-apps = [
-            "zen.desktop"
+            "console.desktop"
+            "gimp.desktop"
+            "spotify.desktop"
             "steam.desktop"
+            "zen.desktop"
           ];
+          last-selected-power-profile = "performance";
         };
         "org/gnome/shell/app-switcher" = {
           current-workspace-only = false;
-        };
-        "org/gnome/shell/extensions/caffeine" = {
-          toggle-state = true;
-          user-enabled = true;
         };
         "org/gnome/shell/extensions/user-theme" = {
           name = "palenight";
@@ -100,7 +106,6 @@
       };
 
       home.packages = with pkgs; [
-        gnomeExtensions.caffeine
         gnomeExtensions.space-bar
         gnomeExtensions.sound-output-device-chooser
         gnomeExtensions.tray-icons-reloaded
