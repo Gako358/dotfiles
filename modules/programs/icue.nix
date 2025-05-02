@@ -12,7 +12,7 @@
       ];
       persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
-          # TODO: Add icue needed folders
+          ".config/ckb-next"
         ];
       };
     };

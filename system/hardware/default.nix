@@ -44,6 +44,7 @@ in
 {
   imports = [
     ./bluetooth.nix
+    ./ckb-next.nix
     ./disko.nix
     ./graphics.nix
     ./locale.nix
