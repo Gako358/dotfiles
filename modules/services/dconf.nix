@@ -1,9 +1,112 @@
-{
-  dconf.settings = {
-    "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
-    };
-  };
+{ osConfig
+, pkgs
+, lib
+, ...
+}: {
+  config = lib.mkMerge [
+    (lib.mkIf osConfig.program.qemu.enable {
+      dconf.settings = {
+        "org/virt-manager/virt-manager/connections" = {
+          autoconnect = [ "qemu:///system" ];
+          uris = [ "qemu:///system" ];
+        };
+      };
+    })
+    (lib.mkIf (osConfig.environment.desktop.windowManager == "gnome") {
+      dconf.settings = {
+        "org/gnome/TextEditor" = {
+          keybindings = "vim";
+        };
+        "org/gnome/desktop/background" = {
+          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/vnc-l.png";
+          picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/vnc-d.png";
+        };
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+          enable-hot-corners = false;
+        };
+        "org/gnome/desktop/screensaver" = {
+          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/vnc-d.png";
+          primary-color = "#3465a4";
+          secondary-color = "#000000";
+        };
+        "org/gnome/desktop/session" = {
+          idle-delay = lib.hm.gvariant.mkUint32 0;
+        };
+        "org/gnome/desktop/wm/keybindings" = {
+          close = [ "<Alt>q" ];
+          move-to-workspace-1 = [ "<Shift><Super>1" ];
+          move-to-workspace-2 = [ "<Shift><Super>2" ];
+          move-to-workspace-3 = [ "<Shift><Super>3" ];
+          move-to-workspace-4 = [ "<Shift><Super>4" ];
+          move-to-workspace-5 = [ "<Shift><Super>5" ];
+          switch-to-workspace-1 = [ "<Super>1" ];
+          switch-to-workspace-2 = [ "<Super>2" ];
+          switch-to-workspace-3 = [ "<Super>3" ];
+          switch-to-workspace-4 = [ "<Super>4" ];
+          switch-to-workspace-5 = [ "<Super>5" ];
+          toggle-fullscreen = [ "<Super>g" ];
+        };
+        "org/gnome/desktop/wm/preferences" = {
+          focus-mode = "sloppy";
+          mouse-button-modifier = "<Super>";
+          num-workspaces = 5;
+          resize-with-right-button = true;
+          workspace-names = [ "Main" ];
+        };
+        "org/gnome/mutter" = {
+          dynamic-workspaces = false;
+          edge-tiling = true;
+          num-workspaces = 5;
+          workspaces-only-on-primary = true;
+        };
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+          binding = "<Super>Return";
+          command = "ghostty";
+          name = "term";
+        };
+        "org/gnome/shell" = {
+          disable-user-extensions = false;
+          enabled-extensions = [
+            "space-bar@luchrioh"
+            "trayIconsReloaded@selfmade.pl"
+            "user-theme@gnome-shell-extensions.gcampax.github.com"
+          ];
+          favorite-apps = [
+            "zen.desktop"
+            "steam.desktop"
+          ];
+        };
+        "org/gnome/shell/app-switcher" = {
+          current-workspace-only = false;
+        };
+        "org/gnome/shell/extensions/caffeine" = {
+          toggle-state = true;
+          user-enabled = true;
+        };
+        "org/gnome/shell/extensions/user-theme" = {
+          name = "palenight";
+        };
+        "org/gnome/shell/keybindings" = {
+          switch-to-application-1 = [ ];
+          switch-to-application-2 = [ ];
+          switch-to-application-3 = [ ];
+          switch-to-application-4 = [ ];
+          switch-to-application-5 = [ ];
+        };
+        "system/locale" = {
+          region = "nb_NO.UTF-8";
+        };
+      };
 
+      home.packages = with pkgs; [
+        gnomeExtensions.caffeine
+        gnomeExtensions.space-bar
+        gnomeExtensions.sound-output-device-chooser
+        gnomeExtensions.tray-icons-reloaded
+        gnomeExtensions.user-themes
+        palenight-theme
+      ];
+    })
+  ];
 }

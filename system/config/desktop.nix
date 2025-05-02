@@ -8,7 +8,7 @@
       description = "Enable desktop environment";
     };
     windowManager = lib.mkOption {
-      type = lib.types.nullOr (lib.types.enum [ "hyprland" ]);
+      type = lib.types.nullOr (lib.types.enum [ "hyprland" "gnome" ]);
       default = "hyprland";
       description = "Set what window manager to use.";
     };

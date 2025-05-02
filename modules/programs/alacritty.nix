@@ -21,7 +21,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && osConfig.environment.desktop.enable) {
+  config = lib.mkIf (cfg.enable && osConfig.environment.desktop.windowManager == "hyprland") {
     programs.alacritty = {
       enable = true;
       settings = {

@@ -44,7 +44,6 @@ in
   ./discord.nix
   ./fish.nix
   ./fzf.nix
-  ./games.nix
   ./gimp.nix
   ./git.nix
   ./hyprlock.nix
@@ -58,6 +57,7 @@ in
   ./starship.nix
   ./waybar.nix
   ./wine.nix
+  ./wowup.nix
   ./zen.nix
   more
 ]

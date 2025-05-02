@@ -16,7 +16,10 @@
 
   # Modules loaded
   environment = {
-    desktop.develop = false;
+    desktop = {
+      develop = false;
+      windowManager = "gnome";
+    };
     gaming.enable = true;
   };
 
