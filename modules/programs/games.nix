@@ -12,7 +12,7 @@
       ];
       persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
-          # TODO: Add game needed folders
+          ".config/WowupCf"
         ];
       };
     };
