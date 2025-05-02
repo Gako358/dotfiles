@@ -18,18 +18,16 @@
           keybindings = "vim";
         };
         "org/gnome/desktop/background" = {
-          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/vnc-l.png";
-          picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/vnc-d.png";
+          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-l.jxl";
+          picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-d.jxl";
+          primary-color = "#B9B5AE";
         };
         "org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
           enable-hot-corners = true;
         };
         "org/gnome/desktop/input-sources" = {
-          sources = [
-            [ "xkb" "us" ]
-            [ "xkb" "no" ]
-          ];
+          sources = [ (lib.hm.gvariant.mkTuple [ "xkb" "us" ]) (lib.hm.gvariant.mkTuple [ "xkb" "no" ]) ];
         };
         "org/gnome/desktop/screensaver" = {
           picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-l.jxl";
@@ -79,7 +77,8 @@
             "user-theme@gnome-shell-extensions.gcampax.github.com"
           ];
           favorite-apps = [
-            "console.desktop"
+            "Console.desktop"
+            "Discord.desktop"
             "gimp.desktop"
             "spotify.desktop"
             "steam.desktop"
