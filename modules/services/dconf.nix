@@ -59,6 +59,7 @@
           workspace-names = [ "Main" ];
         };
         "org/gnome/mutter" = {
+          center-new-windows = true;
           dynamic-workspaces = false;
           edge-tiling = true;
           num-workspaces = 5;
@@ -79,6 +80,7 @@
           favorite-apps = [
             "kgx.desktop"
             "discord.desktop"
+            "evolution.desktop"
             "gimp.desktop"
             "spotify.desktop"
             "steam.desktop"
