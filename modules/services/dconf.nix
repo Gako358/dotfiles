@@ -2,7 +2,11 @@
 , pkgs
 , lib
 , ...
-}: {
+}:
+let
+  autostartPrograms = [ pkgs.discord pkgs.ckb-next ];
+in
+{
   config = lib.mkMerge [
     (lib.mkIf osConfig.program.qemu.enable {
       dconf.settings = {
@@ -106,13 +110,28 @@
         };
       };
 
-      home.packages = with pkgs; [
-        gnomeExtensions.space-bar
-        gnomeExtensions.sound-output-device-chooser
-        gnomeExtensions.tray-icons-reloaded
-        gnomeExtensions.user-themes
-        palenight-theme
-      ];
+      home = {
+        file = builtins.listToAttrs (map
+          (pkg:
+            {
+              name = ".config/autostart/" + pkg.pname + ".desktop";
+              value =
+                if pkg ? desktopItem then {
+                  inherit (pkg.desktopItem) text;
+                } else {
+                  source = pkg + "/share/applications/" + pkg.pname + ".desktop";
+                };
+            })
+          autostartPrograms);
+
+        packages = with pkgs; [
+          gnomeExtensions.space-bar
+          gnomeExtensions.sound-output-device-chooser
+          gnomeExtensions.tray-icons-reloaded
+          gnomeExtensions.user-themes
+          palenight-theme
+        ];
+      };
     })
   ];
 }
