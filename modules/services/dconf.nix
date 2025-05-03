@@ -77,6 +77,7 @@ in
         "org/gnome/shell" = {
           disable-user-extensions = false;
           enabled-extensions = [
+            "caffeine@patapon.info"
             "space-bar@luchrioh"
             "trayIconsReloaded@selfmade.pl"
             "user-theme@gnome-shell-extensions.gcampax.github.com"
@@ -94,6 +95,12 @@ in
         };
         "org/gnome/shell/app-switcher" = {
           current-workspace-only = false;
+        };
+        "org/gnome/shell/extensions/caffeine" = {
+          enable-fullscreen = true;
+          restore-state = true;
+          show-indicator = true;
+          show-notification = false;
         };
         "org/gnome/shell/extensions/user-theme" = {
           name = "palenight";
@@ -125,6 +132,7 @@ in
           autostartPrograms);
 
         packages = with pkgs; [
+          gnomeExtensions.caffeine
           gnomeExtensions.space-bar
           gnomeExtensions.sound-output-device-chooser
           gnomeExtensions.tray-icons-reloaded
