@@ -78,10 +78,10 @@
             "user-theme@gnome-shell-extensions.gcampax.github.com"
           ];
           favorite-apps = [
-            "kgx.desktop"
+            "org.gnome.Console.desktop"
             "discord.desktop"
-            "evolution.desktop"
             "gimp.desktop"
+            "org.gnome.Nautilus.desktop"
             "spotify.desktop"
             "steam.desktop"
             "zen.desktop"
