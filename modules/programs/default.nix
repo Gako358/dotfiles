@@ -2,9 +2,7 @@ let
   more = { pkgs, ... }: {
     home.packages = with pkgs; [
       acpi # battery info
-      arandr # screen layout manager
       brightnessctl # control screen brightness
-      bottom # alternative to htop & ytop
       cacert # ca certificates
       dconf2nix # dconf (gnome) files to nix converter
       ffmpegthumbnailer # thumbnailer for video files
@@ -22,7 +20,6 @@ let
       prettyping # a nicer ping
       poppler # pdf tools
       rage # encryption tool for secrets management
-      ranger # file manager
       ripgrep # fast grep
       tldr # summary of a man page
       tree # display files in a tree view

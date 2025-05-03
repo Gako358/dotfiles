@@ -38,6 +38,8 @@
 
     home.packages = [
       inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
+      pkgs.arandr # screen layout manager
+      pkgs.bottom # alternative to htop & ytop
       pkgs.ffmpegthumbnailer # thumbnailer for video files
       pkgs.glib # Core application building blocks library (used by GTK/GNOME apps)
       pkgs.gnome-calendar # Calendar application from the GNOME desktop
@@ -50,6 +52,7 @@
       pkgs.pavucontrol # pulseaudio volume control
       pkgs.poppler # pdf tools
       pkgs.pulsemixer # pulseaudio volume control
+      pkgs.ranger # file manager
       pkgs.scrot # screenshot tool
       pkgs.slurp # select a region in a wayland compositor
       pkgs.wayshot # screenshot tool
