@@ -12,7 +12,7 @@
       ];
       persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
-          ".config/WowupCf"
+          ".config/WowUpCf"
         ];
       };
     };
