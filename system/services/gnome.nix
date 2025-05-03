@@ -36,16 +36,10 @@
       };
     })
     (lib.mkIf (config.environment.desktop.windowManager == "gnome") {
-      services = {
-        displayManager.autoLogin = {
-          enable = true;
-          user = "merrinx";
-        };
-        xserver = {
-          enable = true;
-          desktopManager.gnome.enable = true;
-          displayManager.gdm.enable = true;
-        };
+      services.xserver = {
+        enable = true;
+        desktopManager.gnome.enable = true;
+        displayManager.gdm.enable = true;
       };
       environment.gnome.excludePackages = with pkgs; [
         gnome-photos
