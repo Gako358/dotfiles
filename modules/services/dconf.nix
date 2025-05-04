@@ -76,11 +76,14 @@ in
         };
         "org/gnome/shell" = {
           disable-user-extensions = false;
-          enabled-extensions = [
-            "caffeine@patapon.info"
-            "space-bar@luchrioh"
-            "trayIconsReloaded@selfmade.pl"
-            "user-theme@gnome-shell-extensions.gcampax.github.com"
+          enabled-extensions = with pkgs.gnomeExtensions; [
+            caffeine.extensionUuid
+            clipboard-indicator.extensionUuid
+            dash-to-panel.extensionUuid
+            just-perfection.extensionUuid
+            space-bar.extensionUuid
+            tray-icons-reloaded.extensionUuid
+            user-themes.extensionUuid
           ];
           favorite-apps = [
             "org.gnome.Console.desktop"
@@ -91,7 +94,6 @@ in
             "steam.desktop"
             "zen.desktop"
           ];
-          last-selected-power-profile = "performance";
         };
         "org/gnome/shell/app-switcher" = {
           current-workspace-only = false;
@@ -101,6 +103,59 @@ in
           restore-state = true;
           show-indicator = true;
           show-notification = false;
+        };
+        "org/gnome/shell/extensions/dash-to-panel" = {
+          window-preview-fixed-x = true;
+          window-preview-fixed-y = true;
+          preview-custom-opacity = 90;
+          window-preview-size = 130;
+          appicon-padding = 6;
+          appicon-margin = 2;
+          show-tooltip = false;
+          show-showdesktop-hover = true;
+          dot-style-unfocused = "DOTS";
+          dot-style-focused = "DOTS";
+          trans-use-custom-opacity = true;
+          trans-panel-opacity = "0.15";
+          panel-sizes = "{ \"BOE-0x00000000\": 32 }";
+          panel-positions = "{\"0\":\"TOP\"}";
+          showdesktop-button-width = "6";
+          show-apps-icon-file = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
+        };
+        "org/gnome/shell/extensions/just-perfection" = {
+          accessibility-menu = true;
+          app-menu = true;
+          app-menu-icon = true;
+          background-menu = true;
+          clock-menu = false;
+          controls-manager-spacing-size = 22;
+          dash = true;
+          dash-icon-size = 0;
+          double-super-to-appgrid = true;
+          gesture = true;
+          hot-corner = false;
+          notification-banner-position = 2;
+          osd = false;
+          panel = true;
+          panel-arrow = true;
+          panel-corner-size = 1;
+          panel-in-overview = true;
+          panel-notification-icon = true;
+          panel-size = 36;
+          power-icon = true;
+          ripple-box = false;
+          search = false;
+          show-apps-button = true;
+          startup-status = 0;
+          theme = true;
+          window-demands-attention-focus = true;
+          window-picker-icon = false;
+          window-preview-caption = true;
+          window-preview-close-button = true;
+          workspace = true;
+          workspace-background-corner-size = 15;
+          workspace-popup = false;
+          workspaces-in-app-grid = true;
         };
         "org/gnome/shell/extensions/user-theme" = {
           name = "palenight";
@@ -133,6 +188,9 @@ in
 
         packages = with pkgs; [
           gnomeExtensions.caffeine
+          gnomeExtensions.clipboard-indicator
+          gnomeExtensions.dash-to-panel
+          gnomeExtensions.just-perfection
           gnomeExtensions.space-bar
           gnomeExtensions.sound-output-device-chooser
           gnomeExtensions.tray-icons-reloaded
