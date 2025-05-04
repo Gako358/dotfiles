@@ -63,7 +63,7 @@
           workspace-names = [ "Main" ];
         };
         "org/gnome/mutter" = {
-          center-new-windows = true;
+          # center-new-windows = true;
           dynamic-workspaces = false;
           edge-tiling = true;
           num-workspaces = 5;
