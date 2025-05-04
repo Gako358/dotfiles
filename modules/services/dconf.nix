@@ -3,9 +3,9 @@
 , lib
 , ...
 }:
-# let
-#   autostartPrograms = [ pkgs.discord pkgs.ckb-next ];
-# in
+let
+  autostartPrograms = [ pkgs.discord pkgs.ckb-next ];
+in
 {
   config = lib.mkMerge [
     (lib.mkIf osConfig.program.qemu.enable {
@@ -63,7 +63,7 @@
           workspace-names = [ "Main" ];
         };
         "org/gnome/mutter" = {
-          # center-new-windows = true;
+          center-new-windows = true;
           dynamic-workspaces = false;
           edge-tiling = true;
           num-workspaces = 5;
@@ -103,23 +103,25 @@
           restore-state = true;
           show-indicator = true;
           show-notification = false;
+          user-enabled = true;
         };
         "org/gnome/shell/extensions/dash-to-panel" = {
           window-preview-fixed-x = true;
           window-preview-fixed-y = true;
-          preview-custom-opacity = 90;
-          window-preview-size = 130;
-          appicon-padding = 6;
-          appicon-margin = 2;
+          preview-custom-opacity = 73;
+          window-preview-size = 127;
+          appicon-padding = 5;
+          appicon-margin = 3;
           show-tooltip = false;
           show-showdesktop-hover = true;
           dot-style-unfocused = "DOTS";
           dot-style-focused = "DOTS";
           trans-use-custom-opacity = true;
           trans-panel-opacity = "0.15";
-          panel-sizes = "{ \"BOE-0x00000000\": 32 }";
-          panel-positions = "{\"0\":\"TOP\"}";
-          showdesktop-button-width = "6";
+          panel-sizes = "{ \"BOE-0x00000000\": 64 }";
+          panel-positions = "{\"0\":\"BOTTOM\"}";
+          showdesktop-button-width = "5";
+          panel-element-positions = ''{"AUS-0x0000bec6":[{"element":"showAppsButton","visible":true,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"centered"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'';
           show-apps-icon-file = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
         };
         "org/gnome/shell/extensions/just-perfection" = {
@@ -173,18 +175,18 @@
       };
 
       home = {
-        # file = builtins.listToAttrs (map
-        #   (pkg:
-        #     {
-        #       name = ".config/autostart/" + pkg.pname + ".desktop";
-        #       value =
-        #         if pkg ? desktopItem then {
-        #           inherit (pkg.desktopItem) text;
-        #         } else {
-        #           source = pkg + "/share/applications/" + pkg.pname + ".desktop";
-        #         };
-        #     })
-        #   autostartPrograms);
+        file = builtins.listToAttrs (map
+          (pkg:
+            {
+              name = ".config/autostart/" + pkg.pname + ".desktop";
+              value =
+                if pkg ? desktopItem then {
+                  inherit (pkg.desktopItem) text;
+                } else {
+                  source = pkg + "/share/applications/" + pkg.pname + ".desktop";
+                };
+            })
+          autostartPrograms);
 
         packages = with pkgs; [
           gnomeExtensions.caffeine
