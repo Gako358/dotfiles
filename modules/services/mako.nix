@@ -15,7 +15,7 @@ in
     anchor = "top-right";
     width = 460;
     height = 190;
-    borderSize = 1;
+    borderSize = "1";
     defaultTimeout = 7300; # 7 sec
     backgroundColor = "#${config.colorScheme.palette.base00}cc";
     borderColor = "#${config.colorScheme.palette.base0D}cc";
