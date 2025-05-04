@@ -3,9 +3,9 @@
 , lib
 , ...
 }:
-let
-  autostartPrograms = [ pkgs.discord pkgs.ckb-next ];
-in
+# let
+#   autostartPrograms = [ pkgs.discord pkgs.ckb-next ];
+# in
 {
   config = lib.mkMerge [
     (lib.mkIf osConfig.program.qemu.enable {
@@ -173,18 +173,18 @@ in
       };
 
       home = {
-        file = builtins.listToAttrs (map
-          (pkg:
-            {
-              name = ".config/autostart/" + pkg.pname + ".desktop";
-              value =
-                if pkg ? desktopItem then {
-                  inherit (pkg.desktopItem) text;
-                } else {
-                  source = pkg + "/share/applications/" + pkg.pname + ".desktop";
-                };
-            })
-          autostartPrograms);
+        # file = builtins.listToAttrs (map
+        #   (pkg:
+        #     {
+        #       name = ".config/autostart/" + pkg.pname + ".desktop";
+        #       value =
+        #         if pkg ? desktopItem then {
+        #           inherit (pkg.desktopItem) text;
+        #         } else {
+        #           source = pkg + "/share/applications/" + pkg.pname + ".desktop";
+        #         };
+        #     })
+        #   autostartPrograms);
 
         packages = with pkgs; [
           gnomeExtensions.caffeine
