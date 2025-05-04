@@ -117,7 +117,7 @@ in
           dot-style-unfocused = "DOTS";
           dot-style-focused = "DOTS";
           trans-use-custom-opacity = true;
-          trans-panel-opacity = "0.73";
+          trans-panel-opacity = "0.55";
           tray-size = 21;
           leftbox-size = 21;
           panel-element-positions = ''{"AUS-0x0000bec6":[{"element":"showAppsButton","visible":true,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"centered"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'';
