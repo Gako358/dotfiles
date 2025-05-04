@@ -119,7 +119,7 @@ in
           trans-use-custom-opacity = true;
           trans-panel-opacity = "0.15";
           panel-element-positions = ''{"AUS-0x0000bec6":[{"element":"showAppsButton","visible":true,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"centered"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'';
-          panel-sizes = ''{"BOE-0x00000000":64,"AUS-0x0000bec6":64}'';
+          panel-sizes = "{\"0\":64}";
           panel-positions = "{\"0\":\"BOTTOM\"}";
           showdesktop-button-width = "5";
           show-apps-icon-file = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
