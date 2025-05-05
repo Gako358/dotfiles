@@ -88,6 +88,21 @@ jobs:
           remove-android: true
           remove-haskell: true
           remove-docker-images: true
+      - name: Clean up additional space (Packages and Directories)
+        run: |
+          echo "Initial disk space:"
+          df -h
+          sudo apt-get remove -y '^llvm-.*' 'php.*' azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel || true
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          echo "Disk space after apt cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/share/boost || true
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY" || true
+          echo "Disk space after directory cleanup:"
+          df -h
       - name: Clean up additional space
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -122,13 +137,10 @@ jobs:
           name: flake_lock
       - name: Build with periodic GC
         run: |
-          # Start periodic GC in the background
           (while true; do nix-collect-garbage -d; sleep 300; done) &
           GCPID=$!
-          # Ensure it's killed when the script exits
           trap "kill $GCPID" EXIT
 
-          # Build the configuration
           nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel --out-link result
       - name: Push to cachix in smaller batches
         run: |
