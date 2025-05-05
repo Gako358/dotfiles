@@ -17,6 +17,9 @@ in
       };
     })
     (lib.mkIf (osConfig.environment.desktop.windowManager == "gnome") {
+
+      gtk.cursorTheme.size = lib.mkForce 24;
+
       dconf.settings = {
         "org/gnome/TextEditor" = {
           keybindings = "vim";
