@@ -13,10 +13,19 @@ let
     fontsize = fontSize;
     iconsize = iconSize;
     background-color = "rgba(26, 26, 26, ${opacity})";
+    background_border-frame = "#${config.colorScheme.palette.base02}";
+
     blue = "#${config.colorScheme.palette.base0D}";
+    cyan = "#${config.colorScheme.palette.base0C}";
+    green = "#${config.colorScheme.palette.base0B}";
     grey = "#${config.colorScheme.palette.base04}";
+    magenta = "#${config.colorScheme.palette.base0E}";
+    orange = "#${config.colorScheme.palette.base09}";
+    red = "#${config.colorScheme.palette.base08}";
+    yellow = "#${config.colorScheme.palette.base0A}";
   };
   calendar = "${pkgs.gnome-calendar}/bin/gnome-calendar";
+  lockScreen = "${pkgs.hyprlock}/bin/hyprlock";
   system = "${pkgs.gnome-system-monitor}/bin/gnome-system-monitor";
 in
 {
@@ -43,13 +52,24 @@ in
       ];
       modules-right = [
         "tray"
-        "temperature"
-        "cpu"
-        "battery"
-        "memory"
-        "pulseaudio"
-        "network"
+        "custom/space"
+        "group/system"
+        "custom/space"
+        "custom/lock"
       ];
+      battery = {
+        states = {
+          good = 95;
+          warning = 30;
+          critical = 15;
+        };
+        format = "{icon}";
+        format-charging = "";
+        format-plugged = "";
+        format-alt = "{icon} {time}";
+        format-icons = [ "" "" "" "" "" ];
+      };
+
       clock = {
         format = " {:%a, %d %b, %I:%M %p}";
         tooltip = "true";
@@ -57,6 +77,28 @@ in
         format-alt = " {:%d/%m}";
         on-click = "${calendar}";
       };
+
+      "custom/launcher" = {
+        format = "   ";
+        tooltip = false;
+      };
+      "custom/lock" = {
+        "format" = "󰌾";
+        "tooltip" = true;
+        "tooltip-format" = "Lock Screen";
+        "on-click" = "${lockScreen}";
+      };
+      "custom/power" = {
+        "format" = "󰐥";
+        "tooltip" = true;
+        "tooltip-format" = "Power menu (wlogout)";
+        "on-click" = "wlogout";
+      };
+      "custom/space" = {
+        "format" = " ";
+        "tooltip" = false;
+      };
+
       "hyprland/workspaces" = {
         format = "{icon}";
         on-click = "activate";
@@ -67,53 +109,50 @@ in
         sort-by-number = true;
       };
 
-      "custom/launcher" = {
-        format = "   ";
-        tooltip = false;
-      };
-      battery = {
-        states = {
-          good = 95;
-          warning = 30;
-          critical = 15;
-        };
-        format = "{icon}  {capacity}%";
-        format-charging = "  {capacity}%";
-        format-plugged = " {capacity}% ";
-        format-alt = "{icon} {time}";
-        format-icons = [ "" "" "" "" "" ];
-      };
       memory = {
-        format = "󰍛 {}%";
-        format-alt = "󰍛 {used}/{total} GiB";
+        format = "󰍛";
         on-click = "${system}";
         interval = 5;
       };
-      cpu = {
-        format = "󰻠 {usage}%";
-        format-alt = "󰻠 {avg_frequency} GHz";
-        on-click = "${system}";
-        interval = 5;
-      };
+
       network = {
-        format-wifi = "  {signalStrength}%";
-        format-ethernet = "󰈀 100% ";
+        format-wifi = " ";
+        format-ethernet = " ";
         tooltip-format = "Connected to {essid} {ifname} via {gwaddr}";
         format-linked = "{ifname} (No IP)";
-        format-disconnected = "󰖪 0% ";
+        format-disconnected = "󰖪 ";
       };
-      tray = {
-        icon-size = 20;
-        spacing = 8;
-      };
+
       pulseaudio = {
-        format = "{icon} {volume}%";
+        format = "{icon}";
         format-muted = "󰝟";
         format-icons = {
           default = [ "󰕿" "󰖀" "󰕾" ];
         };
         scroll-step = 5;
         on-click = "pavucontrol";
+      };
+
+      temperature = {
+        format = "";
+        on-click = "${system}";
+        tooltip = true;
+      };
+
+      tray = {
+        icon-size = 20;
+        spacing = 8;
+      };
+
+      "group/system" = {
+        "orientation" = "horizontal";
+        "modules" = [
+          "temperature"
+          "memory"
+          "battery"
+          "pulseaudio"
+          "network"
+        ];
       };
     };
     style = ''
@@ -166,9 +205,52 @@ in
          padding: 2px 8px;
       }
 
-      #mode, #clock, #memory, #temperature,#cpu, #temperature, #pulseaudio, #network, #battery {
+      #custom-lock {
+        padding-left: 7px;
+        padding-right: 7px;
+        color: ${palette.green};
+        background-color: ${palette.background-color};
+      }
+
+      #battery, #clock, #memory, #network, #pulseaudio, #temperature {
          padding-left: 7px;
          padding-right: 7px;
+      }
+
+      #system {
+        background-color: ${palette.background-color};
+        border: 1px solid ${palette.background_border-frame};
+        border-radius: 5px;
+        margin-left: 8px;
+        padding: 0px 3px;
+      }
+
+      #battery {
+        color: ${palette.orange};
+      }
+      #battery.warning {
+        color: ${palette.yellow};
+      }
+      #battery.critical {
+        color: ${palette.red};
+      }
+      #memory {
+        color: ${palette.cyan};
+      }
+      #network {
+        color: ${palette.green};
+      }
+      #network.disconnected {
+        color: ${palette.red};
+      }
+      #pulseaudio {
+        color: ${palette.magenta};
+      }
+      #pulseaudio.muted, #pulseaudio format-muted {
+        color: ${palette.grey};
+      }
+      #temperature {
+        color: ${palette.yellow};
       }
 
       #tray {
