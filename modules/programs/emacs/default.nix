@@ -296,7 +296,6 @@ in
           ".m2"
           ".npm"
           ".pulumi"
-          "Workflow"
         ];
       };
       # Create a wrapper for emacsclient that adds tools to PATH

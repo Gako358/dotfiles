@@ -1644,8 +1644,8 @@ Projectile is the go-to project package to use with Emacs.
   	  projectile-sort-order 'recently-active
   	  projectile-project-search-path '(("~/Projects/" . 1)
   					   ("~/Projects/forks/" . 1)
-  					   ("~/Sources/" . 1)
-  					   ("~/Workflow/" . 1)))
+  					   ("~/Projects/workspace/" . 1)
+  					   ("~/Sources/" . 1)))
 
     (evil-leader/set-key
       "pc" 'projectile-cleanup-known-projects
