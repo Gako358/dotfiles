@@ -8,6 +8,7 @@
     ./nfc.nix
     ./openssh.nix
     ./pipwire.nix
+    ./runner.nix
     ./scramgit.nix
     ./sops.nix
     ./touchpad.nix
