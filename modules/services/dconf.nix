@@ -82,8 +82,9 @@ in
           enabled-extensions = with pkgs.gnomeExtensions; [
             caffeine.extensionUuid
             clipboard-indicator.extensionUuid
-            dash-to-panel.extensionUuid
+            dash-to-dock.extensionUuid
             just-perfection.extensionUuid
+            open-bar.extensionUuid
             space-bar.extensionUuid
             tray-icons-reloaded.extensionUuid
             user-themes.extensionUuid
@@ -107,62 +108,6 @@ in
           show-indicator = true;
           show-notification = false;
           user-enabled = true;
-        };
-        "org/gnome/shell/extensions/dash-to-panel" = {
-          window-preview-fixed-x = true;
-          window-preview-fixed-y = true;
-          preview-custom-opacity = 73;
-          window-preview-size = 127;
-          appicon-padding = 5;
-          appicon-margin = 3;
-          show-tooltip = false;
-          show-showdesktop-hover = true;
-          dot-style-unfocused = "DOTS";
-          dot-style-focused = "DOTS";
-          trans-use-custom-opacity = true;
-          trans-panel-opacity = "0.55";
-          tray-size = 19;
-          leftbox-size = 21;
-          panel-element-positions = ''{"AUS-0x0000bec6":[{"element":"showAppsButton","visible":true,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"centered"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'';
-          panel-sizes = "{\"0\":64}";
-          panel-positions = "{\"0\":\"BOTTOM\"}";
-          showdesktop-button-width = "5";
-          show-apps-icon-file = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
-        };
-        "org/gnome/shell/extensions/just-perfection" = {
-          accessibility-menu = true;
-          app-menu = true;
-          app-menu-icon = true;
-          background-menu = true;
-          clock-menu = false;
-          controls-manager-spacing-size = 22;
-          dash = true;
-          dash-icon-size = 0;
-          double-super-to-appgrid = true;
-          gesture = true;
-          hot-corner = false;
-          notification-banner-position = 2;
-          osd = false;
-          panel = true;
-          panel-arrow = true;
-          panel-corner-size = 1;
-          panel-in-overview = true;
-          panel-notification-icon = true;
-          panel-size = 36;
-          power-icon = true;
-          ripple-box = false;
-          search = false;
-          show-apps-button = true;
-          startup-status = 0;
-          theme = true;
-          window-demands-attention-focus = true;
-          window-picker-icon = false;
-          window-preview-caption = true;
-          window-preview-close-button = true;
-          workspace = true;
-          workspace-background-corner-size = 15;
-          workspace-popup = false;
-          workspaces-in-app-grid = true;
         };
         "org/gnome/shell/extensions/user-theme" = {
           name = "palenight";
@@ -196,8 +141,9 @@ in
         packages = with pkgs; [
           gnomeExtensions.caffeine
           gnomeExtensions.clipboard-indicator
-          gnomeExtensions.dash-to-panel
+          gnomeExtensions.dash-to-dock
           gnomeExtensions.just-perfection
+          gnomeExtensions.open-bar
           gnomeExtensions.space-bar
           gnomeExtensions.sound-output-device-chooser
           gnomeExtensions.tray-icons-reloaded
