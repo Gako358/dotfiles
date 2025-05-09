@@ -19,11 +19,21 @@ in
       description = "Enable hypridle";
     };
     timeout = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable timeout monitor off";
+    };
+    timeoutTimer = lib.mkOption {
       type = lib.types.int;
       default = 3600;
       description = "Idle timeout in seconds before DPMS off and suspend actions.";
     };
     suspend = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable suspend";
+    };
+    suspendTimer = lib.mkOption {
       type = lib.types.int;
       default = 300;
       description = "Idle timeout in seconds before suspend actions.";
@@ -42,17 +52,16 @@ in
           lock_cmd = "pgrep hyprlock || ${lib.getExe config.programs.hyprlock.package}";
           ignore_dbus_inhibit = true;
         };
-        listener = [
-          {
-            inherit (cfg) timeout;
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
-          }
-          {
-            timeout = cfg.timeout + cfg.suspend;
+        listener =
+          (lib.optional cfg.timeout {
+            inherit (cfg) timeoutTimer;
+            on-timeout = "${hyprctl} dispatch dpms off";
+            on-resume = "${hyprctl} dispatch dpms on";
+          })
+          ++ (lib.optional cfg.suspend {
+            timeout = cfg.timeoutTimer + cfg.suspendTimer;
             on-timeout = "${lock}";
-          }
-        ];
+          });
       };
     };
   };
