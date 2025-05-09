@@ -18,12 +18,12 @@ in
       default = true;
       description = "Enable hypridle";
     };
-    timeout = lib.mkOption {
+    dpms = lib.mkOption {
       type = lib.types.bool;
       default = true;
       description = "Enable timeout monitor off";
     };
-    timeoutTimer = lib.mkOption {
+    timeout = lib.mkOption {
       type = lib.types.int;
       default = 3600;
       description = "Idle timeout in seconds before DPMS off and suspend actions.";
@@ -53,13 +53,13 @@ in
           ignore_dbus_inhibit = true;
         };
         listener =
-          (lib.optional cfg.timeout {
-            inherit (cfg) timeoutTimer;
+          (lib.optional cfg.dpms {
+            inherit (cfg) timeout;
             on-timeout = "${hyprctl} dispatch dpms off";
             on-resume = "${hyprctl} dispatch dpms on";
           })
           ++ (lib.optional cfg.suspend {
-            timeout = cfg.timeoutTimer + cfg.suspendTimer;
+            timeout = cfg.timeout + cfg.suspendTimer;
             on-timeout = "${lock}";
           });
       };
