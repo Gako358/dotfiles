@@ -33,7 +33,7 @@ in
   service = lib.mkMerge [
     {
       hypridle = {
-        timeout = 3600;
+        timeout = 10800;
         suspendTimer = 600;
       };
     }
