@@ -82,7 +82,6 @@ in
           enabled-extensions = with pkgs.gnomeExtensions; [
             caffeine.extensionUuid
             clipboard-indicator.extensionUuid
-            dash-to-dock.extensionUuid
             just-perfection.extensionUuid
             open-bar.extensionUuid
             space-bar.extensionUuid
@@ -108,6 +107,15 @@ in
           show-indicator = true;
           show-notification = false;
           user-enabled = true;
+        };
+        "/org/gnome/shell/extensions/openbar" = {
+          bartype = "Islands";
+          trigger-reload = false;
+          bgalpha = 0.0;
+          reloadstyle = true;
+          height = 48.0;
+          margin = 7.3;
+          set-overview = true;
         };
         "org/gnome/shell/extensions/user-theme" = {
           name = "palenight";
@@ -141,7 +149,6 @@ in
         packages = with pkgs; [
           gnomeExtensions.caffeine
           gnomeExtensions.clipboard-indicator
-          gnomeExtensions.dash-to-dock
           gnomeExtensions.just-perfection
           gnomeExtensions.open-bar
           gnomeExtensions.space-bar
