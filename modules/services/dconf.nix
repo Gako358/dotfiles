@@ -196,8 +196,8 @@ in
         packages = with pkgs; [
           gnomeExtensions.caffeine
           gnomeExtensions.clipboard-indicator
+          gnomeExtensions.dash-to-panel
           gnomeExtensions.just-perfection
-          gnomeExtensions.open-bar
           gnomeExtensions.space-bar
           gnomeExtensions.sound-output-device-chooser
           gnomeExtensions.tray-icons-reloaded
