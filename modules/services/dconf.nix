@@ -108,7 +108,7 @@ in
           show-notification = false;
           user-enabled = true;
         };
-        "/org/gnome/shell/extensions/openbar" = {
+        "org/gnome/shell/extensions/openbar" = {
           bartype = "Islands";
           trigger-reload = false;
           bgalpha = 0.0;
