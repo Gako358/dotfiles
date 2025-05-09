@@ -21,7 +21,7 @@ in
     dpms = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable timeout monitor off";
+      description = "Enable dpms, monitor off";
     };
     timeout = lib.mkOption {
       type = lib.types.int;
