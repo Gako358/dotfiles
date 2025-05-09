@@ -82,7 +82,7 @@ in
           enabled-extensions = with pkgs.gnomeExtensions; [
             caffeine.extensionUuid
             clipboard-indicator.extensionUuid
-            dash-to-panel.extensionUui
+            dash-to-panel.extensionUuid
             just-perfection.extensionUuid
             space-bar.extensionUuid
             tray-icons-reloaded.extensionUuid
