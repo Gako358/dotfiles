@@ -16,5 +16,9 @@
 
   # Modules loaded
   environment.server.enable = true;
-  environment.desktop.enable = false;
+  environment.desktop = {
+    enable = false;
+    windowManager = null;
+    develop = false;
+  };
 }
