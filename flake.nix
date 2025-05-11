@@ -30,12 +30,8 @@
                 deadnix.enable = true;
                 nil.enable = true;
                 nixpkgs-fmt.enable = true;
-                shellcheck = {
-                  enable = true;
-                };
-                beautysh = {
-                  enable = true;
-                };
+                shellcheck.enable = true;
+                beautysh.enable = true;
               };
             };
           };
