@@ -4,6 +4,7 @@
 }:
 {
   imports = [
+    ./hl.nix
     ./iog.nix
     ./merrinx.nix
     ./nix-community.nix
