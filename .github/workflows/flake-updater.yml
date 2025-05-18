@@ -135,12 +135,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: flake_lock
-      - name: Build with periodic GC
+      - name: Build NixOS Configuration
         run: |
-          (while true; do nix-collect-garbage -d; sleep 300; done) &
-          GCPID=$!
-          trap "kill $GCPID" EXIT
-
           nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel --out-link result
       - name: Push to cachix in smaller batches
         run: |
