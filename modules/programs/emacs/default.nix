@@ -289,13 +289,9 @@ in
       };
       persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
-          ".cargo"
           ".config/copilot-chat"
           ".config/github-copilot"
           ".emacs.d"
-          ".m2"
-          ".npm"
-          ".pulumi"
         ];
       };
       # Create a wrapper for emacsclient that adds tools to PATH

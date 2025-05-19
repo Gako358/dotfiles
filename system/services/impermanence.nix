@@ -1,4 +1,17 @@
+{ config
+, lib
+, ...
+}:
+let
+  developSpecificDirs = [
+    ".cargo"
+    ".m2"
+    ".npm"
+    ".pulumi"
+  ];
+in
 {
+
   environment.persistence."/persist" = {
     hideMounts = true;
     directories = [
@@ -24,7 +37,7 @@
         { directory = ".ssh"; mode = "0700"; }
         { directory = ".local/share/direnv"; mode = "0700"; }
         { directory = ".local/share/keyrings"; mode = "0700"; }
-      ];
+      ] ++ (lib.optionals config.environment.desktop.develop developSpecificDirs);
     };
   };
 }
