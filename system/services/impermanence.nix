@@ -5,6 +5,7 @@
 let
   developSpecificDirs = [
     ".cargo"
+    ".cache/coursier"
     ".m2"
     ".npm"
     ".pulumi"
