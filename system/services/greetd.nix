@@ -5,6 +5,10 @@
   config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     security = {
       pam = {
+        loginLimits = [
+          { domain = "*"; type = "soft"; item = "nofile"; value = "65536"; }
+          { domain = "*"; type = "hard"; item = "nofile"; value = "1048576"; }
+        ];
         services.greetd.enableGnomeKeyring = true;
         services.swaylock = { };
       };
