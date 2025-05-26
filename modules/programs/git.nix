@@ -1,5 +1,14 @@
-{ pkgs, ... }:
+{ osConfig
+, config
+, pkgs
+, lib
+, ...
+}:
 let
+  cat = "${pkgs.coreutils}/bin/cat";
+  githubTokenPathAvailable = lib.hasAttrByPath [ "sops" "secrets" "github_token" "path" ] config &&
+    (lib.isAttrs config.sops.secrets.github_token && config.sops.secrets.github_token.path != null);
+
   gitConfig = {
     core = {
       editor = "emacsclient";
@@ -33,6 +42,9 @@ let
     pull.rebase = false;
     push.default = "upstream";
     push.autoSetupRemote = true;
+    credential = lib.mkIf githubTokenPathAvailable {
+      helper = "!f() { test \"$1\" = get && echo \"password=$(${cat} ${config.sops.secrets.github_token.path})\"; }; f";
+    };
     url = {
       "https://github.com/".insteadOf = "gh:";
       "ssh://git@github.com".pushInsteadOf = "gh:";
@@ -43,6 +55,11 @@ let
   rg = "${pkgs.ripgrep}/bin/rg";
 in
 {
+
+  sops.secrets = lib.mkIf osConfig.service.sops.enable {
+    "github_token" = { };
+  };
+
   home.packages = with pkgs.gitAndTools; [
     diff-so-fancy # git diff with colors
     git-crypt # git files encryption
