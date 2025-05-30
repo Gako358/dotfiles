@@ -1727,6 +1727,7 @@ Setup emacs-eat
 
   (evil-leader/set-key
     "tt" 'eat-project
+    "tn" 'eat
     "to" 'eat-project-other-window
     "tk" 'eat-kill-process)
 #+end_src
