@@ -26,6 +26,7 @@
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
       trusted-users = [ "root" "merrinx" "@wheel" ];
+      download-buffer-size = 524288000;
     };
     gc = {
       automatic = true;
