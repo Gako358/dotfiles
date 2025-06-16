@@ -224,50 +224,6 @@ Completion At Point Extensions:
       (define-key evil-insert-state-map (kbd "C-c p r") 'cape-rfc1345)))
 #+end_src
 
-*** Copilot
-AI-Powered Code Completion:
-- Copilot: Integrates GitHub Copilot for AI-powered code completion, with custom keybindings and configuration for different modes.
-
-#+begin_src emacs-lisp
-  (use-package copilot
-    :ensure t
-    :bind (:map copilot-completion-map
-		("C-e" . copilot-accept-completion)
-		("C-S-e" . copilot-accept-completion-by-word))
-    :config
-    (add-to-list 'copilot-indentation-alist '(prog-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(org-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(text-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(closure-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(nix-ts-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(nix-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(scala-ts-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(scala-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(java-ts-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(java-mode . 2))
-    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode . 2)))
-#+end_src
-
-*** Copilot-Chat
-#+begin_src emacs-lisp
-  (use-package copilot-chat
-    :config
-    (evil-leader/set-key
-      "ca" 'copilot-chat-add-current-buffer
-      "cd" 'copilot-chat-del-current-buffer
-      "ce" 'copilot-chat-explain
-      "cf" 'copilot-chat-fix
-      "cg" 'copilot-chat-insert-commit-message
-      "ch" 'copilot-chat-hide
-      "cl" 'copilot-chat-list
-      "cL" 'copilot-chat-list-refresh
-      "cm" 'copilot-chat-set-model
-      "cr" 'copilot-chat-reset
-      "cv" 'copilot-chat-review
-      "cV" 'copilot-chat-review-whole-buffer
-      "cc" 'copilot-chat-display))
-#+end_src
-
 *** Corfu
 Completion Overlay Region Function:
 - Corfu: Provides a completion overlay for better in-line completion, with custom keybindings for navigation and configuration for an improved user experience.

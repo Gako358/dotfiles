@@ -34,7 +34,7 @@ let
     src = pkgs.fetchgit {
       url = "https://codeberg.org/pranshu/haskell-ts-mode.git";
       rev = "625b8c5d4c907f822c74c951bfe1bbdd8b187d4e";
-      sha256 = "sha256-G3vKgJAE0kRtwWxsqJGdDOeYpYxUszv0e1fZEiUZuUI="; # You'll need to add the correct hash here
+      sha256 = "sha256-G3vKgJAE0kRtwWxsqJGdDOeYpYxUszv0e1fZEiUZuUI=";
     };
 
     recipe = pkgs.writeText "recipe" ''
@@ -157,8 +157,6 @@ in
 
           # Completion
           cape # Completion At Point Extensions.
-          copilot # AI code completion.
-          copilot-chat # Chat with Copilot.
           corfu # Completion Overlay Region Function.
           embark # Context-sensitive actions.
           embark-consult # Consult preview using embark
@@ -289,8 +287,6 @@ in
       };
       persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
-          ".config/copilot-chat"
-          ".config/github-copilot"
           ".emacs.d"
         ];
       };
