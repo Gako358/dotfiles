@@ -156,20 +156,30 @@ in
           "metals.javaHome" = null;
           "metals.customRepositories" = [ ];
           "metals.bloopSbtLocation" = "${pkgs.bloop}/bin/bloop";
-
-          # Add these new settings:
           "metals.scalafixConfigPath" = ".scalafix.conf";
           "metals.scalafixOnCompile" = false;
+          "metals.scalafixConfig" = ''
+            rules = [
+              OrganizeImports
+            ]
+
+            OrganizeImports {
+              targetDialect = Scala3
+              removeUnused = true
+              groupedImports = Merge
+              groups = [
+                "re:javax?\\."
+                "scala."
+                "re:^(?!scala\\.).*"
+              ]
+            }
+          '';
           "metals.serverProperties" = [
             "-Dmetals.client=vscode"
             "-Xmx2G"
             "-Xms2G"
             "-XX:MaxMetaspaceSize=512m"
             "-Dscalafix.timeout=30s"
-          ];
-          "metals.javaOptions" = [
-            "-Xmx2G"
-            "-XX:MaxMetaspaceSize=512m"
           ];
 
           # Nix Language Server
