@@ -124,7 +124,7 @@ let
   systemToolsPath = "/run/current-system/sw/bin";
 
   # Use the nix-profile path for Home Manager packages
-  homeManagerPath = "/etc/profiles/per-user/merrinx/bin";
+  homeManagerPath = "/etc/profiles/per-user/${config.home.username}/bin";
 
   inherit (osConfig.environment) desktop;
 in
