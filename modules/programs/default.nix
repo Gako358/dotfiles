@@ -52,7 +52,6 @@ in
   ./slack.nix
   ./spotify.nix
   ./starship.nix
-  ./vscode.nix
   ./waybar.nix
   ./wine.nix
   ./wowup.nix
