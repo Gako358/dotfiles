@@ -107,6 +107,7 @@ let
     pkgs.black
     pkgs.dtach
     pkgs.emacs-lsp-booster
+    pkgs.gemini-cli
     pkgs.haskell-language-server
     pkgs.kotlin-language-server
     pkgs.nil
