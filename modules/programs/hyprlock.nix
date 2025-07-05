@@ -1,10 +1,9 @@
-{
-  osConfig,
-  inputs,
-  config,
-  pkgs,
-  lib,
-  ...
+{ osConfig
+, inputs
+, config
+, pkgs
+, lib
+, ...
 }:
 let
   wallpaper = "${config.home.homeDirectory}/Sources/archive/images/wallpapers/moon.png";
