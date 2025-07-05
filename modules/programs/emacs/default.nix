@@ -124,6 +124,9 @@ let
   # Create a PATH string for system tools
   systemToolsPath = "/run/current-system/sw/bin";
 
+  # Add wrappers bin for sudo and other setuid programs
+  wrappersPath = "/run/wrappers/bin";
+
   # Use the nix-profile path for Home Manager packages
   homeManagerPath = "/etc/profiles/per-user/${config.home.username}/bin";
 
@@ -140,8 +143,8 @@ in
     programs.emacs = {
       enable = true;
       package = pkgs.emacs30;
-      extraPackages = epkgs:
-        with epkgs; [
+      extraPackages =
+        epkgs: with epkgs; [
           # Appearande
           all-the-icons # A package for inserting developer icons
           all-the-icons-completion
@@ -152,7 +155,7 @@ in
           nerd-icons # Nerd icons for Emacs
           nerd-icons-completion # Nerd icons for completion
           nerd-icons-corfu # Nerd icons for corfu
-          powerline #A utility library for creating a custom mode-line
+          powerline # A utility library for creating a custom mode-line
           rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
           rainbow-mode # Colorize color names in buffers
 
@@ -202,7 +205,7 @@ in
           log4e # Logging framework for Emacs
           s # The long lost Emacs string manipulation library
           password-store # Emacs interface for pass, the standard Unix password manager
-          ripgrep #Ripgrep for Emacs
+          ripgrep # Ripgrep for Emacs
           wgrep # Writable grep buffer.
 
           # grammars
@@ -275,7 +278,9 @@ in
     # Use a wrapper script for the Emacs service
     systemd.user.services.emacs = {
       Service = {
-        Environment = [ "PATH=${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH" ];
+        Environment = [
+          "PATH=${emacsOnlyPath}:${wrappersPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
+        ];
       };
     };
 
@@ -295,7 +300,7 @@ in
       packages = [
         (pkgs.writeShellScriptBin "ec" ''
           # Add our specific tools to the front of the PATH but preserve the rest
-          export PATH="${emacsOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
+          export PATH="${emacsOnlyPath}:${wrappersPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
           exec ${pkgs.emacs30}/bin/emacsclient "$@"
         '')
       ];
