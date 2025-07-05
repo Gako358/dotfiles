@@ -956,6 +956,176 @@ Writable Grep:
     "ws" 'wgrep-finish-edit)
 #+end_src
 
+*** Proced
+Proced is Emacs' built-in process manager, providing a powerful interface for monitoring and managing system processes directly within Emacs. This configuration transforms the basic proced into a feature-rich system monitor comparable to htop or top.
+
++ Key Features:
+- *Visual Enhancements*: Colored output with automatic highlighting of high CPU (>50%, red) and memory (>20%, yellow) usage
+- *Auto-refresh*: Processes update every 5 seconds automatically (toggle with 'a')
+- *Tree View*: Shows parent-child process relationships by default (toggle with 'l')
+- *Multiple Formats*: Switch between different views - short, medium, long, verbose, performance, and admin formats (cycle with 'F')
+- *Smart Filtering*: Quick filters for user processes (/ u) or all processes (/ c)
+- *Efficient Sorting*: Sort by CPU (s c), memory (s m), PID (s p), time (s t), or start time (s s)
+
++ Custom Functions:
+- =my/proced-show-active=: Filters to show only active processes (CPU > 1% or Memory > 5%)
+- =my/proced-kill-process-by-name=: Kill all processes matching a name pattern
+- =my/proced-highlight-high-usage=: Automatically highlights resource-intensive processes
+
++ Keybindings:
+- =C-x p p=: Launch proced from anywhere
+- =j/k=: Vim-style navigation
+- =K=: Kill process with signal selection
+- =r=: Renice (adjust process priority)
+- =g=: Manual refresh
+- =G=: Full revert
+
+This configuration makes system monitoring and process management seamless within Emacs, eliminating the need to switch to a terminal for basic system administration tasks.
+#+begin_src emacs-lisp
+  (use-package proced
+    :ensure nil
+    :defer t
+    :custom
+    ;; Enable colors for better readability
+    (proced-enable-color-flag t)
+
+    ;; Show process tree by default
+    (proced-tree-flag t)
+
+    ;; Auto-update every 5 seconds (adjust as needed)
+    (proced-auto-update-interval 5)
+
+    ;; Enable auto-update by default
+    (proced-auto-update-flag t)
+
+    ;; Show processes for all users (not just current user)
+    (proced-filter 'all)
+
+    ;; Sort by CPU usage by default (most intensive first)
+    (proced-sort 'pcpu)
+
+    ;; Use human-readable sizes (K, M, G)
+    (proced-format-memory-flag t)
+
+    ;; Custom formats with better column selection
+    (proced-format-alist
+     '((short user pid tree pcpu pmem start time (args comm))
+       (medium user pid tree pcpu pmem vsize rss ttname state start time (args comm))
+       (long user euid group pid tree pri nice pcpu pmem vsize rss ttname state start time (args comm))
+       (verbose user euid group egid pid ppid tree pgrp sess pri nice pcpu pmem state thcount vsize rss ttname tpgid minflt majflt cminflt cmajflt start time utime stime ctime cutime cstime etime (args comm))
+       ;; Custom format focused on performance monitoring
+       (performance pid tree pcpu pmem vsize rss state time (args comm))
+       ;; Custom format for system administration
+       (admin user pid ppid tree nice pcpu pmem state start time (args comm))))
+
+    ;; Use medium format by default
+    (proced-format 'medium)
+
+    :bind
+    ;; Global keybinding to quickly access proced
+    ("C-x p p" . proced)
+
+    :hook
+    ;; Customize proced mode keybindings
+    (proced-mode . (lambda ()
+		     ;; Better navigation
+		     (local-set-key (kbd "j") 'next-line)
+		     (local-set-key (kbd "k") 'previous-line)
+		     (local-set-key (kbd "l") 'proced-toggle-tree)
+		     (local-set-key (kbd "a") 'proced-toggle-auto-update)
+
+		     ;; Quick filters
+		     (local-set-key (kbd "/ /") 'proced-filter-interactive)
+		     (local-set-key (kbd "/ u") (lambda () (interactive) (proced-filter-interactive 'user)))
+		     (local-set-key (kbd "/ c") (lambda () (interactive) (proced-filter-interactive 'all)))
+
+		     ;; Quick sorting
+		     (local-set-key (kbd "s c") (lambda () (interactive) (proced-sort-interactive 'pcpu)))
+		     (local-set-key (kbd "s m") (lambda () (interactive) (proced-sort-interactive 'pmem)))
+		     (local-set-key (kbd "s p") (lambda () (interactive) (proced-sort-interactive 'pid)))
+		     (local-set-key (kbd "s t") (lambda () (interactive) (proced-sort-interactive 'time)))
+		     (local-set-key (kbd "s s") (lambda () (interactive) (proced-sort-interactive 'start)))
+
+		     ;; Format switching
+		     (local-set-key (kbd "F") 'proced-format-interactive)
+
+		     ;; Process actions
+		     (local-set-key (kbd "K") 'proced-send-signal) ; Kill with signal selection
+		     (local-set-key (kbd "r") 'proced-renice)      ; Change process priority
+
+		     ;; Update controls
+		     (local-set-key (kbd "g") 'proced-update)
+		     (local-set-key (kbd "G") 'proced-revert)))
+
+    :config
+    ;; Custom faces for better visibility
+    (set-face-attribute 'proced-mark nil
+			:background "#3c3836"
+			:foreground "#fb4934"
+			:weight 'bold)
+
+    ;; Highlight high CPU/memory usage
+    (defun my/proced-highlight-high-usage ()
+      "Highlight processes with high CPU or memory usage."
+      (save-excursion
+	(goto-char (point-min))
+	(while (not (eobp))
+	  (let ((line (thing-at-point 'line t)))
+	    (when line
+	      ;; Highlight high CPU usage (>50%)
+	      (when (string-match "\\s-\\([5-9][0-9]\\|100\\)\\.[0-9]\\s-" line)
+		(put-text-property (line-beginning-position) (line-end-position)
+				   'face '(:foreground "#fb4934")))
+	      ;; Highlight high memory usage (>20%)
+	      (when (string-match "\\s-\\(2[0-9]\\|[3-9][0-9]\\|100\\)\\.[0-9]\\s-" line)
+		(unless (get-text-property (line-beginning-position) 'face)
+		  (put-text-property (line-beginning-position) (line-end-position)
+				     'face '(:foreground "#fabd2f"))))))
+	  (forward-line 1))))
+
+    ;; Add highlighting to update hook
+    (add-hook 'proced-post-display-hook #'my/proced-highlight-high-usage)
+
+    ;; Helper function to kill process by name
+    (defun my/proced-kill-process-by-name (name)
+      "Kill all processes matching NAME."
+      (interactive "sProcess name: ")
+      (proced)
+      (proced-filter-interactive 'all)
+      (goto-char (point-min))
+      (let ((count 0))
+	(while (search-forward name nil t)
+	  (when (save-excursion
+		  (beginning-of-line)
+		  (looking-at "^\\s-*\\S-+\\s-+\\([0-9]+\\)"))
+	    (proced-mark)
+	    (setq count (1+ count))))
+	(when (> count 0)
+	  (proced-send-signal 'TERM)
+	  (message "Sent TERM signal to %d process(es)" count))))
+
+    ;; Function to show only processes consuming resources
+    (defun my/proced-show-active ()
+      "Show only processes that are actively using CPU or have high memory usage."
+      (interactive)
+      (proced-filter-interactive
+       (lambda (proc)
+	 (let ((pcpu (cdr (assq 'pcpu (process-attributes proc))))
+	       (pmem (cdr (assq 'pmem (process-attributes proc)))))
+	   (or (and pcpu (> pcpu 1.0))
+	       (and pmem (> pmem 5.0)))))))
+
+    ;; Add to mode menu
+    (easy-menu-define proced-custom-menu proced-mode-map
+      "Custom menu for Proced mode"
+      '("Proced"
+	["Show Active Processes" my/proced-show-active t]
+	["Kill by Name" my/proced-kill-process-by-name t]
+	"---"
+	["Toggle Tree View" proced-toggle-tree t]
+	["Toggle Auto Update" proced-toggle-auto-update t])))
+#+end_src
+
 ** Grammars
 Setting up treesitter grammars
 #+begin_src emacs-lisp
