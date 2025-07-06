@@ -33,6 +33,9 @@ let
   # Create a PATH string for these tools
   vscodeOnlyPath = "${pkgs.lib.makeBinPath vscodeOnlyTools}";
 
+  # Add wrappers bin for sudo and other setuid programs
+  wrappersPath = "/run/wrappers/bin";
+
   # Create a PATH string for system tools
   systemToolsPath = "/run/current-system/sw/bin";
 
@@ -203,7 +206,8 @@ in
           "java.configuration.runtimes" = [ ];
           "java.import.gradle.java.home" = null;
           "java.import.maven.java.home" = null;
-          "java.format.settings.url" = "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml";
+          "java.format.settings.url" =
+            "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml";
           "java.format.settings.profile" = "GoogleStyle";
 
           # Docker
@@ -302,7 +306,7 @@ in
     home.packages = [
       (pkgs.writeShellScriptBin "code-wrapped" ''
         # Add our specific tools to the front of the PATH but preserve the rest
-        export PATH="${vscodeOnlyPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
+        export PATH="${vscodeOnlyPath}:${wrappersPath}:${systemToolsPath}:${homeManagerPath}:$PATH"
         exec ${pkgs.vscode.fhs}/bin/code "$@"
       '')
     ];
@@ -318,8 +322,16 @@ in
       exec = "code-wrapped %F";
       icon = "code";
       startupNotify = true;
-      categories = [ "Utility" "TextEditor" "Development" "IDE" ];
-      mimeType = [ "text/plain" "inode/directory" ];
+      categories = [
+        "Utility"
+        "TextEditor"
+        "Development"
+        "IDE"
+      ];
+      mimeType = [
+        "text/plain"
+        "inode/directory"
+      ];
       actions = {
         new-empty-window = {
           exec = "code-wrapped --new-window %F";
