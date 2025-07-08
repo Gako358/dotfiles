@@ -5,6 +5,7 @@
     ./gnome.nix
     ./greetd.nix
     ./impermanence.nix
+    ./mugge.nix
     ./nfc.nix
     ./openssh.nix
     ./pipwire.nix
