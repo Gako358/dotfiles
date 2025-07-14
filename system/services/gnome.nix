@@ -2,14 +2,18 @@
 , pkgs
 , lib
 , ...
-}: {
+}:
+{
   config = lib.mkMerge [
     (lib.mkIf config.environment.desktop.enable {
       services = {
         dbus = {
           enable = true;
           implementation = "broker";
-          packages = [ pkgs.gnome-keyring pkgs.gcr ];
+          packages = [
+            pkgs.gnome-keyring
+            pkgs.gcr
+          ];
         };
         gnome = {
           evolution-data-server.enable = true;
@@ -40,6 +44,14 @@
         xserver.enable = true;
         desktopManager.gnome.enable = true;
         displayManager.gdm.enable = true;
+      };
+      xdg.portal = {
+        enable = true;
+        extraPortals = with pkgs; [
+          xdg-desktop-portal-wlr
+          xdg-desktop-portal-gtk
+          xdg-desktop-portal-gnome
+        ];
       };
       environment.gnome.excludePackages = with pkgs; [
         gnome-photos

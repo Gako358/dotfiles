@@ -4,8 +4,12 @@ let
 in
 {
   wayland.windowManager.hyprland.settings = {
+    env = [
+      "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+      "HYPRCURSOR_THEME,${pkgs.capitaine-cursors}"
+      "HYPRCURSOR_SIZE,16"
+    ];
     exec-once = [
-      "dbus-update-activation-environment --systemd --all && systemctl --user stop graphical-session.target && systemctl --user start hyprland-session.target"
       "${wallpaper}"
       "hyprctl setcursor capitaine-cursors-white 16"
       "wl-clip-persist --clipboard both &"

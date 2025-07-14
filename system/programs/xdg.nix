@@ -2,7 +2,8 @@
 , pkgs
 , lib
 , ...
-}: {
+}:
+{
   xdg.portal = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     enable = true;
     xdgOpenUsePortal = true;
