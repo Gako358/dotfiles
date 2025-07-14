@@ -12,7 +12,7 @@ let
         font = {
           name = "Inter";
           package = pkgs.google-fonts.override { fonts = [ "Inter" ]; };
-          size = 11;
+          size = 9;
         };
         theme = {
           name = "Flat-Remix-GTK-White-Dark";
