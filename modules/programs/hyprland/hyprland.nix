@@ -10,6 +10,8 @@ in
       "HYPRCURSOR_SIZE,16"
     ];
     exec-once = [
+      "dbus-update-activation-environment --systemd --all"
+      "systemctl --user import-environment QT_QPA_PLATFORMTHEME"
       "${wallpaper}"
       "hyprctl setcursor capitaine-cursors-white 16"
       "wl-clip-persist --clipboard both &"
