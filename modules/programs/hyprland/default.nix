@@ -59,10 +59,6 @@
       pkgs.wgetpaste # paste to pastebin
       pkgs.wl-clipboard # wayland clipboard manager
       pkgs.wl-gammactl # wayland gamma control
-      pkgs.qt6Packages.qtstyleplugin-kvantum
-      pkgs.qt6Packages.qt6ct
-      pkgs.libsForQt5.qtstyleplugin-kvantum
-      pkgs.libsForQt5.qt5ct
     ];
 
     # Fake a tray, so apps can start
