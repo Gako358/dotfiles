@@ -1,5 +1,6 @@
 {
   imports = [
+    ./hyprland
     ./blueman.nix
     ./btrbk.nix
     ./gnome.nix

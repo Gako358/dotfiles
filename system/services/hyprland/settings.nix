@@ -1,21 +1,18 @@
 { pkgs, ... }:
-let
-  wallpaper = "${pkgs.hyprpaper}/bin/hyprpaper";
-in
 {
-  wayland.windowManager.hyprland.settings = {
+  programs.hyprland.settings = {
     env = [
-      "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+      "GRIMBLAST_NO_CURSOR,0"
       "HYPRCURSOR_THEME,${pkgs.capitaine-cursors}"
       "HYPRCURSOR_SIZE,16"
+      "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
     ];
     exec-once = [
-      "dbus-update-activation-environment --systemd --all"
-      "systemctl --user import-environment QT_QPA_PLATFORMTHEME"
-      "${wallpaper}"
+      "hyprpaper"
       "hyprctl setcursor capitaine-cursors-white 16"
       "wl-clip-persist --clipboard both &"
       "wl-paste --watch cliphist store &"
+      "uwsm finalize"
       "[workspace 1 silent] zen"
       "[workspace 2 silent] emacsclient -c -n"
       "[workspace 8 silent] slack"
@@ -29,6 +26,7 @@ in
       allow_tearing = true;
       resize_on_border = true;
     };
+    cursor.inactive_timeout = 5;
     decoration = {
       rounding = 16;
       blur.enabled = true;

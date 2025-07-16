@@ -33,7 +33,6 @@ let
 in
 [
   ./emacs
-  ./hyprland
   ./neofetch
   ./wofi
   ./alacritty.nix
@@ -45,6 +44,7 @@ in
   ./fzf.nix
   ./gimp.nix
   ./git.nix
+  ./hyprland.nix
   ./hyprlock.nix
   ./icue.nix
   ./jq.nix
