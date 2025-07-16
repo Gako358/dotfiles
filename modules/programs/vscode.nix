@@ -63,7 +63,6 @@ in
           ms-vscode.makefile-tools
           mkhl.direnv
           vscodevim.vim
-          bmalehorn.vscode-fish
 
           # Formatters
           esbenp.prettier-vscode
