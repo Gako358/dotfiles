@@ -26,6 +26,9 @@ let
     typescript-language-server
     vue-language-server
 
+    # Fonts for proper icon rendering
+    nerd-fonts.roboto-mono
+
     # Utilities
     jq
   ];
@@ -129,6 +132,17 @@ in
           "editor.minimap.enabled" = false;
           "editor.defaultFormatter" = "esbenp.prettier-vscode";
           "editor.lineNumbers" = "relative";
+
+          # Terminal font configuration for nerd icons
+          "terminal.integrated.fontFamily" = "RobotoMono Nerd Font, 'RobotoMono Nerd Font Mono', monospace";
+          "terminal.integrated.fontSize" = 14;
+
+          # Fish shell configuration for VS Code
+          "terminal.integrated.env.linux" = {
+            "TERM_PROGRAM" = "vscode";
+          };
+          "terminal.integrated.shellIntegration.enabled" = true;
+          "terminal.integrated.shellIntegration.showWelcome" = false;
 
           # Code lens for better navigation
           "java.referencesCodeLens.enabled" = true;
@@ -310,8 +324,19 @@ in
       '')
     ];
 
-    programs.fish.shellAliases = {
-      code = "code-wrapped";
+    programs = {
+      fish.shellAliases = {
+        code = "code-wrapped";
+      };
+
+      fish.interactiveShellInit = ''
+        if test "$TERM_PROGRAM" = "vscode"
+          set -gx PATH "${vscodeOnlyPath}:${wrappersPath}:${systemToolsPath}:${homeManagerPath}" $PATH
+          if test -f /etc/fish/config.fish
+            source /etc/fish/config.fish
+          end
+        end
+      '';
     };
 
     xdg.desktopEntries."code" = {
