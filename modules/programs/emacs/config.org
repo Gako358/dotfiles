@@ -956,6 +956,28 @@ Writable Grep:
     "ws" 'wgrep-finish-edit)
 #+end_src
 
+*** Midnight
+Midnight package: Automatically cleans up unused buffers daily at 4:30am.
+- The following regexps ensure special and important buffers (tramp, minibuffer,
+- auto-save, directory, and all mu4e mail buffers) are never killed automatically.
+
+#+begin_src emacs-lisp
+  (use-package midnight
+    :ensure t
+    :config
+    (custom-set-variables
+     '(clean-buffer-list-delay-special 86400) ;; Buffers not used last 24h
+     '(clean-buffer-list-kill-never-regexps
+       '(
+  	 "^\\*tramp/.*\\*$"
+  	 "^ \\*Minibuf-.*\\*$"
+  	 "^#.*$"
+  	 "^\\*\\*df.\\*\\**$"
+  	 "^\\*mu4e-.*\\*$"
+  	 )))
+    (midnight-delay-set 'midnight-delay "4:30am"))
+#+end_src
+
 *** Proced
 Proced is Emacs' built-in process manager, providing a powerful interface for monitoring and managing system processes directly within Emacs. This configuration transforms the basic proced into a feature-rich system monitor comparable to htop or top.
 
