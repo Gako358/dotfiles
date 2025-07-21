@@ -1,8 +1,9 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     libnfc
     ccid
-    acsccid
+    # acsccid -- No longer building, need to check
     pcsclite
     pcsctools
   ];
