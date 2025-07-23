@@ -25,13 +25,12 @@
     settings = {
       experimental-features = "nix-command flakes impure-derivations ca-derivations";
       auto-optimise-store = true;
-      trusted-users = [ "root" "merrinx" "@wheel" ];
+      trusted-users = [
+        "root"
+        "merrinx"
+        "@wheel"
+      ];
       download-buffer-size = 524288000;
-    };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 10d";
     };
     optimise = {
       automatic = true;
