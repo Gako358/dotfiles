@@ -32,7 +32,7 @@
 
   services = {
     hardware.bolt.enable = true; # Thunderbolt, a userspace daemon to enable security levels for Thunderbolt 3 on GNU/Linux.
-    thermald.enable = true;
+    thermald.enable = false;
     power-profiles-daemon.enable = lib.mkIf
       (
         config.environment.desktop.windowManager == "gnome"
