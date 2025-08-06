@@ -16,7 +16,7 @@ in
   programs.hyprland.settings = {
     # Launchers
     bind = [
-      "${mainMod}, Return, exec, ${toggle "alacritty"}"
+      "${mainMod}, Return, exec, ${runOnce "alacritty"}"
       "${mainMod}, D, exec, ${toggle "wofi --show drun"}"
       "${mainMod}, B, exec, ${toggle "alacritty -t btop -e btm"}"
       "${mainMod}, R, exec, ${toggle "alacritty -t ranger -e ranger"}"
