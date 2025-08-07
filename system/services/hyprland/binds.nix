@@ -11,12 +11,13 @@ let
     "pkill ${prog} || uwsm app -- ${program}";
 
   runOnce = program: "pgrep ${program} || uwsm app -- ${program}";
+  launch = program: "uwsm app -- ${program}";
 in
 {
   programs.hyprland.settings = {
     # Launchers
     bind = [
-      "${mainMod}, Return, exec, ${runOnce "alacritty"}"
+      "${mainMod}, Return, exec, ${launch "alacritty"}"
       "${mainMod}, D, exec, ${toggle "wofi --show drun"}"
       "${mainMod}, B, exec, ${toggle "alacritty -t btop -e btm"}"
       "${mainMod}, R, exec, ${toggle "alacritty -t ranger -e ranger"}"
