@@ -24,11 +24,11 @@ in
       "${mainMod}, S, exec, ${toggle "alacritty -t spotify_player -e spotify_player"}"
       "${mainMod} ${SECONDARY}, D, exec, ${runOnce "pcmanfm"}"
 
-      # Lockscreen with screenshot
+      # Lockscreen
       "${mainMod} ${SECONDARY}, L, exec, ${runOnce "hyprlock"}"
 
       # Screenshot
-      "${mainMod} ${SECONDARY}, P, exec, ${runOnce "grimshot --notify save area - | ${runOnce "swappy -f -"}"}"
+      "${mainMod} ${SECONDARY}, P, exec, ${runOnce "grimblast --notify copysave area"}"
 
       # Scratchpads
       "${mainMod} ${SECONDARY}, T, movetoworkspace, special"
