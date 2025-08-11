@@ -4,7 +4,10 @@
 , ...
 }:
 let
-  autostartPrograms = [ pkgs.discord pkgs.ckb-next ];
+  autostartPrograms = [
+    pkgs.discord
+    pkgs.ckb-next
+  ];
 in
 {
   config = lib.mkMerge [
@@ -34,7 +37,16 @@ in
           enable-hot-corners = true;
         };
         "org/gnome/desktop/input-sources" = {
-          sources = [ (lib.hm.gvariant.mkTuple [ "xkb" "us" ]) (lib.hm.gvariant.mkTuple [ "xkb" "no" ]) ];
+          sources = [
+            (lib.hm.gvariant.mkTuple [
+              "xkb"
+              "no"
+            ])
+            (lib.hm.gvariant.mkTuple [
+              "xkb"
+              "us"
+            ])
+          ];
         };
         "org/gnome/desktop/screensaver" = {
           picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-l.jxl";
@@ -180,18 +192,22 @@ in
       };
 
       home = {
-        file = builtins.listToAttrs (map
-          (pkg:
-            {
+        file = builtins.listToAttrs (
+          map
+            (pkg: {
               name = ".config/autostart/" + pkg.pname + ".desktop";
               value =
-                if pkg ? desktopItem then {
-                  inherit (pkg.desktopItem) text;
-                } else {
-                  source = pkg + "/share/applications/" + pkg.pname + ".desktop";
-                };
+                if pkg ? desktopItem then
+                  {
+                    inherit (pkg.desktopItem) text;
+                  }
+                else
+                  {
+                    source = pkg + "/share/applications/" + pkg.pname + ".desktop";
+                  };
             })
-          autostartPrograms);
+            autostartPrograms
+        );
 
         packages = with pkgs; [
           gnomeExtensions.caffeine
