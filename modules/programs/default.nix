@@ -41,6 +41,7 @@ in
   ./direnv.nix
   ./discord.nix
   ./fish.nix
+  ./foot.nix
   ./fzf.nix
   ./gimp.nix
   ./git.nix
