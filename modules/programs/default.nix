@@ -55,6 +55,7 @@ in
   ./repl.nix
   ./slack.nix
   ./spotify.nix
+  ./ssh.nix
   ./starship.nix
   ./waybar.nix
   ./wine.nix
