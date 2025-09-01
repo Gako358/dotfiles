@@ -59,11 +59,6 @@
       vrr = 1;
     };
 
-    gestures = {
-      workspace_swipe = true;
-      workspace_swipe_forever = true;
-    };
-
     xwayland.force_zero_scaling = true;
     debug.disable_logs = false;
   };
