@@ -935,6 +935,8 @@ My email configuration transforms Emacs into a powerful email client with severa
     :config
     (editorconfig-mode 1))
   (use-package f :ensure t)
+  (use-package ansi-color
+    :hook (compilation-filter . ansi-color-compilation-filter))
 #+end_src
 
 *** direnv
