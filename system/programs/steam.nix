@@ -15,7 +15,7 @@
       };
     };
     environment.persistence."/persist" = {
-      users.merrinx = {
+      users.leif = {
         directories = [
           ".steam"
           ".local/share/Steam"

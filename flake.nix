@@ -1,5 +1,5 @@
 {
-  description = "MerrinX Flake";
+  description = "leif Flake";
 
   outputs =
     inputs@{ flake-parts, ... }:
@@ -19,7 +19,7 @@
         in
         {
           devShells.default = pkgs.mkShell {
-            name = "merrinx-dev-shell";
+            name = "leif-dev-shell";
             inputsFrom = [ ];
             nativeBuildInputs = with pkgs; [
               nixpkgs-fmt

@@ -108,7 +108,6 @@ let
     pkgs.dtach
     pkgs.emacs-lsp-booster
     pkgs.gemini-cli
-    pkgs.haskell-language-server
     pkgs.kotlin-language-server
     pkgs.nil
     pkgs.nixpkgs-fmt
@@ -134,12 +133,6 @@ let
 in
 {
   config = lib.mkIf (desktop.enable && desktop.develop) {
-    sops.secrets = lib.mkIf osConfig.service.sops.enable {
-      "forge_auth" = {
-        path = "${config.home.homeDirectory}/.authinfo";
-      };
-    };
-
     programs.emacs = {
       enable = true;
       package = pkgs.emacs30;

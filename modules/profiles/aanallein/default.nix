@@ -1,3 +1,0 @@
-{
-  imports = [ ../../default.nix ];
-}

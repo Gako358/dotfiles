@@ -1,13 +1,6 @@
-{ osConfig
-, config
-, pkgs
-, lib
+{ lib
 , ...
 }:
-let
-
-  cat = "${pkgs.coreutils}/bin/cat";
-in
 {
   imports = [ ../../default.nix ];
 
@@ -21,9 +14,5 @@ in
         suspend = false;
       };
     }
-
-    (lib.mkIf osConfig.service.sops.enable {
-      mail.password = "${cat} ${config.sops.secrets."email_work-passwd".path}";
-    })
   ];
 }
