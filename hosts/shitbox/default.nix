@@ -4,9 +4,9 @@
     ./hardware-configuration.nix
   ];
 
-  networking.hostName = "tuathaan";
+  networking.hostName = "shitbox";
   users.users = {
-    merrinx = {
+    leif = {
       isNormalUser = true;
       initialHashedPassword = "$7$CU..../....re.hRJT/dAI5QtAnjQ2or/$nY1JgY1nvyNKZKGsFHnpCJUs9ABZEP5HqbQs04Vqmx4";
       openssh.authorizedKeys.keys = [

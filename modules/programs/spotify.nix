@@ -7,11 +7,6 @@
 {
   config = lib.mkMerge [
     (lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
-      sops.secrets = lib.mkIf osConfig.service.sops.enable {
-        "spotify_id" = { };
-        "spotify_secret" = { };
-      };
-
       home.persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
           ".cache/spotify-player"
