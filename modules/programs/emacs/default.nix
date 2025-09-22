@@ -5,7 +5,7 @@
 , ...
 }:
 let
-  metalsVersion = "1.5.1";
+  metalsVersion = "1.6.2";
   metals = pkgs.metals.overrideAttrs (
     final: prev: {
       deps = pkgs.stdenv.mkDerivation {
@@ -20,7 +20,7 @@ let
         '';
         outputHashMode = "recursive";
         outputHashAlgo = "sha256";
-        outputHash = "sha256-2FA2B/WzNGU4B785pn5zZ9Xj64huzbSbr2Or+CxUMlI=";
+        outputHash = "sha256-WcPgX0GZSqpVVAzQ1zCxuRCkwcuR/8bwGjSCpHneeio=";
       };
       buildInputs = [ final.deps ];
     }
@@ -99,8 +99,14 @@ let
     '';
   };
 
+  hunspellWithDicts = pkgs.hunspell.withDicts (dicts: [
+    dicts.en_GB-ise
+    dicts.nb_NO
+  ]);
+
   # Embeded packages
   emacsOnlyTools = [
+    hunspellWithDicts
     metals
     pkgs.astyle
     pkgs.basedpyright
@@ -108,7 +114,6 @@ let
     pkgs.dtach
     pkgs.emacs-lsp-booster
     pkgs.gemini-cli
-    pkgs.haskell-language-server
     pkgs.kotlin-language-server
     pkgs.nil
     pkgs.nixpkgs-fmt
@@ -124,7 +129,7 @@ let
   # Create a PATH string for system tools
   systemToolsPath = "/run/current-system/sw/bin";
 
-  # Add wrappers bin for sudo and other setuid programs
+  # Add wrappers bin for sudo and other setup programs
   wrappersPath = "/run/wrappers/bin";
 
   # Use the nix-profile path for Home Manager packages
@@ -145,7 +150,7 @@ in
       package = pkgs.emacs30;
       extraPackages =
         epkgs: with epkgs; [
-          # Appearande
+          # Appearanse
           all-the-icons # A package for inserting developer icons
           all-the-icons-completion
           all-the-icons-ivy-rich # More friendly display transformer for ivy
@@ -209,6 +214,7 @@ in
           wgrep # Writable grep buffer.
 
           # grammars
+          citeproc
           treesit-grammars.with-all-grammars # Tree-sitter grammars
 
           # Programming language packages.
