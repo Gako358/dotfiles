@@ -104,7 +104,7 @@ let
     dicts.nb_NO
   ]);
 
-  # Embeded packages
+  # Embedded packages
   emacsOnlyTools = [
     hunspellWithDicts
     metals
@@ -150,19 +150,19 @@ in
       package = pkgs.emacs30;
       extraPackages =
         epkgs: with epkgs; [
-          # Appearanse
+          # Appearance
           all-the-icons # A package for inserting developer icons
           all-the-icons-completion
           all-the-icons-ivy-rich # More friendly display transformer for ivy
           bivrost-theme # Custom theme
           dashboard # A startup screen extracted from Spacemacs
-          spaceline # A mode-line theming package
+          spaceline # A mode-line teeming package
           nerd-icons # Nerd icons for Emacs
           nerd-icons-completion # Nerd icons for completion
           nerd-icons-corfu # Nerd icons for corfu
           powerline # A utility library for creating a custom mode-line
           rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
-          rainbow-mode # Colorize color names in buffers
+          rainbow-mode # Colourise colour names in buffers
 
           # Completion
           cape # Completion At Point Extensions.
@@ -173,7 +173,7 @@ in
           marginalia # Annotations for completion candidates.
           orderless # Space-separated matching components.
           vertico # Vertical interactive completion UI.
-          vertico-posframe # Vertico completion UI with posframe.
+          vertico-posframe # Vertigo completion UI with posframe.
 
           # Documentation
           pdf-tools # Document viewer
@@ -183,7 +183,7 @@ in
           evil-collection # A set of keybindings for evil-mode
           evil-commentary # Comment stuff out
           evil-leader # A set of keybindings for evil-mode
-          evil-matchit # Matchit for evil-mode
+          evil-matchit # Mat chit for evil-mode
           evil-org # Org-mode keybindings for evil-mode
           evil-snipe # Snipe text objects
           evil-surround # Surround text objects with punctuation
@@ -191,9 +191,9 @@ in
           evil-numbers # Increment and decrement numbers in Emacs
 
           # Edit
-          apheleia # A universal formatter interface
+          apheleia # A universal formatted interface
 
-          # Filetree
+          # File tree
           dirvish # Directory viewer for Emacs
 
           # General
@@ -268,7 +268,7 @@ in
           git-gutter # Show git diff in the fringe
           git-gutter-fringe # Fringe version of git-gutter.el
           magit # A Git porcelain inside Emacs
-          vundo # Undo tree visualizer
+          vundo # Undo tree visualiser
         ];
       extraConfig = builtins.readFile ./init.el;
     };
