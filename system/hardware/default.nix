@@ -95,7 +95,10 @@ in
   };
 
   nixpkgs = {
-    config.allowUnfree = true;
+    config = {
+      allowUnfree = true;
+      nvidia.acceptLicense = true;
+    };
     hostPlatform = lib.mkDefault "x86_64-linux";
   };
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
@@ -104,6 +107,6 @@ in
   users = {
     defaultUserShell = pkgs.fish;
     mutableUsers = false;
-    users.root.initialHashedPassword = "$7$CU..../....xM/ghsj5uVLcgAidGzKgs1$JJX8YwDoTnFXMJNaWX/n5m9jPVKeTisZVYlefd5jlL0";
+    users.root.initialHashedPassword = "$7$CU..../....7emauu/nSIai9Z3k.5nme1$6FDaMoeVeQBls.bZ3FsswOVWoeB.ILPtcIAqZh24f54";
   };
 }
