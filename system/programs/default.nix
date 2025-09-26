@@ -60,8 +60,8 @@
 
   imports = [
     ./cachix
+    ./fish
     ./docker.nix
-    ./fish.nix
     ./fonts.nix
     ./qemu.nix
     ./steam.nix
@@ -77,7 +77,7 @@
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 4d --keep 3"; # Never keep more than 3
-      flake = "/home/merrinx/Sources/dotfiles";
+      flake = "/home/leif/Sources/dotfiles";
     };
   };
 }

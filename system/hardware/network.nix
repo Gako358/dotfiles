@@ -1,6 +1,7 @@
 { lib
 , ...
-}: {
+}:
+{
   networking = {
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
@@ -11,5 +12,5 @@
     '';
   };
 
-  users.users.merrinx.extraGroups = [ "networkmanager" ];
+  users.users.leif.extraGroups = [ "networkmanager" ];
 }

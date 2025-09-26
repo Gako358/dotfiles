@@ -28,7 +28,7 @@ in
       # See: https://github.com/nix-community/impermanence/issues/253
       "/usr/systemd-placeholder"
     ];
-    users.merrinx = {
+    users.leif = {
       directories = [
         "Documents"
         "Downloads"
@@ -36,11 +36,24 @@ in
         "Pictures"
         "Projects"
         "Sources"
-        { directory = ".gnupg"; mode = "0700"; }
-        { directory = ".ssh"; mode = "0700"; }
-        { directory = ".local/share/direnv"; mode = "0700"; }
-        { directory = ".local/share/keyrings"; mode = "0700"; }
-      ] ++ (lib.optionals config.environment.desktop.develop developSpecificDirs);
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
+        {
+          directory = ".ssh";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/direnv";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
+      ]
+      ++ (lib.optionals config.environment.desktop.develop developSpecificDirs);
     };
   };
 }

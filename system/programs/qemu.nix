@@ -59,6 +59,6 @@ in
       };
     };
 
-    users.users.merrinx.extraGroups = [ "libvirtd" ];
+    users.users.leif.extraGroups = [ "libvirtd" ];
   };
 }

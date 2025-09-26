@@ -1,6 +1,6 @@
 _:
 let
-  username = "merrinx";
+  username = "leif";
   homeDirectory = "/home/${username}";
   configHome = "${homeDirectory}/.config";
 in
