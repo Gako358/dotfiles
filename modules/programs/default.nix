@@ -47,7 +47,6 @@ in
   ./git.nix
   ./hyprland.nix
   ./hyprlock.nix
-  ./icue.nix
   ./jq.nix
   ./neovim.nix
   ./pcmanfm.nix

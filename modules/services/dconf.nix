@@ -6,7 +6,7 @@
 let
   autostartPrograms = [
     pkgs.discord
-    pkgs.ckb-next
+    # pkgs.ckb-next
   ];
 in
 {
