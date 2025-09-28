@@ -3,11 +3,16 @@
 , lib
 , ...
 }:
+
 {
   hardware.ckb-next = lib.mkIf config.environment.gaming.enable {
     enable = true;
-    package = pkgs.ckb-next.overrideAttrs (old: {
-      cmakeFlags = (old.cmakeFlags or [ ]) ++ [ "-DUSE_DBUS_MENU=0" ];
-    });
   };
+
+  environment.systemPackages =
+    with pkgs;
+    (lib.mkIf config.environment.gaming.enable [
+      libdbusmenu
+      libsForQt5.libdbusmenu
+    ]);
 }
