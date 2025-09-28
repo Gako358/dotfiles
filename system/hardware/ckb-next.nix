@@ -13,6 +13,5 @@
     with pkgs;
     (lib.mkIf config.environment.gaming.enable [
       libdbusmenu
-      libsForQt5.libdbusmenu
     ]);
 }
