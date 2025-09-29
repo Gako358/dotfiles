@@ -28,7 +28,7 @@ in
       "${mainMod} ${SECONDARY}, L, exec, ${runOnce "hyprlock"}"
 
       # Screenshot
-      "${mainMod} ${SECONDARY}, P, exec, ${runOnce "grimblast --notify copysave area"}"
+      "${mainMod} ${SECONDARY}, P, exec, ${runOnce "grimblast --notify copy area"}"
 
       # Scratchpads
       "${mainMod} ${SECONDARY}, T, movetoworkspace, special"
