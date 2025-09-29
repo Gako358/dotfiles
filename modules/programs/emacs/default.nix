@@ -167,6 +167,7 @@ in
           # Completion
           cape # Completion At Point Extensions.
           corfu # Completion Overlay Region Function.
+          copilot # Github copilot extension.
           embark # Context-sensitive actions.
           embark-consult # Consult preview using embark
           flycheck # On-the-fly syntax checking
@@ -300,6 +301,7 @@ in
       persistence."/persist/${config.home.homeDirectory}" = {
         directories = [
           ".emacs.d"
+          ".config/github-copilot"
         ];
       };
       # Create a wrapper for emacsclient that adds tools to PATH

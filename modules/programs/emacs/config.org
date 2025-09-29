@@ -271,6 +271,44 @@ Completion Overlay Region Function:
     )
 #+end_src
 
+*** Copilot
+Github copilot extension for emacs
+Complete `use-package' configuration for copilot, incorporating:
+
+#+begin_src emacs-lisp
+  (use-package copilot
+    :bind (:map copilot-completion-map
+  	      ("<tab>" . 'copilot-accept-completion)
+  	      ("TAB" . 'copilot-accept-completion)
+  	      ("C-TAB" . 'copilot-accept-completion-by-word)
+  	      ("C-<tab>" . 'copilot-accept-completion-by-word))
+    :config
+    ;; Helper to turn copilot-mode off in a buffer (useful for hooks)
+    (defun rk/no-copilot-mode ()
+      "Helper to disable `copilot-mode' in the current buffer."
+      (when (bound-and-true-p copilot-mode)
+  	(copilot-mode -1)))
+
+    ;; Modes where Copilot should be disabled
+    (defvar rk/no-copilot-modes
+      '(shell-mode
+        inferior-python-mode
+        eshell-mode
+        term-mode
+        vterm-mode
+        comint-mode
+        compilation-mode
+        debugger-mode
+        dired-mode))
+
+    (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+    (add-to-list 'copilot-indentation-alist '(org-mode 2))
+    (add-to-list 'copilot-indentation-alist '(text-mode 2))
+    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
+    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+    )
+#+end_src
+
 *** Embark
 Context Menu for Actions:
 - Embark: Offers a context menu for performing actions on selected items directly from the completion interface.
