@@ -35,8 +35,8 @@
       rounding = 16;
       blur = {
         enabled = true;
-        size = 8;
-        passes = 4;
+        size = 4;
+        passes = 2;
         new_optimizations = true;
         ignore_opacity = true;
         xray = false;
