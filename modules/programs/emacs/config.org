@@ -725,6 +725,9 @@ Vertical Interactive Completion UI:
   ;;; Line numbers
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode)
+
+  ;;; Set auto pair mode
+  (electric-pair-mode 1)
 #+end_src
 
 ** Document
