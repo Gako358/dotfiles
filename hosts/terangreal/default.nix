@@ -1,4 +1,9 @@
 { config, lib, ... }:
+
+let
+  monitorLeft = "desc:Hewlett Packard HP Z27n CNK55013W1";
+  monitorRight = "desc:HP Inc. HP Z27n G2 6CM9361M3C";
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -22,21 +27,21 @@
 
   programs.hyprland.settings = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     monitor = [
-      "DP-2,2560x1440,0x0,1"
-      "DP-3,2560x1440,2560x0,1"
+      "${monitorLeft},2560x1440,0x0,1"
+      "${monitorRight},2560x1440,2560x0,1"
       ",highrr,auto,1"
     ];
 
     workspace = [
-      "1, monitor:DP-3"
-      "2, monitor:DP-2"
-      "3, monitor:DP-2"
-      "4, monitor:DP-2"
-      "5, monitor:DP-2"
-      "6, monitor:DP-3"
-      "7, monitor:DP-3"
-      "8, monitor:DP-3"
-      "9, monitor:DP-3"
+      "1, monitor:${monitorRight}"
+      "2, monitor:${monitorLeft}"
+      "3, monitor:${monitorLeft}"
+      "4, monitor:${monitorLeft}"
+      "5, monitor:${monitorLeft}"
+      "6, monitor:${monitorRight}"
+      "7, monitor:${monitorRight}"
+      "8, monitor:${monitorRight}"
+      "9, monitor:${monitorRight}"
     ];
   };
 
