@@ -12,7 +12,7 @@ in
   imports = [ ../../default.nix ];
 
   # Home modules to load
-  program.hyprlock.defaultMonitor = "DP-8";
+  program.hyprlock.defaultMonitor = "desc:HP Inc. HP E27u G4 CN41332M2N";
 
   service = lib.mkMerge [
     {

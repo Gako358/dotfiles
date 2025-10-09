@@ -1,4 +1,9 @@
 { config, lib, ... }:
+
+let
+  office = "desc:HP Inc. HP E27u G4 CN41332M2N";
+  laptop = "eDP-1";
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -22,22 +27,21 @@
 
   programs.hyprland.settings = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     monitor = [
-      "eDP-1,1920x1200,2560x1440,1"
-      "DP-8,2560x1440,0x0,1"
-      "DP-6,2560x1440,2560x0,1"
+      "${laptop},1920x1200,2560x1440,1"
+      "${office},2560x1440,0x0,1"
       ",highrr,auto,1"
     ];
 
     workspace = [
-      "1, monitor:DP-6"
-      "2, monitor:DP-8"
-      "3, monitor:DP-8"
-      "4, monitor:DP-8"
-      "5, monitor:DP-8"
-      "6, monitor:DP-6"
-      "7, monitor:DP-6"
-      "8, monitor:DP-6"
-      "9, monitor:DP-6"
+      "1, monitor:${office}"
+      "2, monitor:${office}"
+      "3, monitor:${office}"
+      "4, monitor:${office}"
+      "5, monitor:${office}"
+      "6, monitor:${office}"
+      "7, monitor:${office}"
+      "8, monitor:${office}"
+      "9, monitor:${office}"
     ];
   };
   # Modules loaded
