@@ -262,7 +262,8 @@ in
 
           # Terminal
           detached # Detached mode for Emacs
-          eat # Emacs Anywhere Terminal
+          vterm # Emacs vterm integration
+          vterm-toggle # Toggle vterm
 
           # Version
           forge # Work with github forges

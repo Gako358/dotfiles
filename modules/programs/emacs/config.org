@@ -1333,11 +1333,11 @@ Custom keymaps
         	(buffer-list)))
 
 
-  (defun my/projectile-switch-to-buffer-with-eat ()
-    "Switch to a buffer whose name includes 'eat' using consult-projectile."
+  (defun my/projectile-switch-to-buffer-with-vterm ()
+    "Switch to a buffer whose name includes 'vterm using consult-projectile."
     (interactive)
     (let ((filtered-buffers (seq-filter (lambda (buf)
-    					(string-match-p "eat" (buffer-name buf)))
+    					(string-match-p "vterm" (buffer-name buf)))
     				      (projectile-project-buffers))))
       (if filtered-buffers
     	(consult--read (mapcar #'buffer-name filtered-buffers)
@@ -1347,7 +1347,7 @@ Custom keymaps
     		       :category 'buffer
     		       :history 'buffer-name-history
     		       :state (consult--buffer-state))
-        (message "No buffers found with term: %s" "eat"))))
+        (message "No buffers found with term: %s" "vterm"))))
 
   (defun my/consult-projectile-grep-at-point ()
     "Use consult to grep for the word at point within the projectile files. If a region is selected, use the selected text instead."
@@ -1433,7 +1433,7 @@ Custom keymaps
     "kp" 'projectile-kill-other-buffers
     "kd" 'kill-dired-buffers
     "tr" 'rename-buffer
-    "tl" 'my/projectile-switch-to-buffer-with-eat
+    "tl" 'my/projectile-switch-to-buffer-with-vterm
     "sb" 'my/consult-replace-word-with-preview
     "sr" 'my/consult-replace-word-in-buffer)
 
@@ -1952,23 +1952,49 @@ Setup emacs-detached
     "dc" 'detached-copy-session-command)
 #+end_src
 
-*** Eat
-Setup emacs-eat
+*** Vterm
+Setup emacs-vterm
 - Emulate a Terminal
 
 #+begin_src emacs-lisp
-  (use-package eat
-    :hook (eshell-load . eat-eshell-mode)
-    :commands eat-compile-terminfo
+  (use-package vterm
+    :ensure t
+    :commands vterm
     :custom
-    (eat-enable-auto-line-mode t)
-    (eat-kill-buffer-on-exit t))
+    (vterm-kill-buffer-on-exit t)
+    (vterm-max-scrollback 10000)
+    (vterm-clear-scrollback-when-clearing t)
+    (vterm-copy-mode-remove-fake-newlines t)
+    :config
+    (setq vterm-buffer-name-string "vterm: %s"))
+
+  (use-package vterm-toggle
+    :ensure t
+    :after vterm
+    :custom
+    (vterm-toggle-fullscreen-p nil)
+    (vterm-toggle-scope 'project)
+    :config
+    (setq vterm-toggle-hide-method 'reset-window-configration))
+
+  (defun my/vterm-in-project-root ()
+    "Open vterm in the project root directory."
+    (interactive)
+    (let ((default-directory (or (projectile-project-root)
+                                 default-directory)))
+      (vterm)))
 
   (evil-leader/set-key
-    "tt" 'eat-project
-    "tn" 'eat
-    "to" 'eat-project-other-window
-    "tk" 'eat-kill-process)
+    "tt" 'vterm-toggle
+    "tn" 'my/vterm-in-project-root
+    "td" 'vterm
+    "to" 'vterm-other-window
+    "tk" (lambda () (interactive) (vterm-send-key "C-c")))
+
+  (evil-leader/set-key
+    "tc" 'vterm-toggle-cd
+    "tf" 'vterm-toggle-forward
+    "tb" 'vterm-toggle-backward)
 #+end_src
 
 ** Version
