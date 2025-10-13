@@ -15,7 +15,7 @@ let
       trustExitCode = true;
       ediff.keepBackup = false;
       ediff.cmd = ''
-        emacs --eval \"\
+        emacsclient --eval \"\
         (progn\
           (defun ediff-write-merge-buffer ()\
             (let ((file ediff-merge-store-file))\
@@ -32,9 +32,12 @@ let
     };
     color.ui = true;
     fetch.prune = true;
-    pull.rebase = false;
+    pull.rebase = true;
     push.default = "upstream";
     push.autoSetupRemote = true;
+    rebase = {
+      updateRefs = true;
+    };
     url = {
       "https://github.com/".insteadOf = "gh:";
       "ssh://git@github.com".pushInsteadOf = "gh:";
@@ -52,60 +55,59 @@ in
     tig # diff and commit view
   ];
 
-  programs.git =
-    {
-      enable = true;
-      aliases = {
-        amend = "commit --amend -m";
-        fixup = "!f(){ git reset --soft HEAD~\${1} && git commit --amend -C HEAD; };f";
-        loc = "!f(){ git ls-files | ${rg} \"\\.\${1}\" | xargs wc -l; };f"; # lines of code
-        staash = "stash --all";
-        graph = "log --decorate --oneline --graph";
-        br = "branch";
-        co = "checkout";
-        st = "status";
-        ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
-        ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
-        cm = "commit -m";
-        ca = "commit -am";
-        dc = "diff --cached";
-      };
-      extraConfig = gitConfig;
-      ignores = [
-        "*.bloop"
-        "*.bsp"
-        "*.metals"
-        "*.metals.sbt"
-        "*metals.sbt"
-        "*.direnv"
-        "*.envrc" # there is lorri, nix-direnv & simple direnv; let people decide
-        "*hie.yaml" # ghcide files
-        "*.mill-version" # used by metals
-        "*.jvmopts" # should be local to every project
-      ];
-      userEmail = "gako.footwork856@passinbox.com";
-      userName = "merrinx";
+  programs.git = {
+    enable = true;
+    aliases = {
+      amend = "commit --amend -m";
+      fixup = "!f(){ git reset --soft HEAD~\${1} && git commit --amend -C HEAD; };f";
+      loc = "!f(){ git ls-files | ${rg} \"\\.\${1}\" | xargs wc -l; };f"; # lines of code
+      staash = "stash --all";
+      graph = "log --decorate --oneline --graph";
+      br = "branch";
+      co = "checkout";
+      st = "status";
+      ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
+      ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
+      cm = "commit -m";
+      ca = "commit -am";
+      dc = "diff --cached";
+    };
+    extraConfig = gitConfig;
+    ignores = [
+      "*.bloop"
+      "*.bsp"
+      "*.metals"
+      "*.metals.sbt"
+      "*metals.sbt"
+      "*.direnv"
+      "*.envrc" # there is lorri, nix-direnv & simple direnv; let people decide
+      "*hie.yaml" # ghcide files
+      "*.mill-version" # used by metals
+      "*.jvmopts" # should be local to every project
+    ];
+    userEmail = "gako.footwork856@passinbox.com";
+    userName = "merrinx";
 
-      includes = [
-        {
-          condition = "gitdir:~/Workflow/";
-          contents = {
-            user = {
-              name = "Knut Oien";
-              email = "knut.andre.gulseth.oien@hnikt.no";
-            };
+    includes = [
+      {
+        condition = "gitdir:~/Workflow/";
+        contents = {
+          user = {
+            name = "Knut Oien";
+            email = "knut.andre.gulseth.oien@hnikt.no";
           };
-        }
-        {
-          condition = "hasconfig:remote.*.url:ssh://git@github.com:HNIKT-Tjenesteutvikling-Systemutvikling/**";
-          contents = {
-            user = {
-              name = "Knut Oien";
-              email = "knut.andre.gulseth.oien@hnikt.no";
-            };
+        };
+      }
+      {
+        condition = "hasconfig:remote.*.url:ssh://git@github.com:HNIKT-Tjenesteutvikling-Systemutvikling/**";
+        contents = {
+          user = {
+            name = "Knut Oien";
+            email = "knut.andre.gulseth.oien@hnikt.no";
           };
-        }
-      ];
-    }
-    // (pkgs.sxm.git or { });
+        };
+      }
+    ];
+  }
+  // (pkgs.sxm.git or { });
 }
