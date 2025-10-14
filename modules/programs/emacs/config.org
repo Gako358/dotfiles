@@ -2004,6 +2004,13 @@ For forge, create a file called ~/.authinfo with the following:
 
 - machine api.github.com login gako358^forge password ==secret-token==
 
+*** Ediff
+#+begin_src emacs-lisp
+  ;; Configure Ediff to use a single frame and split windows horizontally
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain
+	ediff-split-window-function #'split-window-horizontally)
+#+end_src
+
 *** Forge
 #+begin_src emacs-lisp
   (use-package forge
