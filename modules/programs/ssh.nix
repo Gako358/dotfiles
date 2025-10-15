@@ -25,6 +25,7 @@
         user = "git";
         identitiesOnly = true;
         identityFile = "~/.ssh/id_rsa";
+        addKeysToAgent = "yes";
       };
 
       "10.0.0.*" = {
