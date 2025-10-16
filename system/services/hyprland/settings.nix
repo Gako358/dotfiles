@@ -83,7 +83,6 @@
     };
     input = {
       kb_layout = "us,no";
-      kb_variant = "colemak_dh";
       kb_options = "grp:alt_shift_toggle";
     };
     dwindle = {
