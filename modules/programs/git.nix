@@ -49,30 +49,37 @@ let
 in
 {
   home.packages = with pkgs.gitAndTools; [
-    diff-so-fancy # git diff with colors
-    git-crypt # git files encryption
-    hub # github command-line client
-    tig # diff and commit view
+    diff-so-fancy
+    git-crypt
+    hub
+    tig
   ];
 
   programs.git = {
     enable = true;
-    aliases = {
-      amend = "commit --amend -m";
-      fixup = "!f(){ git reset --soft HEAD~\${1} && git commit --amend -C HEAD; };f";
-      loc = "!f(){ git ls-files | ${rg} \"\\.\${1}\" | xargs wc -l; };f"; # lines of code
-      staash = "stash --all";
-      graph = "log --decorate --oneline --graph";
-      br = "branch";
-      co = "checkout";
-      st = "status";
-      ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
-      ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
-      cm = "commit -m";
-      ca = "commit -am";
-      dc = "diff --cached";
+    settings = gitConfig // {
+      alias = {
+        amend = "commit --amend -m";
+        fixup = "!f(){ git reset --soft HEAD~$${1} && git commit --amend -C HEAD; };f";
+        loc = "!f(){ git ls-files | ${rg} \"\\.$${1}\" | xargs wc -l; };f";
+        staash = "stash --all";
+        graph = "log --decorate --oneline --graph";
+        br = "branch";
+        co = "checkout";
+        st = "status";
+        ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
+        ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
+        cm = "commit -m";
+        ca = "commit -am";
+        dc = "diff --cached";
+      };
+
+      user = {
+        email = "gako.footwork856@passinbox.com";
+        name = "merrinx";
+      };
     };
-    extraConfig = gitConfig;
+
     ignores = [
       "*.bloop"
       "*.bsp"
@@ -80,13 +87,11 @@ in
       "*.metals.sbt"
       "*metals.sbt"
       "*.direnv"
-      "*.envrc" # there is lorri, nix-direnv & simple direnv; let people decide
-      "*hie.yaml" # ghcide files
-      "*.mill-version" # used by metals
-      "*.jvmopts" # should be local to every project
+      "*.envrc"
+      "*hie.yaml"
+      "*.mill-version"
+      "*.jvmopts"
     ];
-    userEmail = "gako.footwork856@passinbox.com";
-    userName = "merrinx";
 
     includes = [
       {
@@ -108,6 +113,5 @@ in
         };
       }
     ];
-  }
-  // (pkgs.sxm.git or { });
+  };
 }
