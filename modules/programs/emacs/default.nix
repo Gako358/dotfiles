@@ -26,7 +26,7 @@ let
     }
   );
 
-  haskell-ts-mode-custom = pkgs.emacsPackages.melpaBuild {
+  haskell-ts-mode-custom = pkgs.emacs.pkgs.melpaBuild {
     pname = "haskell-ts-mode";
     version = "1";
     commit = "625b8c5d4c907f822c74c951bfe1bbdd8b187d4e";
@@ -42,7 +42,7 @@ let
     '';
   };
 
-  eglot-booster = pkgs.emacsPackages.melpaBuild {
+  eglot-booster = pkgs.emacs.pkgs.melpaBuild {
     pname = "eglot-booster";
     version = "20241029";
 
@@ -63,7 +63,7 @@ let
     '';
   };
 
-  vue-ts-mode = pkgs.emacsPackages.melpaBuild {
+  vue-ts-mode = pkgs.emacs.pkgs.melpaBuild {
     pname = "vue-ts-mode";
     version = "20231029";
     commit = "5ec5bb317b80ce394e156c61b7b9c63996382a68";
@@ -81,7 +81,7 @@ let
     '';
   };
 
-  bivrost-theme = pkgs.emacsPackages.melpaBuild {
+  bivrost-theme = pkgs.emacs.pkgs.melpaBuild {
     pname = "bivrost-theme";
     version = "20250330";
     commit = "38c6fae362356800b7391fdb4aa999fd76fa1d24";

@@ -5,7 +5,7 @@
     ccid
     # acsccid -- No longer building, need to check
     pcsclite
-    pcsctools
+    pcsc-tools
   ];
 
   services.pcscd.enable = true;

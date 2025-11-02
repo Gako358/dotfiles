@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   fonts.packages = with pkgs; [
     nerd-fonts.dejavu-sans-mono
     nerd-fonts.fira-code
@@ -19,9 +20,8 @@
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     noto-fonts-emoji-blob-bin
-    noto-fonts-extra
     source-code-pro
     source-sans-pro
     unifont

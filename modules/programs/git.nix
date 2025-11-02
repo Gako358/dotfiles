@@ -48,7 +48,7 @@ let
   rg = "${pkgs.ripgrep}/bin/rg";
 in
 {
-  home.packages = with pkgs.gitAndTools; [
+  home.packages = with pkgs; [
     diff-so-fancy
     git-crypt
     hub
