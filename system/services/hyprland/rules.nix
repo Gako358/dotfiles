@@ -20,6 +20,8 @@
       "float, class:^(org.pulseaudio.pavucontrol)$"
 
       "workspace 1, class:^(zen)$"
+      "workspace 2, class:^(Emacs)$"
+      "workspace 3, class:^(Alacritty)$"
       "workspace 5, class:^(Wfica)$"
       "workspace 5, class:^(.virt-manager-wrapped)$"
       "workspace 7, class:^(steam)$"
