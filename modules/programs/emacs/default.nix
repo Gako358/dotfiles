@@ -185,6 +185,8 @@ in
           evil-commentary # Comment stuff out
           evil-leader # A set of keybindings for evil-mode
           evil-matchit # Mat chit for evil-mode
+          evil-mc # Multiple cursors for evil-mode
+          evil-mc-extras # Extra commands for evil-mc
           evil-org # Org-mode keybindings for evil-mode
           evil-snipe # Snipe text objects
           evil-surround # Surround text objects with punctuation

@@ -934,6 +934,21 @@ My email configuration transforms Emacs into a powerful email client with severa
     (evil-leader/set-leader "<SPC>"))
 #+end_src
 
+*** Evil Multi-Cursor
+#+begin_src emacs-lisp
+  (use-package evil-mc
+    :ensure t
+    :after evil
+    :config
+    (global-evil-mc-mode 1)
+    (setq evil-mc-one-cursor-show-mode-line-text nil)
+    (setq evil-mc-undo-cursors-on-keyboard-quit nil))
+
+  (use-package evil-mc-extra
+    :ensure t
+    :after evil-mc)
+#+end_src
+
 *** Evil Surround
 #+begin_src emacs-lisp
   (use-package evil-surround
