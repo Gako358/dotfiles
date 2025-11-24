@@ -49,12 +49,12 @@
       fullscreen_opacity = 1.0;
     };
     layerrule = [
-      "blur, wofi"
-      "ignorealpha 0, wofi"
-      "blur, waybar"
-      "ignorealpha 0, waybar"
-      "blur, notifications"
-      "ignorealpha 0, notifications"
+      "blur on, match:namespace ^(wofi)$"
+      "ignore_alpha 0, match:namespace ^(wofi)$"
+      "blur on, match:namespace ^(waybar)$"
+      "ignore_alpha 0, match:namespace ^(waybar)$"
+      "blur on, match:namespace ^(notifications)$"
+      "ignore_alpha 0, match:namespace ^(notifications)$"
     ];
     animations.enabled = true;
     animation = [
