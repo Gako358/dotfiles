@@ -20,6 +20,7 @@
       "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(org.pulseaudio.pavucontrol)$"
 
       "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:title ^(Spotify Premium)$"
+      "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:title ^(Proton Pass)$"
       "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:title ^(Spotify)$"
       "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:title ^(spotify_player)$"
       "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:title ^(ranger)$"
