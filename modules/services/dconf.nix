@@ -28,9 +28,9 @@ in
           keybindings = "vim";
         };
         "org/gnome/desktop/background" = {
-          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-l.jxl";
-          picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-d.jxl";
-          primary-color = "#B9B5AE";
+          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/swoosh-l.jxl";
+          picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/swoosh-l.jxl";
+          primary-color = "#730166";
         };
         "org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
@@ -40,17 +40,17 @@ in
           sources = [
             (lib.hm.gvariant.mkTuple [
               "xkb"
-              "no"
+              "us"
             ])
             (lib.hm.gvariant.mkTuple [
               "xkb"
-              "us"
+              "no"
             ])
           ];
         };
         "org/gnome/desktop/screensaver" = {
-          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/symbolic-soup-l.jxl";
-          primary-color = "#B9B5AE";
+          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/swoosh-l.jxl";
+          primary-color = "#730166";
           secondary-color = "#000000";
         };
         "org/gnome/desktop/session" = {
@@ -188,7 +188,7 @@ in
           switch-to-application-5 = [ ];
         };
         "system/locale" = {
-          region = "nb_NO.UTF-8";
+          region = "en_US.UTF-8";
         };
       };
 
