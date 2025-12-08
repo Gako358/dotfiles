@@ -6,7 +6,7 @@
 let
   autostartPrograms = [
     pkgs.discord
-    # pkgs.ckb-next
+    pkgs.ckb-next
   ];
 in
 {
@@ -108,6 +108,7 @@ in
             "spotify.desktop"
             "steam.desktop"
             "zen.desktop"
+            "proton-pass.desktop"
           ];
         };
         "org/gnome/shell/app-switcher" = {
@@ -133,8 +134,8 @@ in
           dot-style-focused = "DOTS";
           trans-use-custom-opacity = true;
           trans-panel-opacity = "0.55";
-          tray-size = 19;
-          leftbox-size = 21;
+          tray-size = 15;
+          leftbox-size = 17;
           panel-element-positions = ''{"AUS-0x0000bec6":[{"element":"showAppsButton","visible":true,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"centered"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'';
           panel-sizes = "{\"0\":64}";
           panel-positions = "{\"0\":\"BOTTOM\"}";
