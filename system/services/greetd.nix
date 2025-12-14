@@ -36,7 +36,7 @@
       greetd =
         let
           session = {
-            command = "${lib.getExe config.programs.uwsm.package} start hyprland-uwsm.desktop";
+            command = "${lib.getExe config.programs.uwsm.package} start -e -D Hyprland hyprland-uwsm.desktop";
             user = "merrinx";
           };
         in

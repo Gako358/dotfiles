@@ -22,15 +22,20 @@
       variables.NIXOS_OZONE_WL = "1";
     };
 
-    programs.hyprland = {
-      enable = true;
-      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      portalPackage =
-        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
-      plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
-        # hyprbars
-        # hyprexpo
-      ];
+    programs = {
+      hyprland = {
+        enable = true;
+        withUWSM = true;
+        package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+        portalPackage =
+          inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+        plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
+          # hyprbars
+          # hyprexpo
+        ];
+      };
+      # Patch fix for starting hyprland with start-hyprland
+      uwsm.waylandCompositors.hyprland.binPath = lib.mkForce "/run/current-system/sw/bin/start-hyprland";
     };
 
     xdg.portal = {
