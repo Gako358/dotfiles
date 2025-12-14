@@ -11,13 +11,13 @@
     ./binds.nix
     ./rules.nix
     ./settings.nix
-    ./tty.nix
+    # ./tty.nix
   ];
 
   config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     environment = {
       systemPackages = [
-        inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
+        inputs.hyprland-contrib.packages.${pkgs.stdenv.hostPlatform.system}.grimblast
       ];
       pathsToLink = [ "/share/icons" ];
       variables.NIXOS_OZONE_WL = "1";
@@ -25,9 +25,9 @@
 
     programs.hyprland = {
       enable = true;
-      withUWSM = true;
-
-      plugins = with inputs.hyprland-plugins.packages.${pkgs.system}; [
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+      plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
         # hyprbars
         # hyprexpo
       ];

@@ -5,7 +5,7 @@
 let
   mugge-azure-wrapped = pkgs.symlinkJoin {
     name = "mugge-azure-wrapped";
-    paths = [ inputs.mugge.packages.${pkgs.system}.mugge-azure ];
+    paths = [ inputs.mugge.packages.${pkgs.stdenv.hostPlatform.system}.mugge-azure ];
     buildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/mugge-azure \

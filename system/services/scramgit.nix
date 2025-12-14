@@ -1,7 +1,7 @@
 { pkgs, inputs, ... }:
 {
   environment.systemPackages = [
-    inputs.scramgit.defaultPackage.${pkgs.system}
+    inputs.scramgit.defaultPackage.${pkgs.stdenv.hostPlatform.system}
   ];
 
   # TODO: Need to fix env for python, and shell to run scram
@@ -11,7 +11,7 @@
   #   after = [ "graphical-session.target" ];
   #   serviceConfig = {
   #     Type = "oneshot";
-  #     ExecStart = "${inputs.scramgit.defaultPackage.${pkgs.system}}/bin/scramgit";
+  #     ExecStart = "${inputs.scramgit.defaultPackage.${pkgs.stdenv.hostPlatform.system}}/bin/scramgit";
   #   };
   # };
 }

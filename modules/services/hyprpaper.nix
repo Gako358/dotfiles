@@ -11,7 +11,7 @@ in
 {
   services.hyprpaper = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
     enable = true;
-    package = inputs.hyprpaper.packages.${pkgs.system}.default;
+    package = inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
     settings = {
       preload = [ "${wallpaper}" ];
