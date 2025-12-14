@@ -11,7 +11,6 @@
     ./binds.nix
     ./rules.nix
     ./settings.nix
-    # ./tty.nix
   ];
 
   config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
@@ -26,7 +25,8 @@
     programs.hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-      portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+      portalPackage =
+        inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
       plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
         # hyprbars
         # hyprexpo
