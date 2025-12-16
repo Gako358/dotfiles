@@ -1,5 +1,4 @@
 { osConfig
-, config
 , pkgs
 , lib
 , ...
@@ -29,8 +28,8 @@ in
           keybindings = "vim";
         };
         "org/gnome/desktop/background" = {
-          picture-uri = "file:///home/merrinx/.config/background";
-          picture-uri-dark = "file:///home/merrinx/.config/background";
+          picture-uri = "file:///home/merrinx/Sources/archive/images/wallpapers/moon.png";
+          picture-uri-dark = "file:///home/merrinx/Sources/archive/images/wallpapers/moon.png";
           primary-color = "#730166";
         };
         "org/gnome/desktop/interface" = {
@@ -50,7 +49,7 @@ in
           ];
         };
         "org/gnome/desktop/screensaver" = {
-          picture-uri = "file:///home/merrinx/.config/background";
+          picture-uri = "file:///home/merrinx/Sources/archive/images/wallpapers/moon.png";
           primary-color = "#730166";
           secondary-color = "#000000";
         };
@@ -192,12 +191,6 @@ in
           gnomeExtensions.vitals
           palenight-theme
         ];
-
-        persistence."/persist/${config.home.homeDirectory}" = {
-          directories = [
-            ".config/background"
-          ];
-        };
       };
     })
   ];
