@@ -1,4 +1,5 @@
 { osConfig
+, config
 , pkgs
 , lib
 , ...
@@ -28,8 +29,8 @@ in
           keybindings = "vim";
         };
         "org/gnome/desktop/background" = {
-          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/swoosh-l.jxl";
-          picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/swoosh-l.jxl";
+          picture-uri = "file:///home/merrinx/.config/background";
+          picture-uri-dark = "file:///home/merrinx/.config/background";
           primary-color = "#730166";
         };
         "org/gnome/desktop/interface" = {
@@ -49,7 +50,7 @@ in
           ];
         };
         "org/gnome/desktop/screensaver" = {
-          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/swoosh-l.jxl";
+          picture-uri = "file:///home/merrinx/.config/background";
           primary-color = "#730166";
           secondary-color = "#000000";
         };
@@ -129,9 +130,12 @@ in
           autotheme-refresh = true;
           trigger-autotheme = true;
           margin = 1.0;
-          height = 35.0;
-          bradius = 5.0;
-          dbradius = 5.0;
+          neon = false;
+          height = 46.0;
+          balpha = 0.55;
+          bwidth = 1.0;
+          bradius = 19.0;
+          dbradius = 37.0;
           isalpha = 0.71999999999999997;
         };
         "org/gnome/shell/extensions/user-theme" = {
@@ -188,6 +192,12 @@ in
           gnomeExtensions.vitals
           palenight-theme
         ];
+
+        persistence."/persist/${config.home.homeDirectory}" = {
+          directories = [
+            ".config/background"
+          ];
+        };
       };
     })
   ];
