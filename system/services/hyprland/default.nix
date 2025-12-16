@@ -7,7 +7,6 @@
 {
   imports = [
     inputs.hyprland.nixosModules.default
-
     ./binds.nix
     ./rules.nix
     ./settings.nix
@@ -35,7 +34,7 @@
         ];
       };
       # Patch fix for starting hyprland with start-hyprland
-      uwsm.waylandCompositors.hyprland.binPath = lib.mkForce "/run/current-system/sw/bin/start-hyprland";
+      uwsm.waylandCompositors.hyprland.binPath = lib.mkForce "${config.programs.hyprland.package}/bin/start-hyprland";
     };
 
     xdg.portal = {
