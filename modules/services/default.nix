@@ -14,6 +14,7 @@ in
   ./mako.nix
   ./network.nix
   ./persist.nix
+  ./plasma.nix
   ./secrets.nix
   more
 ]

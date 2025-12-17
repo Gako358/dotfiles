@@ -43,10 +43,16 @@
         };
       };
     })
-    (lib.mkIf (osConfig.environment.desktop.windowManager == "gnome") {
-      home.packages = [
-        pkgs.spotify
-      ];
-    })
+    (lib.mkIf
+      (
+        osConfig.environment.desktop.windowManager == "gnome"
+        || osConfig.environment.desktop.windowManager == "kde"
+      )
+      {
+        home.packages = [
+          pkgs.spotify
+        ];
+      }
+    )
   ];
 }
