@@ -2,7 +2,7 @@
 , ...
 }:
 
-pkgs.writeShellScriptBin "find-orphant" /* sh */ ''
+pkgs.writeShellScriptBin "find-orphant" /* bash */ ''
   # Colors for output
   RED='\033[0;31m'
   GREEN='\033[0;32m'
@@ -16,6 +16,8 @@ pkgs.writeShellScriptBin "find-orphant" /* sh */ ''
 
   # Create temporary file for mounted paths
   MOUNTED_PATHS=$(mktemp)
+
+  echo "Debug: Getting mount points..." >&2
 
   # Get mount points from /proc/mounts or mount command (more reliable than df)
   # This will catch both regular mounts and fuse mounts
@@ -38,99 +40,116 @@ pkgs.writeShellScriptBin "find-orphant" /* sh */ ''
   # Remove duplicates and save
   sort -u "$MOUNTED_PATHS" -o "$MOUNTED_PATHS"
 
+  echo "Debug: Found $(wc -l < "$MOUNTED_PATHS") mounted paths" >&2
+  echo "Debug: Starting to scan persist directory..." >&2
+
   # Find all items (files and directories) in persist path
   UNMOUNTED_ITEMS=()
 
-  # Function to check if a path or any of its children are mounted
-  has_mounted_children() {
-      local path="$1"
-      while read -r mounted; do
-          # Check if any mounted path starts with this path
-          [[ "$mounted" == "$path" || "$mounted" == "$path/"* ]] && return 0
-      done < "$MOUNTED_PATHS"
-      return 1
-  }
-
-  # Function to check if a path is mounted
-  is_mounted() {
-      local path="$1"
-      grep -q "^$path$" "$MOUNTED_PATHS" && return 0
-      return 1
-  }
-
-  # Check top-level items
-  for item in "$PERSIST_PATH"/{.*,*}; do
-      # Skip . and ..  and the base path itself
+  # Simple approach - just check each item directly
+  for item in "$PERSIST_PATH"/* "$PERSIST_PATH"/.*; do
+      # Skip .  and ..  and glob patterns
       [[ "$item" == "$PERSIST_PATH/." ]] && continue
       [[ "$item" == "$PERSIST_PATH/.." ]] && continue
-      [[ "$item" == "$PERSIST_PATH/*" ]] && continue  # Skip glob pattern if no match
-      [[ "$item" == "$PERSIST_PATH/.*" ]] && continue  # Skip glob pattern if no match
+      [[ "$item" == "$PERSIST_PATH/*" ]] && continue
+      [[ "$item" == "$PERSIST_PATH/.*" ]] && continue
+      [[ !  -e "$item" ]] && continue
 
-      # Check if item exists
-      [[ -e "$item" ]] || continue
+      echo "Debug: Checking $item" >&2
 
-      # For directories, check if they have mounted children
-      if [[ -d "$item" ]]; then
-          # Skip if directory itself is mounted or has mounted children
-          if is_mounted "$item" || has_mounted_children "$item"; then
-              continue
+      # Check if this exact path is mounted
+      if ! grep -q "^$item$" "$MOUNTED_PATHS"; then
+          # For directories, check if it's a parent of mounted paths
+          if [[ -d "$item" ]]; then
+              is_parent=false
+              while read -r mounted; do
+                  if [[ "$mounted" == "$item/"* ]]; then
+                      is_parent=true
+                      break
+                  fi
+              done < "$MOUNTED_PATHS"
+
+              [[ "$is_parent" == true ]] && continue
           fi
-      fi
 
-      # Check if this path is mounted
-      if ! is_mounted "$item"; then
           UNMOUNTED_ITEMS+=("$item")
       fi
   done
 
-  # Check subdirectories in . config, .local/share, . cache
-  # Only check items that don't have parent directory already unmounted
-  for parent in ". config" ".local/share" ". cache"; do
-      PARENT_PATH="$PERSIST_PATH/$parent"
+  echo "Debug:  Checking subdirectories..." >&2
 
-      # Skip if parent doesn't exist or parent is already in unmounted list
-      if [[ ! -d "$PARENT_PATH" ]]; then
-          continue
-      fi
+  # Now check inside . config, .local, .cache for unmounted items
+  for parent_dir in "$PERSIST_PATH/.config" "$PERSIST_PATH/.local" "$PERSIST_PATH/.cache"; do
+      [[ ! -d "$parent_dir" ]] && continue
 
-      # Check if parent is already marked as unmounted
-      parent_unmounted=false
-      for unmounted in "''${UNMOUNTED_ITEMS[@]}"; do
-          if [[ "$PARENT_PATH" == "$unmounted" ]]; then
-              parent_unmounted=true
-              break
-          fi
-      done
+      echo "Debug: Checking inside $parent_dir" >&2
 
-      # If parent is unmounted, skip checking children
-      if [[ "$parent_unmounted" == true ]]; then
-          continue
-      fi
+      for item in "$parent_dir"/* "$parent_dir"/.*; do
+          [[ "$item" == "$parent_dir/." ]] && continue
+          [[ "$item" == "$parent_dir/.." ]] && continue
+          [[ "$item" == "$parent_dir/*" ]] && continue
+          [[ "$item" == "$parent_dir/.*" ]] && continue
+          [[ ! -e "$item" ]] && continue
 
-      # Check children
-      for item in "$PARENT_PATH"/{.*,*}; do
-          # Skip . and ..
-          [[ "$item" == "$PARENT_PATH/." ]] && continue
-          [[ "$item" == "$PARENT_PATH/.." ]] && continue
-          [[ "$item" == "$PARENT_PATH/*" ]] && continue
-          [[ "$item" == "$PARENT_PATH/.*" ]] && continue
+          echo "Debug:    - Checking $item" >&2
 
-          # Check if item exists
-          [[ -e "$item" ]] || continue
+          # Check if this specific item is mounted
+          if ! grep -q "^$item$" "$MOUNTED_PATHS"; then
+              # Check if parent is mounted
+              parent_mounted=false
+              temp_parent="$item"
+              while [[ "$temp_parent" != "$PERSIST_PATH" ]]; do
+                  temp_parent=$(dirname "$temp_parent")
+                  if grep -q "^$temp_parent$" "$MOUNTED_PATHS"; then
+                      parent_mounted=true
+                      break
+                  fi
+              done
 
-          # For directories, check if they have mounted children
-          if [[ -d "$item" ]]; then
-              if is_mounted "$item" || has_mounted_children "$item"; then
-                  continue
+              if [[ "$parent_mounted" == false ]]; then
+                  echo "Debug:     -> Not mounted!" >&2
+                  UNMOUNTED_ITEMS+=("$item")
+              else
+                  echo "Debug:     -> Parent is mounted" >&2
               fi
-          fi
-
-          # Check if this path is mounted
-          if ! is_mounted "$item"; then
-              UNMOUNTED_ITEMS+=("$item")
+          else
+              echo "Debug:     -> Is mounted" >&2
           fi
       done
   done
+
+  # Also check . local/share subdirectory
+  if [[ -d "$PERSIST_PATH/.local/share" ]]; then
+      echo "Debug: Checking inside $PERSIST_PATH/.local/share" >&2
+
+      for item in "$PERSIST_PATH/.local/share"/* "$PERSIST_PATH/.local/share"/.*; do
+          [[ "$item" == "$PERSIST_PATH/.local/share/." ]] && continue
+          [[ "$item" == "$PERSIST_PATH/.local/share/.." ]] && continue
+          [[ "$item" == "$PERSIST_PATH/.local/share/*" ]] && continue
+          [[ "$item" == "$PERSIST_PATH/.local/share/.*" ]] && continue
+          [[ ! -e "$item" ]] && continue
+
+          echo "Debug:   - Checking $item" >&2
+
+          # Check if this specific item is mounted
+          if ! grep -q "^$item$" "$MOUNTED_PATHS"; then
+              # Check if parent is mounted
+              parent_mounted=false
+              temp_parent="$item"
+              while [[ "$temp_parent" != "$PERSIST_PATH" ]]; do
+                  temp_parent=$(dirname "$temp_parent")
+                  if grep -q "^$temp_parent$" "$MOUNTED_PATHS"; then
+                      parent_mounted=true
+                      break
+                  fi
+              done
+
+              [[ "$parent_mounted" == false ]] && UNMOUNTED_ITEMS+=("$item")
+          fi
+      done
+  fi
+
+  echo "Debug: Processing complete" >&2
 
   # Display results
   if [[ ''${#UNMOUNTED_ITEMS[@]} -eq 0 ]]; then
@@ -163,7 +182,7 @@ pkgs.writeShellScriptBin "find-orphant" /* sh */ ''
 
   # Debug: Show what we detected as mounted (optional)
   if [[ -s "$MOUNTED_PATHS" ]]; then
-      echo -e "\n''${GREEN}Debug: Detected mounted persist paths:''${NC}"
+      echo -e "\n''${GREEN}Debug:  Detected mounted persist paths:''${NC}"
       while read -r path; do
           REL_PATH="''${path#$PERSIST_PATH/}"
           [[ -n "$REL_PATH" ]] && echo "  → $REL_PATH"
