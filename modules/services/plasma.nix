@@ -591,37 +591,34 @@ in
 
         persistence."/persist/${config.home.homeDirectory}" = {
           directories = [
-            ".config/gtk-3.0" # fuse mounted from /nix/dotfiles/Plasma/.config/gtk-3.0
-            ".config/gtk-4.0" # to /home/$USERNAME/.config/gtk-3.0
-            ".config/KDE"
-            ".config/kde.org"
-            ".config/plasma-workspace"
-            ".config/xsettingsd"
-            ".kde"
+            ".config/gtk-3.0" # GTK themes (not managed by plasma-manager)
+            ".config/gtk-4.0" # GTK themes (not managed by plasma-manager)
+            ".config/KDE" # KDE app-specific configs
+            ".config/kde.org" # KDE app-specific configs
+            ".kde" # Legacy KDE configs
 
-            ".local/share/baloo"
-            ".local/share/dolphin"
-            ".local/share/kactivitymanagerd"
-            ".local/share/kate"
-            ".local/share/klipper"
-            ".local/share/konsole"
-            ".local/share/kscreen"
-            ".local/share/kwalletd"
-            ".local/share/kxmlgui5"
-            ".local/share/RecentDocuments"
-            ".local/share/sddm"
+            # Runtime data and state (not config files)
+            ".local/share/baloo" # File indexer database
+            ".local/share/dolphin" # Dolphin state/bookmarks
+            ".local/share/kactivitymanagerd" # Activity data
+            ".local/share/kate" # Kate sessions/projects
+            ".local/share/klipper" # Clipboard history
+            ".local/share/konsole" # Konsole profiles/sessions
+            ".local/share/kscreen" # Screen configurations
+            ".local/share/kwalletd" # Encrypted passwords/secrets
+            ".local/share/kxmlgui5" # UI state for KDE apps
+            ".local/share/RecentDocuments" # Recent documents list
+            ".local/share/sddm" # SDDM state
           ];
           files = [
+            # Files NOT managed by plasma-manager config
             ".config/akregatorrc"
-            ".config/baloofileinformationrc"
-            ".config/baloofilerc"
             ".config/bluedevilglobalrc"
             ".config/device_automounter_kcmrc"
             ".config/dolphinrc"
             ".config/filetypesrc"
             ".config/gtkrc"
             ".config/gtkrc-2.0"
-            ".config/gwenviewrc"
             ".config/kactivitymanagerd-pluginsrc"
             ".config/kactivitymanagerd-statsrc"
             ".config/kactivitymanagerd-switcher"
@@ -634,9 +631,8 @@ in
             ".config/kcminputrc"
             ".config/kconf_updaterc"
             ".config/kded5rc"
-            ".config/kdeglobals"
             ".config/kgammarc"
-            ".config/kglobalshortcutsrc"
+            ".config/kglobalshortcutsrc" # Might contain runtime shortcuts not in config
             ".config/khotkeysrc"
             ".config/kmixrc"
             ".config/konsolerc"
@@ -644,7 +640,6 @@ in
             ".config/ksmserverrc"
             ".config/ksplashrc"
             ".config/ktimezonedrc"
-            ".config/kwinrc"
             ".config/kwinrulesrc"
             ".config/kxkbrc"
             ".config/mimeapps.list"
@@ -652,20 +647,18 @@ in
             ".config/plasma-localerc"
             ".config/plasma-nm"
             ".config/plasma-org.kde.plasma.desktop-appletsrc"
-            ".config/plasmanotifyrc"
-            ".config/plasmarc"
             ".config/plasmashellrc"
             ".config/PlasmaUserFeedback"
             ".config/plasmawindowed-appletsrc"
             ".config/plasmawindowedrc"
             ".config/powermanagementprofilesrc"
-            ".config/spectaclerc"
             ".config/startkderc"
             ".config/systemsettingsrc"
             ".config/Trolltech.conf"
             ".config/user-dirs.dirs"
             ".config/user-dirs.locale"
 
+            # Runtime state files
             ".local/share/krunnerstaterc"
             ".local/share/user-places.xbel"
             ".local/share/user-places.xbel.bak"
