@@ -6,7 +6,7 @@
 , ...
 }:
 let
-  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/moon.png";
+  inherit (osConfig.environment) desktop;
 in
 {
   imports = [
@@ -21,7 +21,7 @@ in
         };
       };
     })
-    (lib.mkIf (osConfig.environment.desktop.windowManager == "kde") {
+    (lib.mkIf (desktop.windowManager == "kde") {
       # Set gpg agent specific to KDE/Kwallet
       services.gpg-agent = {
         pinentry.package = lib.mkForce pkgs.kwalletcli;
@@ -178,7 +178,7 @@ in
 
         kscreenlocker = {
           appearance.showMediaControls = false;
-          appearance.wallpaper = "${wallpaper}";
+          appearance.wallpaper = "${desktop.theme.wallpaper}";
           autoLock = false;
           timeout = 0;
         };
@@ -490,7 +490,7 @@ in
           splashScreen.engine = "none";
           splashScreen.theme = "none";
           tooltipDelay = 1;
-          wallpaper = "${wallpaper}";
+          wallpaper = "${desktop.theme.wallpaper}";
         };
 
         configFile = {

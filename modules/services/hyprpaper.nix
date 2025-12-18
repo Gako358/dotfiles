@@ -1,21 +1,20 @@
 { lib
 , pkgs
 , inputs
-, config
 , osConfig
 , ...
 }:
 let
-  wallpaper = "${config.home.homeDirectory}/Sources/archive/images/wallpapers/moon.png";
+  inherit (osConfig.environment) desktop;
 in
 {
-  services.hyprpaper = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
+  services.hyprpaper = lib.mkIf (desktop.windowManager == "hyprland") {
     enable = true;
     package = inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
     settings = {
-      preload = [ "${wallpaper}" ];
-      wallpaper = [ ", ${wallpaper}" ];
+      preload = [ "${desktop.theme.wallpaper}" ];
+      wallpaper = [ ", ${desktop.theme.wallpaper}" ];
     };
   };
 }

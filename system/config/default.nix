@@ -9,8 +9,10 @@ in
 {
   imports = [
     ./desktop.nix
+    ./develop.nix
     ./gaming.nix
     ./server.nix
+    ./theme.nix
   ];
 
   assertions = [

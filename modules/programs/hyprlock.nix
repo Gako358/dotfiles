@@ -6,7 +6,7 @@
 , ...
 }:
 let
-  wallpaper = "${config.home.homeDirectory}/Sources/archive/images/wallpapers/moon.png";
+  inherit (osConfig.environment) desktop;
   cfg = config.program.hyprlock;
 in
 {
@@ -25,7 +25,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && osConfig.environment.desktop.windowManager == "hyprland") {
+  config = lib.mkIf (cfg.enable && desktop.windowManager == "hyprland") {
     programs.hyprlock = {
       enable = true;
       package = inputs.hyprlock.packages.${pkgs.stdenv.hostPlatform.system}.hyprlock;
@@ -46,7 +46,7 @@ in
         background = [
           {
             monitor = "";
-            path = "${wallpaper}";
+            path = "${desktop.theme.wallpaper}";
           }
         ];
 

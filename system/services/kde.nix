@@ -4,10 +4,10 @@
 , ...
 }:
 let
-  wallpaper = "/home/merrinx/Sources/archive/images/wallpapers/moon.png";
+  inherit (config.environment) desktop;
 in
 {
-  config = lib.mkIf (config.environment.desktop.windowManager == "kde") {
+  config = lib.mkIf (desktop.windowManager == "kde") {
     services = {
       displayManager.sddm = {
         enable = true;
@@ -23,7 +23,7 @@ in
         pkgs.yaru-theme
         (pkgs.writeTextDir "share/sddm/themes/breeze/theme.conf.user" ''
           [General]
-          background=${wallpaper};
+          background=${desktop.theme.wallpaper};
           type=image
         '')
       ];

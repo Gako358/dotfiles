@@ -19,10 +19,5 @@
       default = "hyprland";
       description = "Set what window manager to use.";
     };
-    develop = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Enable Development toolchain";
-    };
   };
 }
