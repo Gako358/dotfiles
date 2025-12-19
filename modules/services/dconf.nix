@@ -142,6 +142,7 @@ in
         };
         "org/gnome/shell/extensions/vitals" = {
           hot-sensors = [
+            "__temperature_avg__"
             "_processor_usage_"
             "_memory_usage_"
           ];
@@ -185,7 +186,6 @@ in
           gnomeExtensions.caffeine
           gnomeExtensions.clipboard-indicator
           gnomeExtensions.open-bar
-          gnomeExtensions.sound-output-device-chooser
           gnomeExtensions.tray-icons-reloaded
           gnomeExtensions.user-themes
           gnomeExtensions.vitals
