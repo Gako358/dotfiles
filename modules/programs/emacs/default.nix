@@ -230,10 +230,13 @@ in
               tree-sitter-javascript
               tree-sitter-kotlin
               tree-sitter-markdown
+              tree-sitter-nix
               tree-sitter-python
               tree-sitter-rust
               tree-sitter-scala
+              tree-sitter-tsx
               tree-sitter-typescript
+              tree-sitter-vue
               tree-sitter-yaml
             ]
           ))
