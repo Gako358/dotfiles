@@ -218,7 +218,28 @@ in
 
           # grammars
           citeproc
-          treesit-grammars.with-all-grammars # Tree-sitter grammars
+          # Tree-sitter support - specify only the grammars needed
+          (treesit-grammars.with-grammars (
+            grammars: with grammars; [
+              tree-sitter-bash
+              tree-sitter-c
+              tree-sitter-css
+              tree-sitter-dockerfile
+              tree-sitter-haskell
+              tree-sitter-java
+              tree-sitter-javascript
+              tree-sitter-kotlin
+              tree-sitter-markdown
+              tree-sitter-python
+              tree-sitter-rust
+              tree-sitter-scala
+              tree-sitter-typescript
+              tree-sitter-yaml
+            ]
+          ))
+
+          # Optional:  Include tree-sitter-langs for MELPA updates
+          tree-sitter-langs
 
           # Programming language packages.
           eglot-java # Java development environment
