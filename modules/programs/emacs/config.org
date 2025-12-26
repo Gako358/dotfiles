@@ -1192,7 +1192,7 @@ This configuration makes system monitoring and process management seamless withi
 #+end_src
 
 ** Grammars
-Flyspell dictionary
+*** Flyspell dictionary
 #+begin_src emacs-lisp
   (use-package flyspell
     :ensure nil
@@ -1255,7 +1255,7 @@ Flyspell dictionary
       (setq ispell-really-hunspell t)))
 #+end_src
 
-Setting up treesitter grammars
+*** Setting up treesitter grammars
 #+begin_src emacs-lisp
   (use-package treesit
     :ensure nil
