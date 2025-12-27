@@ -58,6 +58,19 @@ in
         ips = [ "10.100.0.1/24" ];
         listenPort = cfg.serverPort;
         privateKeyFile = config.sops.secrets."wg_server_private_key".path;
+
+        postSetup = ''
+          ${pkgs.iptables}/bin/iptables -A FORWARD -i wg0 -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -A FORWARD -o wg0 -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o ${cfg.externalInterface} -j MASQUERADE
+        '';
+
+        postShutdown = ''
+          ${pkgs.iptables}/bin/iptables -D FORWARD -i wg0 -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -D FORWARD -o wg0 -j ACCEPT
+          ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.100.0.0/24 -o ${cfg.externalInterface} -j MASQUERADE
+        '';
+
         peers = [
           {
             publicKey = "E8bAVuMNL2rP0FuGRYObKB9oq5oo6idz7Dmdb2B96So=";
