@@ -46,6 +46,7 @@ in
 
       firewall = {
         allowedUDPPorts = [ cfg.serverPort ];
+        trustedInterfaces = [ "wg0" ];
       };
     };
 
