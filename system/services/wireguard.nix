@@ -46,7 +46,10 @@ in
       };
 
       firewall = {
-        allowedUDPPorts = [ cfg.serverPort ];
+        allowedUDPPorts = [
+          cfg.serverPort
+          27017
+        ];
         trustedInterfaces = [ "wg0" ];
       };
     };
@@ -96,12 +99,10 @@ in
       serviceConfig = {
         Type = "forking";
         ExecStart = pkgs.writeShellScript "start-relay" ''
-          # Relay broadcasts from LAN to VPN for common Total War ports
-          for port in 2300 2302 2303 2350; do
-            ${pkgs.socat}/bin/socat UDP4-RECVFROM:$port,broadcast,fork UDP4-SENDTO:10.100.0.255:$port,broadcast &
-          done
+          ${pkgs.socat}/bin/socat UDP4-RECVFROM:27017,so-broadcast,so-reuseaddr,fork UDP4-SENDTO:10.100.0.255:27017,broadcast &
+          ${pkgs.socat}/bin/socat UDP4-RECVFROM:27017,so-broadcast,so-reuseaddr,bind=10.100.0.1,fork UDP4-SENDTO: 10.0.0.255:27017,broadcast &
         '';
-        ExecStop = "${pkgs.procps}/bin/pkill -f 'socat.*2300|socat.*2302|socat.*2303|socat.*2350'";
+        ExecStop = "${pkgs.procps}/bin/pkill -f 'socat.*27017'";
         Restart = "on-failure";
         RestartSec = "10s";
       };
