@@ -97,12 +97,48 @@ in
       wants = [ "wireguard-wg0.service" ];
 
       serviceConfig = {
-        Type = "forking";
-        ExecStart = pkgs.writeShellScript "start-relay" ''
-          ${pkgs.socat}/bin/socat UDP4-RECVFROM:27017,so-broadcast,so-reuseaddr,fork UDP4-SENDTO:10.100.0.255:27017,broadcast &
-          ${pkgs.socat}/bin/socat UDP4-RECVFROM:27017,so-broadcast,so-reuseaddr,bind=10.100.0.1,fork UDP4-SENDTO: 10.0.0.255:27017,broadcast &
-        '';
-        ExecStop = "${pkgs.procps}/bin/pkill -f 'socat.*27017'";
+        Type = "simple";
+        ExecStart = "${pkgs.python3}/bin/python3 ${pkgs.writeText "broadcast-relay.py" ''
+          #!/usr/bin/env python3
+          import socket
+          import select
+
+          PORT = 27017
+          LAN_IP = "10.0.0.4"
+          VPN_IP = "10.100.0.1"
+          LAN_BROADCAST = "10.0.0.255"
+          VPN_BROADCAST = "10.100.0.255"
+
+          # Create sockets
+          lan_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+          lan_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+          lan_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+          lan_sock.bind((LAN_IP, PORT))
+
+          vpn_sock = socket. socket(socket.AF_INET, socket.SOCK_DGRAM)
+          vpn_sock.setsockopt(socket. SOL_SOCKET, socket. SO_REUSEADDR, 1)
+          vpn_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+          vpn_sock.bind((VPN_IP, PORT))
+
+          print(f"Relaying broadcasts on port {PORT} between LAN and VPN")
+
+          sockets = [lan_sock, vpn_sock]
+
+          while True:
+              readable, _, _ = select.select(sockets, [], [])
+
+              for sock in readable:
+                  data, addr = sock.recvfrom(8192)
+
+                  if sock == lan_sock:
+                      # Received from LAN, forward to VPN
+                      print(f"LAN -> VPN: {addr} ({len(data)} bytes)")
+                      vpn_sock.sendto(data, (VPN_BROADCAST, PORT))
+                  else:
+                      # Received from VPN, forward to LAN
+                      print(f"VPN -> LAN: {addr} ({len(data)} bytes)")
+                      lan_sock.sendto(data, (LAN_BROADCAST, PORT))
+        ''}";
         Restart = "on-failure";
         RestartSec = "10s";
       };
