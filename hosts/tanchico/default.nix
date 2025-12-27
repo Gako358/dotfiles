@@ -28,10 +28,7 @@
     gaming.enable = true;
   };
 
-  service.wireguard = {
-    enable = true;
-    externalInterface = "enp10s0";
-  };
+  service.zerotier.enable = true;
 
   system.disks = {
     mainDevice = "/dev/sda";

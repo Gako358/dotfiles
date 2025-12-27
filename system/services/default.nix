@@ -17,5 +17,6 @@
     ./touchpad.nix
     ./wally.nix
     ./wireguard.nix
+    ./zerotier.nix
   ];
 }

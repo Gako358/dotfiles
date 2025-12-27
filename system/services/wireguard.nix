@@ -109,14 +109,13 @@ in
           LAN_BROADCAST = "10.0.0.255"
           VPN_BROADCAST = "10.100.0.255"
 
-          # Create sockets
           lan_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
           lan_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
           lan_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
           lan_sock.bind((LAN_IP, PORT))
 
           vpn_sock = socket. socket(socket.AF_INET, socket.SOCK_DGRAM)
-          vpn_sock.setsockopt(socket. SOL_SOCKET, socket. SO_REUSEADDR, 1)
+          vpn_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
           vpn_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
           vpn_sock.bind((VPN_IP, PORT))
 
@@ -131,11 +130,9 @@ in
                   data, addr = sock.recvfrom(8192)
 
                   if sock == lan_sock:
-                      # Received from LAN, forward to VPN
                       print(f"LAN -> VPN: {addr} ({len(data)} bytes)")
                       vpn_sock.sendto(data, (VPN_BROADCAST, PORT))
                   else:
-                      # Received from VPN, forward to LAN
                       print(f"VPN -> LAN: {addr} ({len(data)} bytes)")
                       lan_sock.sendto(data, (LAN_BROADCAST, PORT))
         ''}";
