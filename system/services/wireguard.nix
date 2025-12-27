@@ -30,12 +30,6 @@ in
       pkgs.wireguard-tools
     ];
 
-    environment.persistence."/persist" = {
-      files = [
-        "/var/lib/wireguard/privatekey"
-      ];
-    };
-
     sops.secrets = lib.mkIf config.service.sops.enable {
       "wg_server_private_key" = {
         path = "/var/lib/wireguard/privatekey";
