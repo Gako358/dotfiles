@@ -28,6 +28,7 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       pkgs.wireguard-tools
+      pkgs.socat
     ];
 
     sops.secrets = lib.mkIf config.service.sops.enable {
@@ -52,6 +53,7 @@ in
 
     boot.kernel.sysctl = {
       "net.ipv4.ip_forward" = 1;
+      "net.ipv4.conf.all.bc_forwarding" = 1;
     };
 
     networking.wireguard.interfaces = {
@@ -79,6 +81,29 @@ in
             persistentKeepalive = 25;
           }
         ];
+      };
+    };
+
+    systemd.services.totalwar-broadcast-relay = {
+      description = "Total War LAN broadcast relay";
+      wantedBy = [ "multi-user.target" ];
+      after = [
+        "network.target"
+        "wireguard-wg0.service"
+      ];
+      wants = [ "wireguard-wg0.service" ];
+
+      serviceConfig = {
+        Type = "forking";
+        ExecStart = pkgs.writeShellScript "start-relay" ''
+          # Relay broadcasts from LAN to VPN for common Total War ports
+          for port in 2300 2302 2303 2350; do
+            ${pkgs.socat}/bin/socat UDP4-RECVFROM:$port,broadcast,fork UDP4-SENDTO:10.100.0.255:$port,broadcast &
+          done
+        '';
+        ExecStop = "${pkgs.procps}/bin/pkill -f 'socat.*2300|socat.*2302|socat.*2303|socat.*2350'";
+        Restart = "on-failure";
+        RestartSec = "10s";
       };
     };
   };
