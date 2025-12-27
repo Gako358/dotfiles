@@ -16,5 +16,6 @@
     ./sops.nix
     ./touchpad.nix
     ./wally.nix
+    ./wireguard.nix
   ];
 }

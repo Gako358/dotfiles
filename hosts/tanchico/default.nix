@@ -28,6 +28,11 @@
     gaming.enable = true;
   };
 
+  service.wireguard = {
+    enable = true;
+    externalInterface = "enp10s0";
+  };
+
   system.disks = {
     mainDevice = "/dev/sda";
     extraSteamDisk.enable = true;
