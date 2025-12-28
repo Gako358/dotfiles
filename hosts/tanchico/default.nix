@@ -28,8 +28,6 @@
     gaming.enable = true;
   };
 
-  service.zerotier.enable = true;
-
   system.disks = {
     mainDevice = "/dev/sda";
     extraSteamDisk.enable = true;
