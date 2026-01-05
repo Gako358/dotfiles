@@ -1,10 +1,3 @@
-let
-  more = {
-    services = {
-      pasystray.enable = true;
-    };
-  };
-in
 [
   ./dconf.nix
   ./gpg.nix
@@ -16,5 +9,4 @@ in
   ./persist.nix
   ./plasma.nix
   ./secrets.nix
-  more
 ]
