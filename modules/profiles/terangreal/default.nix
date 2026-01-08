@@ -6,6 +6,7 @@
 }:
 let
 
+  inherit (osConfig.environment) desktop;
   cat = "${pkgs.coreutils}/bin/cat";
 in
 {
@@ -13,6 +14,12 @@ in
 
   # Home modules to load
   program.hyprlock.defaultMonitor = "DP-2";
+  services.hyprpaper.settings = {
+    wallpaper = [
+      "DP-2,${desktop.theme.wallpaper}"
+      "DP-3,${desktop.theme.wallpaper}"
+    ];
+  };
 
   service = lib.mkMerge [
     {

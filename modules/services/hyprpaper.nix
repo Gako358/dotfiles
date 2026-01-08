@@ -13,8 +13,8 @@ in
     package = inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
     settings = {
+      ipc = "on";
       preload = [ "${desktop.theme.wallpaper}" ];
-      wallpaper = [ ", ${desktop.theme.wallpaper}" ];
     };
   };
 }

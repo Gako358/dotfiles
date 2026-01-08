@@ -6,6 +6,7 @@
 }:
 let
 
+  inherit (osConfig.environment) desktop;
   cat = "${pkgs.coreutils}/bin/cat";
 in
 {
@@ -13,6 +14,13 @@ in
 
   # Home modules to load
   program.hyprlock.defaultMonitor = "desc:HP Inc. HP E27u G4 CN41332M2N";
+
+  services.hyprpaper.settings = {
+    wallpaper = [
+      "eDP-1,${desktop.theme.wallpaper}"
+      "desc:HP Inc. HP E27u G4 CN41332M2N,${desktop.theme.wallpaper}"
+    ];
+  };
 
   service = lib.mkMerge [
     {
