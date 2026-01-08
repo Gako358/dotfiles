@@ -1,5 +1,4 @@
 { osConfig
-, config
 , pkgs
 , lib
 , ...
@@ -12,7 +11,7 @@ in
     packages = [
       pkgs.slack
     ];
-    persistence."/persist/${config.home.homeDirectory}" = {
+    persistence."/persist/" = {
       directories = [
         ".config/Slack"
       ];

@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 let
   fenv = {
     inherit (pkgs.fishPlugins.foreign-env) src;
@@ -17,7 +17,7 @@ in
       ncdu # disk space info (a better du)
       nitch # minimal system information fetch
     ];
-    persistence."/persist/${config.home.homeDirectory}" = {
+    persistence."/persist/" = {
       directories = [
         ".local/share/fish"
         ".jump"

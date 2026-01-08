@@ -1,5 +1,4 @@
 { osConfig
-, config
 , pkgs
 , lib
 , ...
@@ -12,7 +11,7 @@
         winetricks
         protontricks
       ];
-      persistence."/persist/${config.home.homeDirectory}" = {
+      persistence."/persist/" = {
         directories = [
           # TODO: Add winetrix needed folders
         ];

@@ -7,7 +7,7 @@
     packages = with pkgs; [
       seahorse
     ];
-    persistence."/persist/${config.home.homeDirectory}" = {
+    persistence."/persist/" = {
       directories = [
         ".password-store"
       ];

@@ -1,5 +1,4 @@
 { osConfig
-, config
 , pkgs
 , lib
 , ...
@@ -10,7 +9,7 @@
       packages = [
         pkgs.proton-pass
       ];
-      persistence."/persist/${config.home.homeDirectory}" = {
+      persistence."/persist/" = {
         directories = [
           ".config/Proton\ Pass"
         ];

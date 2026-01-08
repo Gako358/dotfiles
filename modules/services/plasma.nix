@@ -1,5 +1,4 @@
 { osConfig
-, config
 , inputs
 , pkgs
 , lib
@@ -589,7 +588,7 @@ in
           tela-circle-icon-theme
         ];
 
-        persistence."/persist/${config.home.homeDirectory}" = {
+        persistence."/persist/" = {
           directories = [
             ".config/gtk-3.0" # GTK themes (not managed by plasma-manager)
             ".config/gtk-4.0" # GTK themes (not managed by plasma-manager)

@@ -1,5 +1,4 @@
 { osConfig
-, config
 , pkgs
 , lib
 , ...
@@ -12,7 +11,7 @@
         "spotify_secret" = { };
       };
 
-      home.persistence."/persist/${config.home.homeDirectory}" = {
+      home.persistence."/persist/" = {
         directories = [
           ".cache/spotify-player"
         ];

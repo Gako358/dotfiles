@@ -27,7 +27,7 @@ in
       packages = with pkgs; [
         protonmail-bridge
       ];
-      persistence."/persist/${config.home.homeDirectory}" = {
+      persistence."/persist/" = {
         directories = [
           ".config/protonmail"
         ];
@@ -67,7 +67,10 @@ in
             enable = true;
             create = "both";
             expunge = "both";
-            patterns = [ "*" "!All Mail" ];
+            patterns = [
+              "*"
+              "!All Mail"
+            ];
             subFolders = "Verbatim";
           };
           mu.enable = true;

@@ -34,7 +34,7 @@
         ];
       };
       # Patch fix for starting hyprland with start-hyprland
-      uwsm.waylandCompositors.hyprland.binPath = lib.mkForce "${config.programs.hyprland.package}/bin/start-hyprland";
+      # uwsm.waylandCompositors.hyprland.binPath = lib.mkForce "${config.programs.hyprland.package}/bin/start-hyprland";
     };
 
     xdg.portal = {

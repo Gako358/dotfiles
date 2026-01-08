@@ -5,7 +5,7 @@
 }:
 {
   config = lib.mkIf osConfig.service.sops.enable {
-    home.persistence."/persist/${config.home.homeDirectory}" = {
+    home.persistence."/persist/" = {
       directories = [
         ".config/sops/age"
         ".config/sops-nix"
