@@ -1579,11 +1579,11 @@ Markdown Edit:
     :init
     (setq scala-ts-indent-offset 2)
     :hook ((scala-ts-mode . eglot-ensure)
-	   (before-save . eglot-format-buffer)))
+  	 (before-save . eglot-format-buffer)))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '(scala-ts-mode . ("metals"))))
+                 '(scala-ts-mode . ("metals" :initializationOptions (:defaultBspToBuildTool t)))))
 #+end_src
 
 *** SQL
