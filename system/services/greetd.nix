@@ -3,17 +3,17 @@
 , lib
 , ...
 }:
-# let
-#   hyprlandConfig = pkgs.writeText "greetd-hyprland-config" ''
-#     exec-once = ${config.programs.regreet.package}/bin/regreet -L trace; hyprctl dispatch exit
-#     exec = systemctl --user import-environment
-#     debug:disable_logs = false
-#     misc {
-#         disable_hyprland_logo = true
-#         disable_splash_rendering = true
-#     }
-#   '';
-# in
+let
+  hyprlandConfig = pkgs.writeText "greetd-hyprland-config" ''
+    exec-once = ${config.programs.regreet.package}/bin/regreet -L trace; hyprctl dispatch exit
+    exec = systemctl --user import-environment
+    debug:disable_logs = false
+    misc {
+        disable_hyprland_logo = true
+        disable_splash_rendering = true
+    }
+  '';
+in
 {
   config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
     security = {
@@ -55,8 +55,8 @@
       greetd =
         let
           session = {
-            # command = "${config.programs.hyprland.package}/bin/Hyprland --config ${hyprlandConfig}";
-            command = "${lib.getExe config.programs.uwsm.package} start -e -D Hyprland hyprland.desktop";
+            command = "${config.programs.hyprland.package}/bin/Hyprland --config ${hyprlandConfig}";
+            # command = "${lib.getExe config.programs.uwsm.package} start -e -D Hyprland hyprland-uwsm.desktop";
             # Uncomment for automatic login on boot
             # user = "merrinx";
           };
