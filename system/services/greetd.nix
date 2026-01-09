@@ -57,8 +57,7 @@ in
           session = {
             command = "${config.programs.hyprland.package}/bin/Hyprland --config ${hyprlandConfig}";
             # command = "${lib.getExe config.programs.uwsm.package} start -e -D Hyprland hyprland-uwsm.desktop";
-            # Uncomment for automatic login on boot
-            # user = "merrinx";
+            user = "merrinx";
           };
         in
         {
