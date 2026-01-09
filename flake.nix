@@ -80,7 +80,7 @@
       };
     };
     hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
+      url = "github:hyprwm/hyprpaper/1733e0025b194c9bc083f4cd8782c5f151858a58";
       inputs = {
         hyprgraphics.follows = "hyprland/hyprgraphics";
         hyprlang.follows = "hyprland/hyprlang";
