@@ -419,15 +419,15 @@ Vertical Interactive Completion UI:
   (defvar minimal-emacs-ui-features '()
     "List of user interface features to disable in minimal Emacs setup.
 
-    This variable holds a list Emacs UI features that can be enabled:
-    - `context-menu`: Enables the context menu in graphical environments.
-    - `tool-bar`: Enables the tool bar in graphical environments.
-    - `menu-bar`: Enables the menu bar in graphical environments.
-    - `dialogs`: Enables both file dialogs and dialog boxes.
-    - `tooltips`: Enables tooltips.
+      This variable holds a list Emacs UI features that can be enabled:
+      - `context-menu`: Enables the context menu in graphical environments.
+      - `tool-bar`: Enables the tool bar in graphical environments.
+      - `menu-bar`: Enables the menu bar in graphical environments.
+      - `dialogs`: Enables both file dialogs and dialog boxes.
+      - `tooltips`: Enables tooltips.
 
-    Each feature in the list corresponds to a specific UI component that can be
-    turned on.")
+      Each feature in the list corresponds to a specific UI component that can be
+      turned on.")
 
   (defvar minimal-emacs-frame-title-format "%b – Emacs"
     "Template for displaying the title bar of visible and iconified frame.")
@@ -440,13 +440,13 @@ Vertical Interactive Completion UI:
 
   (defvar minimal-emacs-package-initialize-and-refresh t
     "Whether to automatically initialize and refresh packages.
-    When set to non-nil, Emacs will automatically call `package-initialize' and
-    `package-refresh-contents' to set up and update the package system.")
+      When set to non-nil, Emacs will automatically call `package-initialize' and
+      `package-refresh-contents' to set up and update the package system.")
 
   (defvar minimal-emacs-user-directory user-emacs-directory
     "The default value of the `user-emacs-directory' variable.")
 
-    ;;; Load pre-early-init.el
+      ;;; Load pre-early-init.el
 
   (defun minimal-emacs-load-user-init (filename)
     "Execute a file of Lisp code named FILENAME."
@@ -462,7 +462,7 @@ Vertical Interactive Completion UI:
         (expand-file-name "themes/" minimal-emacs-user-directory))
   (setq custom-file (expand-file-name "custom.el" minimal-emacs-user-directory))
 
-    ;;; Garbage collection
+      ;;; Garbage collection
   ;; Garbage collection significantly affects startup times. This setting delays
   ;; garbage collection during startup but will be reset later.
 
@@ -472,14 +472,17 @@ Vertical Interactive Completion UI:
             (lambda ()
               (setq gc-cons-threshold minimal-emacs-gc-cons-threshold)))
 
-    ;;; Misc
+      ;;; Misc
 
   (set-language-environment "UTF-8")
+  (set-default-coding-systems 'utf-8)      ;; Default for new buffers
+  (prefer-coding-system 'utf-8)            ;; Prioritize UTF-8 when detecting encoding
+  (setq-default buffer-file-coding-system 'utf-8-unix)  ;; Default when saving files
 
   ;; Set-language-environment sets default-input-method, which is unwanted.
   (setq default-input-method nil)
 
-    ;;; Performance
+      ;;; Performance
 
   ;; Prefer loading newer compiled files
   (setq load-prefer-newer t)
@@ -597,7 +600,7 @@ Vertical Interactive Completion UI:
         (unless (memq initial-window-system '(x pgtk))
           (setq command-line-x-option-alist nil)))))
 
-    ;;; Native compilation and Byte compilation
+      ;;; Native compilation and Byte compilation
 
   (if (and (featurep 'native-compile)
            (fboundp 'native-comp-available-p)
@@ -620,7 +623,7 @@ Vertical Interactive Completion UI:
   (setq byte-compile-warnings minimal-emacs-debug)
   (setq byte-compile-verbose minimal-emacs-debug)
 
-    ;;; UI elements
+      ;;; UI elements
 
   (setq frame-title-format minimal-emacs-frame-title-format
         icon-title-format minimal-emacs-frame-title-format)
@@ -669,7 +672,7 @@ Vertical Interactive Completion UI:
     (setq use-file-dialog nil)
     (setq use-dialog-box nil))
 
-    ;;; LSP
+      ;;; LSP
   (setenv "LSP_USE_PLISTS" "true")
 
   ;; Disable sound bell
@@ -683,14 +686,14 @@ Vertical Interactive Completion UI:
   ;; Ensure JIT compilation is enabled for improved performance by
   ;; native-compiling loaded .elc files asynchronously
   (setq native-comp-jit-compilation t)
-                                          ;(setq native-comp-deferred-compilation t) ; Deprecated in Emacs > 29.1
+  					;(setq native-comp-deferred-compilation t) ; Deprecated in Emacs > 29.1
 
-                                          ;(use-package compile-angel
-                                          ;  :ensure t
-                                          ;  :demand t
-                                          ;  :config
-                                          ;  (compile-angel-on-load-mode)
-                                          ;  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
+  					;(use-package compile-angel
+  					;  :ensure t
+  					;  :demand t
+  					;  :config
+  					;  (compile-angel-on-load-mode)
+  					;  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
 
   ;; Auto-revert in Emacs is a feature that automatically updates the
   ;; contents of a buffer to reflect changes made to the underlying file
@@ -722,11 +725,11 @@ Vertical Interactive Completion UI:
   (setq make-backup-files nil)
   (setq auto-save-default nil)
 
-  ;;; Line numbers
+    ;;; Line numbers
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode)
 
-  ;;; Set auto pair mode
+    ;;; Set auto pair mode
   (electric-pair-mode 1)
 #+end_src
 
