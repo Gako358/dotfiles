@@ -1581,8 +1581,7 @@ Markdown Edit:
   (use-package scala-ts-mode
     :init
     (setq scala-ts-indent-offset 2)
-    :hook ((scala-ts-mode . eglot-ensure)
-  	 (before-save . eglot-format-buffer)))
+    :hook (before-save . eglot-format-buffer))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
@@ -1721,9 +1720,11 @@ Setting up eglot LSP
     :config
     (evil-leader/set-key
       "lo" 'eglot
+      "lq" 'eglot-shutdown
       "la" 'eglot-code-actions
       "lf" 'apheleia-format-buffer
       "lr" 'eglot-rename
+      "lR" 'eglot-reconnect
       "lH" 'eglot-inlay-hints-mode
       "ld" 'eglot-find-declaration
       "li" 'eglot-find-implementation
