@@ -1,23 +1,27 @@
 let
-  scripts = { pkgs, ... }:
+  scripts =
+    { pkgs, ... }:
     let
       countdown-timer = pkgs.callPackage ./countdown-timer.nix { inherit pkgs; };
       gen-ssh-key = pkgs.callPackage ./gen-ssh-key.nix { inherit pkgs; };
       orphant-persist = pkgs.callPackage ./orphant-persist.nix { inherit pkgs; };
       set-monitor = pkgs.callPackage ./set-monitor.nix { inherit pkgs; };
       handle-monitor = pkgs.callPackage ./handle-monitor.nix { inherit pkgs; };
+      convert-scala-utf8 = pkgs.callPackage ./convert-scala-utf8.nix {
+        inherit pkgs;
+      };
     in
     {
-      home.packages =
-        [
-          countdown-timer # countdown timer with figlet
-          gen-ssh-key # generate ssh key and add it to the system
-          orphant-persist # locate orphant folders not in persist config
-          set-monitor # set monitor resolution
-          handle-monitor # handle monitor resolution
-          set-monitor # set monitor resolution
-        ]
-        ++ (pkgs.sxm.scripts or [ ]);
+      home.packages = [
+        countdown-timer # countdown timer with figlet
+        gen-ssh-key # generate ssh key and add it to the system
+        orphant-persist # locate orphant folders not in persist config
+        set-monitor # set monitor resolution
+        handle-monitor # handle monitor resolution
+        set-monitor # set monitor resolution
+        convert-scala-utf8 # convert all scala files to UTF-8
+      ]
+      ++ (pkgs.sxm.scripts or [ ]);
     };
 in
 [ scripts ]
