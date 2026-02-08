@@ -1243,7 +1243,6 @@ This configuration makes system monitoring and process management seamless withi
     ;; Hooks to enable flyspell in the desired modes
     (dolist (hook '(org-mode-hook text-mode-hook markdown-mode-hook))
       (add-hook hook #'flyspell-mode))
-    (add-hook 'prog-mode-hook #'flyspell-prog-mode)
 
     ;; Dictionary switching functions
     (defun my/switch-to-english ()
