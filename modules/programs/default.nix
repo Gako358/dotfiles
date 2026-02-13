@@ -50,6 +50,7 @@ in
   ./jq.nix
   ./neovim.nix
   ./pcmanfm.nix
+  ./pgadmin.nix
   ./proton.nix
   ./qt.nix
   ./repl.nix
