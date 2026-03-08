@@ -33,7 +33,6 @@ let
 in
 [
   ./emacs
-  ./neofetch
   ./wofi
   ./alacritty.nix
   ./bat.nix
