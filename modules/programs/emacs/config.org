@@ -46,25 +46,6 @@ Custom fonts are set using "Iosevka Nerd Font" for both the main text and the mo
 #+end_src
 
 *** Icons
-All-the-icons: Provides a rich set of icons for various file types and modes.
-
-#+begin_src emacs-lisp
-  (use-package all-the-icons
-    :ensure t)
-#+end_src
-
-All-the-icons-ivy-rich: Enhances Ivy's minibuffer completion with icons, activated on startup.
-
-#+begin_src emacs-lisp
-  (use-package all-the-icons-ivy-rich
-    :ensure t
-    :init (all-the-icons-ivy-rich-mode 1))
-#+end_src
-
-Nerd-icons: Sets "Iosevka Nerd Font" as the icon font family.
-Nerd-icons-completion: Integrates with Marginalia for enhanced completion visuals.
-Nerd-icons-corfu: Adds pretty icons to Corfu completion menus.
-
 #+begin_src emacs-lisp
   (use-package nerd-icons
     :ensure t
@@ -104,18 +85,17 @@ This enables spaceline, it looks better and works very well with my theme of cho
   	  spaceline-workspace-numbers-unicode t
   	  spaceline-window-numbers-unicode t
   	  spaceline-separator-dir-left '(left . right)
-  	  spaceline-separator-dir-right '(right . left)
-  	  spaceline-flycheck-bullet "❀ %s")
+  	  spaceline-separator-dir-right '(right . left))
     :config
     (require 'spaceline-config)
-    (spaceline-spacemacs-theme)
 
+    ;; Version control segment
     (spaceline-define-segment nasy:version-control
       "Version control information."
       (when vc-mode
         (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
           (powerline-raw
-           (s-trim (concat "  "
+           (s-trim (concat "  "
                            branch
                            (when (buffer-file-name)
                              (pcase (vc-state (buffer-file-name))
@@ -129,39 +109,14 @@ This enables spaceline, it looks better and works very well with my theme of cho
                                (`ignored " ✦")
                                (_ " ⁇")))))))))
 
+    ;; Time segment
     (spaceline-define-segment nasy-time
       "Time"
       (format-time-string "%b %d, %Y - %H:%M ")
       :tight-right t)
 
-    (spaceline-define-segment flycheck-status
-      "An `all-the-icons' representation of `flycheck-status'"
-      (let* ((text
-              (pcase flycheck-last-status-change
-                (`finished (if flycheck-current-errors
-                               (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
-                                              (+ (or .warning 0) (or .error 0)))))
-                                 (format "✖ %s Issue%s" count (if (eq 1 count) "" "s")))
-                             "✔ No Issues"))
-                (`running     "⟲ Running")
-                (`no-checker  "⚠")
-                (`not-checked "✣ Disabled")
-                (`errored     "⚠ Error")
-                (`interrupted "⛔ Interrupted")
-                (`suspicious  "")))
-             (f (cond
-                 ((string-match "⚠" text) `(:height 0.9 :foreground ,(face-attribute 'spaceline-flycheck-warning :foreground)
-                                                    :background "#1d5464"))
-                 ((string-match "✖ [0-9]" text) `(:height 0.9 :foreground ,(face-attribute 'spaceline-flycheck-error :foreground)
-                                                          :background "#333333"))
-                 ((string-match "✣ Disabled" text) `(:height 0.9))
-                 (t '(:height 0.9 :inherit)))))
-        (propertize (format " %s " text)
-                    'face f
-                    'help-echo "Show Flycheck Errors"
-                    'mouse-face '(:box 1)
-                    'local-map (make-mode-line-mouse-map 'mouse-1 (lambda () (interactive) (flycheck-list-errors)))))
-      :when active))
+    ;; Activate theme with custom segments
+    (spaceline-spacemacs-theme 'nasy:version-control 'nasy-time))
 #+end_src
 
 *** Themes
@@ -307,6 +262,45 @@ Complete `use-package' configuration for copilot, incorporating:
     (add-to-list 'copilot-indentation-alist '(closure-mode 2))
     (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
     )
+#+end_src
+
+*** Copilot Chat
+The copilot-chat package enables a chat interface with GitHub Copilot directly in Emacs. It uses the org frontend by default for rendering responses.
+
+#+begin_src emacs-lisp
+  (use-package copilot-chat
+    :ensure t
+    :after (org markdown-mode)
+    :config
+    ;; Use org-mode frontend (default, other options: 'markdown, 'shell-maker)
+    (setq copilot-chat-frontend 'org)
+    ;; Use curl backend
+    (setq copilot-chat-backend 'curl)
+    ;; Follow the chat output as it streams
+    (setq copilot-chat-follow t)
+
+    ;; Auto-generate commit messages with copilot
+    (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message)
+
+    :bind
+    (:map global-map
+          ("C-c a c" . copilot-chat-display)
+          ("C-c a h" . copilot-chat-hide)
+          ("C-c a r" . copilot-chat-reset)
+          ("C-c a b" . copilot-chat-add-current-buffer)
+          ("C-c a d" . copilot-chat-del-current-buffer)
+          ("C-c a l" . copilot-chat-list)
+          ("C-c a e" . copilot-chat-explain)
+          ("C-c a v" . copilot-chat-review)
+          ("C-c a f" . copilot-chat-fix)
+          ("C-c a o" . copilot-chat-optimize)
+          ("C-c a t" . copilot-chat-test)
+          ("C-c a m" . copilot-chat-set-model)
+          ("C-c a T" . copilot-chat-transient)
+  	("C-c a w" . copilot-chat-add-workspace)
+          ("C-c C-y" . copilot-chat-yank)
+          ("C-c M-y" . copilot-chat-yank-pop)))
+
 #+end_src
 
 *** Embark
@@ -484,10 +478,6 @@ Vertical Interactive Completion UI:
   (set-terminal-coding-system 'utf-8-unix)
   (set-keyboard-coding-system 'utf-8-unix)
 
-  ;; Disable coding system prompts
-  (setq coding-system-for-read 'utf-8-unix)
-  (setq coding-system-for-write 'utf-8-unix)
-
   ;; Prevent Emacs from asking about encoding when opening/saving files
   (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
@@ -509,9 +499,6 @@ Vertical Interactive Completion UI:
   (setq utf-8-enable-surrogate-pairs nil)
 
           ;;; Performance
-
-  ;; Prefer loading newer compiled files
-  (setq load-prefer-newer t)
 
   ;; Font compacting can be very resource-intensive, especially when rendering
   ;; icon fonts on Windows. This will increase memory usage.
@@ -595,9 +582,9 @@ Vertical Interactive Completion UI:
       ;; dashboard) is more than enough, and faster to display.
       (setq inhibit-startup-screen t
             inhibit-startup-echo-area-message user-login-name)
-      (setq initial-buffer-choice nil
-            inhibit-startup-buffer-menu t
-            inhibit-x-resources t)
+      ;; (setq initial-buffer-choice nil
+      ;;       inhibit-startup-buffer-menu t
+      ;;       inhibit-x-resources t)
 
       ;; Disable bidirectional text scanning for a modest performance boost.
       (setq-default bidi-display-reordering 'left-to-right
@@ -631,10 +618,6 @@ Vertical Interactive Completion UI:
   (if (and (featurep 'native-compile)
            (fboundp 'native-comp-available-p)
            (native-comp-available-p))
-      ;; Activate `native-compile'
-      (setq native-comp-jit-compilation t
-            native-comp-deferred-compilation t  ; Obsolete since Emacs 29.1
-            package-native-compile t)
     ;; Deactivate the `native-compile' feature if it is not available
     (setq features (delq 'native-compile features)))
 
@@ -708,18 +691,6 @@ Vertical Interactive Completion UI:
 
   ;; Ensure Emacs loads the most recent byte-compiled files.
   (setq load-prefer-newer t)
-
-  ;; Ensure JIT compilation is enabled for improved performance by
-  ;; native-compiling loaded .elc files asynchronously
-  (setq native-comp-jit-compilation t)
-      					;(setq native-comp-deferred-compilation t) ; Deprecated in Emacs > 29.1
-
-      					;(use-package compile-angel
-      					;  :ensure t
-      					;  :demand t
-      					;  :config
-      					;  (compile-angel-on-load-mode)
-      					;  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
 
   ;; Auto-revert in Emacs is a feature that automatically updates the
   ;; contents of a buffer to reflect changes made to the underlying file
@@ -806,9 +777,9 @@ Formatters:
 
     ;; Add nixpkgs-fmt for Nix
     (push '(nixpkgs-fmt . ("nixpkgs-fmt")) apheleia-formatters)
-    (push '(nix-mode . nixpkgs-fmt) apheleia-mode-alist))
+    (push '(nix-mode . nixpkgs-fmt) apheleia-mode-alist)
 
-  (apheleia-global-mode +1)
+    (apheleia-global-mode +1))
 #+end_src
 
 ** Email
@@ -909,10 +880,10 @@ My email configuration transforms Emacs into a powerful email client with severa
   ;; Define scroll up
   (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
   (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
-  (define-key evil-insert-state-map (kbd "C-u")
-        	    (lambda ()
-        	      (interactive)
-        	      (evil-delete (point-at-bol) (point))))
+  ;; (define-key evil-insert-state-map (kbd "C-u")
+  ;;       	    (lambda ()
+  ;;       	      (interactive)
+  ;;       	      (evil-delete (point-at-bol) (point))))
 
   ;; Evil numbers inc and dec
   (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
@@ -1571,7 +1542,6 @@ Markdown Edit:
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
     :hook ((nix-ts-mode . eglot-ensure)
-  	 (before-save . eglot-format-buffer)
   	 (before-save . nixpkgs-fmt-before-save)))
 
   (defun nixpkgs-fmt-before-save ()
@@ -1594,7 +1564,7 @@ Markdown Edit:
   (use-package rust-ts-mode
     :mode "\\.rs\\'"
     :hook
-    (rust-ts-mode-hook . eglot-ensure)
+    (rust-ts-mode . eglot-ensure)
     :init
     (with-eval-after-load 'org
       (cl-pushnew '("rust" . rust-ts-mode) org-src-lang-modes :test #'equal)))
@@ -1619,24 +1589,10 @@ Markdown Edit:
   (use-package sql-indent
     :ensure t
     :hook (sql-mode . sqlind-minor-mode))
-
-  (with-eval-after-load 'sql-indent
-    (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 #+end_src
 
 *** TypeScript
 #+begin_src emacs-lisp
-  (defun setup-tide-mode ()
-    (interactive)
-    (tide-setup)
-    (flymake-mode +1)
-    (eldoc-mode +1)
-    (tide-hl-identifier-mode +1))
-
-  ;; formats the buffer before saving
-  (add-hook 'before-save-hook 'tide-format-before-save)
-  (add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
-
   ;; for js-ts-mode with eglot
   (use-package js-ts-mode
     :after eglot
@@ -1676,16 +1632,16 @@ Markdown Edit:
   ;; Ensure yaml-ts-mode is always enabled for YAML files
   (use-package yaml-ts-mode
     :ensure t
-    :mode ("\\.yml\\'" . yaml-ts-mode)
-    ("\\.yaml\\'" . yaml-ts-mode))
+    :mode (("\\.yml\\'" . yaml-ts-mode)
+	 ("\\.yaml\\'" . yaml-ts-mode)))
 
   ;; Use-package configuration for yaml-pro with tree-sitter support
   (use-package yaml-pro
     :ensure t
     :after treesit
     :hook ((yaml-ts-mode . yaml-pro-ts-mode)
-    	 (yaml-mode . yaml-ts-mode)
-    	 (before-save . yaml-pro-format-buffer))
+      	 (yaml-mode . yaml-ts-mode)
+      	 (before-save . yaml-pro-format-buffer))
     :config
     ;; Add keybindings for tree-sitter mode
     (define-key yaml-pro-ts-mode-map (kbd "M-RET") #'yaml-pro-ts-meta-return)
@@ -1719,12 +1675,12 @@ Markdown Edit:
       (my/region/set-mark 'my/yaml-pro/set-mark))
     (defun my/region/set-mark (command-name)
       (if (eq last-command command-name)
-    	(if (region-active-p)
-    	    (progn
-    	      (deactivate-mark)
-    	      (message "Mark deactivated"))
-    	  (activate-mark)
-    	  (message "Mark activated"))
+      	(if (region-active-p)
+      	    (progn
+      	      (deactivate-mark)
+      	      (message "Mark deactivated"))
+      	  (activate-mark)
+      	  (message "Mark activated"))
         (set-mark-command nil))))
 
   ;; Add hook to format YAML buffer before save
@@ -1922,7 +1878,7 @@ Projectile is the go-to project package to use with Emacs.
     (projectile-mode +1)
     :config
     (setq projectile-enable-caching t
-  	  projectile-completion-system 'ivy
+  	  projectile-completion-system 'default
   	  projectile-indexing-method 'alien
   	  projectile-sort-order 'recently-active
   	  projectile-project-search-path '(("~/Projects/" . 1)

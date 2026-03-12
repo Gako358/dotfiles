@@ -151,9 +151,6 @@ in
       extraPackages =
         epkgs: with epkgs; [
           # Appearance
-          all-the-icons # A package for inserting developer icons
-          all-the-icons-completion
-          all-the-icons-ivy-rich # More friendly display transformer for ivy
           bivrost-theme # Custom theme
           dashboard # A startup screen extracted from Spacemacs
           spaceline # A mode-line teeming package
@@ -168,6 +165,7 @@ in
           cape # Completion At Point Extensions.
           corfu # Completion Overlay Region Function.
           copilot # Github copilot extension.
+          copilot-chat # Github copilot chat interface
           embark # Context-sensitive actions.
           embark-consult # Consult preview using embark
           flycheck # On-the-fly syntax checking
@@ -252,7 +250,6 @@ in
           nix-ts-mode # Major mode for editing Nix files
           scala-ts-mode # Scala development environment
           sql-indent # Indentation for SQL files
-          tide # TypeScript Interactive Development Environment
           web-mode # Major mode for editing web templates
           vue-ts-mode # Major mode for editing Vue3 files
           yaml-pro # Major mode for editing YAML files
