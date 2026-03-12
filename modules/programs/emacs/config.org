@@ -27,7 +27,6 @@ The dashboard package is configured to display a welcoming startup screen with a
   			    (projects . 5)
   			    (agenda . 5))
   	  initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-    :init
     :hook (after-init . dashboard-setup-startup-hook))
 #+end_src
 
@@ -148,19 +147,17 @@ Completion At Point Extensions:
   ;; Completion At Point Extensions.
   (use-package cape
     :ensure t
-    :init
+    :after corfu
+    :config
+    ;; Add completion-at-point backends
     (add-to-list 'completion-at-point-functions
-  	       (cape-capf-accept-all #'cape-dabbrev)) ;; This to get all from buffer
+  		 (cape-capf-accept-all #'cape-dabbrev))
     (add-to-list 'completion-at-point-functions
-  		 (cape-capf-accept-all #'cape-keyword)) ;; To get all from language
+  		 (cape-capf-accept-all #'cape-keyword))
     (add-to-list 'completion-at-point-functions #'cape-history)
     (add-to-list 'completion-at-point-functions #'cape-abbrev)
     (add-to-list 'completion-at-point-functions #'cape-file)
     (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-
-    :config
-    ;; Make dabbrev check other buffers for more comprehensive completions
-    ;; (setq cape-dabbrev-check-other-buffers t) Not sure this will be a good idea
 
     ;; Set up insert mode specific bindings
     (with-eval-after-load 'evil
@@ -186,6 +183,7 @@ Completion Overlay Region Function:
 #+begin_src emacs-lisp
   ;; Completion Overlay Region Function.
   (use-package corfu
+    :defer 0.1
     :init
     (global-corfu-mode 1)
     (setq global-corfu-minibuffer
@@ -232,6 +230,7 @@ Complete `use-package' configuration for copilot, incorporating:
 
 #+begin_src emacs-lisp
   (use-package copilot
+    :defer 3
     :bind (:map copilot-completion-map
   	      ("<tab>" . 'copilot-accept-completion)
   	      ("TAB" . 'copilot-accept-completion)
@@ -692,6 +691,12 @@ Vertical Interactive Completion UI:
   ;; Ensure Emacs loads the most recent byte-compiled files.
   (setq load-prefer-newer t)
 
+    ;; Increase read-process-output — helps eglot and LSP performance
+  (setq read-process-output-max (* 1024 1024))
+
+  ;; Faster which-key popup
+  (setq which-key-idle-delay 0.3)
+
   ;; Auto-revert in Emacs is a feature that automatically updates the
   ;; contents of a buffer to reflect changes made to the underlying file
   ;; on disk.
@@ -737,6 +742,7 @@ Document reader using pdf-tools and org-pdfview
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :ensure t
+    :defer t
     :hook (pdf-view-mode . (lambda ()
   			     (display-line-numbers-mode -1)))
     :config
@@ -939,6 +945,7 @@ My email configuration transforms Emacs into a powerful email client with severa
   (use-package evil-mc
     :ensure t
     :after evil
+    :defer 2
     :config
     (global-evil-mc-mode 1)
     (setq evil-mc-one-cursor-show-mode-line-text nil)
@@ -1698,6 +1705,8 @@ Setting up eglot LSP
 #+begin_src emacs-lisp
   (use-package eglot
     :ensure t
+    :defer t
+    :commands (eglot eglot-ensure)
     :config
     (evil-leader/set-key
       "lo" 'eglot
@@ -1810,6 +1819,7 @@ Org-msg transforms email composition in Emacs by leveraging Org Mode's formattin
 #+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
+    :defer t
     :init
     (setq org-roam-v2-ack t)
     (setq my/daily-note-filename "%<%Y-%m-%d>.org"
@@ -1874,6 +1884,7 @@ Projectile is the go-to project package to use with Emacs.
 #+begin_src emacs-lisp
   (use-package projectile
     :ensure t
+    :defer 1
     :init
     (projectile-mode +1)
     :config
@@ -2045,7 +2056,9 @@ For forge, create a file called ~/.authinfo with the following:
 #+begin_src emacs-lisp
   (use-package magit
     :ensure t
-    :config
+    :defer t
+    :commands magit-status
+    :init
     (evil-leader/set-key
       "/" 'magit-status))
 #+end_src
