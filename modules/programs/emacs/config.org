@@ -870,13 +870,11 @@ My email configuration transforms Emacs into a powerful email client with severa
 ** Evil
 *** Evil Mode
 #+begin_src emacs-lisp
-  ;; evil-want-keybinding must be declared before Evil and Evil Collection
-  (setq evil-want-keybinding nil)
-
   (use-package evil
     :ensure t
     :init
     (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
     :custom
     (evil-want-Y-yank-to-eol t)
     :config
@@ -950,10 +948,6 @@ My email configuration transforms Emacs into a powerful email client with severa
     (global-evil-mc-mode 1)
     (setq evil-mc-one-cursor-show-mode-line-text nil)
     (setq evil-mc-undo-cursors-on-keyboard-quit nil))
-
-  (use-package evil-mc-extra
-    :ensure t
-    :after evil-mc)
 #+end_src
 
 *** Evil Surround
@@ -1549,16 +1543,17 @@ Markdown Edit:
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
     :hook ((nix-ts-mode . eglot-ensure)
-  	 (before-save . nixpkgs-fmt-before-save)))
+  	   (nix-ts-mode . (lambda ()
+  			    (add-hook 'before-save-hook #'eglot-format-buffer nil t)))))
 
   (defun nixpkgs-fmt-before-save ()
     "Format the current buffer with nixpkgs-fmt if it is available."
     (when (eq major-mode 'nix-ts-mode)
       (if (executable-find "nixpkgs-fmt")
-	  (let ((output-buffer (get-buffer-create "*nixpkgs-fmt*")))
-	    (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" output-buffer t)
-	    (kill-buffer output-buffer))
-	(message "nixpkgs-fmt not found in PATH, skipping formatting."))))
+  	(let ((output-buffer (get-buffer-create "*nixpkgs-fmt*")))
+  	  (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" output-buffer t)
+  	  (kill-buffer output-buffer))
+        (message "nixpkgs-fmt not found in PATH, skipping formatting."))))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
@@ -1583,7 +1578,8 @@ Markdown Edit:
   (use-package scala-ts-mode
     :init
     (setq scala-ts-indent-offset 2)
-    :hook (before-save . eglot-format-buffer))
+    :hook (scala-ts-mode . (lambda ()
+  			     (add-hook 'before-save-hook #'eglot-format-buffer nil t))))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
@@ -2026,6 +2022,8 @@ For forge, create a file called ~/.authinfo with the following:
 #+begin_src emacs-lisp
   (use-package forge
     :after magit
+    :init
+    (setq forge-add-default-bindings nil)
     :config
     (setq auth-sources '("~/.authinfo")))
 #+end_src
