@@ -330,6 +330,7 @@ Context Menu for Actions:
                    (window-parameters (mode-line-format . none))))
     :bind (:map minibuffer-local-map
                 ("M-o"     . embark-act)
+  	      ("M-O"     . embark-act-all)
                 ("C-c C-c" . embark-export)
                 ("C-c C-o" . embark-collect)))
 
