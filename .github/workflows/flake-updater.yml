@@ -81,10 +81,11 @@ jobs:
         nixos_configuration:
           ${{ fromJson(needs.generate_matrix.outputs.nixos_configurations) }}
     steps:
-      - name: Clean up root space
+      - name: Clean up root space and mount /nix on /mnt
         run: |
-          echo "=== Disk space before cleanup ==="
-          df -h /
+          echo "=== Before cleanup ==="
+          df -h
+
           sudo apt-get remove -y \
             '^llvm-.*' 'php.*' '^dotnet-.*' \
             azure-cli google-cloud-cli google-cloud-sdk \
@@ -92,6 +93,7 @@ jobs:
             mono-devel microsoft-edge-stable || true
           sudo apt-get autoremove -y
           sudo apt-get clean
+
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo rm -rf /opt/hostedtoolcache /opt/microsoft
           sudo rm -rf /usr/local/share/boost /usr/local/.ghcup
@@ -100,20 +102,17 @@ jobs:
           sudo rm -rf /usr/share/miniconda /usr/local/share/powershell
           sudo rm -rf /usr/share/az_* "$AGENT_TOOLSDIRECTORY"
           sudo journalctl --vacuum-size=10M
-          echo "=== Disk space after cleanup ==="
-          df -h /
 
-      - name: Free diskspace
-        uses: easimon/maximize-build-space@master
-        with:
-          build-mount-path: /nix
-          swap-size-mb: 4096
-          root-reserve-mb: 14336
-          remove-dotnet: true
-          remove-android: true
-          remove-haskell: true
-          remove-docker-images: true
-          remove-codeql: true
+          echo "=== After cleanup ==="
+          df -h
+
+          sudo mkdir -p /nix
+          sudo mkdir -p /mnt/nix
+          sudo mount --bind /mnt/nix /nix
+          sudo chown -R runner:runner /nix
+
+          echo "=== Final layout ==="
+          df -h
 
       - name: Clone repository
         uses: actions/checkout@v4
@@ -158,26 +157,20 @@ jobs:
     needs: [update_flake]
     continue-on-error: true
     steps:
-      - name: Clean up additional root space
+      - name: Clean up root space and mount /nix on /mnt
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo rm -rf /opt/hostedtoolcache /opt/microsoft
           sudo rm -rf /usr/local/share/boost /usr/local/.ghcup
           sudo rm -rf /usr/share/swift /usr/local/graalvm
           sudo apt-get clean
-          df -h /
 
-      - name: Free diskspace
-        uses: easimon/maximize-build-space@master
-        with:
-          build-mount-path: /nix
-          swap-size-mb: 4096
-          root-reserve-mb: 14336
-          remove-dotnet: true
-          remove-android: true
-          remove-haskell: true
-          remove-docker-images: true
-          remove-codeql: true
+          sudo mkdir -p /nix
+          sudo mkdir -p /mnt/nix
+          sudo mount --bind /mnt/nix /nix
+          sudo chown -R runner:runner /nix
+
+          df -h
 
       - name: Clone repository
         uses: actions/checkout@v4
@@ -196,7 +189,7 @@ jobs:
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
 
       - name: Set up cachix
-        uses: cachix/cachix-action@v15 # ← fixed from @master
+        uses: cachix/cachix-action@v15
         with:
           name: merrinx
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
