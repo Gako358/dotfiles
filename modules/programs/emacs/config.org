@@ -984,6 +984,44 @@ My email configuration transforms Emacs into a powerful email client with severa
 #+end_src
 
 ** General
+*** Compilation
+#+begin_src emacs-lisp
+  (use-package compile
+    :ensure nil  ;; built-in package
+    :config
+    ;; Add sbt error regexp patterns
+    (add-to-list 'compilation-error-regexp-alist 'sbt-error)
+    (add-to-list 'compilation-error-regexp-alist-alist
+  			   '(sbt-error
+  		 "^\\[error\\] -- .*?: \\([^:]+\\):\\([0-9]+\\):\\([0-9]+\\)" 1 2 3 2 1))
+
+    (add-to-list 'compilation-error-regexp-alist 'sbt-warning)
+    (add-to-list 'compilation-error-regexp-alist-alist
+                 '(sbt-warning
+                   "^\\[warn\\] -- .*?: \\([^:]+\\):\\([0-9]+\\):\\([0-9]+\\)" 1 2 3 1 1))
+
+    ;; Pattern for line-only errors (no column number)
+    (add-to-list 'compilation-error-regexp-alist 'sbt-error-simple)
+    (add-to-list 'compilation-error-regexp-alist-alist
+                 '(sbt-error-simple
+                   "^\\[error\\] -- .*?: \\([^:]+\\):\\([0-9]+\\)" 1 2 nil 2 1))
+
+    (add-to-list 'compilation-error-regexp-alist 'sbt-warning-simple)
+    (add-to-list 'compilation-error-regexp-alist-alist
+                 '(sbt-warning-simple
+                   "^\\[warn\\] -- .*?: \\([^:]+\\):\\([0-9]+\\)" 1 2 nil 1 1)))
+
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'compilation-mode 'normal)
+    (evil-define-key 'normal compilation-mode-map
+      "n"  'compilation-next-error
+      "p"  'compilation-previous-error
+      "gn" 'next-error
+      "gp" 'previous-error
+      "gr" 'recompile
+      "q"  'quit-window))
+#+end_src
+
 *** Dependencies
 #+begin_src emacs-lisp
   (use-package dash :ensure t)
@@ -1025,16 +1063,14 @@ Midnight package: Automatically cleans up unused buffers daily at 4:30am.
   (use-package midnight
     :ensure t
     :config
-    (custom-set-variables
-     '(clean-buffer-list-delay-special 86400) ;; Buffers not used last 24h
-     '(clean-buffer-list-kill-never-regexps
-       '(
-  	 "^\\*tramp/.*\\*$"
-  	 "^ \\*Minibuf-.*\\*$"
-  	 "^#.*$"
-  	 "^\\*\\*df.\\*\\**$"
-  	 "^\\*mu4e-.*\\*$"
-  	 )))
+    (setq clean-buffer-list-delay-general 36000)    ;; Kill regular buffers unused for 10h
+    (setq clean-buffer-list-delay-special 36000)    ;; Kill special buffers unused for 10h
+    (setq clean-buffer-list-kill-never-regexps
+  	  '("^\\*tramp/.*\\*$"
+  	    "^ \\*Minibuf-.*\\*$"
+  	    "^#.*$"
+  	    "^\\*\\*df\\.\\*\\**$"
+  	    "^\\*mu4e-.*\\*$"))
     (midnight-delay-set 'midnight-delay "4:30am"))
 #+end_src
 
