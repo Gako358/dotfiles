@@ -14,7 +14,21 @@
       home.persistence."/persist/" = {
         directories = [
           ".cache/spotify-player"
+          ".config/spotifyd"
         ];
+      };
+
+      services.spotifyd = {
+        enable = true;
+        settings = {
+          global = {
+            device_name = "hyprland-spotify";
+            device_type = "computer";
+            bitrate = 320;
+            initial_volume = 70;
+            autoplay = true;
+          };
+        };
       };
 
       programs.spotify-player = {
@@ -24,9 +38,9 @@
           border_type = "Rounded";
           progress_bar_type = "Line";
           playback_window_position = "Top";
-          play_icon = "";
-          pause_icon = "";
-          liked_icon = "";
+          play_icon = "";
+          pause_icon = "";
+          liked_icon = "";
           copy_command = {
             command = "wl-copy";
             args = [ ];
@@ -35,13 +49,18 @@
           client_port = 8888;
           ap_port = 443;
           device = {
+            name = "spotify-player";
+            device_type = "speaker";
             audio_cache = true;
             normalization = true;
-            volume = 50;
+            volume = 70;
+            bitrate = 320;
+            autoplay = false;
           };
         };
       };
     })
+
     (lib.mkIf
       (
         osConfig.environment.desktop.windowManager == "gnome"
