@@ -1,5 +1,6 @@
 [
   ./dconf.nix
+  ./easyeffect.nix
   ./gpg.nix
   ./hypridle.nix
   ./hyprpaper.nix
