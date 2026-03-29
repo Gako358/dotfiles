@@ -99,7 +99,7 @@ in
     hostPlatform = lib.mkDefault "x86_64-linux";
   };
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 
   users = {
     defaultUserShell = pkgs.fish;
