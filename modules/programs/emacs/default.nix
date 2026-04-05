@@ -164,8 +164,8 @@ in
           # Completion
           cape # Completion At Point Extensions.
           corfu # Completion Overlay Region Function.
-          copilot # Github copilot extension.
           copilot-chat # Github copilot chat interface
+          copilot # Github copilot extension.
           embark # Context-sensitive actions.
           embark-consult # Consult preview using embark
           flycheck # On-the-fly syntax checking

@@ -187,16 +187,16 @@ Completion Overlay Region Function:
     :init
     (global-corfu-mode 1)
     (setq global-corfu-minibuffer
-  	    (lambda ()
-  	      (not (or (bound-and-true-p mct--active)
-  		       (bound-and-true-p vertico--input)
-  		       (eq (current-local-map) read-passwd-map)))))
+  	  (lambda ()
+  	    (not (or (bound-and-true-p mct--active)
+  		     (bound-and-true-p vertico--input)
+  		     (eq (current-local-map) read-passwd-map)))))
     :bind (:map corfu-map
-  				  ("C-n" . corfu-next)
-  				  ("C-p" . corfu-previous)
-  				  ("C-h" . corfu-info-documentation)
-  				  ("C-S-t" . my/corfu-quit-or-abort)
-  				  )
+  					("C-n" . corfu-next)
+  					("C-p" . corfu-previous)
+  					("C-h" . corfu-info-documentation)
+  					("C-S-t" . my/corfu-quit-or-abort)
+  					)
 
     :custom
     (corfu-cycle t)
@@ -214,6 +214,10 @@ Completion Overlay Region Function:
                     (if (and (boundp 'corfu-mode) corfu-mode)
                         (corfu-insert)
                       (evil-paste-before 1)))))
+    ;; Remove ispell word-list completion (no plain word-list on NixOS)
+    (setq completion-at-point-functions
+          (remove 'ispell-completion-at-point completion-at-point-functions))
+
 
     (defun my/corfu-quit-or-abort ()
       "Abort Corfu if active, otherwise fall back to default behavior."
@@ -270,6 +274,8 @@ The copilot-chat package enables a chat interface with GitHub Copilot directly i
   (use-package copilot-chat
     :ensure t
     :after (org markdown-mode)
+    :init
+    (require 'copilot-chat-command)
     :config
     ;; Use org-mode frontend (default, other options: 'markdown, 'shell-maker)
     (setq copilot-chat-frontend 'org)
