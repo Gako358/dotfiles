@@ -117,8 +117,8 @@ let
     pkgs.kotlin-language-server
     pkgs.nil
     pkgs.nixpkgs-fmt
-    pkgs.nodePackages.prettier
-    pkgs.nodePackages.nodejs
+    pkgs.prettier
+    pkgs.nodejs
     pkgs.typescript-language-server
     pkgs.vue-language-server
   ];
