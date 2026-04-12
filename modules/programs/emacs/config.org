@@ -703,9 +703,6 @@ Vertical Interactive Completion UI:
         ;;; Line numbers
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode)
-
-        ;;; Set auto pair mode
-  (electric-pair-mode 1)
 #+end_src
 
 ** Document
@@ -1588,7 +1585,6 @@ Markdown Edit:
     :init
     (setq scala-ts-indent-offset 2)
     :hook (scala-ts-mode . (lambda ()
-  			     (electric-pair-local-mode -1)
   			     (add-hook 'before-save-hook #'eglot-format-buffer nil t))))
 
   (with-eval-after-load 'eglot
