@@ -1,7 +1,8 @@
-{ osConfig
-, pkgs
-, lib
-, ...
+{
+  osConfig,
+  pkgs,
+  lib,
+  ...
 }:
 {
   config = lib.mkIf osConfig.environment.desktop.enable {

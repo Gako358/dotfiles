@@ -1,7 +1,8 @@
-{ osConfig
-, config
-, lib
-, ...
+{
+  osConfig,
+  config,
+  lib,
+  ...
 }:
 {
   config = lib.mkIf osConfig.service.sops.enable {

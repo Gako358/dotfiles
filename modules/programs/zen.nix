@@ -1,8 +1,9 @@
-{ osConfig
-, inputs
-, pkgs
-, lib
-, ...
+{
+  osConfig,
+  inputs,
+  pkgs,
+  lib,
+  ...
 }:
 let
   # Create a wrapper script for zen-browser with Wayland enabled

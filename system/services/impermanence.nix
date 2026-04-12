@@ -1,6 +1,7 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 let
   developSpecificDirs = [
@@ -36,11 +37,24 @@ in
         "Pictures"
         "Projects"
         "Sources"
-        { directory = ".gnupg"; mode = "0700"; }
-        { directory = ".ssh"; mode = "0700"; }
-        { directory = ".local/share/direnv"; mode = "0700"; }
-        { directory = ".local/share/keyrings"; mode = "0700"; }
-      ] ++ (lib.optionals config.environment.desktop.develop developSpecificDirs);
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
+        {
+          directory = ".ssh";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/direnv";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
+      ]
+      ++ (lib.optionals config.environment.desktop.develop developSpecificDirs);
     };
   };
 }

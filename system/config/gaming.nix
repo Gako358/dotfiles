@@ -1,6 +1,8 @@
-{ lib
-, ...
-}: {
+{
+  lib,
+  ...
+}:
+{
   options.environment.gaming = {
     enable = lib.mkOption {
       type = lib.types.bool;

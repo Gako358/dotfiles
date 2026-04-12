@@ -1,5 +1,6 @@
-{ pkgs
-, ...
+{
+  pkgs,
+  ...
 }:
 
 pkgs.writeShellScriptBin "find-orphant" /* bash */ ''

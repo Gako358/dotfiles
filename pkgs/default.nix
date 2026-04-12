@@ -1,7 +1,9 @@
 _: {
-  perSystem = { pkgs, ... }: {
-    packages = {
-      repl = pkgs.callPackage ./repl { };
+  perSystem =
+    { pkgs, ... }:
+    {
+      packages = {
+        repl = pkgs.callPackage ./repl { };
+      };
     };
-  };
 }

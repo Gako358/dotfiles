@@ -1,8 +1,8 @@
 # modified from https://github.com/gytis-ivaskevicius/flake-utils/plus
-{ coreutils
-, gnused
-, writeShellScriptBin
-,
+{
+  coreutils,
+  gnused,
+  writeShellScriptBin,
 }:
 let
   repl = ../../lib/repl.nix;

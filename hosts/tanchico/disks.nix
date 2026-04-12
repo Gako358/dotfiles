@@ -13,7 +13,10 @@
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot/efi";
-              mountOptions = [ "defaults" "umask=0077" ];
+              mountOptions = [
+                "defaults"
+                "umask=0077"
+              ];
             };
           };
           root = {
@@ -23,15 +26,28 @@
               name = "crypted_root";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "NIXOS" ];
+                extraArgs = [
+                  "-L"
+                  "NIXOS"
+                ];
                 subvolumes = {
                   "/root" = {
                     mountpoint = "/";
-                    mountOptions = [ "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
+                    mountOptions = [
+                      "noatime"
+                      "compress=zstd"
+                      "ssd"
+                      "space_cache=v2"
+                    ];
                   };
                   "/persist" = {
                     mountpoint = "/persist";
-                    mountOptions = [ "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
+                    mountOptions = [
+                      "noatime"
+                      "compress=zstd"
+                      "ssd"
+                      "space_cache=v2"
+                    ];
                   };
                   "/swap" = {
                     mountpoint = "/.swapvol";
@@ -57,11 +73,20 @@
               name = "crypted_store";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "STORE" ];
+                extraArgs = [
+                  "-L"
+                  "STORE"
+                ];
                 subvolumes = {
                   "/nix" = {
                     mountpoint = "/nix";
-                    mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                    mountOptions = [
+                      "noatime"
+                      "noacl"
+                      "compress=zstd"
+                      "ssd"
+                      "space_cache=v2"
+                    ];
                   };
                 };
               };
@@ -80,11 +105,20 @@
             size = "100%";
             content = {
               type = "btrfs";
-              extraArgs = [ "-L" "STEAM" ];
+              extraArgs = [
+                "-L"
+                "STEAM"
+              ];
               subvolumes = {
                 "/opt" = {
                   mountpoint = "/opt";
-                  mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                  mountOptions = [
+                    "noatime"
+                    "noacl"
+                    "compress=zstd"
+                    "ssd"
+                    "space_cache=v2"
+                  ];
                 };
               };
             };

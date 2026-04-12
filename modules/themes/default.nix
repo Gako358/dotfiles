@@ -1,10 +1,11 @@
 let
   colors = import ./colors.nix;
   themes =
-    { config
-    , pkgs
-    , lib
-    , ...
+    {
+      config,
+      pkgs,
+      lib,
+      ...
     }:
     {
       gtk = {

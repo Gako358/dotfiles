@@ -1,7 +1,8 @@
-{ osConfig
-, config
-, lib
-, ...
+{
+  osConfig,
+  config,
+  lib,
+  ...
 }:
 let
   fontType = "RobotoMono Nerd Font 12";

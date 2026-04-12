@@ -755,8 +755,8 @@ Formatters:
     (push '(java-ts-mode . google-java-format) apheleia-mode-alist)
 
     ;; Add nixpkgs-fmt for Nix
-    (push '(nixpkgs-fmt . ("nixpkgs-fmt")) apheleia-formatters)
-    (push '(nix-mode . nixpkgs-fmt) apheleia-mode-alist)
+    (push '(nixfmt . ("nixfmt")) apheleia-formatters)
+    (push '(nix-mode . nixfmt) apheleia-mode-alist)
 
     (apheleia-global-mode +1))
 #+end_src
@@ -1558,11 +1558,11 @@ Markdown Edit:
   (defun nixpkgs-fmt-before-save ()
     "Format the current buffer with nixpkgs-fmt if it is available."
     (when (eq major-mode 'nix-ts-mode)
-      (if (executable-find "nixpkgs-fmt")
-  	(let ((output-buffer (get-buffer-create "*nixpkgs-fmt*")))
-  	  (shell-command-on-region (point-min) (point-max) "nixpkgs-fmt" output-buffer t)
+      (if (executable-find "nixfmt")
+  	(let ((output-buffer (get-buffer-create "*nixfmt*")))
+  	  (shell-command-on-region (point-min) (point-max) "nixfmt" output-buffer t)
   	  (kill-buffer output-buffer))
-        (message "nixpkgs-fmt not found in PATH, skipping formatting."))))
+        (message "nixfmt not found in PATH, skipping formatting."))))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs

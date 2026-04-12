@@ -1,7 +1,8 @@
-{ osConfig
-, pkgs
-, lib
-, ...
+{
+  osConfig,
+  pkgs,
+  lib,
+  ...
 }:
 let
   autostartPrograms = [
@@ -165,20 +166,18 @@ in
 
       home = {
         file = builtins.listToAttrs (
-          map
-            (pkg: {
-              name = ".config/autostart/" + pkg.pname + ".desktop";
-              value =
-                if pkg ? desktopItem then
-                  {
-                    inherit (pkg.desktopItem) text;
-                  }
-                else
-                  {
-                    source = pkg + "/share/applications/" + pkg.pname + ".desktop";
-                  };
-            })
-            autostartPrograms
+          map (pkg: {
+            name = ".config/autostart/" + pkg.pname + ".desktop";
+            value =
+              if pkg ? desktopItem then
+                {
+                  inherit (pkg.desktopItem) text;
+                }
+              else
+                {
+                  source = pkg + "/share/applications/" + pkg.pname + ".desktop";
+                };
+          }) autostartPrograms
         );
 
         packages = with pkgs; [

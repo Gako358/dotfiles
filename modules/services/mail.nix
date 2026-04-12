@@ -1,8 +1,9 @@
-{ lib
-, pkgs
-, config
-, osConfig
-, ...
+{
+  lib,
+  pkgs,
+  config,
+  osConfig,
+  ...
 }:
 let
   certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";

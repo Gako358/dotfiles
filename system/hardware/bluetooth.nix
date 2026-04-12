@@ -1,6 +1,7 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 let
   cfg = config.system.bluetooth;
@@ -31,8 +32,12 @@ in
           FastConnectable = "true";
           Experimental = "true";
         };
-        Policy = { AutoEnable = "true"; };
-        LE = { EnableAdvMonInterleaveScan = "true"; };
+        Policy = {
+          AutoEnable = "true";
+        };
+        LE = {
+          EnableAdvMonInterleaveScan = "true";
+        };
       };
     };
   };

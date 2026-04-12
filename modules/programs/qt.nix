@@ -1,8 +1,9 @@
-{ lib
-, pkgs
-, config
-, osConfig
-, ...
+{
+  lib,
+  pkgs,
+  config,
+  osConfig,
+  ...
 }:
 let
   KvLibadwaita = pkgs.fetchFromGitHub {

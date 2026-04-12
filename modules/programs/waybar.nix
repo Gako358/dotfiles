@@ -1,8 +1,9 @@
-{ lib
-, pkgs
-, config
-, osConfig
-, ...
+{
+  lib,
+  pkgs,
+  config,
+  osConfig,
+  ...
 }:
 let
   fontSize = "14px";
@@ -67,7 +68,13 @@ in
         format-charging = "";
         format-plugged = "";
         format-alt = "{icon} {time}";
-        format-icons = [ "" "" "" "" "" ];
+        format-icons = [
+          ""
+          ""
+          ""
+          ""
+          ""
+        ];
       };
 
       clock = {
@@ -127,7 +134,11 @@ in
         format = "{icon}";
         format-muted = "󰝟";
         format-icons = {
-          default = [ "󰕿" "󰖀" "󰕾" ];
+          default = [
+            "󰕿"
+            "󰖀"
+            "󰕾"
+          ];
         };
         scroll-step = 5;
         on-click = "pavucontrol";

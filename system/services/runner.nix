@@ -1,7 +1,8 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   cfg = config.services.githubRunner;
@@ -147,9 +148,16 @@ in
 
     labels = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "self-hosted" "linux" "x64" ];
+      default = [
+        "self-hosted"
+        "linux"
+        "x64"
+      ];
       description = "List of labels to assign to the runner.";
-      example = [ "ci" "production" ];
+      example = [
+        "ci"
+        "production"
+      ];
     };
 
     user = lib.mkOption {
@@ -192,7 +200,9 @@ in
       type = lib.types.attrsOf lib.types.str;
       default = { };
       description = "Environment variables to set for the runner process.";
-      example = { DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"; };
+      example = {
+        DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true";
+      };
     };
 
     serviceDependencies = lib.mkOption {
@@ -216,7 +226,14 @@ in
       wantedBy = [ "multi-user.target" ];
       after = cfg.serviceDependencies;
 
-      path = [ pkgs.coreutils pkgs.gnutar pkgs.gzip pkgs.bash pkgs.rsync pkgs.su ];
+      path = [
+        pkgs.coreutils
+        pkgs.gnutar
+        pkgs.gzip
+        pkgs.bash
+        pkgs.rsync
+        pkgs.su
+      ];
 
       serviceConfig = {
         Type = "simple";
@@ -244,7 +261,6 @@ in
 
   # Then set in githubRunner config:
   # services.githubRunner.tokenPath = config.sops.secrets.github-runner-token.path;
-
 
   #  services.githubRunner = {
   #    enable = true;

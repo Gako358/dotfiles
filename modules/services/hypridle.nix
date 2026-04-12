@@ -1,9 +1,10 @@
-{ lib
-, pkgs
-, config
-, osConfig
-, inputs
-, ...
+{
+  lib,
+  pkgs,
+  config,
+  osConfig,
+  inputs,
+  ...
 }:
 let
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";

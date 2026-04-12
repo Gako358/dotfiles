@@ -1,8 +1,9 @@
-{ osConfig
-, config
-, pkgs
-, lib
-, ...
+{
+  osConfig,
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 let
   commonSettings = {
@@ -15,11 +16,9 @@ in
   programs.wofi = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
     enable = true;
     package = pkgs.wofi.overrideAttrs (oa: {
-      patches =
-        (oa.patches or [ ])
-        ++ [
-          ./wofi-run-shell.patch # Fix for https://todo.sr.ht/~scoopta/wofi/174
-        ];
+      patches = (oa.patches or [ ]) ++ [
+        ./wofi-run-shell.patch # Fix for https://todo.sr.ht/~scoopta/wofi/174
+      ];
     });
     settings = {
       allow_images = true;

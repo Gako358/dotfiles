@@ -1,8 +1,9 @@
-{ osConfig
-, config
-, pkgs
-, lib
-, ...
+{
+  osConfig,
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 let
   inherit (config.colorScheme) palette;

@@ -1,7 +1,8 @@
-{ lib
-, pkgs
-, osConfig
-, ...
+{
+  lib,
+  pkgs,
+  osConfig,
+  ...
 }:
 {
 

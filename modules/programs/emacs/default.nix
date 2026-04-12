@@ -1,8 +1,9 @@
-{ lib
-, pkgs
-, config
-, osConfig
-, ...
+{
+  lib,
+  pkgs,
+  config,
+  osConfig,
+  ...
 }:
 let
   metalsVersion = "1.6.6";
@@ -116,7 +117,8 @@ let
     pkgs.gemini-cli
     pkgs.kotlin-language-server
     pkgs.nil
-    pkgs.nixpkgs-fmt
+    pkgs.nixfmt
+    pkgs.nixfmt-tree
     pkgs.prettier
     pkgs.nodejs
     pkgs.typescript-language-server

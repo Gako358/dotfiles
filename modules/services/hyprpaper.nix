@@ -1,8 +1,9 @@
-{ lib
-, pkgs
-, inputs
-, osConfig
-, ...
+{
+  lib,
+  pkgs,
+  inputs,
+  osConfig,
+  ...
 }:
 let
   inherit (osConfig.environment) desktop;

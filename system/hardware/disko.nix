@@ -1,6 +1,7 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 let
   storeCfg = config.system.disks.extraStoreDisk;
@@ -9,16 +10,26 @@ let
   extraSteamDevicePath = config.system.disks.extraSteamDevice;
 
   mainNixSubvol =
-    if !storeCfg.enable then {
-      "/nix" = {
-        mountpoint = "/nix";
-        mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
-      };
-    } else { };
+    if !storeCfg.enable then
+      {
+        "/nix" = {
+          mountpoint = "/nix";
+          mountOptions = [
+            "noatime"
+            "noacl"
+            "compress=zstd"
+            "ssd"
+            "space_cache=v2"
+          ];
+        };
+      }
+    else
+      { };
 
   storeDisk =
     if storeCfg.enable then
-      assert extraStoreDevicePath != null; {
+      assert extraStoreDevicePath != null;
+      {
         store = {
           type = "disk";
           device = extraStoreDevicePath;
@@ -32,11 +43,20 @@ let
                   name = "crypted_store";
                   content = {
                     type = "btrfs";
-                    extraArgs = [ "-L" "STORE" ];
+                    extraArgs = [
+                      "-L"
+                      "STORE"
+                    ];
                     subvolumes = {
                       "/nix" = {
                         mountpoint = "/nix";
-                        mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                        mountOptions = [
+                          "noatime"
+                          "noacl"
+                          "compress=zstd"
+                          "ssd"
+                          "space_cache=v2"
+                        ];
                       };
                     };
                   };
@@ -45,11 +65,14 @@ let
             };
           };
         };
-      } else { };
+      }
+    else
+      { };
 
   steamDisk =
     if steamCfg.enable then
-      assert extraSteamDevicePath != null; {
+      assert extraSteamDevicePath != null;
+      {
         steam = {
           type = "disk";
           device = extraSteamDevicePath;
@@ -60,11 +83,20 @@ let
                 size = "100%";
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-L" "STEAM" ];
+                  extraArgs = [
+                    "-L"
+                    "STEAM"
+                  ];
                   subvolumes = {
                     "/opt" = {
                       mountpoint = "/opt";
-                      mountOptions = [ "noatime" "noacl" "compress=zstd" "ssd" "space_cache=v2" ];
+                      mountOptions = [
+                        "noatime"
+                        "noacl"
+                        "compress=zstd"
+                        "ssd"
+                        "space_cache=v2"
+                      ];
                     };
                   };
                 };
@@ -72,7 +104,9 @@ let
             };
           };
         };
-      } else { };
+      }
+    else
+      { };
 in
 {
   options = {
@@ -122,7 +156,10 @@ in
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot/efi";
-                mountOptions = [ "defaults" "umask=0077" ];
+                mountOptions = [
+                  "defaults"
+                  "umask=0077"
+                ];
               };
             };
             root = {
@@ -132,28 +169,44 @@ in
                 name = "crypted_root";
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-L" "NIXOS" ];
+                  extraArgs = [
+                    "-L"
+                    "NIXOS"
+                  ];
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
-                      mountOptions = [ "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
+                      mountOptions = [
+                        "noatime"
+                        "compress=zstd"
+                        "ssd"
+                        "space_cache=v2"
+                      ];
                     };
                     "/persist" = {
                       mountpoint = "/persist";
-                      mountOptions = [ "noatime" "compress=zstd" "ssd" "space_cache=v2" ];
+                      mountOptions = [
+                        "noatime"
+                        "compress=zstd"
+                        "ssd"
+                        "space_cache=v2"
+                      ];
                     };
                     "/swap" = {
                       mountpoint = "/.swapvol";
                       swap.swapfile.size = "32G";
                     };
-                  } // mainNixSubvol;
+                  }
+                  // mainNixSubvol;
                 };
               };
             };
           };
         };
       };
-    } // storeDisk // steamDisk;
+    }
+    // storeDisk
+    // steamDisk;
 
     fileSystems."/persist".neededForBoot = true;
   };

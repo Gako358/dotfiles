@@ -1,7 +1,8 @@
-{ inputs
-, config
-, lib
-, ...
+{
+  inputs,
+  config,
+  lib,
+  ...
 }:
 {
   users.groups.nix-access-tokens = { };

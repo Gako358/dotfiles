@@ -1,6 +1,7 @@
-{ pkgs
-, self
-, ...
+{
+  pkgs,
+  self,
+  ...
 }:
 {
   home.packages = [

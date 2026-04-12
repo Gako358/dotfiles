@@ -1,6 +1,7 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 {
   config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
