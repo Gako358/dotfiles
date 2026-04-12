@@ -15,29 +15,31 @@
         { pkgs, system, ... }:
         let
           pre-commit-lib = inputs.pre-commit-hooks-nix.lib.${system};
+          pre-commit-check = pre-commit-lib.run {
+            src = ./.;
+            hooks = {
+              statix.enable = true;
+              deadnix.enable = true;
+              nil.enable = true;
+              nixfmt.enable = true;
+              shellcheck.enable = true;
+              beautysh.enable = true;
+            };
+          };
         in
         {
           devShells.default = pkgs.mkShell {
             name = "merrinx-dev-shell";
             inputsFrom = [ ];
+            inherit (pre-commit-check) shellHook;
             nativeBuildInputs = with pkgs; [
               nixpkgs-fmt
             ];
           };
 
-          formatter = pkgs.nixpkgs-fmt;
+          formatter = pkgs.nixfmt;
           checks = {
-            pre-commit-check = pre-commit-lib.run {
-              src = ./.;
-              hooks = {
-                statix.enable = true;
-                deadnix.enable = true;
-                nil.enable = true;
-                nixpkgs-fmt.enable = true;
-                shellcheck.enable = true;
-                beautysh.enable = true;
-              };
-            };
+            inherit pre-commit-check;
           };
         };
     };
