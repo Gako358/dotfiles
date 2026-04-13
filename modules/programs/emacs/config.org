@@ -742,10 +742,11 @@ Formatters:
     (push '(black . ("black" "-")) apheleia-formatters)
     (push '(python-mode . black) apheleia-mode-alist)
 
-    ;; Add prettier for TypeScript and JavaScript
+    ;; Add prettier for TypeScript, JavaScript, and Vue
     (push '(prettier . ("prettier" "--stdin-filepath" buffer-file-name)) apheleia-formatters)
     (push '(typescript-ts-mode . prettier) apheleia-mode-alist)
     (push '(js-ts-mode . prettier) apheleia-mode-alist)
+    (push '(vue-ts-mode . prettier) apheleia-mode-alist)
 
     ;; Add google-java-format for Java
     (push '(google-java-format . ("google-java-format" "-")) apheleia-formatters)
@@ -753,7 +754,7 @@ Formatters:
 
     ;; Add nixpkgs-fmt for Nix
     (push '(nixfmt . ("nixfmt")) apheleia-formatters)
-    (push '(nix-mode . nixfmt) apheleia-mode-alist)
+    (push '(nix-ts-mode . nixfmt) apheleia-mode-alist)
 
     (apheleia-global-mode +1))
 #+end_src
@@ -1548,18 +1549,7 @@ Markdown Edit:
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
-    :hook ((nix-ts-mode . eglot-ensure)
-  	   (nix-ts-mode . (lambda ()
-  			    (add-hook 'before-save-hook #'eglot-format-buffer nil t)))))
-
-  (defun nixpkgs-fmt-before-save ()
-    "Format the current buffer with nixpkgs-fmt if it is available."
-    (when (eq major-mode 'nix-ts-mode)
-      (if (executable-find "nixfmt")
-  	(let ((output-buffer (get-buffer-create "*nixfmt*")))
-  	  (shell-command-on-region (point-min) (point-max) "nixfmt" output-buffer t)
-  	  (kill-buffer output-buffer))
-        (message "nixfmt not found in PATH, skipping formatting."))))
+    :hook (nix-ts-mode . eglot-ensure))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
@@ -1607,12 +1597,13 @@ Markdown Edit:
 *** TypeScript
 #+begin_src emacs-lisp
   ;; for js-ts-mode with eglot
-  (use-package js-ts-mode
+  (use-package typescript-ts-mode
     :after eglot
-    :hook (js-ts-mode . eglot-ensure)
-    :mode
-    (("\\.js\\'" . js-ts-mode)
-     ("\\.ts\\'" . js-ts-mode)))
+    :hook (typescript-ts-mode . eglot-ensure)
+    :mode ("\\.ts\\'" . typescript-ts-mode)
+    :config
+    (add-to-list 'eglot-server-programs
+  		 '(typescript-ts-mode . ("typescript-language-server" "--stdio"))))
 #+end_src
 
 *** Vue
@@ -1621,8 +1612,10 @@ Markdown Edit:
   (use-package vue-ts-mode
     :after eglot
     :hook (vue-ts-mode . eglot-ensure)
-    :mode
-    (("\\.vue\\'" . vue-ts-mode)))
+    :mode ("\\.vue\\'" . vue-ts-mode)
+    :config
+    (add-to-list 'eglot-server-programs
+  		 '(vue-ts-mode . ("vue-language-server" "--stdio"))))
 #+end_src
 
 *** Web Mode
