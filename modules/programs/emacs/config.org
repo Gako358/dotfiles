@@ -1585,7 +1585,8 @@ Markdown Edit:
     :init
     (setq scala-ts-indent-offset 2)
     :hook (scala-ts-mode . (lambda ()
-  			     (add-hook 'before-save-hook #'eglot-format-buffer nil t))))
+  			     (setq-local eglot-ignored-server-capabilities
+  					 '(:documentOnTypeFormattingProvider)))))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
