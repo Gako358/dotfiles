@@ -29,11 +29,22 @@ appimageTools.wrapType2 {
 
   meta = {
     description = "Warcraft Logs combat log uploader for World of Warcraft";
+    longDescription = ''
+      Archon App Lite is the official combat log uploader client for Warcraft Logs,
+      a performance analysis and ranking website for World of Warcraft. It monitors
+      your combat log directory and automatically uploads completed logs to the
+      Warcraft Logs website, where they are parsed and turned into detailed reports.
+      These reports can be used to analyse raid performance, inspect damage and
+      healing breakdowns, track cooldown usage, and compare player rankings across
+      the community. Archon App Lite is a lightweight version of the full Archon
+      client, focusing solely on log uploading without additional overlays or features.
+    '';
     mainProgram = "warcraftlogs";
     homepage = "https://www.warcraftlogs.com";
     downloadPage = "https://github.com/RPGLogs/Uploaders-archon-lite/releases";
     license = lib.licenses.unfree;
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
+    maintainers = with lib.maintainers; [ Gako358 ];
     platforms = [ "x86_64-linux" ];
   };
 }
