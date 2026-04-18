@@ -22,7 +22,8 @@ appimageTools.wrapType2 {
     install -m 444 -D ${appimageContents}/${pname}.desktop -t $out/share/applications
     substituteInPlace $out/share/applications/${pname}.desktop \
       --replace-fail 'Exec=AppRun' 'Exec=${pname}'
-    cp -r ${appimageContents}/usr/share/icons $out/share
+    install -m 444 -D ${appimageContents}/usr/share/icons/hicolor/scalable/${pname}.svg \
+      $out/share/icons/hicolor/scalable/apps/${pname}.svg
   '';
 
   meta = {
