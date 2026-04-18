@@ -65,7 +65,9 @@
     ./fish.nix
     ./fonts.nix
     ./qemu.nix
+    ./raiderio-client.nix
     ./steam.nix
+    ./warcraftlogs.nix
   ];
 
   programs = {
