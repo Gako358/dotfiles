@@ -52,11 +52,13 @@ in
   ./pgadmin.nix
   ./proton.nix
   ./qt.nix
+  ./raiderio.nix
   ./repl.nix
   ./slack.nix
   ./spotify.nix
   ./ssh.nix
   ./starship.nix
+  ./warcraftlogs.nix
   ./waybar.nix
   ./wine.nix
   ./wowup.nix
