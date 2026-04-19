@@ -115,6 +115,7 @@ let
     pkgs.dtach
     pkgs.emacs-lsp-booster
     pkgs.gemini-cli
+    pkgs.jdt-language-server
     pkgs.kotlin-language-server
     pkgs.nil
     pkgs.nixfmt
@@ -295,7 +296,10 @@ in
           magit # A Git porcelain inside Emacs
           vundo # Undo tree visualiser
         ];
-      extraConfig = builtins.readFile ./init.el;
+      extraConfig = ''
+        ${builtins.readFile ./init.el}
+        (setq eglot-java-server-install-dir "${pkgs.jdt-language-server}/share/java/jdt-language-server/")
+      '';
     };
 
     # Set up the Emacs service
@@ -324,7 +328,6 @@ in
       };
       persistence."/persist/" = {
         directories = [
-          ".emacs.d"
           ".config/github-copilot"
         ];
       };

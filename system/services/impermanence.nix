@@ -5,9 +5,6 @@
 }:
 let
   developSpecificDirs = [
-    ".cache/bleep"
-    ".cache/bloop"
-    ".cache/coursier"
     ".cargo"
     ".m2"
     ".npm"
