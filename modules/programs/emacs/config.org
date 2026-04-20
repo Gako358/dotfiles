@@ -240,38 +240,38 @@ Github copilot extension for emacs
 Complete `use-package' configuration for copilot, incorporating:
 
 #+begin_src emacs-lisp
-  (use-package copilot
-    :defer 3
-    :bind (:map copilot-completion-map
-  	      ("<tab>" . 'copilot-accept-completion)
-  	      ("TAB" . 'copilot-accept-completion)
-  	      ("C-TAB" . 'copilot-accept-completion-by-word)
-  	      ("C-<tab>" . 'copilot-accept-completion-by-word))
+  (use-package copilot-chat
+    :ensure t
+    :after (org markdown-mode)
     :config
-    ;; Helper to turn copilot-mode off in a buffer (useful for hooks)
-    (defun rk/no-copilot-mode ()
-      "Helper to disable `copilot-mode' in the current buffer."
-      (when (bound-and-true-p copilot-mode)
-  	(copilot-mode -1)))
+    ;; Use org-mode frontend (default, other options: 'markdown, 'shell-maker)
+    (setq copilot-chat-frontend 'org)
+    ;; Use curl backend
+    (setq copilot-chat-backend 'curl)
+    ;; Follow the chat output as it streams
+    (setq copilot-chat-follow t)
 
-    ;; Modes where Copilot should be disabled
-    (defvar rk/no-copilot-modes
-      '(shell-mode
-        inferior-python-mode
-        eshell-mode
-        term-mode
-        vterm-mode
-        comint-mode
-        compilation-mode
-        debugger-mode
-        dired-mode))
+    ;; Auto-generate commit messages with copilot
+    (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message)
 
-    (add-to-list 'copilot-indentation-alist '(prog-mode 2))
-    (add-to-list 'copilot-indentation-alist '(org-mode 2))
-    (add-to-list 'copilot-indentation-alist '(text-mode 2))
-    (add-to-list 'copilot-indentation-alist '(closure-mode 2))
-    (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
-    )
+    :bind
+    (:map global-map
+          ("C-c a c" . copilot-chat-display)
+          ("C-c a h" . copilot-chat-hide)
+          ("C-c a r" . copilot-chat-reset)
+          ("C-c a b" . copilot-chat-add-current-buffer)
+          ("C-c a d" . copilot-chat-del-current-buffer)
+          ("C-c a l" . copilot-chat-list)
+          ("C-c a e" . copilot-chat-explain)
+          ("C-c a v" . copilot-chat-review)
+          ("C-c a f" . copilot-chat-fix)
+          ("C-c a o" . copilot-chat-optimize)
+          ("C-c a t" . copilot-chat-test)
+          ("C-c a m" . copilot-chat-set-model)
+          ("C-c a T" . copilot-chat-transient)
+  	("C-c a w" . copilot-chat-add-workspace)
+          ("C-c C-y" . copilot-chat-yank)
+          ("C-c M-y" . copilot-chat-yank-pop)))
 #+end_src
 
 *** Embark
@@ -1576,14 +1576,20 @@ Markdown Edit:
     (setq scala-ts-indent-offset 2)
     :hook (scala-ts-mode . (lambda ()
   			     (setq-local eglot-ignored-server-capabilities
-  					 '(:documentOnTypeFormattingProvider)))))
+  					 '(:documentOnTypeFormattingProvider))
+  			     (setq-local eglot-workspace-configuration
+  					 '(:metals (:bloopInstall "off"
+  								:defaultBspToBuildTool t))))))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '(scala-ts-mode . ("metals"
-                                    :initializationOptions
-                                    (:defaultBspToBuildTool t
-  							  :isFormatOnTypeEnabled :json-false)))))
+                 '(scala-ts-mode . ("metals")))
+
+    (cl-defmethod eglot-initialization-options ((_server eglot-lsp-server)
+                                                &context (major-mode scala-ts-mode))
+      '(:defaultBspToBuildTool t
+  			     :bloopInstall "off"
+  			     :isFormatOnTypeEnabled :json-false)))
 #+end_src
 
 *** SQL
