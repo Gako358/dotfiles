@@ -195,8 +195,7 @@ Completion Overlay Region Function:
   	      ("C-n" . corfu-next)
   	      ("C-p" . corfu-previous)
   	      ("C-h" . corfu-info-documentation)
-  	      ("C-S-t" . my/corfu-quit-or-abort)
-  	      )
+  	      ("C-S-t" . my/corfu-quit-or-abort))
 
     :custom
     (corfu-cycle t)
@@ -214,11 +213,11 @@ Completion Overlay Region Function:
                     (if (and (boundp 'corfu-mode) corfu-mode)
                         (corfu-insert)
                       (evil-paste-before 1)))))
+
     ;; Remove ispell word-list completion (no plain word-list on NixOS)
     (setq completion-at-point-functions
           (remove 'ispell-completion-at-point completion-at-point-functions))
 
-    ;; Also remove ispell capf from buffer-local capfs in modes that re-add it
     (defun my/remove-ispell-capf ()
       "Remove ispell-completion-at-point from buffer-local capfs."
       (setq-local completion-at-point-functions
@@ -231,8 +230,7 @@ Completion Overlay Region Function:
       (interactive)
       (if corfu--frame
           (corfu-quit)
-        (keyboard-escape-quit)))
-    )
+        (keyboard-escape-quit))))
 #+end_src
 
 *** Copilot
@@ -653,9 +651,6 @@ Vertical Interactive Completion UI:
     (setq use-file-dialog nil)
     (setq use-dialog-box nil))
 
-          ;;; LSP
-  (setenv "LSP_USE_PLISTS" "true")
-
   ;; Disable sound bell
   (setq visible-bell       nil
         ring-bell-function #'ignore)
@@ -700,9 +695,12 @@ Vertical Interactive Completion UI:
   (setq make-backup-files nil)
   (setq auto-save-default nil)
 
-        ;;; Line numbers
+  ;;; Line numbers
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode)
+
+  ;; Must be set before evil or evil-collection loads (see evil-collection#60)
+  (setq evil-want-keybinding nil)
 #+end_src
 
 ** Document
@@ -1009,6 +1007,7 @@ My email configuration transforms Emacs into a powerful email client with severa
 #+begin_src emacs-lisp
   ;;; Direnv integration
   (use-package envrc
+    :ensure t
     :hook (after-init . envrc-global-mode))
 #+end_src
 
@@ -1484,7 +1483,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 #+begin_src emacs-lisp
   ;; C language server
   (use-package c-ts-mode
-    :hook (c-ts-mode . eglot-ensure)
+    :hook (c-ts-mode . lsp-deferred)
     :mode (("\\.c\\'" . c-ts-mode)
 	   ("\\.h\\'" . c-ts-mode)))
     #+end_src
@@ -1502,38 +1501,42 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
     :custom
     (haskell-ts-use-indent t)
     (haskell-ts-ghci "ghci")
+    :hook (haskell-ts-mode . lsp-deferred)
     :mode (("\\.hs\\'" . haskell-ts-mode)
-  	 ("\\.cabal\\'" . haskell-ts-mode)))
+  	   ("\\.cabal\\'" . haskell-ts-mode)))
 #+end_src
 
 *** Java
 #+begin_src emacs-lisp
   ;; Java language server
-  (use-package eglot-java
-    :init
-    :hook (java-ts-mode . eglot-java-mode))
-
-  (with-eval-after-load 'eglot-java
+  (use-package lsp-java
+    :ensure t
+    :hook (java-ts-mode . lsp-deferred)
+    :custom
+    (lsp-java-server-install-dir (expand-file-name "~/.emacs.d/jdt-language-server/"))
+    (lsp-java-jdt-download-url nil)
+    :config
     (evil-leader/set-key
-      "ljn" 'eglot-java-file-new
-      "ljx" 'eglot-java-run-main
-      "ljt" 'eglot-java-run-test
-      "ljN" 'eglot-java-project-new
-      "ljT" 'eglot-java-project-build-task
-      "ljR" 'eglot-java-project-build-refresh))
-
+      "ljn" 'lsp-java-add-import
+      "ljx" 'lsp-java-spring-run
+      "ljt" 'lsp-java-run-test
+      "ljg" 'lsp-java-generate-getters-and-setters
+      "ljs" 'lsp-java-generate-to-string
+      "ljo" 'lsp-java-generate-overrides
+      "ljb" 'lsp-java-build-project
+      "ljc" 'lsp-java-create-parameter
+      "lje" 'lsp-java-extract-to-constant
+      "ljm" 'lsp-java-extract-method
+      "ljI" 'lsp-java-organize-imports))
 #+end_src
 
 *** Kotlin
 #+begin_src emacs-lisp
   (use-package kotlin-ts-mode
     :init
-    :hook (kotlin-ts-mode . eglot-ensure)
+    :hook (kotlin-ts-mode . lsp-deferred)
     :mode "\\.kt\\'")
 
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-  	       '(kotlin-ts-mode .("kotlin-language-server"))))
 #+end_src
 
 *** Markdown
@@ -1549,11 +1552,7 @@ Markdown Edit:
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
-    :hook (nix-ts-mode . eglot-ensure))
-
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '(nix-ts-mode . ("nil" "--stdio"))))
+    :hook (nix-ts-mode . lsp-deferred))
 #+end_src
 
 *** Rust
@@ -1561,8 +1560,7 @@ Markdown Edit:
   ;; Rust language server
   (use-package rust-ts-mode
     :mode "\\.rs\\'"
-    :hook
-    (rust-ts-mode . eglot-ensure)
+    :hook (rust-ts-mode . lsp-deferred)
     :init
     (with-eval-after-load 'org
       (cl-pushnew '("rust" . rust-ts-mode) org-src-lang-modes :test #'equal)))
@@ -1571,25 +1569,27 @@ Markdown Edit:
 *** Scala
 #+begin_src emacs-lisp
   ;; Scala language server
-  (use-package scala-ts-mode
-    :init
-    (setq scala-ts-indent-offset 2)
-    :hook (scala-ts-mode . (lambda ()
-  			     (setq-local eglot-ignored-server-capabilities
-  					 '(:documentOnTypeFormattingProvider))
-  			     (setq-local eglot-workspace-configuration
-  					 '(:metals (:bloopInstall "off"
-  								:defaultBspToBuildTool t))))))
+  (use-package lsp-metals
+    :ensure t
+    :after (scala-ts-mode lsp-mode)
+    :custom
+    (lsp-metals-server-command "metals")
+    (lsp-metals-bloop-install "off")
+    (lsp-metals-default-bsp-to-build-tool t)
+    (lsp-metals-fallback-scala-version "3.8.1")
+    :config
+    (lsp-register-custom-settings
+     '(("metals.bloopInstall" "off")
+       ("metals.defaultBspToBuildTool" t :json-false)))
 
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '(scala-ts-mode . ("metals")))
-
-    (cl-defmethod eglot-initialization-options ((_server eglot-lsp-server)
-                                                &context (major-mode scala-ts-mode))
-      '(:defaultBspToBuildTool t
-  			     :bloopInstall "off"
-  			     :isFormatOnTypeEnabled :json-false)))
+    (evil-leader/set-key
+      "lsb" 'lsp-metals-build-import
+      "lsc" 'lsp-metals-build-connect
+      "lss" 'lsp-metals-sources-scan
+      "lsd" 'lsp-metals-doctor-run
+      "lsn" 'lsp-metals-new-scala-file
+      "lsN" 'lsp-metals-new-scala-project
+      "lst" 'lsp-metals-treeview))
 #+end_src
 
 *** SQL
@@ -1602,26 +1602,41 @@ Markdown Edit:
 
 *** TypeScript
 #+begin_src emacs-lisp
-  ;; for js-ts-mode with eglot
+  ;; TypeScript language server
   (use-package typescript-ts-mode
-    :after eglot
-    :hook (typescript-ts-mode . eglot-ensure)
-    :mode ("\\.ts\\'" . typescript-ts-mode)
-    :config
-    (add-to-list 'eglot-server-programs
-  		 '(typescript-ts-mode . ("typescript-language-server" "--stdio"))))
+    :hook (typescript-ts-mode . lsp-deferred)
+    :mode ("\\.ts\\'" . typescript-ts-mode))
 #+end_src
 
 *** Vue
 #+begin_src emacs-lisp
-  ;; Vue language support
+  ;; Vue
   (use-package vue-ts-mode
-    :after eglot
-    :hook (vue-ts-mode . eglot-ensure)
+    :hook ((vue-ts-mode . lsp-deferred)
+  	   (vue-ts-mode . (lambda ()
+  			    (setq-local lsp-disabled-clients '(ts-ls vue-semantic-server))
+  			    (setq-local lsp-enable-links nil)
+  			    (setq-local lsp-lens-enable nil))))
     :mode ("\\.vue\\'" . vue-ts-mode)
     :config
-    (add-to-list 'eglot-server-programs
-  		 '(vue-ts-mode . ("vue-language-server" "--stdio"))))
+    (with-eval-after-load 'lsp-mode
+      (setq lsp-volar-hybrid-mode nil)
+      (setq lsp-volar-take-over-mode t)
+      (add-to-list 'lsp-language-id-configuration '(vue-ts-mode . "vue"))
+      (lsp-register-client
+       (make-lsp-client
+  	:new-connection (lsp-stdio-connection '("vue-language-server" "--stdio"))
+  	:activation-fn (lsp-activate-on "vue")
+  	:server-id 'volar-remote
+  	:priority 10
+  	:initialization-options
+  	(lambda ()
+  	  (list :typescript (list :tsdk (or lsp-typescript-tsdk
+  					    (expand-file-name "node_modules/typescript/lib"
+  							      (lsp-workspace-root))))
+  		:vue (list :hybridMode :json-false)))
+  	:notification-handlers (ht ("tsserver/request" #'ignore))
+  	:multi-root t))))
 #+end_src
 
 *** Web Mode
@@ -1704,37 +1719,49 @@ Markdown Edit:
   #+end_src
 
 ** LSP
-Setting up eglot LSP
+Setting up LSP mode
 
-*** eglot
+*** LSP-Mode
 #+begin_src emacs-lisp
-  (use-package eglot
+  ;; LSP Mode
+  (use-package lsp-mode
     :ensure t
-    :defer t
-    :commands (eglot eglot-ensure)
+    :commands (lsp lsp-deferred)
+    :init
+    (setq lsp-keymap-prefix "C-c l")
+    :custom
+    (lsp-idle-delay 0.500)
+    (lsp-log-io nil)
+    (lsp-completion-provider :none)
+    (lsp-headerline-breadcrumb-enable t)
+    (lsp-enable-snippet nil)
     :config
     (evil-leader/set-key
-      "lo" 'eglot
-      "lq" 'eglot-shutdown
-      "la" 'eglot-code-actions
+      "lo" 'lsp
+      "lq" 'lsp-workspace-shutdown
+      "la" 'lsp-execute-code-action
       "lf" 'apheleia-format-buffer
-      "lr" 'eglot-rename
-      "lR" 'eglot-reconnect
-      "lH" 'eglot-inlay-hints-mode
-      "ld" 'eglot-find-declaration
-      "li" 'eglot-find-implementation
-      "lt" 'eglot-find-typeDefinition
-      "lI" 'eglot-organize-imports
-      "ln" 'flymake-goto-next-error
-      "lwd" 'flymake-show-project-diagnostics
-      "lbd" 'flymake-show-buffer-diagnostics))
-#+end_src
-*** eglot-booster
-#+begin_src emacs-lisp
-  (use-package eglot-booster
-    :after eglot
+      "lr" 'lsp-rename
+      "lR" 'lsp-workspace-restart
+      "lH" 'lsp-inlay-hints-mode
+      "ld" 'lsp-find-definition
+      "li" 'lsp-find-implementation
+      "lt" 'lsp-find-type-definition
+      "lI" 'lsp-organize-imports
+      "ln" 'flycheck-next-error
+      "lp" 'flycheck-previous-error
+      "ll" 'flycheck-list-errors))
+
+  (use-package lsp-ui
+    :ensure t
+    :after lsp-mode
+    :custom
+    (lsp-ui-doc-enable t)
+    (lsp-ui-sideline-enable t)
+    (lsp-ui-peek-enable t)
     :config
-    (eglot-booster-mode))
+    (evil-leader/set-key
+      "lh" 'lsp-ui-doc-glance))
 #+end_src
 
 ** Navigation

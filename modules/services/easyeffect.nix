@@ -12,6 +12,12 @@ in
     preset = "noise-cancellation";
   };
 
+  home.persistence."/persist/" = {
+    directories = [
+      ".config/easyeffects"
+    ];
+  };
+
   xdg.configFile."easyeffects/input/noise-cancellation.json" = lib.mkIf desktop.enable {
     text = builtins.toJSON {
       input = {

@@ -6,7 +6,7 @@
   ...
 }:
 let
-  metalsVersion = "1.6.6";
+  metalsVersion = "1.6.7";
   metals = pkgs.metals.overrideAttrs (
     final: prev: {
       deps = pkgs.stdenv.mkDerivation {
@@ -21,7 +21,7 @@ let
         '';
         outputHashMode = "recursive";
         outputHashAlgo = "sha256";
-        outputHash = "sha256-Snx4JvWOTkJcihVRwj25op4BJqmChz+1fZH/PrCCbt0=";
+        outputHash = "sha256-bGx3PQGgaTueQ/v/Xk7gp03TzllyMs7nCx9QWXNFdt0=";
       };
       buildInputs = [ final.deps ];
     }
@@ -40,27 +40,6 @@ let
 
     recipe = pkgs.writeText "recipe" ''
       (haskell-ts-mode :fetcher git :url "https://codeberg.org/pranshu/haskell-ts-mode.git")
-    '';
-  };
-
-  eglot-booster = pkgs.emacs.pkgs.melpaBuild {
-    pname = "eglot-booster";
-    version = "20241029";
-
-    commit = "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "jdtsmith";
-      repo = "eglot-booster";
-      rev = "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed";
-      hash = "sha256-PLfaXELkdX5NZcSmR1s/kgmU16ODF8bn56nfTh9g6bs=";
-    };
-
-    recipe = pkgs.writeText "recipe" ''
-      (eglot-booster
-      :repo "jdtsmith/eglot-booster"
-      :fetcher github
-      :files ("*.el"))
     '';
   };
 
@@ -113,7 +92,6 @@ let
     pkgs.basedpyright
     pkgs.black
     pkgs.dtach
-    pkgs.emacs-lsp-booster
     pkgs.gemini-cli
     pkgs.jdt-language-server
     pkgs.kotlin-language-server
@@ -122,6 +100,7 @@ let
     pkgs.nixfmt-tree
     pkgs.prettier
     pkgs.nodejs
+    pkgs.typescript
     pkgs.typescript-language-server
     pkgs.vue-language-server
   ];
@@ -244,7 +223,6 @@ in
           tree-sitter-langs
 
           # Programming language packages.
-          eglot-java # Java development environment
           haskell-ts-mode-custom # Haskell development environment
           kotlin-ts-mode # Kotlin development environment
           markdown-mode # Major mode for editing Markdown files
@@ -256,7 +234,11 @@ in
           yaml-pro # Major mode for editing YAML files
 
           # LSP
-          eglot-booster # Eglot booster
+          lsp-mode # LSP client
+          lsp-ui # UI enhancements for lsp-mode
+          lsp-java # Java support (replaces eglot-java)
+          lsp-metals # Scala Metals support
+          lsp-haskell # Haskell LSP support
           eldoc-box # Display function signatures at point
 
           # Mail
@@ -298,7 +280,9 @@ in
         ];
       extraConfig = ''
         ${builtins.readFile ./init.el}
-        (setq eglot-java-server-install-dir "${pkgs.jdt-language-server}/share/java/jdt-language-server/")
+        (setq lsp-java-server-install-dir "${pkgs.jdt-language-server}/share/java/jdt-language-server/")
+        (setq lsp-java-jdt-download-url nil)
+        (setq lsp-typescript-tsdk "${pkgs.typescript}/lib/node_modules/typescript/lib")
       '';
     };
 
