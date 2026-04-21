@@ -1511,10 +1511,9 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
   ;; Java language server
   (use-package lsp-java
     :ensure t
-    :hook (java-ts-mode . lsp-deferred)
-    :custom
-    (lsp-java-server-install-dir (expand-file-name "~/.emacs.d/jdt-language-server/"))
-    (lsp-java-jdt-download-url nil)
+    :hook (java-ts-mode . (lambda ()
+  			    (require 'lsp-java)
+  			    (lsp-deferred)))
     :config
     (evil-leader/set-key
       "ljn" 'lsp-java-add-import
@@ -1569,18 +1568,26 @@ Markdown Edit:
 *** Scala
 #+begin_src emacs-lisp
   ;; Scala language server
+  (use-package scala-ts-mode
+    :mode "\\.scala\\'"
+    :hook (scala-ts-mode . (lambda ()
+  			     (require 'lsp-metals)
+  			     (lsp-deferred))))
+
   (use-package lsp-metals
     :ensure t
     :after (scala-ts-mode lsp-mode)
     :custom
     (lsp-metals-server-command "metals")
+    (lsp-metals-sbt-script "sbt")
     (lsp-metals-bloop-install "off")
     (lsp-metals-default-bsp-to-build-tool t)
     (lsp-metals-fallback-scala-version "3.8.1")
     :config
     (lsp-register-custom-settings
      '(("metals.bloopInstall" "off")
-       ("metals.defaultBspToBuildTool" t :json-false)))
+       ("metals.defaultBspToBuildTool" t)
+       ("metals.sbtScript" "sbt")))
 
     (evil-leader/set-key
       "lsb" 'lsp-metals-build-import

@@ -280,7 +280,7 @@ in
         ];
       extraConfig = ''
         ${builtins.readFile ./init.el}
-        (setq lsp-java-server-install-dir "${pkgs.jdt-language-server}/share/java/jdt-language-server/")
+        (setq lsp-java-server-install-dir "${pkgs.jdt-language-server}/share/java/jdtls/")
         (setq lsp-java-jdt-download-url nil)
         (setq lsp-typescript-tsdk "${pkgs.typescript}/lib/node_modules/typescript/lib")
       '';
