@@ -1551,7 +1551,12 @@ Markdown Edit:
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
     :mode "\\.nix\\'"
-    :hook (nix-ts-mode . lsp-deferred))
+    :hook (nix-ts-mode . lsp-deferred)
+    :config
+    (with-eval-after-load 'lsp-mode
+      (lsp-register-custom-settings
+       '(("nil.nix.flake.nixpkgsInputName" "nixpkgs")
+  	 ("nil.nix.flake.autoEvalInputs" :json-false)))))
 #+end_src
 
 *** Rust
@@ -1784,15 +1789,20 @@ Setting up Consult for better navigation in Emacs
       "fg" 'consult-ripgrep)
     (setq consult-preview-key (list :debounce 0.1 'any)))
 
+  (use-package consult-lsp
+    :ensure t
+    :after (consult lsp-mode)
+    :config
+    (evil-leader/set-key
+      "lw" 'consult-lsp-diagnostics))
+
   (use-package consult-projectile
     :config
-
     (evil-leader/set-key
       "pf" 'consult-projectile-find-file
       "pw" 'consult-projectile-find-file-other-window
       "pp" 'consult-projectile-switch-project
       "TAB" 'consult-projectile-switch-to-buffer))
-
 #+end_src
 
 ** ORG

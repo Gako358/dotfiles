@@ -93,7 +93,6 @@ let
     pkgs.black
     pkgs.dtach
     pkgs.gemini-cli
-    pkgs.jdt-language-server
     pkgs.kotlin-language-server
     pkgs.nil
     pkgs.nixfmt
@@ -247,6 +246,7 @@ in
 
           # Navigation
           consult # Consulting completing-read
+          consult-lsp # Consult LSP for diagnostics
           consult-projectile # Consult interface for Projectile
 
           # Org
@@ -280,8 +280,6 @@ in
         ];
       extraConfig = ''
         ${builtins.readFile ./init.el}
-        (setq lsp-java-server-install-dir "${pkgs.jdt-language-server}/share/java/jdtls/")
-        (setq lsp-java-jdt-download-url nil)
         (setq lsp-typescript-tsdk "${pkgs.typescript}/lib/node_modules/typescript/lib")
       '';
     };
