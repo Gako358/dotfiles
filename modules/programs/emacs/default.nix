@@ -89,7 +89,6 @@ let
     hunspellWithDicts
     metals
     pkgs.astyle
-    pkgs.basedpyright
     pkgs.black
     pkgs.dtach
     pkgs.gemini-cli
@@ -98,6 +97,7 @@ let
     pkgs.nixfmt
     pkgs.nixfmt-tree
     pkgs.prettier
+    pkgs.python313Packages.python-lsp-server
     pkgs.nodejs
     pkgs.typescript
     pkgs.typescript-language-server
