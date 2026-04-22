@@ -1483,9 +1483,8 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 #+begin_src emacs-lisp
   ;; C language server
   (use-package c-ts-mode
-    :hook (c-ts-mode . lsp-deferred)
     :mode (("\\.c\\'" . c-ts-mode)
-	   ("\\.h\\'" . c-ts-mode)))
+  	   ("\\.h\\'" . c-ts-mode)))
     #+end_src
 
 *** Dockerfile
@@ -1501,7 +1500,8 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
     :custom
     (haskell-ts-use-indent t)
     (haskell-ts-ghci "ghci")
-    :hook (haskell-ts-mode . lsp-deferred)
+    :hook (haskell-ts-mode . (lambda ()
+  			       (require 'lsp-haskell)))
     :mode (("\\.hs\\'" . haskell-ts-mode)
   	   ("\\.cabal\\'" . haskell-ts-mode)))
 #+end_src
@@ -1512,8 +1512,7 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
   (use-package lsp-java
     :ensure t
     :hook (java-ts-mode . (lambda ()
-  			    (require 'lsp-java)
-  			    (lsp-deferred)))
+  			    (require 'lsp-java)))
     :config
     (evil-leader/set-key
       "ljn" 'lsp-java-add-import
@@ -1533,7 +1532,6 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 #+begin_src emacs-lisp
   (use-package kotlin-ts-mode
     :init
-    :hook (kotlin-ts-mode . lsp-deferred)
     :mode "\\.kt\\'")
 
 #+end_src
@@ -1550,13 +1548,13 @@ Markdown Edit:
 *** Nix
 #+begin_src emacs-lisp
   (use-package nix-ts-mode
-    :mode "\\.nix\\'"
-    :hook (nix-ts-mode . lsp-deferred)
-    :config
-    (with-eval-after-load 'lsp-mode
-      (lsp-register-custom-settings
-       '(("nil.nix.flake.nixpkgsInputName" "nixpkgs")
-  	 ("nil.nix.flake.autoEvalInputs" :json-false)))))
+    :mode "\\.nix\\'")
+#+end_src
+
+*** Python
+#+begin_src emacs-lisp
+  (use-package python
+    :mode ("\\.py\\'" . python-ts-mode))
 #+end_src
 
 *** Rust
@@ -1564,7 +1562,6 @@ Markdown Edit:
   ;; Rust language server
   (use-package rust-ts-mode
     :mode "\\.rs\\'"
-    :hook (rust-ts-mode . lsp-deferred)
     :init
     (with-eval-after-load 'org
       (cl-pushnew '("rust" . rust-ts-mode) org-src-lang-modes :test #'equal)))
@@ -1576,8 +1573,7 @@ Markdown Edit:
   (use-package scala-ts-mode
     :mode "\\.scala\\'"
     :hook (scala-ts-mode . (lambda ()
-  			     (require 'lsp-metals)
-  			     (lsp-deferred))))
+  			     (require 'lsp-metals))))
 
   (use-package lsp-metals
     :ensure t
@@ -1616,7 +1612,6 @@ Markdown Edit:
 #+begin_src emacs-lisp
   ;; TypeScript language server
   (use-package typescript-ts-mode
-    :hook (typescript-ts-mode . lsp-deferred)
     :mode ("\\.ts\\'" . typescript-ts-mode))
 #+end_src
 
@@ -1624,11 +1619,10 @@ Markdown Edit:
 #+begin_src emacs-lisp
   ;; Vue
   (use-package vue-ts-mode
-    :hook ((vue-ts-mode . lsp-deferred)
-  	   (vue-ts-mode . (lambda ()
-  			    (setq-local lsp-disabled-clients '(ts-ls vue-semantic-server))
-  			    (setq-local lsp-enable-links nil)
-  			    (setq-local lsp-lens-enable nil))))
+    :hook (vue-ts-mode . (lambda ()
+  			   (setq-local lsp-disabled-clients '(ts-ls vue-semantic-server))
+  			   (setq-local lsp-enable-links nil)
+  			   (setq-local lsp-lens-enable nil)))
     :mode ("\\.vue\\'" . vue-ts-mode)
     :config
     (with-eval-after-load 'lsp-mode
