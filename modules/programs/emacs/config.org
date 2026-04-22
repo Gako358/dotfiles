@@ -284,11 +284,11 @@ Context Menu for Actions:
     :ensure t
     :defer t
     :commands (embark-act
-  		       embark-dwim
-  		       embark-export
-  		       embark-collect
-  		       embark-bindings
-  		       embark-prefix-help-command)
+  	     embark-dwim
+  	     embark-export
+  	     embark-collect
+  	     embark-bindings
+  	     embark-prefix-help-command)
     :init
     (setq prefix-help-command #'embark-prefix-help-command)
 
@@ -300,15 +300,13 @@ Context Menu for Actions:
                    (window-parameters (mode-line-format . none))))
     :bind (:map minibuffer-local-map
                 ("M-o"     . embark-act)
-  	      ("M-O"     . embark-act-all)
+    	      ("M-O"     . embark-act-all)
                 ("C-c C-c" . embark-export)
                 ("C-c C-o" . embark-collect)))
 
   (use-package embark-consult
     :ensure t
-    :after (embark consult)
-    :hook
-    (embark-collect-mode . consult-preview-at-point-mode))
+    :after (embark consult))
 #+end_src
 
 *** Eldoc
@@ -1787,7 +1785,6 @@ Setting up Consult for better navigation in Emacs
   ;; Consulting completing-read
   (use-package consult
     :config
-
     (evil-leader/set-key
       "ff" 'consult-find
       "fg" 'consult-ripgrep)
