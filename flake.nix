@@ -33,7 +33,7 @@
             inputsFrom = [ ];
             inherit (pre-commit-check) shellHook;
             nativeBuildInputs = with pkgs; [
-              nixpkgs-fmt
+              nixfmt
             ];
           };
 
