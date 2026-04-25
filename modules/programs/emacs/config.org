@@ -7,6 +7,25 @@
 Git clone https://github.com/gako358/dotfiles.git.
 The configuration is setup using NixOS, check README.
 
+* Early Init
+These settings MUST be evaluated before any other source block, because
+several =use-package= forms further down (e.g. =eca=, =eldoc-box=) eagerly
+load and call =evil-leader/set-key=, which in turn =(require 'evil)= via
+=evil-leader=. If =evil-want-keybinding= is still at its default value =t=
+when that happens, evil will pull in =evil-keybindings=, and later
+=evil-collection-init= will print the warning:
+
+#+begin_quote
+evil-want-keybinding was set to nil but not before loading evil.
+#+end_quote
+
+Setting these here, in the very first tangled block, guarantees they are
+in effect before any package can transitively load evil.
+
+#+begin_src emacs-lisp
+  (setq evil-want-keybinding nil)
+  (setq evil-want-integration t)
+#+end_src
 
 ** Appearance
 Using the dashboard package with the kaolin-theme to enhance the startup experience and overall look of Emacs.
@@ -756,6 +775,11 @@ Vertical Interactive Completion UI:
   ;; on disk.
   (add-hook 'after-init-hook #'global-auto-revert-mode)
 
+  ;; Also refresh VC (branch + dirty/clean state) info on auto-revert
+  ;; so the modeline updates when you checkout/switch branches, push,
+  ;; stage, stash, etc. from outside Emacs.
+  (setq auto-revert-check-vc-info t)
+
   ;; recentf is an Emacs package that maintains a list of recently
   ;; accessed files, making it easier to reopen files you have worked on
   ;; recently.
@@ -785,8 +809,9 @@ Vertical Interactive Completion UI:
   (setq display-line-numbers-type 'relative)
   (global-display-line-numbers-mode)
 
-  ;; Must be set before evil or evil-collection loads (see evil-collection#60)
-  (setq evil-want-keybinding nil)
+  ;; NOTE: `evil-want-keybinding' / `evil-want-integration' are set in the
+  ;; "Early Init" section at the very top of this file, since some packages
+  ;; (eca, eldoc-box) transitively load evil before this section runs.
 #+end_src
 
 ** Document
@@ -925,11 +950,11 @@ My email configuration transforms Emacs into a powerful email client with severa
 ** Evil
 *** Evil Mode
 #+begin_src emacs-lisp
+  ;; NOTE: `evil-want-integration' and `evil-want-keybinding' are set in the
+  ;; "Early Init" section at the very top of this file, before any package
+  ;; can transitively load evil.
   (use-package evil
     :ensure t
-    :init
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
     :custom
     (evil-want-Y-yank-to-eol t)
     :config
