@@ -272,6 +272,64 @@ Complete `use-package' configuration for copilot, incorporating:
           ("C-c M-y" . copilot-chat-yank-pop)))
 #+end_src
 
+*** Eca
+ECA (Editor Code Assistant) is an AI-powered agentic pair-programming
+client for Emacs. Unlike copilot-chat which focuses on conversations
+(explain, review, fix), ECA is a full agentic assistant that can read
+and write files, execute commands, and perform multi-step tasks
+autonomously. It connects to an external server process via JSONRPC
+and supports MCP (Model Context Protocol), inline code completion,
+and code rewriting. The server binary is automatically downloaded
+on first use.
+
+Usage:
+- Run =M-x eca= to start a session in your project directory.
+- Type your prompt after =>= and press =RET= to send.
+- Use =@= to attach files/dirs as context.
+- Press =C-c .= in the ECA buffer for the transient command menu.
+- Tool calls (file writes, commands) require your approval.
+
+#+begin_src emacs-lisp
+  (use-package eca
+    :ensure t
+    :custom
+    ;; Use Claude as the model
+    (eca-chat-custom-model "anthropic/claude-opus-4-7")
+    ;; Show chat in a side window on the right
+    (eca-chat-use-side-window t)
+    (eca-chat-window-side 'right)
+    (eca-chat-window-width 0.4)
+    ;; Focus the chat window when it opens
+    (eca-chat-focus-on-open t)
+    ;; Automatically include repomap context for better code awareness
+    (eca-chat-auto-add-repomap t)
+
+    :config
+    (evil-leader/set-key
+      ;; Session management
+      "ee"  'eca                         ; Start ECA session + open chat
+      "es"  'eca-stop                    ; Stop ECA session
+      "eR"  'eca-restart                 ; Restart ECA session
+      "eS"  'eca-settings               ; Open settings panel (MCP, etc.)
+      ;; Chat
+      "ew"  'eca-chat-toggle-window      ; Toggle chat window
+      "en"  'eca-chat-new                ; Start a new chat
+      "ef"  'eca-chat-select             ; Switch between chats
+      "er"  'eca-chat-rename             ; Rename current chat
+      "ec"  'eca-chat-clear              ; Clear chat messages
+      "eK"  'eca-chat-reset              ; Delete chat and start fresh
+      ;; Model and agent
+      "em"  'eca-chat-select-model       ; Change model
+      "ea"  'eca-chat-select-agent       ; Change agent
+      "eA"  'eca-chat-cycle-agent        ; Cycle to next agent
+      ;; Context
+      "e@"  'eca-chat-add-context-to-user-prompt  ; Add file/dir context
+      ;; Tool call approval
+      "ey"  'eca-chat-tool-call-accept-all          ; Accept all tool calls
+      "eY"  'eca-chat-tool-call-accept-all-and-remember ; Accept and remember
+      "ej"  'eca-chat-tool-call-reject-next))       ; Reject next tool call
+#+end_src
+
 *** Embark
 Context Menu for Actions:
 - Embark: Offers a context menu for performing actions on selected items directly from the completion interface.

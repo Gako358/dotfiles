@@ -6,7 +6,7 @@
   ...
 }:
 let
-  metalsVersion = "1.6.7";
+  metalsVersion = "2.0.0-M9";
   metals = pkgs.metals.overrideAttrs (
     final: prev: {
       deps = pkgs.stdenv.mkDerivation {
@@ -21,7 +21,7 @@ let
         '';
         outputHashMode = "recursive";
         outputHashAlgo = "sha256";
-        outputHash = "sha256-bGx3PQGgaTueQ/v/Xk7gp03TzllyMs7nCx9QWXNFdt0=";
+        outputHash = "sha256-3zsSXt56ocefJXNvA6eszotssxPeNdgLFuoRZg09DcM=";
       };
       buildInputs = [ final.deps ];
     }
@@ -146,6 +146,7 @@ in
           cape # Completion At Point Extensions.
           corfu # Completion Overlay Region Function.
           copilot-chat # Github copilot-chat extension.
+          eca # Editor Code Assistant, AI-powered agentic
           embark # Context-sensitive actions.
           embark-consult # Consult preview using embark
           flycheck # On-the-fly syntax checking
