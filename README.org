@@ -1,4 +1,3 @@
-
 [[https://nixos.org][https://img.shields.io/badge/NixOS-unstable-blue.svg?style=flat-square&logo=NixOS&logoColor=white]]
 
 *** Disclaimer
@@ -11,44 +10,402 @@
 
 Welcome to my compilation of dotfiles, the secret sauce behind the construction and configuration of my Linux systems. For a deeper dive into NixOS, the innovative Linux distribution I use, and Nix, the powerful package management tool and language that this repository is primarily written in, click [[https://nixos.org][Nix]].
 
+The configuration follows the [[https://github.com/vic/import-tree][dendritic pattern]] on top of [[https://flake.parts][flake-parts]]: every ~.nix~ file under ~modules/~ is automatically discovered and treated as a flake-parts module — there are no hand-written ~imports = [...]~ lists. Adding a new program, service, or host is a single ~touch~ away.
+
+*** Hosts
+
+| Host       | Role                                                  |
+|------------+-------------------------------------------------------|
+| aanallein  | HP server                                             |
+| rhuidean   | Virtual machine — used for testing                    |
+| tanchico   | Gaming PC — 32 GB RAM, Ryzen 7 5800X3D                |
+| terangreal | Desktop PC — 48 GB RAM, Ryzen 7 5600                  |
+| tuathaan   | HP work laptop                                        |
+
+*** Repository Structure
+
+#+BEGIN_SRC text
+.
+├── flake.nix                # ~80 lines: inputs + flake-parts.lib.mkFlake { imports = [ (import-tree ./modules) ]; }
+├── flake.lock
+├── lib/                     # repl helper used by pkgs/repl
+├── pkgs/                    # custom packages: raiderio-client, repl, warcraftlogs
+├── scripts/install.sh       # bootstrap installer (uses disko)
+├── secrets/                 # sops-encrypted secrets
+└── modules/                 # ★ everything that configures the system lives here
+    ├── options.nix          # declares flake.{nixosModules,homeModules} schema
+    ├── lib.nix              # exposes flake.lib (nixpkgs.lib // home-manager.lib)
+    ├── home.nix             # home-manager base module
+    │
+    ├── perSystem/           # devShell, formatter, packages, pre-commit checks
+    ├── config/              # custom NixOS options + assertions
+    │                        #   (environment.{server,desktop,gaming,develop,theme})
+    ├── hardware/            # boot, plymouth, disko, graphics, locale, network, fonts, …
+    ├── programs/            # one file per program, NixOS or home-manager
+    ├── services/            # one file per service, NixOS or home-manager
+    ├── themes/              # gtk theme + colour palette
+    ├── scripts/             # raw shell-script derivations + HM module exposing them
+    └── hosts/<name>/        # one directory per host
+        ├── default.nix                    # builds nixosConfigurations.<name>
+        ├── _hardware-configuration.nix    # ignored by import-tree (leading "_")
+        ├── _disks.nix                     # disko config; used by scripts/install.sh
+        ├── _machine.nix                   # host NixOS bits (hostname, env toggles)
+        └── _home.nix                      # host-specific home-manager bits
+#+END_SRC
+
+*** How modules register themselves
+
+Each file under ~modules/~ is a flake-parts module. It declares its class by registering under one (or both) of:
+
+- ~flake.nixosModules.<name>~       — consumed by NixOS
+- ~flake.homeModules.<name>~ — consumed by home-manager
+
+A NixOS-only example:
+
+#+BEGIN_SRC nix
+# modules/services/openssh.nix
+_: {
+  flake.nixosModules.services-openssh = _: {
+    services.openssh = {
+      enable = true;
+      settings = {
+        PermitRootLogin = "no";
+        PasswordAuthentication = false;
+      };
+    };
+  };
+}
+#+END_SRC
+
+A home-manager-only example:
+
+#+BEGIN_SRC nix
+# modules/programs/bat.nix
+_: {
+  flake.homeModules.programs-bat = _: {
+    programs.bat.enable = true;
+  };
+}
+#+END_SRC
+
+A single file can register *both* sides of the same concern (see ~modules/programs/fish.nix~, ~modules/programs/hyprland.nix~, ~modules/services/sops.nix~, ~modules/programs/cachix.nix~):
+
+#+BEGIN_SRC nix
+# modules/programs/fish.nix
+_: {
+  flake.nixosModules.programs-fish = { pkgs, lib, ... }: {
+    programs.fish = {
+      enable = true;
+      vendor.completions.enable = true;
+      shellAliases = { ls = "${pkgs.eza}/bin/eza"; /* … */ };
+      # …
+    };
+  };
+
+  flake.homeModules.programs-fish = { pkgs, ... }: {
+    programs.fish.plugins = [ /* … */ ];
+    home.packages = with pkgs; [ eza fd jump ];
+  };
+}
+#+END_SRC
+
+*** How a host is built
+
+#+BEGIN_SRC nix
+# modules/hosts/aanallein/default.nix
+{ config, lib, inputs, ... }:
+{
+  flake.nixosConfigurations.aanallein = inputs.nixpkgs.lib.nixosSystem {
+    specialArgs = { inherit inputs; self = config.flake; };
+    modules =
+      (lib.attrValues config.flake.nixosModules)        # every NixOS module
+      ++ [
+        inputs.disko.nixosModules.disko
+        inputs.home-manager.nixosModules.home-manager
+        inputs.impermanence.nixosModules.impermanence
+        inputs.sops-nix.nixosModules.sops
+
+        ./_machine.nix                                    # host-local bits
+
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = { inherit inputs; self = config.flake; };
+            backupFileExtension = ".hm-backup";
+            users.merrinx.imports =
+              (lib.attrValues config.flake.homeModules) # every HM module
+              ++ [
+                inputs.nix-colors.homeManagerModules.default
+                inputs.sops-nix.homeManagerModules.sops
+                ./_home.nix
+              ];
+          };
+        }
+      ];
+  };
+}
+#+END_SRC
+
+Every host loads *every* registered module. Host-specific behaviour comes from setting the gating options in ~_machine.nix~ (e.g. ~environment.server.enable = true~, ~environment.desktop.windowManager = "gnome"~, ~service.wireguard.enable = false~). Modules are no-ops on hosts that don't enable them.
+
+The ~_~ prefix on per-host data files (~_hardware-configuration.nix~, ~_disks.nix~, ~_machine.nix~, ~_home.nix~) tells ~import-tree~ to skip those paths so they aren't loaded as flake-parts modules — they're plain NixOS / home-manager modules referenced by relative path from the host's ~default.nix~.
+
+*** How to do common things
+
+**** Add a program (home-manager only)
+
+#+BEGIN_SRC nix
+# modules/programs/htop.nix
+_: {
+  flake.homeModules.programs-htop = _: {
+    programs.htop.enable = true;
+  };
+}
+#+END_SRC
+
+That's it. Every host picks it up on the next rebuild.
+
+**** Add a program with both NixOS and home-manager aspects
+
+#+BEGIN_SRC nix
+# modules/programs/myprog.nix
+_: {
+  flake.nixosModules.programs-myprog = _: {
+    programs.myprog.enable = true;
+  };
+  flake.homeModules.programs-myprog = { pkgs, ... }: {
+    programs.myprog.theme = "dracula";
+    home.packages = with pkgs; [ myprog-extras ];
+  };
+}
+#+END_SRC
+
+**** Add a service
+
+Identical pattern, in ~modules/services/<name>.nix~. Pick the right namespace depending on whether it's a system service or a user service.
+
+**** Add a new host
+
+#+BEGIN_SRC shell
+mkdir modules/hosts/<name>
+# Generate hardware-configuration into modules/hosts/<name>/_hardware-configuration.nix
+# Add _disks.nix, _machine.nix, _home.nix
+# Copy modules/hosts/aanallein/default.nix and rename "aanallein" → "<name>"
+#+END_SRC
+
+**** Disable a module on one host
+
+Edit ~modules/hosts/<name>/_machine.nix~:
+
+#+BEGIN_SRC nix
+{
+  service.wireguard.enable = false;
+  environment.gaming.enable = false;
+}
+#+END_SRC
+
+**** Stop a file from being auto-imported
+
+Prefix the file (or directory) name with ~_~. ~import-tree~ skips any path containing ~/_~. That's how all the per-host data files and ~modules/scripts/_*.nix~ raw derivations stay out of the auto-import.
+
 *** How To Install
 
-There are two main ways to deploy these dotfiles on a system:
-
 **** On an existing NixOS system
-
-If you have set up a NixOS system with a ~configuration.nix~ file, it's possible to switch over to this Nix config with the following commands:
 
 #+BEGIN_SRC shell
 nix-shell
 nixos-rebuild switch --flake .#
 #+END_SRC
 
-~Note: This assumes your computer name matches one of the configurations in the flake.~
+(This assumes your hostname matches one of the configurations in the flake. Otherwise pass the host explicitly: ~nixos-rebuild switch --flake .#aanallein~.)
 
-*** Repository Structure
+**** Fresh install via the NixOS installer
 
-+ ~flake.nix~: Entrypoint for hosts and home configurations. Also exposes a devshell for bootstrapping (~nix develop~ or ~nix-shell~).
-+ ~hosts~: NixOS Configurations, accessible via ~nixos-rebuild --flake~.
-  + ~aanallein~: HP Server
-  + ~rhuidean~: Virtual Machine - Used for tesing
-  + ~tanchico~: Gaming PC - 32GB RAM, Ryzon7 5800X3D
-  + ~terangreal~: Desktop PC - 48GB RAM, Ryzon7 5600
-  + ~tuathaan~: HP work laptop
-+ ~modules~: My Home-manager configuration, accessible via ~home-manager --flake~
-  + Each directory here is a "feature" each ~hm~ configuration can toggle, thus customizing my setup for each machine (be it a server, desktop, laptop, anything really).
-+ ~pkgs~: My custom packages. Also accessible via ~nix build~. You can compose these into your own configuration by using my flake's overlay or consume them through NUR.
-+ ~secrets~: My ~sops~ secrets, used in the configuration.
-+ ~system~: Modules that are the "system/nixpkgs," configuration. ~flake.nix~.
+The installer script handles disko formatting *and* the sops-nix bootstrap that's otherwise a chicken-and-egg problem on fresh installs (the host has no ~/etc/ssh/ssh_host_ed25519_key~ yet, so sops-nix can't decrypt secrets during activation).
 
-**** Installation via Media
+***** What to bring on the USB drive
 
-Alternatively, you can install these configurations via the install media from the ~nix-install~ repo as follows:
+Two USB drives is the simplest setup; you can also use one drive with two partitions:
 
-1. Boot off the install media.
-2. Create the partition schedule and mount it to ~/mnt~.
-3. Run:
+1. *Boot USB* — the NixOS installer ISO, written with ~dd~ or Rufus.
+
+2. *Secrets USB* — a small (FAT32 or ext4) USB containing one or more of:
+
+   | File                                    | When you need it                                                                                       |
+   |-----------------------------------------+--------------------------------------------------------------------------------------------------------|
+   | ~master-age-key.txt~                    | Path A (new host) only, *if* you want to run ~sops updatekeys~ on the installer itself                 |
+   | ~hosts/<host>/ssh_host_ed25519_key~     | Path B (reinstall) — restores the host's previous age identity                                         |
+   | ~hosts/<host>/ssh_host_ed25519_key.pub~ | Path B — companion public key                                                                          |
+   | ~hosts/<host>/ssh_host_rsa_key~ (opt)   | Path B — only if you want the host's old RSA SSH key to keep working too                               |
+   | ~hosts/<host>/ssh_host_rsa_key.pub~     | "                                                                                                      |
+
+   ~master-age-key.txt~ is one line in the form ~AGE-SECRET-KEY-1XXXXX...~. It is the private half of ~&master age13krpm9nls3799...~ in ~.sops.yaml~ — the master recipient that decrypts every secrets file. Treat it like the keys to your house: it's the recovery key for everything sops-encrypted.
+
+   You don't need any of this on the USB if you have *another machine* (your daily driver) within reach that already has the master age key — see Path A note below.
+
+3. *(Optional) Offline flake copy* — ~git clone~ of this repo onto the secrets USB. Useful if the install machine doesn't have network access yet. Otherwise, the install script clones over the network.
+
+***** Boot, mount the secrets USB, run the script
 
 #+BEGIN_SRC shell
-nixos-install --flake github:gako358/dotfiles#terangreal
+# Inside the NixOS live installer:
+
+# 1. Mount the secrets USB (adjust device as needed)
+sudo mkdir -p /mnt/usb
+sudo mount /dev/sdX1 /mnt/usb
+
+# 2. Get the flake
+git clone https://github.com/gako358/dotfiles.git
+cd dotfiles
+
+# 3. Run the helper
+sudo bash scripts/install.sh
 #+END_SRC
+
+The script:
+
+1. Asks which host you're installing.
+2. Runs ~disko~ against ~modules/hosts/<host>/_disks.nix~ to format & mount.
+3. *Bootstraps the sops host key* into ~/mnt/persist/etc/ssh/~ — branches into one of three paths described below.
+4. Runs ~nixos-install --flake .#<host>~.
+
+***** Path A — brand-new host (not yet in ~.sops.yaml~)
+
+The script generates a fresh ~ssh_host_ed25519_key~ in ~/mnt/persist/etc/ssh/~, computes its age public key, prints it, then pauses. You then need to:
+
+1. Add the new ~age1...~ entry under the ~&hosts~ anchor of ~.sops.yaml~.
+2. Add ~*<host>~ to ~creation_rules[0].key_groups[0].age~.
+3. Run ~sops updatekeys secrets/default.yaml~ — re-encrypts every secret so the new host is in the recipient list.
+4. Commit + push.
+5. Pull the change into the flake checkout on the installer.
+6. Press ENTER in the script.
+
+Two ways to do steps 1-5:
+
+- *Option A1 — on another machine.* Switch to your daily driver (which already has the master age key in ~~/.config/sops/age/keys.txt~), do the edits there, push to your remote. Back on the installer: ~git pull~. *No master key on USB needed.*
+
+- *Option A2 — on the installer itself.* Drop the master age key into place so sops on the installer can decrypt:
+
+  #+BEGIN_SRC shell
+  mkdir -p ~/.config/sops/age
+  cp /mnt/usb/master-age-key.txt ~/.config/sops/age/keys.txt
+  chmod 0600 ~/.config/sops/age/keys.txt
+
+  # in another shell, while the install script is paused:
+  cd /path/to/dotfiles
+  $EDITOR .sops.yaml         # add &<host> + *<host>
+  nix shell nixpkgs#sops -c sops updatekeys secrets/default.yaml
+  git commit -am "sops: add <host>"
+  git push
+  #+END_SRC
+
+  Then back in the install script's shell, ~git pull~ and press ENTER.
+
+After ENTER, the script proceeds with ~nixos-install~. Activation runs, sops-nix derives the new host's age identity from ~/etc/ssh/ssh_host_ed25519_key~ (which you just seeded into ~/mnt/persist/etc/ssh/~), and decrypts every secret on the first try.
+
+***** Path B — reinstall of an existing host (already in ~.sops.yaml~)
+
+Use this to keep the host's existing age identity, so you don't have to re-encrypt anything. *Before* wiping the old install, back up the SSH host key:
+
+#+BEGIN_SRC shell
+# On the still-running system:
+sudo cp /etc/ssh/ssh_host_ed25519_key{,.pub} /tmp/keybackup/
+# move /tmp/keybackup onto the secrets USB:
+#   /mnt/usb/hosts/<host>/ssh_host_ed25519_key{,.pub}
+#+END_SRC
+
+During the install, when the script prompts, point it at the saved private-key path on the USB:
+
+#+BEGIN_SRC text
+Path to backed-up ssh_host_ed25519_key (private):  /mnt/usb/hosts/terangreal/ssh_host_ed25519_key
+#+END_SRC
+
+The script copies both halves into ~/mnt/persist/etc/ssh/~. sops-nix derives the same age identity as before, secrets decrypt unchanged, no ~.sops.yaml~ edit needed. Total install time: just the disko + nixos-install steps.
+
+***** Path C — escape hatch (sops disabled)
+
+If sops is broken in some non-obvious way and you just need the install to finish, set in the host's ~_machine.nix~:
+
+#+BEGIN_SRC nix
+service.sops.enable = false;
+#+END_SRC
+
+Then pick ~3) SKIP bootstrap~ in the script. Re-enable sops once the system is up and you've sorted out whatever was broken.
+
+***** Recommended habit: back up host keys after every successful install
+
+The moment a fresh install of a host is up and running, copy its SSH host keys off:
+
+#+BEGIN_SRC shell
+sudo tar -czf /tmp/<host>-ssh-host-keys.tgz -C /persist/etc/ssh ssh_host_ed25519_key ssh_host_ed25519_key.pub
+#+END_SRC
+
+Stash that tarball on the secrets USB / in your password manager / on an encrypted backup. Path B (reinstall) is then a five-minute operation; without that backup, every reinstall forces you down Path A and you have to ~sops updatekeys~ + push + pull every time.
+
+**** Manual install (no helper script)
+
+If for some reason the script isn't usable, here's exactly what it does so you can do it by hand:
+
+#+BEGIN_SRC shell
+# 1. partition + mount with disko
+nix run github:nix-community/disko -- --mode zap_create_mount \
+  ./modules/hosts/<host>/_disks.nix
+
+# 2. seed the host key (Path A or Path B; the script just automates this)
+mkdir -p /mnt/persist/etc/ssh
+
+# Path A: generate
+ssh-keygen -t ed25519 -N "" -C "root@<host>" \
+  -f /mnt/persist/etc/ssh/ssh_host_ed25519_key
+nix shell nixpkgs#ssh-to-age -c \
+  ssh-to-age < /mnt/persist/etc/ssh/ssh_host_ed25519_key.pub
+# → add resulting age1... to .sops.yaml; sops updatekeys; push; pull
+
+# Path B: restore
+cp /mnt/usb/hosts/<host>/ssh_host_ed25519_key     /mnt/persist/etc/ssh/
+cp /mnt/usb/hosts/<host>/ssh_host_ed25519_key.pub /mnt/persist/etc/ssh/
+chmod 0600 /mnt/persist/etc/ssh/ssh_host_ed25519_key
+chmod 0644 /mnt/persist/etc/ssh/ssh_host_ed25519_key.pub
+
+# 3. install
+nixos-install --flake .#<host>
+#+END_SRC
+
+*** Inspecting a build
+
+After ~nixos-rebuild build --flake .~ (which produces a ~./result~ symlink without activating):
+
+#+BEGIN_SRC shell
+# system-wide binaries
+ls result/sw/bin/ | grep -iE 'hyprland|emacs'
+
+# the user's home-manager profile
+ls result/etc/profiles/per-user/merrinx/bin/ | head
+
+# evaluate options without activating
+nix eval .#nixosConfigurations.aanallein.config.programs.hyprland.enable
+nix eval --raw .#nixosConfigurations.aanallein.config.home-manager.users.merrinx.programs.emacs.finalPackage
+
+# diff against the currently running system
+nix run nixpkgs#nvd -- diff /run/current-system ./result
+#+END_SRC
+
+*** Development
+
+#+BEGIN_SRC shell
+nix develop                # devShell with nixfmt + pre-commit hooks installed
+nix fmt                    # format all .nix files
+nix flake check            # run pre-commit (statix, deadnix, nil, nixfmt, shellcheck, beautysh)
+nix flake show             # list every output (hosts, packages, devShells, formatter, checks)
+#+END_SRC
+
+*** Custom packages
+
+Built per-system via ~nix build .#<name>~:
+
+| Package           | What                                                          |
+|-------------------+---------------------------------------------------------------|
+| ~repl~            | ~nix repl~ wrapper preloading the flake & nixpkgs             |
+| ~raiderio-client~ | RaiderIO desktop client (AppImage wrapped)                    |
+| ~warcraftlogs~    | Archon Lite / Warcraft Logs uploader (AppImage wrapped)       |

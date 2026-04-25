@@ -1,10 +1,13 @@
-{
-  pkgs,
-  self,
-  ...
-}:
-{
-  home.packages = [
-    self.packages.${pkgs.stdenv.hostPlatform.system}.repl
-  ];
+_: {
+  flake.homeModules.programs-repl =
+    {
+      pkgs,
+      self,
+      ...
+    }:
+    {
+      home.packages = [
+        self.packages.${pkgs.stdenv.hostPlatform.system}.repl
+      ];
+    };
 }
