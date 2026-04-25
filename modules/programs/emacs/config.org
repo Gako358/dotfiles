@@ -290,6 +290,33 @@ Usage:
 - Tool calls (file writes, commands) require your approval.
 
 #+begin_src emacs-lisp
+  (defun my/load-env-file (file)
+    "Load KEY=VALUE pairs from FILE into Emacs's process environment."
+    (when (file-readable-p file)
+      (with-temp-buffer
+  	(insert-file-contents file)
+  	(goto-char (point-min))
+  	(while (not (eobp))
+  	(let ((line (string-trim
+  		     (buffer-substring-no-properties
+  		      (line-beginning-position)
+  		      (line-end-position)))))
+  	  (unless (or (string-empty-p line)
+  		      (string-prefix-p "#" line))
+  	    (when (string-prefix-p "export " line)
+  	      (setq line (substring line 7)))
+  	    (when (string-match "\\`\\([^=]+\\)=\\(.*\\)\\'" line)
+  	      (let ((key (string-trim (match-string 1 line)))
+  		    (val (string-trim (match-string 2 line))))
+  		(when (and (>= (length val) 2)
+  			   (or (and (string-prefix-p "\"" val)
+  				    (string-suffix-p "\"" val))
+  			       (and (string-prefix-p "'" val)
+  				    (string-suffix-p "'" val))))
+  		  (setq val (substring val 1 -1)))
+  		(setenv key val)))))
+  	(forward-line 1)))))
+
   (use-package eca
     :ensure t
     :custom
@@ -305,6 +332,9 @@ Usage:
     (eca-chat-auto-add-repomap t)
 
     :config
+    ;; Load API keys from .env before ECA spawns its subprocess
+    (my/load-env-file (expand-file-name "~/Sources/agentx/azure/.env"))
+
     (evil-leader/set-key
       ;; Session management
       "ee"  'eca                         ; Start ECA session + open chat
