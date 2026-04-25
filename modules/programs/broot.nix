@@ -1,3 +1,5 @@
-{
-  programs.broot.enable = true;
+_: {
+  flake.homeModules.programs-broot = {
+    programs.broot.enable = true;
+  };
 }

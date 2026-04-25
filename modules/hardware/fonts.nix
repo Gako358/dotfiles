@@ -1,0 +1,33 @@
+_: {
+  flake.nixosModules.hardware-fonts =
+    { pkgs, ... }:
+    {
+      fonts.packages = with pkgs; [
+        nerd-fonts.dejavu-sans-mono
+        nerd-fonts.fira-code
+        nerd-fonts.fira-mono
+        nerd-fonts.hack
+        nerd-fonts.iosevka
+        nerd-fonts.jetbrains-mono
+        nerd-fonts.liberation
+        nerd-fonts.noto
+        nerd-fonts.roboto-mono
+        nerd-fonts.ubuntu-mono
+        cascadia-code
+        corefonts
+        fira-code
+        fira-code-symbols
+        liberation_ttf
+        material-design-icons
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
+        noto-fonts-color-emoji
+        noto-fonts-emoji-blob-bin
+        source-code-pro
+        source-sans-pro
+        unifont
+        font-awesome
+      ];
+    };
+}

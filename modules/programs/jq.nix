@@ -1,3 +1,5 @@
-{
-  programs.jq.enable = true;
+_: {
+  flake.homeModules.programs-jq = {
+    programs.jq.enable = true;
+  };
 }

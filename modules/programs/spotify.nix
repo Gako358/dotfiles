@@ -1,77 +1,80 @@
-{
-  osConfig,
-  pkgs,
-  lib,
-  ...
-}:
-{
-  config = lib.mkMerge [
-    (lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
-      sops.secrets = lib.mkIf osConfig.service.sops.enable {
-        "spotify_id" = { };
-        "spotify_secret" = { };
-      };
-
-      home.persistence."/persist/" = {
-        directories = [
-          ".cache/spotify-player"
-          ".config/spotifyd"
-        ];
-      };
-
-      services.spotifyd = {
-        enable = true;
-        settings = {
-          global = {
-            device_name = "hyprland-spotify";
-            device_type = "computer";
-            bitrate = 320;
-            initial_volume = 70;
-            autoplay = true;
+_: {
+  flake.homeModules.programs-spotify =
+    {
+      osConfig,
+      pkgs,
+      lib,
+      ...
+    }:
+    {
+      config = lib.mkMerge [
+        (lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
+          sops.secrets = lib.mkIf osConfig.service.sops.enable {
+            "spotify_id" = { };
+            "spotify_secret" = { };
           };
-        };
-      };
 
-      programs.spotify-player = {
-        enable = true;
-        settings = {
-          theme = "default";
-          border_type = "Rounded";
-          progress_bar_type = "Line";
-          playback_window_position = "Top";
-          play_icon = "";
-          pause_icon = "";
-          liked_icon = "";
-          copy_command = {
-            command = "wl-copy";
-            args = [ ];
+          home.persistence."/persist/" = {
+            directories = [
+              ".cache/spotify-player"
+              ".config/spotifyd"
+            ];
           };
-          client_id = "65b708073fc0480ea92a077233ca87bd";
-          client_port = 8888;
-          ap_port = 443;
-          device = {
-            name = "spotify-player";
-            device_type = "speaker";
-            audio_cache = true;
-            normalization = true;
-            volume = 70;
-            bitrate = 320;
-            autoplay = false;
-          };
-        };
-      };
-    })
 
-    (lib.mkIf
-      (
-        osConfig.environment.desktop.windowManager == "gnome"
-        || osConfig.environment.desktop.windowManager == "kde"
-      )
-      {
-        home.packages = [
-          pkgs.spotify
-        ];
-      }
-    )
-  ];
+          services.spotifyd = {
+            enable = true;
+            settings = {
+              global = {
+                device_name = "hyprland-spotify";
+                device_type = "computer";
+                bitrate = 320;
+                initial_volume = 70;
+                autoplay = true;
+              };
+            };
+          };
+
+          programs.spotify-player = {
+            enable = true;
+            settings = {
+              theme = "default";
+              border_type = "Rounded";
+              progress_bar_type = "Line";
+              playback_window_position = "Top";
+              play_icon = "";
+              pause_icon = "";
+              liked_icon = "";
+              copy_command = {
+                command = "wl-copy";
+                args = [ ];
+              };
+              client_id = "65b708073fc0480ea92a077233ca87bd";
+              client_port = 8888;
+              ap_port = 443;
+              device = {
+                name = "spotify-player";
+                device_type = "speaker";
+                audio_cache = true;
+                normalization = true;
+                volume = 70;
+                bitrate = 320;
+                autoplay = false;
+              };
+            };
+          };
+        })
+
+        (lib.mkIf
+          (
+            osConfig.environment.desktop.windowManager == "gnome"
+            || osConfig.environment.desktop.windowManager == "kde"
+          )
+          {
+            home.packages = [
+              pkgs.spotify
+            ];
+          }
+        )
+      ];
+    };
 }

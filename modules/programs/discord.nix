@@ -1,30 +1,33 @@
-{
-  osConfig,
-  pkgs,
-  lib,
-  ...
-}:
-{
-  config = lib.mkIf osConfig.environment.desktop.enable {
-    home = {
-      packages = [
-        pkgs.discord
-      ];
-      persistence."/persist/" = {
-        directories = [
-          ".config/discord"
-        ];
-      };
-    };
+_: {
+  flake.homeModules.programs-discord =
+    {
+      osConfig,
+      pkgs,
+      lib,
+      ...
+    }:
+    {
+      config = lib.mkIf osConfig.environment.desktop.enable {
+        home = {
+          packages = [
+            pkgs.discord
+          ];
+          persistence."/persist/" = {
+            directories = [
+              ".config/discord"
+            ];
+          };
+        };
 
-    xdg.configFile = {
-      "discord/settings.json" = {
-        text = ''
-          {
-            "SKIP_HOST_UPDATE": true
-          }
-        '';
+        xdg.configFile = {
+          "discord/settings.json" = {
+            text = ''
+              {
+                "SKIP_HOST_UPDATE": true
+              }
+            '';
+          };
+        };
       };
     };
-  };
 }

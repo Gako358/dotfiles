@@ -1,0 +1,27 @@
+_: {
+  flake.nixosModules.config-desktop =
+    {
+      lib,
+      ...
+    }:
+    {
+      options.environment.desktop = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Enable desktop environment";
+        };
+        windowManager = lib.mkOption {
+          type = lib.types.nullOr (
+            lib.types.enum [
+              "hyprland"
+              "gnome"
+              "kde"
+            ]
+          );
+          default = "hyprland";
+          description = "Set what window manager to use.";
+        };
+      };
+    };
+}
