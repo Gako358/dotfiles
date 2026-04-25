@@ -1729,27 +1729,104 @@ Markdown Edit:
     :hook (sql-mode . sqlind-minor-mode))
 #+end_src
 
+*** Postgres
+PostgreSQL tooling. Two complementary entry points:
+
+- =pgmacs= — a buffer-based browser/editor that talks the Postgres wire
+  protocol directly via =pg.el= (no =psql= required). Connect once and
+  navigate tables, edit rows, follow foreign keys, export CSV/JSON.
+- =sql-postgres= — the classic =sql.el= comint REPL backed by =psql= for
+  ad-hoc query sessions and shipping regions/paragraphs from a =.sql=
+  buffer.
+
+All bindings live under the =SPC D= leader prefix (capital D — lowercase
+=d= is taken by =detached=).
+
+#+begin_src emacs-lisp
+  ;; sql.el / sql-postgres tweaks
+  (use-package sql
+    :defer t
+    :custom
+    ;; Echo each query before its results so result rows are not glued to
+    ;; the prompt — see SqlMode wiki note. Must be upper-case ECHO.
+    (sql-postgres-options '("--set=ECHO=all" "-P" "pager=off"))
+    :config
+    ;; Persist comint history per product (psql, etc.)
+    (defun my/sql-save-history-hook ()
+      (let ((dir (expand-file-name "sql/" user-emacs-directory)))
+        (unless (file-directory-p dir) (make-directory dir t))
+        (setq-local sql-input-ring-file-name
+  		  (expand-file-name (format "%s-history.sql" sql-product) dir))))
+    (add-hook 'sql-interactive-mode-hook 'my/sql-save-history-hook))
+
+  ;; PGmacs — interactive PostgreSQL browser/editor
+  (use-package pgmacs
+    :ensure t
+    :commands (pgmacs pgmacs-open-string pgmacs-open-uri)
+    :init
+    (with-eval-after-load 'evil-leader
+      (evil-leader/set-key
+        "Do" 'pgmacs                    ; Open: prompted connection form
+        "DO" 'pgmacs-open-string        ; Open via URI string
+        "Dp" 'sql-postgres              ; Plain psql REPL
+        "Dc" 'sql-connect)))            ; Use a named sql-connection-alist entry
+#+end_src
+
+*** Tailwind CSS
+Tailwind CSS language server, runs as an =lsp-mode= add-on alongside the
+primary LSP (volar/ts-ls/etc.) so class-name completion, hover docs and
+linting work in the same buffer. Only activates in projects that have a
+Tailwind configuration file.
+
+#+begin_src emacs-lisp
+  (use-package lsp-tailwindcss
+    :ensure t
+    :after lsp-mode
+    :init
+    ;; Must be set in :init, before the package loads.
+    (setq lsp-tailwindcss-add-on-mode t)
+    :custom
+    ;; Default list uses non-ts modes; extend it for our tree-sitter modes.
+    (lsp-tailwindcss-major-modes
+     '(vue-ts-mode
+       typescript-ts-mode
+       tsx-ts-mode
+       web-mode
+       html-mode
+       css-mode
+       css-ts-mode)))
+#+end_src
+
 *** TypeScript
 #+begin_src emacs-lisp
   ;; TypeScript language server
   (use-package typescript-ts-mode
-    :mode ("\\.ts\\'" . typescript-ts-mode))
+    :mode ("\\.ts\\'" . typescript-ts-mode)
+    :hook (typescript-ts-mode . lsp-deferred))
 #+end_src
 
 *** Vue
 #+begin_src emacs-lisp
   ;; Vue
   (use-package vue-ts-mode
-    :hook (vue-ts-mode . (lambda ()
-  			   (setq-local lsp-disabled-clients '(ts-ls vue-semantic-server))
-  			   (setq-local lsp-enable-links nil)
-  			   (setq-local lsp-lens-enable nil)))
+    :hook ((vue-ts-mode . (lambda ()
+  			    (setq-local lsp-disabled-clients '(vue-semantic-server))
+  			    (setq-local lsp-enable-links nil)
+  			    (setq-local lsp-lens-enable nil)))
+  	 (vue-ts-mode . lsp-deferred))
     :mode ("\\.vue\\'" . vue-ts-mode)
     :config
     (with-eval-after-load 'lsp-mode
-      (setq lsp-volar-hybrid-mode nil)
-      (setq lsp-volar-take-over-mode t)
+      (setq lsp-volar-hybrid-mode t)
       (add-to-list 'lsp-language-id-configuration '(vue-ts-mode . "vue"))
+
+      (advice-add 'lsp-typescript-javascript-tsx-jsx-activate-p
+  		  :around
+  		  (lambda (orig-fn filename &optional mode)
+  		    (or (funcall orig-fn filename mode)
+  			(and filename (string-match-p "\\.vue\\'" filename))
+  			(derived-mode-p 'vue-ts-mode))))
+
       (lsp-register-client
        (make-lsp-client
   	:new-connection (lsp-stdio-connection '("vue-language-server" "--stdio"))
@@ -1761,7 +1838,7 @@ Markdown Edit:
   	  (list :typescript (list :tsdk (or lsp-typescript-tsdk
   					    (expand-file-name "node_modules/typescript/lib"
   							      (lsp-workspace-root))))
-  		:vue (list :hybridMode :json-false)))
+  		:vue (list :hybridMode t)))
   	:notification-handlers (ht ("tsserver/request" #'ignore))
   	:multi-root t))))
 #+end_src

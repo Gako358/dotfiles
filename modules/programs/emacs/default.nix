@@ -43,6 +43,44 @@ let
     '';
   };
 
+  pg-el-custom = pkgs.emacs.pkgs.melpaBuild {
+    pname = "pg";
+    version = "0.65";
+    commit = "0eed71bf642c40bac7937a6e8602f41917c90505";
+    src = pkgs.fetchFromGitHub {
+      owner = "emarsden";
+      repo = "pg-el";
+      rev = "0eed71bf642c40bac7937a6e8602f41917c90505";
+      hash = "sha256-209BJhz1D8g/pJUsc9E+BjlWQAHbeeiT/FhwuO7ytnI=";
+    };
+    packageRequires = [ pkgs.emacs.pkgs.peg ];
+    recipe = pkgs.writeText "recipe" ''
+      (pg
+       :repo "emarsden/pg-el"
+       :fetcher github
+       :files ("pg.el" "pg-geometry.el" "pg-gis.el" "pg-bm25.el" "pg-lo.el"))
+    '';
+  };
+
+  pgmacs-custom = pkgs.emacs.pkgs.melpaBuild {
+    pname = "pgmacs";
+    version = "0.30";
+    commit = "b27999b6b2676514dae6c879e7a72a2beca58a39";
+    src = pkgs.fetchFromGitHub {
+      owner = "emarsden";
+      repo = "pgmacs";
+      rev = "b27999b6b2676514dae6c879e7a72a2beca58a39";
+      hash = "sha256-cM69R2kz65h8G9hnqDpETD0A/zIbxZ1kK6+gA+V7bhE=";
+    };
+    packageRequires = [ pg-el-custom ];
+    recipe = pkgs.writeText "recipe" ''
+      (pgmacs
+       :repo "emarsden/pgmacs"
+       :fetcher github
+       :files ("*.el"))
+    '';
+  };
+
   vue-ts-mode = pkgs.emacs.pkgs.melpaBuild {
     pname = "vue-ts-mode";
     version = "20231029";
@@ -99,6 +137,8 @@ let
     pkgs.prettier
     pkgs.python313Packages.python-lsp-server
     pkgs.nodejs
+    pkgs.postgresql_17
+    pkgs.tailwindcss-language-server
     pkgs.typescript
     pkgs.typescript-language-server
     pkgs.vue-language-server
@@ -233,12 +273,18 @@ in
           vue-ts-mode # Major mode for editing Vue3 files
           yaml-pro # Major mode for editing YAML files
 
+          # Database
+          peg # PEG parser library (required by pg.el)
+          pg-el-custom # Pure-elisp PostgreSQL wire-protocol client
+          pgmacs-custom # PostgreSQL browser/editor
+
           # LSP
           lsp-mode # LSP client
           lsp-ui # UI enhancements for lsp-mode
           lsp-java # Java support (replaces eglot-java)
           lsp-metals # Scala Metals support
           lsp-haskell # Haskell LSP support
+          lsp-tailwindcss # Tailwind CSS LSP add-on
           eldoc-box # Display function signatures at point
 
           # Mail
@@ -282,6 +328,11 @@ in
       extraConfig = ''
         ${builtins.readFile ./init.el}
         (setq lsp-typescript-tsdk "${pkgs.typescript}/lib/node_modules/typescript/lib")
+        (setq lsp-clients-typescript-plugins
+              (vector
+               (list :name "@vue/typescript-plugin"
+                     :location "${pkgs.vue-language-server}/lib/language-tools/packages/typescript-plugin"
+                     :languages (vector "vue"))))
       '';
     };
 
