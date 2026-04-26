@@ -1,5 +1,5 @@
 _: {
-  flake.homeModules.programs-extra-packages =
+  flake.homeModules.programs-core =
     { pkgs, ... }:
     {
       home.packages = with pkgs; [
