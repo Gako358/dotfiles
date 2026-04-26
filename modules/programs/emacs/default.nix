@@ -124,6 +124,11 @@ _: {
         dicts.nb_NO
       ]);
 
+      treesit-predicate-rewrite = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/mwolson/emacs-shared/55d07fa51e28627ff8feb77e5d53cf122eda3c96/init/treesit-predicate-rewrite.el";
+        hash = "sha256-2JHHTYVqZcBkldlxqhSZftaZd8jhC+k5Ew3YIKMoJew=";
+      };
+
       # Embedded packages
       emacsOnlyTools = [
         hunspellWithDicts
@@ -328,6 +333,11 @@ _: {
               vundo # Undo tree visualiser
             ];
           extraConfig = ''
+            ;; Workaround for Emacs bug#79687 (libtree-sitter >= 0.26 rejects
+            ;; the predicate names that Emacs 30.2 emits). Must be loaded
+            ;; before any tree-sitter font-lock query is compiled.
+            (load "${treesit-predicate-rewrite}" nil t)
+
             ${builtins.readFile ./init.el}
             (setq lsp-typescript-tsdk "${pkgs.typescript}/lib/node_modules/typescript/lib")
             (setq lsp-clients-typescript-plugins
@@ -364,6 +374,7 @@ _: {
           };
           persistence."/persist/" = {
             directories = [
+              ".cache/eca"
               ".config/github-copilot"
             ];
           };
