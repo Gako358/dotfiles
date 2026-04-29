@@ -75,6 +75,11 @@ _: {
 
             WlrLayershell.namespace: "quickshell-bar"
 
+            readonly property bool isFocused:
+                Hyprland.focusedMonitor !== null
+                && bar.screen !== null
+                && Hyprland.focusedMonitor.name === bar.screen.name
+
             anchors {
                 top: true
                 left: true
@@ -155,6 +160,7 @@ _: {
                     // ── Clock (center) ───────────────────────────────
                     Text {
                         id: clockText
+                        visible: bar.isFocused
                         text: ""
                         font.family: "RobotoMono Nerd Font"
                         font.pixelSize: 13
@@ -178,6 +184,7 @@ _: {
 
                     // ── System tray ──────────────────────────────────
                     Row {
+                        visible: bar.isFocused
                         Layout.alignment: Qt.AlignVCenter
                         spacing: 8
                         Repeater {
@@ -210,6 +217,7 @@ _: {
 
                     // ── Status pill ──────────────────────────────────
                     Rectangle {
+                        visible: bar.isFocused
                         Layout.alignment: Qt.AlignVCenter
                         Layout.preferredHeight: 24
                         Layout.preferredWidth: statusRow.implicitWidth + 16
@@ -264,6 +272,7 @@ _: {
 
                     // ── Dashboard toggle ─────────────────────────────
                     Text {
+                        visible: bar.isFocused
                         text: "󰕮"
                         font.family: "RobotoMono Nerd Font"
                         font.pixelSize: 14
@@ -277,6 +286,7 @@ _: {
 
                     // ── Lock ─────────────────────────────────────────
                     Text {
+                        visible: bar.isFocused
                         text: "󰌾"
                         font.family: "RobotoMono Nerd Font"
                         font.pixelSize: 14
