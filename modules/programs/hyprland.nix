@@ -1,6 +1,5 @@
 { inputs, ... }:
 {
-  # NixOS side: enable Hyprland (compositor), set keybindings, window rules, and full settings.
   flake.nixosModules.programs-hyprland =
     {
       lib,
@@ -47,7 +46,6 @@
           ];
 
           settings = {
-            # Environment / autostart / look-and-feel (was system/services/hyprland/settings.nix)
             env = [
               "GRIMBLAST_NO_CURSOR,0"
               "HYPRCURSOR_THEME,${pkgs.capitaine-cursors}"
@@ -97,10 +95,14 @@
             layerrule = [
               "blur on, match:namespace ^(wofi)$"
               "ignore_alpha 0, match:namespace ^(wofi)$"
-              "blur on, match:namespace ^(waybar)$"
-              "ignore_alpha 0, match:namespace ^(waybar)$"
-              "blur on, match:namespace ^(notifications)$"
-              "ignore_alpha 0, match:namespace ^(notifications)$"
+              "blur on, match:namespace ^(quickshell-bar)$"
+              "ignore_alpha 0, match:namespace ^(quickshell-bar)$"
+              "blur on, match:namespace ^(quickshell-dashboard)$"
+              "ignore_alpha 0, match:namespace ^(quickshell-dashboard)$"
+              "blur on, match:namespace ^(quickshell-notifications)$"
+              "ignore_alpha 0, match:namespace ^(quickshell-notifications)$"
+              "blur on, match:namespace ^(quickshell-lock)$"
+              "ignore_alpha 0, match:namespace ^(quickshell-lock)$"
             ];
             animations.enabled = true;
             animation = [
@@ -144,7 +146,6 @@
             xwayland.force_zero_scaling = true;
             debug.disable_logs = false;
 
-            # Keybindings (was system/services/hyprland/binds.nix)
             bind = [
               "${mainMod}, Return, exec, ${launch "alacritty"}"
               "${mainMod}, D, exec, ${toggle "wofi --show drun"}"
@@ -152,7 +153,8 @@
               "${mainMod}, R, exec, ${toggle "alacritty -t ranger -e ranger"}"
               "${mainMod}, S, exec, ${toggle "alacritty -t spotify_player -e spotify_player"}"
               "${mainMod} ${SECONDARY}, D, exec, ${runOnce "pcmanfm"}"
-              "${mainMod} ${SECONDARY}, L, exec, ${runOnce "hyprlock"}"
+              "${mainMod} ${SECONDARY}, L, exec, qs ipc call lock lock"
+              "${mainMod}, A, exec, qs ipc call dashboard toggle"
               "${mainMod} ${SECONDARY}, P, exec, ${runOnce "grimblast --notify copy area"}"
               "${mainMod} ${SECONDARY}, T, movetoworkspace, special"
               "${mainMod}, t, togglespecialworkspace"
@@ -202,7 +204,6 @@
               "${mainMod}, mouse:273, resizewindow"
             ];
 
-            # Window rules (was system/services/hyprland/rules.nix)
             windowrule = [
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(Rofi)$"
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(eww)$"
@@ -259,7 +260,6 @@
       };
     };
 
-  # home-manager side: per-user session vars + GUI helper packages on Hyprland hosts.
   flake.homeModules.programs-hyprland =
     {
       lib,
@@ -281,6 +281,7 @@
             gnome-system-monitor
             headsetcontrol
             imagemagick
+            libnotify
             paprefs
             pavucontrol
             poppler

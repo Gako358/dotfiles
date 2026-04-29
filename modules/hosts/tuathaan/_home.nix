@@ -10,7 +10,6 @@ let
   cat = "${pkgs.coreutils}/bin/cat";
 in
 {
-  program.hyprlock.defaultMonitor = "desc:HP Inc. HP E27u G4 CN41332M2N";
   services.hyprpaper.settings = lib.mkMerge [
     {
       wallpaper = [

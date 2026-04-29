@@ -10,7 +10,6 @@ let
   cat = "${pkgs.coreutils}/bin/cat";
 in
 {
-  program.hyprlock.defaultMonitor = "DP-2";
   services.hyprpaper.settings = lib.mkMerge [
     {
       wallpaper = [
