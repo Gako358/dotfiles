@@ -294,6 +294,7 @@ _: {
               lsp-metals # Scala Metals support
               lsp-haskell # Haskell LSP support
               lsp-tailwindcss # Tailwind CSS LSP add-on
+              dap-mode # Debug Adapter Protocol client (bundles dap-java + dap-scala)
               eldoc-box # Display function signatures at point
 
               # Mail

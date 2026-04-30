@@ -1661,6 +1661,11 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 #+end_src
 
 *** Java
+=lsp-java= drives the JDT language server (refactorings, code actions,
+imports, ...). Debugging is provided by =dap-java= (bundled with
+=dap-mode=, see [[*DAP][DAP]]); the test/main-class debug entry points
+live alongside the rest of the Java leader bindings under =SPC l j=.
+
 #+begin_src emacs-lisp
   ;; Java language server
   (use-package lsp-java
@@ -1680,6 +1685,14 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
       "lje" 'lsp-java-extract-to-constant
       "ljm" 'lsp-java-extract-method
       "ljI" 'lsp-java-organize-imports))
+
+  ;; Java debug helpers (dap-java is required from the DAP block).
+  ;; Loaded lazily so the symbols exist when the leader is pressed.
+  (with-eval-after-load 'dap-java
+    (evil-leader/set-key
+      "ljd" 'dap-java-debug                  ; debug current main class
+      "ljD" 'dap-java-debug-test-class       ; debug all tests in class
+      "ljM" 'dap-java-debug-test-method))    ; debug test method at point
 #+end_src
 
 *** Kotlin
@@ -2008,6 +2021,65 @@ Setting up LSP mode
     :config
     (evil-leader/set-key
       "lh" 'lsp-ui-doc-glance))
+#+end_src
+
+*** DAP
+=dap-mode= adds Debug Adapter Protocol support on top of =lsp-mode=:
+breakpoints, stepping, watch expressions, a REPL and a debug UI. We
+enable it for Java (via =dap-java=, bundled with =dap-mode=, which
+drives the JDT language server's debug plugin) and Scala (via
+=dap-scala=, which talks to Metals' BSP-based DAP server — works for
+both =sbt= and =bloop= projects).
+
+All generic debug bindings live under the =SPC b= leader prefix
+(=b= for *break/debug* — =SPC d= is taken by =detached=). Language
+specific helpers (=dap-java-*=) are bound next to the rest of the
+Java tooling, in the [[*Java][Java]] section.
+
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :ensure t
+    :after lsp-mode
+    :commands (dap-debug dap-debug-edit-template)
+    :custom
+    (dap-auto-configure-features
+     '(sessions locals breakpoints expressions tooltip controls))
+    (dap-breakpoints-file
+     (expand-file-name ".cache/dap-breakpoints" user-emacs-directory))
+    :config
+    (dap-auto-configure-mode 1)
+
+    (require 'dap-java)   ; Java   — uses lsp-java's JDT debug plugin
+    (require 'dap-scala)  ; Scala  — uses Metals' DAP server over BSP
+
+    (evil-leader/set-key
+      ;; Sessions
+      "bd" 'dap-debug                    ; pick + start a launch configuration
+      "bl" 'dap-debug-last               ; rerun last configuration
+      "bt" 'dap-debug-edit-template      ; create/edit a launch template
+      "bq" 'dap-disconnect               ; stop the current session
+      ;; Breakpoints
+      "bb" 'dap-breakpoint-toggle        ; toggle breakpoint at point
+      "bB" 'dap-breakpoint-condition     ; conditional breakpoint
+      "bH" 'dap-breakpoint-hit-condition ; hit-count breakpoint
+      "bL" 'dap-breakpoint-log-message   ; logpoint (no pause)
+      "bx" 'dap-breakpoint-delete-all
+      ;; Stepping
+      "bn" 'dap-next                     ; step over
+      "bi" 'dap-step-in
+      "bo" 'dap-step-out
+      "bc" 'dap-continue
+      "br" 'dap-restart-frame
+      ;; Evaluation
+      "be" 'dap-eval
+      "bE" 'dap-eval-region
+      "bT" 'dap-eval-thing-at-point
+      ;; UI panes
+      "bu" 'dap-ui-locals
+      "bw" 'dap-ui-expressions
+      "bs" 'dap-ui-sessions
+      "bk" 'dap-ui-breakpoints
+      "bR" 'dap-ui-repl))
 #+end_src
 
 ** Navigation
