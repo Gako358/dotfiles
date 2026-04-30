@@ -147,6 +147,31 @@ The bivrost-theme.
     (load-theme 'bivrost t))
 #+end_src
 
+*** Indent Bars
+Visualise indentation with subtle vertical bars in =prog-mode= and YAML
+buffers. Uses the stipple-based renderer (requires PGTK/X11 Emacs ≥28)
+and tree-sitter awareness so blank lines and structural nodes are
+handled correctly.
+
+#+begin_src emacs-lisp
+  (use-package indent-bars
+    :ensure t
+    :hook ((prog-mode yaml-mode yaml-ts-mode) . indent-bars-mode)
+    :custom
+    ;; Tree-sitter integration — leverage the grammars already loaded.
+    (indent-bars-treesit-support t)
+    (indent-bars-treesit-ignore-blank-lines-types '("module"))
+    ;; Subtle, theme-aware appearance
+    (indent-bars-color '(highlight :face-bg t :blend 0.15))
+    (indent-bars-pattern ".")
+    (indent-bars-width-frac 0.1)
+    (indent-bars-pad-frac 0.1)
+    (indent-bars-zigzag nil)
+    (indent-bars-color-by-depth nil)
+    (indent-bars-highlight-current-depth '(:blend 0.5))
+    (indent-bars-display-on-blank-lines nil))
+#+end_src
+
 ** Completion
 Using Corfu, vertico and cape for code completion.
 
@@ -866,6 +891,23 @@ Formatters:
     (push '(nix-ts-mode . nixfmt) apheleia-mode-alist)
 
     (apheleia-global-mode +1))
+#+end_src
+
+*** Dtrt Indent
+Auto-detect the indentation offset and tabs-vs-spaces style of the file
+you are visiting. Saves having to fiddle with =indent-tabs-mode= or
+=*-indent-offset= per project — the buffer adapts to whatever the
+existing code uses. Plays nicely with =editorconfig= (editorconfig wins
+when an =.editorconfig= file is present).
+
+#+begin_src emacs-lisp
+  (use-package dtrt-indent
+    :ensure t
+    :hook (prog-mode . dtrt-indent-mode)
+    :custom
+    ;; 0 = silent, 1 = report adjustments, 2-3 = debug
+    (dtrt-indent-verbosity 1)
+    (dtrt-indent-min-quality 60.0))
 #+end_src
 
 ** Email
@@ -1996,6 +2038,33 @@ Setting up Consult for better navigation in Emacs
       "TAB" 'consult-projectile-switch-to-buffer))
 #+end_src
 
+*** Dumb Jump
+Heuristic, language-agnostic jump-to-definition powered by ripgrep. Hooks
+into =xref= as a fallback backend so the regular =M-.= / =gd= bindings
+keep working: when an LSP server is active it answers, and when one is
+not (shell scripts, scratch files, languages without a server)
+=dumb-jump= takes over via grep heuristics. The leader binding under
+=j= exposes a transient menu listing all jump targets.
+
+#+begin_src emacs-lisp
+  (use-package dumb-jump
+    :ensure t
+    :init
+    ;; Add as a fallback xref backend (LSP/elisp/etc. take priority).
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+    :custom
+    (dumb-jump-force-searcher 'rg)
+    (dumb-jump-prefer-searcher 'rg)
+    (dumb-jump-selector 'completing-read)
+    :config
+    (evil-leader/set-key
+      "jj" 'xref-find-definitions
+      "jb" 'xref-go-back
+      "jr" 'xref-find-references
+      "jo" 'dumb-jump-go-other-window
+      "jq" 'dumb-jump-quick-look))
+#+end_src
+
 ** ORG
 
 This configuration integrates powerful Org-mode tools for both knowledge management (Org-Roam) and rich email composition (Org-msg). Together, they form a comprehensive personal information system within Emacs.
@@ -2394,6 +2463,40 @@ For forge, create a file called ~/.authinfo with the following:
     (setq forge-add-default-bindings nil)
     :config
     (setq auth-sources '("~/.authinfo")))
+#+end_src
+
+*** Diff-hl
+Highlight uncommitted VC changes in the fringe (or the margin in
+terminal frames). Works alongside Magit — refreshing Magit also
+refreshes the diff indicators — and supports staging hunks directly
+from a source buffer with =diff-hl-stage-current-hunk=.
+
+#+BEGIN_QUOTE
+=diff-hl= overlaps with =git-gutter= below; both draw VC indicators in
+the fringe. Pick one in practice — keep =git-gutter= disabled (or remove
+it) if you switch to =diff-hl=, or vice versa. They are kept side by
+side here so you can compare and choose.
+#+END_QUOTE
+
+#+begin_src emacs-lisp
+  (use-package diff-hl
+    :ensure t
+    :hook
+    ((prog-mode . diff-hl-mode)
+     (conf-mode . diff-hl-mode)
+     (text-mode . diff-hl-mode)
+     (dired-mode . diff-hl-dired-mode)
+     ;; Refresh markers around Magit operations
+     (magit-pre-refresh . diff-hl-magit-pre-refresh)
+     (magit-post-refresh . diff-hl-magit-post-refresh))
+    :custom
+    (diff-hl-draw-borders nil)
+    :config
+    ;; Live diffing without requiring a save
+    (diff-hl-flydiff-mode 1)
+    ;; In TTY frames, use the left margin instead of the (absent) fringe
+    (unless (display-graphic-p)
+      (diff-hl-margin-mode 1)))
 #+end_src
 
 *** Git-gutter

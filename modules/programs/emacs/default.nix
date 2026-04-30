@@ -181,6 +181,7 @@ _: {
               # Appearance
               bivrost-theme # Custom theme
               dashboard # A startup screen extracted from Spacemacs
+              indent-bars # Visualise indentation with vertical bars
               spaceline # A mode-line teeming package
               nerd-icons # Nerd icons for Emacs
               nerd-icons-completion # Nerd icons for completion
@@ -220,6 +221,7 @@ _: {
 
               # Edit
               apheleia # A universal formatted interface
+              dtrt-indent # Auto-detect buffer indentation offset/tabs
 
               # File tree
               dirvish # Directory viewer for Emacs
@@ -302,6 +304,7 @@ _: {
               consult # Consulting completing-read
               consult-lsp # Consult LSP for diagnostics
               consult-projectile # Consult interface for Projectile
+              dumb-jump # Heuristic jump-to-definition via grep/ripgrep (xref backend)
 
               # Org
               org # For keeping notes, maintaining TODO lists, and project planning
@@ -326,6 +329,7 @@ _: {
               vterm-toggle # Toggle vterm
 
               # Version
+              diff-hl # Highlight uncommitted changes in the fringe/margin
               forge # Work with github forges
               git-gutter # Show git diff in the fringe
               git-gutter-fringe # Fringe version of git-gutter.el
