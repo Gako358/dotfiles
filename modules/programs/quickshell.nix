@@ -40,6 +40,18 @@ _: {
                 id: dashboard
                 notifications: notifications
             }
+            SystemMonitor { id: sysmon }
+            VolumePanel   { id: volumePanel }
+            NetworkPanel  { id: networkPanel }
+
+            function showOnly(which) {
+                if (which !== "sysmon")    sysmon.hide()
+                if (which !== "volume")    volumePanel.hide()
+                if (which !== "network")   networkPanel.hide()
+                if (which !== "dashboard") dashboard.hide()
+                if (which !== "session")   session.hide()
+                if (which !== "launcher")  launcher.hide()
+            }
 
             Variants {
                 model: Quickshell.screens
@@ -47,13 +59,13 @@ _: {
                 Bar {
                     required property var modelData
                     screen: modelData
-                    onLauncherRequested: launcher.toggle()
-                    onDashboardRequested: dashboard.toggle()
-                    onCalendarRequested: dashboard.show()
-                    onSessionRequested: session.toggle()
-                    onSystemMonitorRequested: Quickshell.execDetached(["gnome-system-monitor"])
-                    onAudioRequested: Quickshell.execDetached(["pavucontrol"])
-                    onNetworkRequested: Quickshell.execDetached(["nm-connection-editor"])
+                    onLauncherRequested:      { root.showOnly("launcher");  launcher.toggle() }
+                    onDashboardRequested:     { root.showOnly("dashboard"); dashboard.toggle() }
+                    onCalendarRequested:      { root.showOnly("dashboard"); dashboard.show() }
+                    onSessionRequested:       { root.showOnly("session");   session.toggle() }
+                    onSystemMonitorRequested: { root.showOnly("sysmon");    sysmon.toggle() }
+                    onAudioRequested:         { root.showOnly("volume");    volumePanel.toggle() }
+                    onNetworkRequested:       { root.showOnly("network");   networkPanel.toggle() }
                 }
             }
         }
@@ -64,6 +76,8 @@ _: {
         import QtQuick.Layouts
         import Quickshell
         import Quickshell.Hyprland
+        import Quickshell.Io
+        import Quickshell.Services.Pipewire
         import Quickshell.Services.SystemTray
         import Quickshell.Wayland
 
@@ -77,6 +91,54 @@ _: {
             signal systemMonitorRequested()
             signal audioRequested()
             signal networkRequested()
+
+            property string cpuPct: "—"
+            property string netState: "off"
+            property int    netSignal: 0
+            property string netSsid: ""
+
+            Process {
+                id: barCpuProc
+                command: ["sh", "-c",
+                    "top -bn1 | awk '/Cpu/ { printf \"%.0f\", 100 - $8 }'"]
+                stdout: StdioCollector { id: barCpuOut }
+                onExited: bar.cpuPct = ((barCpuOut.text || "").trim() || "0")
+            }
+
+            Process {
+                id: barNetProc
+                command: ["sh", "-c",
+                    "act=$(nmcli -t -f TYPE,STATE,CONNECTION device status 2>/dev/null | awk -F: '$2==\"connected\"{print $1\":\"$3; exit}'); " +
+                    "if echo \"$act\" | grep -q '^wifi:'; then " +
+                    "  ssid=$(echo \"$act\" | cut -d: -f2-); " +
+                    "  sig=$(nmcli -t -f IN-USE,SIGNAL device wifi 2>/dev/null | awk -F: '$1==\"*\"{print $2; exit}'); " +
+                    "  echo \"wifi|$sig|$ssid\"; " +
+                    "elif echo \"$act\" | grep -q '^ethernet:'; then " +
+                    "  echo \"wired|100|$(echo \"$act\" | cut -d: -f2-)\"; " +
+                    "else echo \"off|0|\"; fi"]
+                stdout: StdioCollector { id: barNetOut }
+                onExited: {
+                    var parts = ((barNetOut.text || "").trim() || "off|0|").split("|")
+                    bar.netState  = parts[0] || "off"
+                    bar.netSignal = parseInt(parts[1] || "0") || 0
+                    bar.netSsid   = parts[2] || ""
+                }
+            }
+
+            Timer {
+                running: true
+                repeat: true
+                interval: 3000
+                triggeredOnStart: true
+                onTriggered: {
+                    barCpuProc.running = true
+                    barNetProc.running = true
+                }
+            }
+
+            PwObjectTracker {
+                objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
+            }
 
             WlrLayershell.namespace: "quickshell-bar"
 
@@ -113,7 +175,6 @@ _: {
                     anchors.rightMargin: 14
                     spacing: 14
 
-                    // ── Launcher (NixOS Material Design icon) ────────
                     Item {
                         Layout.preferredWidth: 26
                         Layout.fillHeight: true
@@ -134,23 +195,82 @@ _: {
                     // ── Workspaces ───────────────────────────────────
                     Row {
                         Layout.alignment: Qt.AlignVCenter
-                        spacing: 6
+                        spacing: 4
                         Repeater {
                             model: 9
-                            Rectangle {
+                            Item {
                                 id: ws
                                 property int wsId: index + 1
                                 property bool isActive: Hyprland.focusedWorkspace
                                     && Hyprland.focusedWorkspace.id === wsId
-                                width: isActive ? 24 : 10
-                                height: 10
-                                radius: 5
-                                color: isActive
-                                    ? "${c "base0D"}"
-                                    : "${c "base04"}"
-                                Behavior on width {
-                                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                                property bool hasIcon: wsId === 1 || wsId === 2
+                                    || wsId === 3 || wsId === 5
+                                    || wsId === 8 || wsId === 9
+                                property bool wsExists: {
+                                    var list = Hyprland.workspaces
+                                        ? Hyprland.workspaces.values
+                                        : []
+                                    for (var i = 0; i < list.length; ++i) {
+                                        if (list[i] && list[i].id === ws.wsId)
+                                            return true
+                                    }
+                                    return false
                                 }
+                                property string icon: {
+                                    switch (wsId) {
+                                        case 1: return "󰈹"   // browsing  (nf-md-firefox)
+                                        case 2: return "󰅴"   // coding    (nf-md-emacs)
+                                        case 3: return "󰆍"   // terminal  (nf-md-console)
+                                        case 5: return "󰢹"   // qemu / vm (nf-md-monitor)
+                                        case 8: return "󰒱"   // slack     (nf-md-slack)
+                                        case 9: return "󰙯"   // discord   (nf-md-discord)
+                                        default: return wsId.toString()
+                                    }
+                                }
+
+                                visible: hasIcon || wsExists || isActive
+
+                                width: isActive ? 34 : 22
+                                height: 22
+
+                                Behavior on width {
+                                    NumberAnimation { duration: 240; easing.type: Easing.OutQuint }
+                                }
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: height / 2
+                                    color: ws.isActive
+                                        ? "${c "base0D"}"
+                                        : (wsHover.hovered
+                                            ? "${ca "base02" "cc"}"
+                                            : "transparent")
+                                    Behavior on color {
+                                        ColorAnimation { duration: 180 }
+                                    }
+
+                                    HoverHandler { id: wsHover }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: ws.icon
+                                        color: ws.isActive
+                                            ? "${c "base00"}"
+                                            : "${c "base04"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: ws.isActive ? 14 : 11
+                                        Behavior on font.pixelSize {
+                                            NumberAnimation {
+                                                duration: 240
+                                                easing.type: Easing.OutQuint
+                                            }
+                                        }
+                                        Behavior on color {
+                                            ColorAnimation { duration: 180 }
+                                        }
+                                    }
+                                }
+
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
@@ -220,52 +340,189 @@ _: {
                         }
                     }
 
-                    // ── Status pill ──────────────────────────────────
+                    // ── Status pill (segmented, caelestia-style) ─────
                     Rectangle {
+                        id: statusPill
                         visible: bar.isFocused
                         Layout.alignment: Qt.AlignVCenter
-                        Layout.preferredHeight: 24
-                        Layout.preferredWidth: statusRow.implicitWidth + 16
-                        color: "${ca "base00" "75"}"
+                        Layout.preferredHeight: 26
+                        Layout.preferredWidth: statusRow.implicitWidth + 6
+                        color: "${ca "base01" "aa"}"
                         border.color: "${c "base02"}"
                         border.width: 1
-                        radius: 8
+                        radius: 13
+
+                        readonly property var sink: Pipewire.defaultAudioSink
+                        readonly property real volPct:
+                            sink && sink.audio ? sink.audio.volume * 100 : 0
+                        readonly property bool muted:
+                            sink && sink.audio ? sink.audio.muted : true
+
+                        function volIcon(p, m) {
+                            if (m || p <= 0) return "󰝟"
+                            if (p < 34)      return "󰕿"
+                            if (p < 67)      return "󰖀"
+                            return "󰕾"
+                        }
+                        function wifiIcon(s) {
+                            if (s >= 75) return "󰤨"
+                            if (s >= 50) return "󰤥"
+                            if (s >= 25) return "󰤢"
+                            if (s > 0)   return "󰤟"
+                            return "󰤮"
+                        }
 
                         Row {
                             id: statusRow
                             anchors.centerIn: parent
-                            spacing: 12
+                            spacing: 0
 
-                            Text {
-                                text: "󰍛"
-                                font.family: "RobotoMono Nerd Font"
-                                font.pixelSize: 14
-                                color: "${c "base0C"}"
-                                anchors.verticalCenter: parent.verticalCenter
+                            // ── System monitor segment (CPU%) ────────
+                            Rectangle {
+                                id: cpuSeg
+                                width: cpuRow.implicitWidth + 16
+                                height: statusPill.height
+                                color: cpuHover.hovered
+                                    ? "${ca "base02" "cc"}"
+                                    : "transparent"
+                                radius: 13
+                                Behavior on color { ColorAnimation { duration: 120 } }
+                                HoverHandler { id: cpuHover }
+                                Row {
+                                    id: cpuRow
+                                    anchors.centerIn: parent
+                                    spacing: 6
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: "󰻠"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 13
+                                        color: "${c "base0C"}"
+                                    }
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: bar.cpuPct + "%"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 11
+                                        color: "${c "base05"}"
+                                    }
+                                }
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: bar.systemMonitorRequested()
                                 }
                             }
-                            Text {
-                                text: "󰕾"
-                                font.family: "RobotoMono Nerd Font"
-                                font.pixelSize: 14
-                                color: "${c "base0E"}"
+
+                            Rectangle {
+                                width: 1; height: statusPill.height - 10
                                 anchors.verticalCenter: parent.verticalCenter
+                                color: "${ca "base03" "80"}"
+                            }
+
+                            // ── Volume segment ───────────────────────
+                            Rectangle {
+                                id: volSeg
+                                width: volRow.implicitWidth + 16
+                                height: statusPill.height
+                                color: volHover.hovered
+                                    ? "${ca "base02" "cc"}"
+                                    : "transparent"
+                                Behavior on color { ColorAnimation { duration: 120 } }
+                                HoverHandler { id: volHover }
+                                Row {
+                                    id: volRow
+                                    anchors.centerIn: parent
+                                    spacing: 6
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: statusPill.volIcon(statusPill.volPct, statusPill.muted)
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 13
+                                        color: statusPill.muted
+                                            ? "${c "base08"}"
+                                            : "${c "base0E"}"
+                                    }
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: statusPill.muted
+                                            ? "muted"
+                                            : Math.round(statusPill.volPct) + "%"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 11
+                                        color: "${c "base05"}"
+                                    }
+                                }
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: bar.audioRequested()
+                                    acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                                    onClicked: function(mouse) {
+                                        if (mouse.button === Qt.MiddleButton) {
+                                            if (statusPill.sink && statusPill.sink.audio)
+                                                statusPill.sink.audio.muted = !statusPill.sink.audio.muted
+                                        } else {
+                                            bar.audioRequested()
+                                        }
+                                    }
+                                    onWheel: function(wheel) {
+                                        if (!statusPill.sink || !statusPill.sink.audio) return
+                                        var step = wheel.angleDelta.y > 0 ? 0.05 : -0.05
+                                        var v = Math.max(0, Math.min(1,
+                                            statusPill.sink.audio.volume + step))
+                                        statusPill.sink.audio.volume = v
+                                    }
                                 }
                             }
-                            Text {
-                                text: "󰖩"
-                                font.family: "RobotoMono Nerd Font"
-                                font.pixelSize: 14
-                                color: "${c "base0B"}"
+
+                            Rectangle {
+                                width: 1; height: statusPill.height - 10
                                 anchors.verticalCenter: parent.verticalCenter
+                                color: "${ca "base03" "80"}"
+                            }
+
+                            // ── Network segment ──────────────────────
+                            Rectangle {
+                                id: netSeg
+                                width: netRow.implicitWidth + 16
+                                height: statusPill.height
+                                color: netHover.hovered
+                                    ? "${ca "base02" "cc"}"
+                                    : "transparent"
+                                radius: 13
+                                Behavior on color { ColorAnimation { duration: 120 } }
+                                HoverHandler { id: netHover }
+                                Row {
+                                    id: netRow
+                                    anchors.centerIn: parent
+                                    spacing: 6
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: bar.netState === "wired"
+                                            ? "󰈀"
+                                            : statusPill.wifiIcon(bar.netSignal)
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 13
+                                        color: bar.netState === "off"
+                                            ? "${c "base08"}"
+                                            : "${c "base0B"}"
+                                    }
+                                    Text {
+                                        visible: text !== ""
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: bar.netState === "off"
+                                            ? "offline"
+                                            : (bar.netState === "wired"
+                                                ? "wired"
+                                                : (bar.netSsid.length > 12
+                                                    ? bar.netSsid.substring(0, 12) + "…"
+                                                    : bar.netSsid))
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 11
+                                        color: "${c "base05"}"
+                                        elide: Text.ElideRight
+                                    }
+                                }
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
@@ -319,9 +576,7 @@ _: {
         Scope {
             id: root
 
-            // Provided by shell.qml so we can list recent notifications.
             property var notifications: null
-
             property bool opened: false
 
             function toggle() { root.opened = !root.opened }
@@ -407,14 +662,19 @@ _: {
                     border.width: 1
                     border.color: "${c "base02"}"
 
+                    property real slideY: root.opened ? 0 : -18
+                    transform: Translate { y: dashCard.slideY }
                     transformOrigin: Item.TopRight
                     opacity: root.opened ? 1 : 0
-                    scale: root.opened ? 1 : 0.97
+                    scale: root.opened ? 1 : 0.96
                     Behavior on opacity {
                         NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
                     }
                     Behavior on scale {
-                        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+                    Behavior on slideY {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
                     }
 
                     ColumnLayout {
@@ -811,13 +1071,11 @@ _: {
                                     }
 
                                     Repeater {
-                                        // 42 cells = 6 weeks × 7 days
                                         model: 42
                                         Item {
                                             id: cell
                                             Layout.fillWidth: true
                                             Layout.preferredHeight: 18
-                                            // Monday-based: getDay() returns 0=Sun..6=Sat
                                             property var firstOfMonth: new Date(calCard.year, calCard.month, 1)
                                             property int firstDow: (firstOfMonth.getDay() + 6) % 7
                                             property int dayNum: index - firstDow + 1
@@ -863,14 +1121,10 @@ _: {
         Scope {
             id: root
 
-            // Currently displayed toasts (auto-expire)
             ListModel { id: toasts }
-
-            // Persistent in-session history (shown in Dashboard)
             ListModel { id: history }
             readonly property int maxHistory: 50
 
-            // Public alias so other components (Dashboard) can bind to it
             property alias historyModel: history
 
             function clearHistory() {
@@ -1089,7 +1343,6 @@ _: {
                 function toggle() { root.toggle() }
             }
 
-            // Pull desktop entries from Quickshell, sort by name, filter by query.
             readonly property var allEntries: {
                 var out = []
                 var apps = DesktopEntries.applications
@@ -1167,14 +1420,20 @@ _: {
                     border.width: 1
                     border.color: "${c "base02"}"
 
+                    property real slideY: root.opened ? 0 : -18
+                    transform: Translate { y: launcherCard.slideY }
+
                     transformOrigin: Item.TopLeft
                     opacity: root.opened ? 1 : 0
                     scale: root.opened ? 1 : 0.96
                     Behavior on opacity {
-                        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
                     }
                     Behavior on scale {
-                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+                    Behavior on slideY {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
                     }
 
                     ColumnLayout {
@@ -1343,9 +1602,7 @@ _: {
         Scope {
             id: root
 
-            // Optional reference to the lock component, set by shell.qml.
             property var lockComponent: null
-
             property bool opened: false
 
             function show()   { root.opened = true }
@@ -1407,14 +1664,20 @@ _: {
                     border.width: 1
                     border.color: "${c "base02"}"
 
+                    property real slideY: root.opened ? 0 : -18
+                    transform: Translate { y: sessionCard.slideY }
+
                     transformOrigin: Item.TopRight
                     opacity: root.opened ? 1 : 0
                     scale: root.opened ? 1 : 0.96
                     Behavior on opacity {
-                        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
                     }
                     Behavior on scale {
-                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+                    Behavior on slideY {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
                     }
 
                     ColumnLayout {
@@ -1434,7 +1697,6 @@ _: {
 
                         Item { Layout.preferredHeight: 4 }
 
-                        // Helper component: each row is a styled button.
                         Repeater {
                             model: [
                                 { icon: "󰌾", label: "Lock",     color: "${c "base0B"}", action: "lock"     },
@@ -1657,7 +1919,6 @@ _: {
                         config: "quickshell"
 
                         onPamMessage: function(msg) {
-                            // Most password prompts are PromptEchoOff
                             respond(passwordInput.text)
                         }
                         onCompleted: function(result) {
@@ -1678,6 +1939,1009 @@ _: {
         }
       '';
 
+      sysmonQml = ''
+        import QtQuick
+        import QtQuick.Controls
+        import QtQuick.Layouts
+        import Quickshell
+        import Quickshell.Wayland
+        import Quickshell.Io
+
+        Scope {
+            id: root
+
+            property bool opened: false
+            function show()   { root.opened = true }
+            function hide()   { root.opened = false }
+            function toggle() { root.opened = !root.opened }
+
+            IpcHandler {
+                target: "sysmon"
+                function show()   { root.show() }
+                function hide()   { root.hide() }
+                function toggle() { root.toggle() }
+            }
+
+            property real cpuPct: 0
+            property real memPct: 0
+            property string memInfo: "—"
+            property real swapPct: 0
+            property string swapInfo: "—"
+            property string uptime: "—"
+            property var procs: []
+
+            Process {
+                id: cpuProc
+                command: ["sh", "-c",
+                    "top -bn1 | awk '/Cpu/ { printf \"%.0f\", 100 - $8 }'"]
+                stdout: StdioCollector { id: cpuOut }
+                onExited: root.cpuPct =
+                    parseFloat((cpuOut.text || "").trim() || "0") || 0
+            }
+            Process {
+                id: memProc
+                command: ["sh", "-c",
+                    "free -b | awk '" +
+                    "/^Mem:/  { printf \"%.1f|%.1f|%.1f\", $3/1073741824, $2/1073741824, ($3/$2)*100 } " +
+                    "/^Swap:/ { if ($2>0) printf \"|%.1f|%.1f|%.1f\", $3/1073741824, $2/1073741824, ($3/$2)*100; else printf \"|0|0|0\" }'"]
+                stdout: StdioCollector { id: memOut }
+                onExited: {
+                    var p = ((memOut.text || "").trim()).split("|")
+                    if (p.length >= 6) {
+                        root.memInfo  = p[0] + " / " + p[1] + " GiB"
+                        root.memPct   = parseFloat(p[2]) || 0
+                        root.swapInfo = p[3] + " / " + p[4] + " GiB"
+                        root.swapPct  = parseFloat(p[5]) || 0
+                    }
+                }
+            }
+            Process {
+                id: upProc
+                command: ["sh", "-c",
+                    "awk '{u=int($1); d=int(u/86400); h=int((u%86400)/3600); m=int((u%3600)/60); s=\"\"; if(d>0) s=s d\"d \"; if(h>0) s=s h\"h \"; s=s m\"m\"; print s}' /proc/uptime"]
+                stdout: StdioCollector { id: upOut }
+                onExited: root.uptime = (upOut.text || "").trim() || "—"
+            }
+            Process {
+                id: psProc
+                command: ["sh", "-c",
+                    "ps -eo comm,%cpu,%mem --sort=-%cpu --no-headers | head -n 5"]
+                stdout: StdioCollector { id: psOut }
+                onExited: {
+                    var lines = (psOut.text || "").trim().split("\n")
+                    var arr = []
+                    for (var i = 0; i < lines.length; ++i) {
+                        var f = lines[i].trim().split(/\s+/)
+                        if (f.length < 3) continue
+                        arr.push({
+                            name: f[0],
+                            cpu:  parseFloat(f[1]) || 0,
+                            mem:  parseFloat(f[2]) || 0
+                        })
+                    }
+                    root.procs = arr
+                }
+            }
+
+            Timer {
+                running: root.opened
+                repeat: true
+                interval: 2000
+                triggeredOnStart: true
+                onTriggered: {
+                    cpuProc.running = true
+                    memProc.running = true
+                    upProc.running  = true
+                    psProc.running  = true
+                }
+            }
+
+            PanelWindow {
+                id: panel
+                visible: root.opened || card.opacity > 0.01
+
+                WlrLayershell.namespace: "quickshell-sysmon"
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+
+                anchors { top: true; right: true }
+                margins { top: 50; right: 8 }
+                implicitWidth: 380
+                implicitHeight: contentCol.implicitHeight + 28
+                color: "transparent"
+
+                Shortcut { sequences: ["Escape"]; onActivated: root.hide() }
+
+                Rectangle {
+                    id: card
+                    anchors.fill: parent
+                    color: "${ca "base00" "ee"}"
+                    radius: 16
+                    border.width: 1
+                    border.color: "${c "base02"}"
+
+                    property real slideY: root.opened ? 0 : -18
+                    transform: Translate { y: card.slideY }
+
+                    transformOrigin: Item.Top
+                    opacity: root.opened ? 1 : 0
+                    scale: root.opened ? 1 : 0.96
+                    Behavior on opacity {
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+                    Behavior on slideY {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+
+                    ColumnLayout {
+                        id: contentCol
+                        anchors.fill: parent
+                        anchors.margins: 14
+                        spacing: 12
+
+                        Text {
+                            text: "󰍛  System Monitor"
+                            color: "${c "base0D"}"
+                            font.family: "RobotoMono Nerd Font"
+                            font.pixelSize: 14
+                            font.weight: Font.Medium
+                        }
+
+                        // ── CPU ──────────────────────────────────────
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 4
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text {
+                                    text: "󰻠  CPU"
+                                    color: "${c "base0C"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 12
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text {
+                                    text: Math.round(root.cpuPct) + "%"
+                                    color: "${c "base05"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 12
+                                }
+                            }
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 6
+                                radius: 3
+                                color: "${ca "base02" "80"}"
+                                Rectangle {
+                                    anchors.left: parent.left
+                                    anchors.top: parent.top
+                                    anchors.bottom: parent.bottom
+                                    width: parent.width * Math.min(1, root.cpuPct / 100)
+                                    radius: 3
+                                    color: "${c "base0C"}"
+                                    Behavior on width {
+                                        NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Memory ───────────────────────────────────
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 4
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text {
+                                    text: "󰘚  Memory"
+                                    color: "${c "base0E"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 12
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text {
+                                    text: root.memInfo
+                                    color: "${c "base05"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 11
+                                }
+                            }
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 6
+                                radius: 3
+                                color: "${ca "base02" "80"}"
+                                Rectangle {
+                                    anchors.left: parent.left
+                                    anchors.top: parent.top
+                                    anchors.bottom: parent.bottom
+                                    width: parent.width * Math.min(1, root.memPct / 100)
+                                    radius: 3
+                                    color: "${c "base0E"}"
+                                    Behavior on width {
+                                        NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Swap ─────────────────────────────────────
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 4
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Text {
+                                    text: "󰓡  Swap"
+                                    color: "${c "base09"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 12
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text {
+                                    text: root.swapInfo
+                                    color: "${c "base05"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 11
+                                }
+                            }
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 6
+                                radius: 3
+                                color: "${ca "base02" "80"}"
+                                Rectangle {
+                                    anchors.left: parent.left
+                                    anchors.top: parent.top
+                                    anchors.bottom: parent.bottom
+                                    width: parent.width * Math.min(1, root.swapPct / 100)
+                                    radius: 3
+                                    color: "${c "base09"}"
+                                    Behavior on width {
+                                        NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Uptime ───────────────────────────────────
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Text {
+                                text: "󰅐  Uptime"
+                                color: "${c "base0A"}"
+                                font.family: "RobotoMono Nerd Font"
+                                font.pixelSize: 12
+                            }
+                            Item { Layout.fillWidth: true }
+                            Text {
+                                text: root.uptime
+                                color: "${c "base05"}"
+                                font.family: "RobotoMono Nerd Font"
+                                font.pixelSize: 12
+                            }
+                        }
+
+                        // ── Top processes ────────────────────────────
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: procsCol.implicitHeight + 16
+                            color: "${ca "base01" "75"}"
+                            radius: 10
+                            border.width: 1
+                            border.color: "${c "base02"}"
+
+                            ColumnLayout {
+                                id: procsCol
+                                anchors.fill: parent
+                                anchors.margins: 8
+                                spacing: 4
+
+                                Text {
+                                    text: "Top processes"
+                                    color: "${c "base04"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 10
+                                }
+
+                                Repeater {
+                                    model: root.procs
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 8
+                                        Text {
+                                            Layout.fillWidth: true
+                                            text: modelData.name
+                                            color: "${c "base05"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 11
+                                            elide: Text.ElideRight
+                                        }
+                                        Text {
+                                            text: modelData.cpu.toFixed(1) + "%"
+                                            color: "${c "base0C"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 11
+                                        }
+                                        Text {
+                                            text: modelData.mem.toFixed(1) + "%"
+                                            color: "${c "base0E"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 11
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      '';
+
+      volumePanelQml = ''
+        import QtQuick
+        import QtQuick.Controls
+        import QtQuick.Layouts
+        import Quickshell
+        import Quickshell.Wayland
+        import Quickshell.Io
+        import Quickshell.Services.Pipewire
+
+        Scope {
+            id: root
+
+            property bool opened: false
+            function show()   { root.opened = true }
+            function hide()   { root.opened = false }
+            function toggle() { root.opened = !root.opened }
+
+            IpcHandler {
+                target: "volume"
+                function show()   { root.show() }
+                function hide()   { root.hide() }
+                function toggle() { root.toggle() }
+            }
+
+            PwObjectTracker {
+                objects: {
+                    var arr = []
+                    if (Pipewire.defaultAudioSink)   arr.push(Pipewire.defaultAudioSink)
+                    if (Pipewire.defaultAudioSource) arr.push(Pipewire.defaultAudioSource)
+                    return arr
+                }
+            }
+
+            readonly property var sink:   Pipewire.defaultAudioSink
+            readonly property var source: Pipewire.defaultAudioSource
+
+            PanelWindow {
+                id: panel
+                visible: root.opened || card.opacity > 0.01
+
+                WlrLayershell.namespace: "quickshell-volume"
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+
+                anchors { top: true; right: true }
+                margins { top: 50; right: 8 }
+                implicitWidth: 360
+                implicitHeight: contentCol.implicitHeight + 28
+                color: "transparent"
+
+                Shortcut { sequences: ["Escape"]; onActivated: root.hide() }
+
+                Rectangle {
+                    id: card
+                    anchors.fill: parent
+                    color: "${ca "base00" "ee"}"
+                    radius: 16
+                    border.width: 1
+                    border.color: "${c "base02"}"
+
+                    property real slideY: root.opened ? 0 : -18
+                    transform: Translate { y: card.slideY }
+
+                    transformOrigin: Item.Top
+                    opacity: root.opened ? 1 : 0
+                    scale: root.opened ? 1 : 0.96
+                    Behavior on opacity {
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+                    Behavior on slideY {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+
+                    ColumnLayout {
+                        id: contentCol
+                        anchors.fill: parent
+                        anchors.margins: 14
+                        spacing: 12
+
+                        Text {
+                            text: "󰕾  Audio"
+                            color: "${c "base0E"}"
+                            font.family: "RobotoMono Nerd Font"
+                            font.pixelSize: 14
+                            font.weight: Font.Medium
+                        }
+
+                        // ── Output (sink) ────────────────────────────
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 6
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 10
+
+                                Rectangle {
+                                    Layout.preferredWidth: 30
+                                    Layout.preferredHeight: 30
+                                    radius: 15
+                                    color: outIconHover.hovered
+                                        ? "${ca "base02" "cc"}"
+                                        : "transparent"
+                                    Behavior on color { ColorAnimation { duration: 120 } }
+                                    HoverHandler { id: outIconHover }
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: (root.sink && root.sink.audio && root.sink.audio.muted)
+                                            ? "󰝟" : "󰕾"
+                                        color: (root.sink && root.sink.audio && root.sink.audio.muted)
+                                            ? "${c "base08"}" : "${c "base0E"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 18
+                                    }
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            if (root.sink && root.sink.audio)
+                                                root.sink.audio.muted = !root.sink.audio.muted
+                                        }
+                                    }
+                                }
+
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 0
+                                    Text {
+                                        text: "Output"
+                                        color: "${c "base04"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 10
+                                    }
+                                    Text {
+                                        Layout.fillWidth: true
+                                        text: root.sink
+                                            ? (root.sink.description || root.sink.name || "—")
+                                            : "No device"
+                                        color: "${c "base05"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 11
+                                        elide: Text.ElideRight
+                                    }
+                                }
+
+                                Text {
+                                    text: root.sink && root.sink.audio
+                                        ? Math.round(root.sink.audio.volume * 100) + "%"
+                                        : "—"
+                                    color: "${c "base05"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 12
+                                }
+                            }
+
+                            Slider {
+                                id: outSlider
+                                Layout.fillWidth: true
+                                from: 0; to: 1
+                                value: root.sink && root.sink.audio
+                                    ? root.sink.audio.volume : 0
+                                onMoved: {
+                                    if (root.sink && root.sink.audio)
+                                        root.sink.audio.volume = value
+                                }
+                            }
+                        }
+
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 1
+                            color: "${ca "base02" "80"}"
+                            visible: root.source !== null
+                        }
+
+                        // ── Input (source) ───────────────────────────
+                        ColumnLayout {
+                            visible: root.source !== null
+                            Layout.fillWidth: true
+                            spacing: 6
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 10
+
+                                Rectangle {
+                                    Layout.preferredWidth: 30
+                                    Layout.preferredHeight: 30
+                                    radius: 15
+                                    color: inIconHover.hovered
+                                        ? "${ca "base02" "cc"}"
+                                        : "transparent"
+                                    Behavior on color { ColorAnimation { duration: 120 } }
+                                    HoverHandler { id: inIconHover }
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: (root.source && root.source.audio && root.source.audio.muted)
+                                            ? "󰍭" : "󰍬"
+                                        color: (root.source && root.source.audio && root.source.audio.muted)
+                                            ? "${c "base08"}" : "${c "base0B"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 18
+                                    }
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            if (root.source && root.source.audio)
+                                                root.source.audio.muted = !root.source.audio.muted
+                                        }
+                                    }
+                                }
+
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 0
+                                    Text {
+                                        text: "Input"
+                                        color: "${c "base04"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 10
+                                    }
+                                    Text {
+                                        Layout.fillWidth: true
+                                        text: root.source
+                                            ? (root.source.description || root.source.name || "—")
+                                            : "No device"
+                                        color: "${c "base05"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 11
+                                        elide: Text.ElideRight
+                                    }
+                                }
+
+                                Text {
+                                    text: root.source && root.source.audio
+                                        ? Math.round(root.source.audio.volume * 100) + "%"
+                                        : "—"
+                                    color: "${c "base05"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 12
+                                }
+                            }
+
+                            Slider {
+                                Layout.fillWidth: true
+                                from: 0; to: 1
+                                value: root.source && root.source.audio
+                                    ? root.source.audio.volume : 0
+                                onMoved: {
+                                    if (root.source && root.source.audio)
+                                        root.source.audio.volume = value
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      '';
+
+      networkPanelQml = ''
+        import QtQuick
+        import QtQuick.Controls
+        import QtQuick.Layouts
+        import Quickshell
+        import Quickshell.Wayland
+        import Quickshell.Io
+
+        Scope {
+            id: root
+
+            property bool opened: false
+            function show()   { root.opened = true; root.refresh() }
+            function hide()   { root.opened = false }
+            function toggle() { if (root.opened) root.hide(); else root.show() }
+
+            IpcHandler {
+                target: "network"
+                function show()   { root.show() }
+                function hide()   { root.hide() }
+                function toggle() { root.toggle() }
+            }
+
+            property string activeSsid: ""
+            property string activeType: "off"
+            property bool   wifiEnabled: true
+            property var    networks: []
+            property bool   busy: false
+
+            function refresh() {
+                statusProc.running   = true
+                wifiListProc.running = true
+            }
+
+            Process {
+                id: statusProc
+                command: ["sh", "-c",
+                    "wifi=$(nmcli -t -f WIFI g 2>/dev/null); " +
+                    "act=$(nmcli -t -f TYPE,STATE,CONNECTION device status 2>/dev/null | awk -F: '$2==\"connected\"{print $1\":\"$3; exit}'); " +
+                    "echo \"$wifi||$act\""]
+                stdout: StdioCollector { id: statusOut }
+                onExited: {
+                    var raw   = (statusOut.text || "").trim()
+                    var parts = raw.split("||")
+                    root.wifiEnabled =
+                        (parts[0] || "").toLowerCase().indexOf("enabled") !== -1
+                    var act = parts[1] || ""
+                    if (act.indexOf("wifi:") === 0) {
+                        root.activeType = "wifi"
+                        root.activeSsid = act.substring(5)
+                    } else if (act.indexOf("ethernet:") === 0) {
+                        root.activeType = "wired"
+                        root.activeSsid = act.substring(9)
+                    } else {
+                        root.activeType = "off"
+                        root.activeSsid = ""
+                    }
+                }
+            }
+
+            Process {
+                id: wifiListProc
+                command: ["sh", "-c",
+                    "nmcli -t -f IN-USE,SSID,SIGNAL,SECURITY device wifi list 2>/dev/null | head -n 30"]
+                stdout: StdioCollector { id: wifiListOut }
+                onExited: {
+                    var lines = (wifiListOut.text || "").trim().split("\n")
+                    var arr = []
+                    for (var i = 0; i < lines.length; ++i) {
+                        var raw = lines[i]
+                        if (!raw) continue
+                        var safe  = raw.replace(/\\:/g, "\u0001")
+                        var parts = safe.split(":")
+                        if (parts.length < 4) continue
+                        var ssid = (parts[1] || "").replace(/\u0001/g, ":")
+                        if (ssid === "") continue
+                        arr.push({
+                            inUse:  (parts[0] || "") === "*",
+                            ssid:   ssid,
+                            signal: parseInt(parts[2] || "0") || 0,
+                            secure: (parts[3] || "") !== ""
+                        })
+                    }
+                    arr.sort(function(a, b) { return b.signal - a.signal })
+                    var seen = ({})
+                    var unique = []
+                    for (var j = 0; j < arr.length; ++j) {
+                        if (seen[arr[j].ssid]) continue
+                        seen[arr[j].ssid] = true
+                        unique.push(arr[j])
+                    }
+                    root.networks = unique
+                }
+            }
+
+            Process {
+                id: actionProc
+                onExited: {
+                    root.busy = false
+                    root.refresh()
+                }
+            }
+
+            function toggleWifi() {
+                root.busy = true
+                actionProc.command = ["sh", "-c",
+                    "nmcli radio wifi " + (root.wifiEnabled ? "off" : "on")]
+                actionProc.running = true
+            }
+            function connectTo(ssid) {
+                root.busy = true
+                actionProc.command = ["sh", "-c",
+                    "nmcli device wifi connect " + JSON.stringify(ssid) + " || true"]
+                actionProc.running = true
+            }
+            function disconnectActive() {
+                if (root.activeSsid === "") return
+                root.busy = true
+                actionProc.command = ["sh", "-c",
+                    "nmcli connection down id " + JSON.stringify(root.activeSsid) + " || true"]
+                actionProc.running = true
+            }
+
+            Timer {
+                running: root.opened
+                repeat: true
+                interval: 5000
+                onTriggered: root.refresh()
+            }
+
+            function wifiIcon(s) {
+                if (s >= 75) return "󰤨"
+                if (s >= 50) return "󰤥"
+                if (s >= 25) return "󰤢"
+                if (s > 0)   return "󰤟"
+                return "󰤮"
+            }
+
+            PanelWindow {
+                id: panel
+                visible: root.opened || card.opacity > 0.01
+
+                WlrLayershell.namespace: "quickshell-network"
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+
+                anchors { top: true; right: true }
+                margins { top: 50; right: 8 }
+                implicitWidth: 380
+                implicitHeight: 460
+                color: "transparent"
+
+                Shortcut { sequences: ["Escape"]; onActivated: root.hide() }
+
+                Rectangle {
+                    id: card
+                    anchors.fill: parent
+                    color: "${ca "base00" "ee"}"
+                    radius: 16
+                    border.width: 1
+                    border.color: "${c "base02"}"
+
+                    property real slideY: root.opened ? 0 : -18
+                    transform: Translate { y: card.slideY }
+
+                    transformOrigin: Item.Top
+                    opacity: root.opened ? 1 : 0
+                    scale: root.opened ? 1 : 0.96
+                    Behavior on opacity {
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+                    Behavior on slideY {
+                        NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
+                    }
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 14
+                        spacing: 10
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Text {
+                                text: "󰖩  Network"
+                                color: "${c "base0B"}"
+                                font.family: "RobotoMono Nerd Font"
+                                font.pixelSize: 14
+                                font.weight: Font.Medium
+                            }
+                            Item { Layout.fillWidth: true }
+                            Text {
+                                text: root.busy ? "…" : "󰑐"
+                                color: "${c "base04"}"
+                                font.family: "RobotoMono Nerd Font"
+                                font.pixelSize: 14
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.refresh()
+                                }
+                            }
+                        }
+
+                        // ── Status / current connection ──────────────
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 56
+                            color: "${ca "base01" "75"}"
+                            radius: 10
+                            border.width: 1
+                            border.color: "${c "base02"}"
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.margins: 12
+                                spacing: 10
+
+                                Text {
+                                    text: root.activeType === "wired"
+                                        ? "󰈀"
+                                        : (root.activeType === "wifi"
+                                            ? root.wifiIcon(80)
+                                            : "󰤮")
+                                    color: root.activeType === "off"
+                                        ? "${c "base08"}"
+                                        : "${c "base0B"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 22
+                                }
+
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 0
+                                    Text {
+                                        text: root.activeType === "off"
+                                            ? "Disconnected"
+                                            : (root.activeType === "wired"
+                                                ? "Wired"
+                                                : "Connected")
+                                        color: "${c "base04"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 10
+                                    }
+                                    Text {
+                                        Layout.fillWidth: true
+                                        text: root.activeSsid !== "" ? root.activeSsid : "—"
+                                        color: "${c "base05"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 12
+                                        elide: Text.ElideRight
+                                    }
+                                }
+
+                                Text {
+                                    visible: root.activeType !== "off"
+                                    text: "Disconnect"
+                                    color: "${c "base08"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 10
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: root.disconnectActive()
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Wi-Fi toggle ─────────────────────────────
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Text {
+                                text: "Wi-Fi"
+                                color: "${c "base05"}"
+                                font.family: "RobotoMono Nerd Font"
+                                font.pixelSize: 12
+                            }
+                            Item { Layout.fillWidth: true }
+                            Rectangle {
+                                Layout.preferredWidth: 38
+                                Layout.preferredHeight: 20
+                                radius: 10
+                                color: root.wifiEnabled
+                                    ? "${c "base0D"}"
+                                    : "${ca "base02" "cc"}"
+                                Behavior on color { ColorAnimation { duration: 180 } }
+
+                                Rectangle {
+                                    width: 16; height: 16; radius: 8
+                                    color: "${c "base05"}"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    x: root.wifiEnabled
+                                        ? parent.width - width - 2
+                                        : 2
+                                    Behavior on x {
+                                        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+                                    }
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: root.toggleWifi()
+                                }
+                            }
+                        }
+
+                        // ── Network list ─────────────────────────────
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            color: "${ca "base01" "75"}"
+                            radius: 10
+                            border.width: 1
+                            border.color: "${c "base02"}"
+
+                            ListView {
+                                id: netList
+                                anchors.fill: parent
+                                anchors.margins: 6
+                                clip: true
+                                spacing: 2
+                                model: root.networks
+                                boundsBehavior: Flickable.StopAtBounds
+                                ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+
+                                delegate: Rectangle {
+                                    required property var modelData
+                                    width: netList.width
+                                    height: 38
+                                    radius: 6
+                                    color: hover.hovered
+                                        ? "${ca "base02" "aa"}"
+                                        : "transparent"
+                                    Behavior on color { ColorAnimation { duration: 120 } }
+                                    HoverHandler { id: hover }
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 10
+                                        anchors.rightMargin: 10
+                                        spacing: 10
+
+                                        Text {
+                                            text: root.wifiIcon(modelData.signal)
+                                            color: modelData.inUse
+                                                ? "${c "base0B"}"
+                                                : "${c "base05"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 16
+                                        }
+                                        Text {
+                                            Layout.fillWidth: true
+                                            text: modelData.ssid
+                                            color: "${c "base05"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 12
+                                            elide: Text.ElideRight
+                                            font.weight: modelData.inUse
+                                                ? Font.Medium
+                                                : Font.Normal
+                                        }
+                                        Text {
+                                            visible: modelData.secure
+                                            text: "󰌾"
+                                            color: "${c "base04"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 11
+                                        }
+                                        Text {
+                                            text: modelData.signal + "%"
+                                            color: "${c "base04"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 10
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            if (!modelData.inUse)
+                                                root.connectTo(modelData.ssid)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      '';
+
       bivrostConfig = pkgs.runCommand "quickshell-bivrost" { } ''
         mkdir -p $out
         cp ${pkgs.writeText "shell.qml" shellQml}                 $out/shell.qml
@@ -1687,6 +2951,9 @@ _: {
         cp ${pkgs.writeText "Launcher.qml" launcherQml}           $out/Launcher.qml
         cp ${pkgs.writeText "Session.qml" sessionQml}             $out/Session.qml
         cp ${pkgs.writeText "Lock.qml" lockQml}                   $out/Lock.qml
+        cp ${pkgs.writeText "SystemMonitor.qml" sysmonQml}        $out/SystemMonitor.qml
+        cp ${pkgs.writeText "VolumePanel.qml" volumePanelQml}     $out/VolumePanel.qml
+        cp ${pkgs.writeText "NetworkPanel.qml" networkPanelQml}   $out/NetworkPanel.qml
       '';
     in
     {

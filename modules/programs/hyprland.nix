@@ -211,9 +211,6 @@
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(Rofi)$"
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(eww)$"
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(Gimp-2.10)$"
-              "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(org.gnome.Calculator)$"
-              "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(org.gnome.Calendar)$"
-              "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(gnome-system-monitor)$"
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(pavucontrol)$"
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(nm-connection-editor)$"
               "float on, size (monitor_w*0.5) (monitor_h*0.7), center on, match:class ^(Color Picker)$"
@@ -278,10 +275,6 @@
             bottom
             ffmpegthumbnailer
             glib
-            gnome-calendar
-            gnome-boxes
-            gnome-weather
-            gnome-system-monitor
             headsetcontrol
             imagemagick
             libnotify
