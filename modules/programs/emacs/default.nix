@@ -294,7 +294,7 @@ _: {
               lsp-metals # Scala Metals support
               lsp-haskell # Haskell LSP support
               lsp-tailwindcss # Tailwind CSS LSP add-on
-              dap-mode # Debug Adapter Protocol client (bundles dap-java + dap-scala)
+              dap-mode # Debug Adapter Protocol client (dap-java now ships with lsp-java; Scala DAP is driven by lsp-metals)
               eldoc-box # Display function signatures at point
 
               # Mail
@@ -332,8 +332,6 @@ _: {
               # Version
               diff-hl # Highlight uncommitted changes in the fringe/margin
               forge # Work with github forges
-              git-gutter # Show git diff in the fringe
-              git-gutter-fringe # Fringe version of git-gutter.el
               magit # A Git porcelain inside Emacs
               vundo # Undo tree visualiser
             ];

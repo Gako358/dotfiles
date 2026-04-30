@@ -1662,9 +1662,10 @@ Using own created web mode, for Vue, TypeScript, and Tailwind.
 
 *** Java
 =lsp-java= drives the JDT language server (refactorings, code actions,
-imports, ...). Debugging is provided by =dap-java= (bundled with
-=dap-mode=, see [[*DAP][DAP]]); the test/main-class debug entry points
-live alongside the rest of the Java leader bindings under =SPC l j=.
+imports, ...). Debugging is provided by =dap-java= (which now ships
+inside =lsp-java= itself, see [[*DAP][DAP]]); the test/main-class debug
+entry points live alongside the rest of the Java leader bindings under
+=SPC l j=.
 
 #+begin_src emacs-lisp
   ;; Java language server
@@ -2023,13 +2024,14 @@ Setting up LSP mode
       "lh" 'lsp-ui-doc-glance))
 #+end_src
 
-*** DAP
+*** LSP DAP
 =dap-mode= adds Debug Adapter Protocol support on top of =lsp-mode=:
 breakpoints, stepping, watch expressions, a REPL and a debug UI. We
-enable it for Java (via =dap-java=, bundled with =dap-mode=, which
-drives the JDT language server's debug plugin) and Scala (via
-=dap-scala=, which talks to Metals' BSP-based DAP server — works for
-both =sbt= and =bloop= projects).
+enable it for Java (via =dap-java=, which now ships inside =lsp-java=
+and drives the JDT language server's debug plugin) and Scala (via
+=lsp-metals=, which registers Scala debug templates and talks to
+Metals' BSP-based DAP server — works for both =sbt= and =bloop=
+projects, no separate =dap-scala= package required).
 
 All generic debug bindings live under the =SPC b= leader prefix
 (=b= for *break/debug* — =SPC d= is taken by =detached=). Language
@@ -2049,8 +2051,7 @@ Java tooling, in the [[*Java][Java]] section.
     :config
     (dap-auto-configure-mode 1)
 
-    (require 'dap-java)   ; Java   — uses lsp-java's JDT debug plugin
-    (require 'dap-scala)  ; Scala  — uses Metals' DAP server over BSP
+    (require 'dap-java)
 
     (evil-leader/set-key
       ;; Sessions
@@ -2527,28 +2528,11 @@ For forge, create a file called ~/.authinfo with the following:
 	ediff-split-window-function #'split-window-horizontally)
 #+end_src
 
-*** Forge
-#+begin_src emacs-lisp
-  (use-package forge
-    :after magit
-    :init
-    (setq forge-add-default-bindings nil)
-    :config
-    (setq auth-sources '("~/.authinfo")))
-#+end_src
-
 *** Diff-hl
 Highlight uncommitted VC changes in the fringe (or the margin in
 terminal frames). Works alongside Magit — refreshing Magit also
 refreshes the diff indicators — and supports staging hunks directly
 from a source buffer with =diff-hl-stage-current-hunk=.
-
-#+BEGIN_QUOTE
-=diff-hl= overlaps with =git-gutter= below; both draw VC indicators in
-the fringe. Pick one in practice — keep =git-gutter= disabled (or remove
-it) if you switch to =diff-hl=, or vice versa. They are kept side by
-side here so you can compare and choose.
-#+END_QUOTE
 
 #+begin_src emacs-lisp
   (use-package diff-hl
@@ -2571,26 +2555,14 @@ side here so you can compare and choose.
       (diff-hl-margin-mode 1)))
 #+end_src
 
-*** Git-gutter
+*** Forge
 #+begin_src emacs-lisp
-  (use-package git-gutter
-    :hook (prog-mode . git-gutter-mode)
-    :custom
-    (git-gutter:update-interval 0.05))
-
-  (use-package git-gutter-fringe
-    :after git-gutter
+  (use-package forge
+    :after magit
+    :init
+    (setq forge-add-default-bindings nil)
     :config
-    (fringe-mode '(8 . 8))
-    (define-fringe-bitmap 'git-gutter-fr:added
-      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-      nil nil 'center)
-    (define-fringe-bitmap 'git-gutter-fr:modified
-      [224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224 224]
-      nil nil 'center)
-    (define-fringe-bitmap 'git-gutter-fr:deleted
-      [0 0 0 0 0 0 0 0 0 0 0 0 0 128 192 224 240 248]
-      nil nil 'center))
+    (setq auth-sources '("~/.authinfo")))
 #+end_src
 
 *** Magit
