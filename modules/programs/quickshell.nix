@@ -33,8 +33,13 @@ _: {
             id: root
 
             Notifications { id: notifications }
-            Dashboard     { id: dashboard }
             Lock          { id: lock }
+            Launcher      { id: launcher }
+            Session       { id: session; lockComponent: lock }
+            Dashboard     {
+                id: dashboard
+                notifications: notifications
+            }
 
             Variants {
                 model: Quickshell.screens
@@ -42,10 +47,10 @@ _: {
                 Bar {
                     required property var modelData
                     screen: modelData
-                    onLauncherRequested: Quickshell.execDetached(["wofi", "--show", "drun"])
+                    onLauncherRequested: launcher.toggle()
                     onDashboardRequested: dashboard.toggle()
                     onCalendarRequested: dashboard.show()
-                    onLockRequested: lock.lock()
+                    onSessionRequested: session.toggle()
                     onSystemMonitorRequested: Quickshell.execDetached(["gnome-system-monitor"])
                     onAudioRequested: Quickshell.execDetached(["pavucontrol"])
                     onNetworkRequested: Quickshell.execDetached(["nm-connection-editor"])
@@ -68,7 +73,7 @@ _: {
             signal launcherRequested()
             signal dashboardRequested()
             signal calendarRequested()
-            signal lockRequested()
+            signal sessionRequested()
             signal systemMonitorRequested()
             signal audioRequested()
             signal networkRequested()
@@ -284,17 +289,17 @@ _: {
                         }
                     }
 
-                    // ── Lock ─────────────────────────────────────────
+                    // ── Session / power menu ─────────────────────────
                     Text {
                         visible: bar.isFocused
-                        text: "󰌾"
+                        text: "󰐥"
                         font.family: "RobotoMono Nerd Font"
                         font.pixelSize: 14
-                        color: "${c "base0B"}"
+                        color: "${c "base08"}"
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: bar.lockRequested()
+                            onClicked: bar.sessionRequested()
                         }
                     }
                 }
@@ -304,6 +309,7 @@ _: {
 
       dashboardQml = ''
         import QtQuick
+        import QtQuick.Controls
         import QtQuick.Layouts
         import Quickshell
         import Quickshell.Wayland
@@ -313,9 +319,14 @@ _: {
         Scope {
             id: root
 
-            function toggle() { panel.visible = !panel.visible }
-            function show()   { panel.visible = true }
-            function hide()   { panel.visible = false }
+            // Provided by shell.qml so we can list recent notifications.
+            property var notifications: null
+
+            property bool opened: false
+
+            function toggle() { root.opened = !root.opened }
+            function show()   { root.opened = true }
+            function hide()   { root.opened = false }
 
             IpcHandler {
                 target: "dashboard"
@@ -344,13 +355,14 @@ _: {
             }
             Process {
                 id: upProc
-                command: ["sh", "-c", "uptime -p | sed 's/^up //'"]
+                command: ["sh", "-c",
+                    "awk '{u=int($1); d=int(u/86400); h=int((u%86400)/3600); m=int((u%3600)/60); s=\"\"; if(d>0) s=s d\"d \"; if(h>0) s=s h\"h \"; s=s m\"m\"; print s}' /proc/uptime"]
                 stdout: StdioCollector { id: upOut }
-                onExited: root.uptime = (upOut.text || "").trim()
+                onExited: root.uptime = (upOut.text || "").trim() || "—"
             }
             Timer {
                 id: pollTimer
-                running: panel.visible
+                running: root.opened
                 repeat: true
                 interval: 2000
                 triggeredOnStart: true
@@ -363,7 +375,7 @@ _: {
 
             PanelWindow {
                 id: panel
-                visible: false
+                visible: root.opened || dashCard.opacity > 0.01
 
                 WlrLayershell.namespace: "quickshell-dashboard"
                 WlrLayershell.layer: WlrLayer.Overlay
@@ -379,7 +391,7 @@ _: {
                     right: 8
                     bottom: 8
                 }
-                implicitWidth: 380
+                implicitWidth: 420
                 color: "transparent"
 
                 Shortcut {
@@ -388,11 +400,22 @@ _: {
                 }
 
                 Rectangle {
+                    id: dashCard
                     anchors.fill: parent
                     color: "${ca "base00" "e6"}"
                     radius: 16
                     border.width: 1
                     border.color: "${c "base02"}"
+
+                    transformOrigin: Item.TopRight
+                    opacity: root.opened ? 1 : 0
+                    scale: root.opened ? 1 : 0.97
+                    Behavior on opacity {
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
+                    }
 
                     ColumnLayout {
                         anchors.fill: parent
@@ -575,7 +598,167 @@ _: {
                                         color: "${c "base05"}"
                                         font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
                                         elide: Text.ElideRight
-                                        Layout.maximumWidth: 200
+                                        horizontalAlignment: Text.AlignRight
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Recent notifications ─────────────────────
+                        Rectangle {
+                            id: notifCard
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 200
+                            color: "${ca "base01" "75"}"
+                            radius: 12
+                            border.width: 1
+                            border.color: "${c "base02"}"
+
+                            readonly property var histModel:
+                                root.notifications ? root.notifications.historyModel : null
+
+                            ColumnLayout {
+                                anchors.fill: parent
+                                anchors.margins: 12
+                                spacing: 6
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Text {
+                                        text: "󰂚 Notifications"
+                                        color: "${c "base0A"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 13
+                                        font.weight: Font.Medium
+                                    }
+                                    Item { Layout.fillWidth: true }
+                                    Text {
+                                        visible: notifCard.histModel
+                                            && notifCard.histModel.count > 0
+                                        text: "Clear all"
+                                        color: "${c "base04"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 10
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: if (root.notifications)
+                                                root.notifications.clearHistory()
+                                        }
+                                    }
+                                }
+
+                                Text {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    visible: !notifCard.histModel
+                                        || notifCard.histModel.count === 0
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    text: "No new notifications"
+                                    color: "${c "base04"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 11
+                                }
+
+                                ListView {
+                                    id: notifList
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    visible: notifCard.histModel
+                                        && notifCard.histModel.count > 0
+                                    clip: true
+                                    spacing: 6
+                                    model: notifCard.histModel
+                                    boundsBehavior: Flickable.StopAtBounds
+                                    ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+
+                                    delegate: Rectangle {
+                                        required property int index
+                                        required property string summary
+                                        required property string body
+                                        required property string appName
+                                        required property string time
+                                        required property int urgency
+
+                                        width: notifList.width
+                                        height: row.implicitHeight + 12
+                                        color: "${ca "base00" "80"}"
+                                        radius: 8
+                                        border.width: 1
+                                        border.color: urgency === 2
+                                            ? "${c "base08"}"
+                                            : "${c "base02"}"
+
+                                        RowLayout {
+                                            id: row
+                                            anchors.fill: parent
+                                            anchors.margins: 8
+                                            spacing: 8
+
+                                            ColumnLayout {
+                                                Layout.fillWidth: true
+                                                spacing: 1
+                                                RowLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 6
+                                                    Text {
+                                                        text: appName
+                                                        color: "${c "base0D"}"
+                                                        font.family: "RobotoMono Nerd Font"
+                                                        font.pixelSize: 10
+                                                        font.weight: Font.Medium
+                                                        elide: Text.ElideRight
+                                                        Layout.maximumWidth: 140
+                                                    }
+                                                    Item { Layout.fillWidth: true }
+                                                    Text {
+                                                        text: time
+                                                        color: "${c "base04"}"
+                                                        font.family: "RobotoMono Nerd Font"
+                                                        font.pixelSize: 10
+                                                    }
+                                                }
+                                                Text {
+                                                    Layout.fillWidth: true
+                                                    text: summary
+                                                    color: "${c "base05"}"
+                                                    font.family: "RobotoMono Nerd Font"
+                                                    font.pixelSize: 12
+                                                    elide: Text.ElideRight
+                                                }
+                                                Text {
+                                                    Layout.fillWidth: true
+                                                    visible: body !== ""
+                                                    text: body
+                                                    color: "${c "base06"}"
+                                                    linkColor: "${c "base0C"}"
+                                                    font.family: "RobotoMono Nerd Font"
+                                                    font.pixelSize: 11
+                                                    wrapMode: Text.Wrap
+                                                    textFormat: Text.RichText
+                                                    maximumLineCount: 2
+                                                    elide: Text.ElideRight
+                                                    onLinkActivated: function(link) {
+                                                        Qt.openUrlExternally(link)
+                                                    }
+                                                }
+                                            }
+
+                                            Text {
+                                                text: "󰅖"
+                                                color: "${c "base04"}"
+                                                font.family: "RobotoMono Nerd Font"
+                                                font.pixelSize: 12
+                                                Layout.alignment: Qt.AlignTop
+                                                MouseArea {
+                                                    anchors.fill: parent
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    onClicked: if (root.notifications)
+                                                        root.notifications.removeHistory(index)
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -680,7 +863,22 @@ _: {
         Scope {
             id: root
 
+            // Currently displayed toasts (auto-expire)
             ListModel { id: toasts }
+
+            // Persistent in-session history (shown in Dashboard)
+            ListModel { id: history }
+            readonly property int maxHistory: 50
+
+            // Public alias so other components (Dashboard) can bind to it
+            property alias historyModel: history
+
+            function clearHistory() {
+                history.clear()
+            }
+            function removeHistory(idx) {
+                if (idx >= 0 && idx < history.count) history.remove(idx)
+            }
 
             NotificationServer {
                 id: server
@@ -692,14 +890,19 @@ _: {
 
                 onNotification: function(notif) {
                     notif.tracked = true
-                    toasts.append({
+                    var entry = {
                         nid: notif.id,
                         summary: notif.summary || "",
                         body: notif.body || "",
                         appName: notif.appName || "",
                         image: notif.image || "",
-                        urgency: notif.urgency
-                    })
+                        urgency: notif.urgency,
+                        time: Qt.formatDateTime(new Date(), "hh:mm")
+                    }
+                    toasts.append(entry)
+                    history.insert(0, entry)
+                    while (history.count > root.maxHistory)
+                        history.remove(history.count - 1)
                 }
             }
 
@@ -720,7 +923,7 @@ _: {
                     right: 8
                 }
 
-                implicitWidth: 380
+                implicitWidth: 420
                 implicitHeight: stackCol.implicitHeight + 8
                 color: "transparent"
 
@@ -728,7 +931,7 @@ _: {
                     id: stackCol
                     anchors.fill: parent
                     anchors.margins: 4
-                    spacing: 8
+                    spacing: 10
 
                     Repeater {
                         model: toasts
@@ -744,8 +947,8 @@ _: {
                             required property int urgency
 
                             Layout.fillWidth: true
-                            Layout.preferredHeight: toastCol.implicitHeight + 20
-                            color: "${ca "base00" "e6"}"
+                            Layout.preferredHeight: toastCol.implicitHeight + 24
+                            color: "${ca "base00" "ee"}"
                             radius: 12
                             border.width: 1
                             border.color: toast.urgency === NotificationUrgency.Critical
@@ -758,39 +961,40 @@ _: {
 
                             Timer {
                                 running: toast.urgency !== NotificationUrgency.Critical
-                                interval: 5000
+                                interval: 6000
                                 onTriggered: toasts.remove(toast.index)
                             }
 
                             ColumnLayout {
                                 id: toastCol
                                 anchors.fill: parent
-                                anchors.margins: 10
-                                spacing: 2
+                                anchors.margins: 12
+                                spacing: 4
 
                                 RowLayout {
                                     Layout.fillWidth: true
-                                    spacing: 8
+                                    spacing: 10
 
                                     Image {
                                         visible: toast.image !== ""
                                         source: toast.image
-                                        sourceSize.width: 28
-                                        sourceSize.height: 28
-                                        Layout.preferredWidth: 28
-                                        Layout.preferredHeight: 28
+                                        sourceSize.width: 36
+                                        sourceSize.height: 36
+                                        Layout.preferredWidth: 36
+                                        Layout.preferredHeight: 36
                                         fillMode: Image.PreserveAspectFit
                                     }
 
                                     ColumnLayout {
                                         Layout.fillWidth: true
-                                        spacing: 0
+                                        spacing: 1
                                         Text {
                                             Layout.fillWidth: true
                                             text: toast.appName
-                                            color: "${c "base04"}"
+                                            color: "${c "base0D"}"
                                             font.family: "RobotoMono Nerd Font"
-                                            font.pixelSize: 9
+                                            font.pixelSize: 11
+                                            font.weight: Font.Medium
                                             elide: Text.ElideRight
                                         }
                                         Text {
@@ -798,7 +1002,7 @@ _: {
                                             text: toast.summary
                                             color: "${c "base05"}"
                                             font.family: "RobotoMono Nerd Font"
-                                            font.pixelSize: 13
+                                            font.pixelSize: 15
                                             font.weight: Font.Medium
                                             elide: Text.ElideRight
                                         }
@@ -808,7 +1012,7 @@ _: {
                                         text: "󰅖"
                                         color: "${c "base04"}"
                                         font.family: "RobotoMono Nerd Font"
-                                        font.pixelSize: 14
+                                        font.pixelSize: 16
                                         MouseArea {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
@@ -821,13 +1025,20 @@ _: {
                                     Layout.fillWidth: true
                                     visible: toast.body !== ""
                                     text: toast.body
-                                    color: "${c "base05"}"
+                                    color: "${c "base06"}"
+                                    linkColor: "${c "base0C"}"
                                     font.family: "RobotoMono Nerd Font"
-                                    font.pixelSize: 11
+                                    font.pixelSize: 13
                                     wrapMode: Text.Wrap
-                                    textFormat: Text.MarkdownText
-                                    maximumLineCount: 4
+                                    textFormat: Text.RichText
+                                    maximumLineCount: 6
                                     elide: Text.ElideRight
+                                    onLinkActivated: function(link) { Qt.openUrlExternally(link) }
+                                    HoverHandler {
+                                        cursorShape: parent.hoveredLink !== ""
+                                            ? Qt.PointingHandCursor
+                                            : Qt.ArrowCursor
+                                    }
                                 }
                             }
 
@@ -835,6 +1046,457 @@ _: {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.RightButton
                                 onClicked: toasts.remove(toast.index)
+                                propagateComposedEvents: true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      '';
+
+      launcherQml = ''
+        import QtQuick
+        import QtQuick.Controls
+        import QtQuick.Layouts
+        import Quickshell
+        import Quickshell.Wayland
+        import Quickshell.Io
+        import Quickshell.Widgets
+
+        Scope {
+            id: root
+
+            property bool opened: false
+
+            function show() {
+                root.opened = true
+                searchField.forceActiveFocus()
+                searchField.selectAll()
+            }
+            function hide() {
+                root.opened = false
+                searchField.text = ""
+            }
+            function toggle() {
+                if (root.opened) hide(); else show()
+            }
+
+            IpcHandler {
+                target: "launcher"
+                function show()   { root.show() }
+                function hide()   { root.hide() }
+                function toggle() { root.toggle() }
+            }
+
+            // Pull desktop entries from Quickshell, sort by name, filter by query.
+            readonly property var allEntries: {
+                var out = []
+                var apps = DesktopEntries.applications
+                if (!apps) return out
+                var n = apps.values ? apps.values.length : 0
+                for (var i = 0; i < n; ++i) {
+                    var e = apps.values[i]
+                    if (!e || e.noDisplay) continue
+                    out.push(e)
+                }
+                out.sort(function(a, b) {
+                    return (a.name || "").toLowerCase()
+                        .localeCompare((b.name || "").toLowerCase())
+                })
+                return out
+            }
+
+            function entryMatches(entry, q) {
+                if (!q) return true
+                q = q.toLowerCase()
+                var n = (entry.name || "").toLowerCase()
+                var g = (entry.genericName || "").toLowerCase()
+                var c = (entry.comment || "").toLowerCase()
+                return n.indexOf(q) !== -1
+                    || g.indexOf(q) !== -1
+                    || c.indexOf(q) !== -1
+            }
+
+            readonly property var filteredEntries: {
+                var q = (searchField.text || "").trim()
+                if (!q) return allEntries
+                return allEntries.filter(function(e) {
+                    return entryMatches(e, q)
+                })
+            }
+
+            function launchEntry(entry) {
+                if (!entry) return
+                try { entry.execute() }
+                catch (err) { console.warn("launcher: execute failed", err) }
+                root.hide()
+            }
+
+            PanelWindow {
+                id: panel
+                visible: root.opened || launcherCard.opacity > 0.01
+
+                WlrLayershell.namespace: "quickshell-launcher"
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+
+                anchors {
+                    top: true
+                    left: true
+                }
+                margins {
+                    top: 48
+                    left: 8
+                }
+
+                implicitWidth: 460
+                implicitHeight: 520
+                color: "transparent"
+
+                Shortcut {
+                    sequences: ["Escape"]
+                    onActivated: root.hide()
+                }
+
+                Rectangle {
+                    id: launcherCard
+                    anchors.fill: parent
+                    color: "${ca "base00" "ee"}"
+                    radius: 16
+                    border.width: 1
+                    border.color: "${c "base02"}"
+
+                    transformOrigin: Item.TopLeft
+                    opacity: root.opened ? 1 : 0
+                    scale: root.opened ? 1 : 0.96
+                    Behavior on opacity {
+                        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                    }
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 14
+                        spacing: 10
+
+                        // ── Search field ─────────────────────────────
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 40
+                            color: "${ca "base01" "cc"}"
+                            radius: 10
+                            border.width: 1
+                            border.color: searchField.activeFocus
+                                ? "${c "base0D"}"
+                                : "${c "base02"}"
+                            Behavior on border.color {
+                                ColorAnimation { duration: 150 }
+                            }
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 12
+                                anchors.rightMargin: 12
+                                spacing: 8
+
+                                Text {
+                                    text: "󰍉"
+                                    color: "${c "base0D"}"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 16
+                                }
+
+                                TextField {
+                                    id: searchField
+                                    Layout.fillWidth: true
+                                    background: null
+                                    placeholderText: "Search applications…"
+                                    placeholderTextColor: "${c "base04"}"
+                                    color: "${c "base05"}"
+                                    selectByMouse: true
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 14
+
+                                    Keys.onPressed: function(event) {
+                                        if (event.key === Qt.Key_Down) {
+                                            appList.incrementCurrentIndex()
+                                            event.accepted = true
+                                        } else if (event.key === Qt.Key_Up) {
+                                            appList.decrementCurrentIndex()
+                                            event.accepted = true
+                                        } else if (event.key === Qt.Key_Return
+                                                || event.key === Qt.Key_Enter) {
+                                            var list = root.filteredEntries
+                                            var idx = appList.currentIndex
+                                            if (idx < 0 || idx >= list.length) idx = 0
+                                            root.launchEntry(list[idx])
+                                            event.accepted = true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // ── Application list ─────────────────────────
+                        ListView {
+                            id: appList
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            clip: true
+                            spacing: 2
+                            model: root.filteredEntries
+                            currentIndex: 0
+                            keyNavigationEnabled: false
+                            boundsBehavior: Flickable.StopAtBounds
+                            ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+
+                            delegate: Rectangle {
+                                required property int index
+                                required property var modelData
+                                width: appList.width
+                                height: 52
+                                radius: 8
+                                color: appList.currentIndex === index
+                                    ? "${ca "base02" "aa"}"
+                                    : (hover.hovered ? "${ca "base01" "aa"}" : "transparent")
+
+                                HoverHandler { id: hover }
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 10
+                                    anchors.rightMargin: 10
+                                    spacing: 12
+
+                                    IconImage {
+                                        Layout.preferredWidth: 32
+                                        Layout.preferredHeight: 32
+                                        source: modelData
+                                            ? (modelData.icon || "application-x-executable")
+                                            : ""
+                                        implicitSize: 32
+                                    }
+
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 0
+                                        Text {
+                                            Layout.fillWidth: true
+                                            text: modelData ? (modelData.name || "") : ""
+                                            color: "${c "base05"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 13
+                                            font.weight: Font.Medium
+                                            elide: Text.ElideRight
+                                        }
+                                        Text {
+                                            Layout.fillWidth: true
+                                            visible: text !== ""
+                                            text: modelData
+                                                ? (modelData.comment
+                                                    || modelData.genericName
+                                                    || "")
+                                                : ""
+                                            color: "${c "base04"}"
+                                            font.family: "RobotoMono Nerd Font"
+                                            font.pixelSize: 10
+                                            elide: Text.ElideRight
+                                        }
+                                    }
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    hoverEnabled: true
+                                    onEntered: appList.currentIndex = index
+                                    onClicked: root.launchEntry(modelData)
+                                }
+                            }
+                        }
+
+                        Text {
+                            Layout.fillWidth: true
+                            visible: root.filteredEntries.length === 0
+                            horizontalAlignment: Text.AlignHCenter
+                            text: "No matching applications"
+                            color: "${c "base04"}"
+                            font.family: "RobotoMono Nerd Font"
+                            font.pixelSize: 12
+                        }
+                    }
+                }
+            }
+        }
+      '';
+
+      sessionQml = ''
+        import QtQuick
+        import QtQuick.Layouts
+        import Quickshell
+        import Quickshell.Wayland
+        import Quickshell.Io
+
+        Scope {
+            id: root
+
+            // Optional reference to the lock component, set by shell.qml.
+            property var lockComponent: null
+
+            property bool opened: false
+
+            function show()   { root.opened = true }
+            function hide()   { root.opened = false }
+            function toggle() { root.opened = !root.opened }
+
+            IpcHandler {
+                target: "session"
+                function show()   { root.show() }
+                function hide()   { root.hide() }
+                function toggle() { root.toggle() }
+            }
+
+            function run(cmd) {
+                Quickshell.execDetached(cmd)
+                root.hide()
+            }
+
+            function doLock() {
+                if (root.lockComponent) root.lockComponent.lock()
+                root.hide()
+            }
+            function doSuspend()  { run(["systemctl", "suspend"]) }
+            function doLogout()   { run(["hyprctl", "dispatch", "exit"]) }
+            function doReboot()   { run(["systemctl", "reboot"]) }
+            function doShutdown() { run(["systemctl", "poweroff"]) }
+
+            PanelWindow {
+                id: panel
+                visible: root.opened || sessionCard.opacity > 0.01
+
+                WlrLayershell.namespace: "quickshell-session"
+                WlrLayershell.layer: WlrLayer.Overlay
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+
+                anchors {
+                    top: true
+                    right: true
+                }
+                margins {
+                    top: 48
+                    right: 8
+                }
+
+                implicitWidth: 280
+                implicitHeight: contentCol.implicitHeight + 28
+                color: "transparent"
+
+                Shortcut {
+                    sequences: ["Escape"]
+                    onActivated: root.hide()
+                }
+
+                Rectangle {
+                    id: sessionCard
+                    anchors.fill: parent
+                    color: "${ca "base00" "ee"}"
+                    radius: 16
+                    border.width: 1
+                    border.color: "${c "base02"}"
+
+                    transformOrigin: Item.TopRight
+                    opacity: root.opened ? 1 : 0
+                    scale: root.opened ? 1 : 0.96
+                    Behavior on opacity {
+                        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+                    }
+                    Behavior on scale {
+                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                    }
+
+                    ColumnLayout {
+                        id: contentCol
+                        anchors.fill: parent
+                        anchors.margins: 14
+                        spacing: 8
+
+                        Text {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: "Session"
+                            color: "${c "base0D"}"
+                            font.family: "RobotoMono Nerd Font"
+                            font.pixelSize: 14
+                            font.weight: Font.Medium
+                        }
+
+                        Item { Layout.preferredHeight: 4 }
+
+                        // Helper component: each row is a styled button.
+                        Repeater {
+                            model: [
+                                { icon: "󰌾", label: "Lock",     color: "${c "base0B"}", action: "lock"     },
+                                { icon: "󰒲", label: "Suspend",  color: "${c "base0C"}", action: "suspend"  },
+                                { icon: "󰍃", label: "Log out",  color: "${c "base0A"}", action: "logout"   },
+                                { icon: "󰜉", label: "Reboot",   color: "${c "base09"}", action: "reboot"   },
+                                { icon: "󰐥", label: "Shutdown", color: "${c "base08"}", action: "shutdown" }
+                            ]
+
+                            Rectangle {
+                                required property var modelData
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 44
+                                radius: 10
+                                color: hover.hovered
+                                    ? "${ca "base02" "cc"}"
+                                    : "${ca "base01" "75"}"
+                                border.width: 1
+                                border.color: "${c "base02"}"
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 120 }
+                                }
+
+                                HoverHandler { id: hover }
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 14
+                                    anchors.rightMargin: 14
+                                    spacing: 14
+
+                                    Text {
+                                        text: modelData.icon
+                                        color: modelData.color
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 20
+                                    }
+
+                                    Text {
+                                        Layout.fillWidth: true
+                                        text: modelData.label
+                                        color: "${c "base05"}"
+                                        font.family: "RobotoMono Nerd Font"
+                                        font.pixelSize: 13
+                                        font.weight: Font.Medium
+                                    }
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        switch (modelData.action) {
+                                            case "lock":     root.doLock();     break
+                                            case "suspend":  root.doSuspend();  break
+                                            case "logout":   root.doLogout();   break
+                                            case "reboot":   root.doReboot();   break
+                                            case "shutdown": root.doShutdown(); break
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1018,11 +1680,13 @@ _: {
 
       bivrostConfig = pkgs.runCommand "quickshell-bivrost" { } ''
         mkdir -p $out
-        cp ${pkgs.writeText "shell.qml" shellQml}         $out/shell.qml
-        cp ${pkgs.writeText "Bar.qml" barQml}           $out/Bar.qml
-        cp ${pkgs.writeText "Dashboard.qml" dashboardQml}     $out/Dashboard.qml
+        cp ${pkgs.writeText "shell.qml" shellQml}                 $out/shell.qml
+        cp ${pkgs.writeText "Bar.qml" barQml}                     $out/Bar.qml
+        cp ${pkgs.writeText "Dashboard.qml" dashboardQml}         $out/Dashboard.qml
         cp ${pkgs.writeText "Notifications.qml" notificationsQml} $out/Notifications.qml
-        cp ${pkgs.writeText "Lock.qml" lockQml}          $out/Lock.qml
+        cp ${pkgs.writeText "Launcher.qml" launcherQml}           $out/Launcher.qml
+        cp ${pkgs.writeText "Session.qml" sessionQml}             $out/Session.qml
+        cp ${pkgs.writeText "Lock.qml" lockQml}                   $out/Lock.qml
       '';
     in
     {

@@ -93,14 +93,16 @@
               fullscreen_opacity = 1.0;
             };
             layerrule = [
-              "blur on, match:namespace ^(wofi)$"
-              "ignore_alpha 0, match:namespace ^(wofi)$"
               "blur on, match:namespace ^(quickshell-bar)$"
               "ignore_alpha 0, match:namespace ^(quickshell-bar)$"
               "blur on, match:namespace ^(quickshell-dashboard)$"
               "ignore_alpha 0, match:namespace ^(quickshell-dashboard)$"
               "blur on, match:namespace ^(quickshell-notifications)$"
               "ignore_alpha 0, match:namespace ^(quickshell-notifications)$"
+              "blur on, match:namespace ^(quickshell-launcher)$"
+              "ignore_alpha 0, match:namespace ^(quickshell-launcher)$"
+              "blur on, match:namespace ^(quickshell-session)$"
+              "ignore_alpha 0, match:namespace ^(quickshell-session)$"
               "blur on, match:namespace ^(quickshell-lock)$"
               "ignore_alpha 0, match:namespace ^(quickshell-lock)$"
             ];
@@ -148,13 +150,14 @@
 
             bind = [
               "${mainMod}, Return, exec, ${launch "alacritty"}"
-              "${mainMod}, D, exec, ${toggle "wofi --show drun"}"
+              "${mainMod}, D, exec, qs -c bivrost ipc call launcher toggle"
               "${mainMod}, B, exec, ${toggle "alacritty -t btop -e btm"}"
               "${mainMod}, R, exec, ${toggle "alacritty -t ranger -e ranger"}"
               "${mainMod}, S, exec, ${toggle "alacritty -t spotify_player -e spotify_player"}"
               "${mainMod} ${SECONDARY}, D, exec, ${runOnce "pcmanfm"}"
               "${mainMod} ${SECONDARY}, L, exec, qs -c bivrost ipc call lock lock"
               "${mainMod}, A, exec, qs -c bivrost ipc call dashboard toggle"
+              "${mainMod}, Escape, exec, qs -c bivrost ipc call session toggle"
               "${mainMod} ${SECONDARY}, P, exec, ${runOnce "grimblast --notify copy area"}"
               "${mainMod} ${SECONDARY}, T, movetoworkspace, special"
               "${mainMod}, t, togglespecialworkspace"
