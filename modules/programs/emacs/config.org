@@ -490,10 +490,7 @@ Vertical Interactive Completion UI:
 
 #+begin_src emacs-lisp
   ;; Vertical interactive completion UI.
-  ;; Tip: You can remove the `vertico-mode' use-package and replace it
-  ;;      with the built-in `fido-vertical-mode'.
   (use-package vertico
-    ;; (Note: It is recommended to also enable the savehist package.)
     :ensure t
     :defer t
     :commands vertico-mode

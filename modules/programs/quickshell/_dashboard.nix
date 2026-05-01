@@ -303,7 +303,8 @@
                   Rectangle {
                       id: notifCard
                       Layout.fillWidth: true
-                      Layout.preferredHeight: 200
+                      Layout.fillHeight: true
+                      Layout.minimumHeight: 200
                       color: "${ca "base01" "75"}"
                       radius: 12
                       border.width: 1
@@ -463,7 +464,7 @@
                   Rectangle {
                       id: calCard
                       Layout.fillWidth: true
-                      Layout.fillHeight: true
+                      Layout.preferredHeight: 170
                       color: "${ca "base01" "75"}"
                       radius: 12
                       border.width: 1
