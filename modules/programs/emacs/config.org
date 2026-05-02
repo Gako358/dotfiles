@@ -364,9 +364,6 @@ Usage:
   (use-package eca
     :ensure t
     :custom
-    ;; Use Claude as the model
-    (eca-chat-custom-model "anthropic/claude-opus-4-7")
-    ;; Show chat in a side window on the right
     (eca-chat-use-side-window t)
     (eca-chat-window-side 'right)
     (eca-chat-window-width 0.4)
