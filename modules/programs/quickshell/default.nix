@@ -20,13 +20,17 @@ _: {
       ...
     }:
     let
+      cfg = config.program.quickshell;
       inherit (config.colorScheme) palette;
 
       c = name: "#${palette.${name}}";
       ca = name: alpha: "#${alpha}${palette.${name}}";
 
       shellQml = import ./_shell.nix;
-      barQml = import ./_bar.nix { inherit c ca; };
+      barQml = import ./_bar.nix {
+        inherit c ca lib;
+        battery = cfg.battery.enable;
+      };
       dashboardQml = import ./_dashboard.nix { inherit c ca; };
       notificationsQml = import ./_notifications.nix { inherit c ca; };
       launcherQml = import ./_launcher.nix { inherit c ca; };
@@ -51,7 +55,17 @@ _: {
       '';
     in
     {
-      programs.quickshell = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
+      options.program.quickshell = {
+        battery = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Enable the battery widget in the quickshell bar (laptops only).";
+          };
+        };
+      };
+
+      config.programs.quickshell = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
         enable = true;
         package = pkgs.quickshell;
 

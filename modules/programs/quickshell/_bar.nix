@@ -1,4 +1,9 @@
-{ c, ca }:
+{
+  c,
+  ca,
+  lib,
+  battery ? false,
+}:
 ''
   import QtQuick
   import QtQuick.Layouts
@@ -8,6 +13,7 @@
   import Quickshell.Services.Pipewire
   import Quickshell.Services.SystemTray
   import Quickshell.Wayland
+  ${lib.optionalString battery "import Quickshell.Services.UPower"}
 
   PanelWindow {
       id: bar
@@ -299,6 +305,37 @@
                       if (s > 0)   return "󰤟"
                       return "󰤮"
                   }
+                  ${lib.optionalString battery ''
+                    readonly property var battery: UPower.displayDevice
+                    readonly property bool hasBattery:
+                        statusPill.battery
+                        && statusPill.battery.isPresent
+                        && statusPill.battery.type === UPowerDeviceType.Battery
+                    readonly property real batPct:
+                        statusPill.battery ? statusPill.battery.percentage : 0
+                    readonly property bool batCharging:
+                        statusPill.battery
+                        && (statusPill.battery.state === UPowerDeviceState.Charging
+                            || statusPill.battery.state === UPowerDeviceState.FullyCharged)
+
+                    function batteryIcon(p, charging) {
+                        if (charging) return "󰂄"
+                        if (p >= 95) return "󰁹"
+                        if (p >= 80) return "󰂂"
+                        if (p >= 65) return "󰂀"
+                        if (p >= 50) return "󰁾"
+                        if (p >= 35) return "󰁼"
+                        if (p >= 20) return "󰁻"
+                        if (p >= 10) return "󰁺"
+                        return "󰂎"
+                    }
+                    function batteryColor(p, charging) {
+                        if (charging) return "${c "base0B"}"
+                        if (p <= 15)  return "${c "base08"}"
+                        if (p <= 30)  return "${c "base0A"}"
+                        return "${c "base0B"}"
+                    }
+                  ''}
 
                   Row {
                       id: statusRow
@@ -457,6 +494,51 @@
                               onClicked: bar.networkRequested()
                           }
                       }
+                      ${lib.optionalString battery ''
+                        Rectangle {
+                            visible: statusPill.hasBattery
+                            width: 1; height: statusPill.height - 10
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "${ca "base03" "80"}"
+                        }
+
+                        // ── Battery segment ──────────────────────
+                        Rectangle {
+                            id: batSeg
+                            visible: statusPill.hasBattery
+                            width: visible ? batRow.implicitWidth + 16 : 0
+                            height: statusPill.height
+                            color: batHover.hovered
+                                ? "${ca "base02" "cc"}"
+                                : "transparent"
+                            radius: 13
+                            Behavior on color { ColorAnimation { duration: 120 } }
+                            HoverHandler { id: batHover }
+                            Row {
+                                id: batRow
+                                anchors.centerIn: parent
+                                spacing: 6
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: statusPill.batteryIcon(
+                                        statusPill.batPct,
+                                        statusPill.batCharging)
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 13
+                                    color: statusPill.batteryColor(
+                                        statusPill.batPct,
+                                        statusPill.batCharging)
+                                }
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: Math.round(statusPill.batPct) + "%"
+                                    font.family: "RobotoMono Nerd Font"
+                                    font.pixelSize: 11
+                                    color: "${c "base05"}"
+                                }
+                            }
+                        }
+                      ''}
                   }
               }
 

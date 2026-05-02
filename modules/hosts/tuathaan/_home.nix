@@ -10,6 +10,8 @@ let
   cat = "${pkgs.coreutils}/bin/cat";
 in
 {
+  program.quickshell.battery.enable = true;
+
   services.hyprpaper.settings = lib.mkMerge [
     {
       wallpaper = [

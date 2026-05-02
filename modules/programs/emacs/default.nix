@@ -8,7 +8,7 @@ _: {
       ...
     }:
     let
-      metalsVersion = "1.6.7";
+      metalsVersion = "2.0.0-M10";
       metals = pkgs.metals.overrideAttrs (
         final: prev: {
           deps = pkgs.stdenv.mkDerivation {
@@ -23,7 +23,7 @@ _: {
             '';
             outputHashMode = "recursive";
             outputHashAlgo = "sha256";
-            outputHash = "sha256-bGx3PQGgaTueQ/v/Xk7gp03TzllyMs7nCx9QWXNFdt0=";
+            outputHash = "sha256-e9wfYbxAlfBKst67WA2zbmeyYmGHvLbfxHjMs+BC+N4=";
           };
           buildInputs = [ final.deps ];
         }
