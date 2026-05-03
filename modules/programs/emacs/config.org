@@ -2509,11 +2509,19 @@ Setup emacs-vterm
 #+end_src
 
 ** Version
-Using magit with forge, creates the best environment for working with
-Git inside Emacs, the only thing missing here is a way to approve PR.
-For forge, create a file called ~/.authinfo with the following:
+Using magit with forge plus =pr-review= creates a complete environment
+for working with Git inside Emacs: forge for managing repos and issues,
+and pr-review for actually reviewing/approving Pull Requests.
+
+For forge and pr-review, create a file called ~/.authinfo with the
+following lines (each tool uses its own token suffix):
 
 - machine api.github.com login gako358^forge password ==secret-token==
+- machine api.github.com login gako358^emacs-pr-review password ==secret-token==
+
+Both tokens need =repo= and =notifications= scope. You can reuse the same
+GitHub PAT for both lines if you want — only the suffix after =^= matters
+to ghub.
 
 *** Ediff
 #+begin_src emacs-lisp
@@ -2557,6 +2565,62 @@ from a source buffer with =diff-hl-stage-current-hunk=.
     (setq forge-add-default-bindings nil)
     :config
     (setq auth-sources '("~/.authinfo")))
+#+end_src
+
+*** PR Review
+Review GitHub (and GitLab) Pull Requests directly inside Emacs. Forge
+is great for browsing issues and PRs, but it cannot actually submit a
+review / approve / merge — that's what =pr-review= is for.
+
+Two ways I use it:
+
+1. =SPC P n= (or =:prn=) opens the *PrReviewNotification* dashboard
+   listing all GitHub notifications; press =RET= on a PR to review it.
+2. From a =mu4e= message buffer showing a GitHub notification email,
+   press =C-c C-r= to jump straight into the PR. =pr-review= scans the
+   current buffer for an URL — both =thing-at-point= (plain text) and
+   the =shr-url= text property (HTML rendered by =shr=, which =mu4e=
+   uses for HTML mails) are supported, so the notmuch workflow
+   described in the upstream README works identically here.
+
+#+begin_src emacs-lisp
+  (use-package pr-review
+    :ensure t
+    :defer t
+    :commands (pr-review pr-review-search pr-review-search-open
+                         pr-review-notification pr-review-open-url)
+    :init
+    (evil-leader/set-key
+      "Pn" 'pr-review-notification
+      "Pp" 'pr-review
+      "Ps" 'pr-review-search)
+    :config
+    (setq pr-review-forges-alist
+          '(("github.com" . (github nil nil))))
+
+    ;; Hide noisy bot review comments by default.
+    (setq pr-review-default-hide-commenter
+          '("codecov-bot" "codecov-commenter" "dependabot" "dependabot[bot]"
+            "github-actions" "github-actions[bot]"))
+
+    (with-eval-after-load 'evil
+      (evil-ex-define-cmd "prr" #'pr-review)
+      (evil-ex-define-cmd "prs" #'pr-review-search)
+      (evil-ex-define-cmd "prn" #'pr-review-notification))
+
+    ;; Make every browser-opened PR URL go through pr-review.
+    (add-to-list 'browse-url-default-handlers
+                 '(pr-review-url-parse . pr-review-open-url))
+
+    ;; mu4e integration: from a GitHub notification email, hit C-c C-r
+    ;; to launch pr-review on the PR mentioned in the message. Works on
+    ;; both plain-text and HTML emails (mu4e renders HTML through shr,
+    ;; and pr-review reads `shr-url' text properties).
+    (with-eval-after-load 'mu4e
+      (define-key mu4e-view-mode-map (kbd "C-c C-r") #'pr-review))
+    (with-eval-after-load 'mu4e-view
+      (when (boundp 'mu4e-view-mode-map)
+        (define-key mu4e-view-mode-map (kbd "C-c C-r") #'pr-review))))
 #+end_src
 
 *** Magit

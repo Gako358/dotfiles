@@ -167,9 +167,18 @@ _: {
     in
     {
       config = lib.mkIf (desktop.enable && desktop.develop) {
-        sops.secrets = lib.mkIf osConfig.service.sops.enable {
-          "forge_auth" = {
+        sops = lib.mkIf osConfig.service.sops.enable {
+          secrets = {
+            "forge_auth" = { };
+            "pr_auth" = { };
+          };
+
+          templates."authinfo" = {
             path = "${config.home.homeDirectory}/.authinfo";
+            content = ''
+              ${config.sops.placeholder."forge_auth"}
+              ${config.sops.placeholder."pr_auth"}
+            '';
           };
         };
 
@@ -333,6 +342,7 @@ _: {
               diff-hl # Highlight uncommitted changes in the fringe/margin
               forge # Work with github forges
               magit # A Git porcelain inside Emacs
+              pr-review # Review GitHub/GitLab PRs in Emacs
               vundo # Undo tree visualiser
             ];
           extraConfig = ''
