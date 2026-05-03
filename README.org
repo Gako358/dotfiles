@@ -213,6 +213,19 @@ Prefix the file (or directory) name with ~_~. ~import-tree~ skips any path conta
 
 **** On an existing NixOS system
 
+Day-to-day rebuilds go through [[https://github.com/nix-community/nh][nh]] (configured in ~modules/programs/nh.nix~). It wraps ~nixos-rebuild~, shows an ~nvd~ diff before activation, pipes builds through ~nom~, and handles GC.
+
+#+BEGIN_SRC shell
+nh os switch                 # build + diff + activate (uses configured flake path)
+nh os boot                   # set as next boot only, no activation
+nh os test                   # activate without making it the boot default
+nh os switch -H aanallein    # explicit host (otherwise hostname is used)
+nh clean all                 # manual GC (a systemd timer also runs this)
+nh search firefox            # search nixpkgs
+#+END_SRC
+
+If you ever need the unwrapped tool (e.g. recovery, or a host where ~nh~ isn't available yet):
+
 #+BEGIN_SRC shell
 nix-shell
 nixos-rebuild switch --flake .#
@@ -388,6 +401,7 @@ nix eval .#nixosConfigurations.aanallein.config.programs.hyprland.enable
 nix eval --raw .#nixosConfigurations.aanallein.config.home-manager.users.merrinx.programs.emacs.finalPackage
 
 # diff against the currently running system
+# (nh os switch / boot / test does this automatically before activation)
 nix run nixpkgs#nvd -- diff /run/current-system ./result
 #+END_SRC
 

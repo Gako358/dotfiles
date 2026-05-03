@@ -49,9 +49,6 @@ _: {
           ping = "${pkgs.prettyping}/bin/prettyping";
           tree = "${pkgs.eza}/bin/eza -T";
           xdg-open = "${pkgs.mimeo}/bin/mimeo";
-          # Nix
-          nixgc = "nix-collect-garbage";
-          nixgcd = "sudo nix-collect-garbage -d";
           # Locations
           dot = "cd ~/Sources/dotfiles";
           doc = "cd ~/Documents";
@@ -60,7 +57,6 @@ _: {
           www = "cd ~/Projects/wwwsite/";
           update = "nix flake update";
           supdate = "sudo nix flake update";
-          upgrade = "sudo nixos-rebuild switch --flake";
         };
         shellInit = fishConfig;
       };

@@ -21,13 +21,6 @@ _: {
         fuse.userAllowOther = true;
         # Nano is enabled by default, but not anymore...
         nano.enable = false;
-        # NH is a modern helper utility that aims to consolidate and reimplement some of the commands from various tools within the NixOS ecosystem
-        nh = {
-          enable = true;
-          clean.enable = true;
-          clean.extraArgs = "--keep-since 4d --keep 3"; # Never keep more than 3
-          flake = "/home/merrinx/Sources/dotfiles";
-        };
       };
     };
 }
