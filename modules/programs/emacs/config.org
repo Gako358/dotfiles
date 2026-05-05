@@ -74,8 +74,8 @@ Custom fonts are set using "Iosevka Nerd Font" for both the main text and the mo
   (use-package nerd-icons-completion
     :ensure t
     :after marginalia
+    :hook (marginalia-mode . nerd-icons-completion-marginalia-setup)
     :config
-    (nerd-icons-completion-marginalia-setup)
     (nerd-icons-completion-mode 1))
 
   (use-package nerd-icons-corfu
@@ -494,12 +494,12 @@ Vertical Interactive Completion UI:
     :hook (after-init . vertico-mode))
 
   (use-package vertico-posframe
+    :ensure t
+    :after vertico
     :hook (vertico-mode . vertico-posframe-mode)
-    :config
-    (setq vertico-posframe-parameters
-	'((left-fringe . 8)
-	  (right-fringe . 8)))
-    (setq vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-right-corner))
+    :custom
+    (vertico-posframe-parameters '((left-fringe . 8) (right-fringe . 8)))
+    (vertico-posframe-poshandler #'posframe-poshandler-frame-bottom-right-corner))
 #+end_src
 
 ** Core
@@ -861,30 +861,26 @@ Formatters:
 #+begin_src emacs-lisp
   ;; Formatters
   (use-package apheleia
+    :ensure t
+    :hook (after-init . apheleia-global-mode)
     :config
-    ;; Add scalafmt for Scala
-    (push '(scalafmt . ("scalafmt" "--stdin" "--non-interactive" "--quiet" "--stdout")) apheleia-formatters)
-    (push '(scala-ts-mode . scalafmt) apheleia-mode-alist)
+    ;; Register external formatter binaries.
+    (dolist (fmt '((scalafmt           . ("scalafmt" "--stdin" "--non-interactive" "--quiet" "--stdout"))
+                   (black              . ("black" "-"))
+                   (prettier           . ("prettier" "--stdin-filepath" buffer-file-name))
+                   (google-java-format . ("google-java-format" "-"))
+                   (nixfmt             . ("nixfmt"))))
+      (push fmt apheleia-formatters))
 
-    ;; Add black for Python
-    (push '(black . ("black" "-")) apheleia-formatters)
-    (push '(python-mode . black) apheleia-mode-alist)
-
-    ;; Add prettier for TypeScript, JavaScript, and Vue
-    (push '(prettier . ("prettier" "--stdin-filepath" buffer-file-name)) apheleia-formatters)
-    (push '(typescript-ts-mode . prettier) apheleia-mode-alist)
-    (push '(js-ts-mode . prettier) apheleia-mode-alist)
-    (push '(vue-ts-mode . prettier) apheleia-mode-alist)
-
-    ;; Add google-java-format for Java
-    (push '(google-java-format . ("google-java-format" "-")) apheleia-formatters)
-    (push '(java-ts-mode . google-java-format) apheleia-mode-alist)
-
-    ;; Add nixpkgs-fmt for Nix
-    (push '(nixfmt . ("nixfmt")) apheleia-formatters)
-    (push '(nix-ts-mode . nixfmt) apheleia-mode-alist)
-
-    (apheleia-global-mode +1))
+    ;; Map major modes -> formatter id.
+    (dolist (m '((scala-ts-mode      . scalafmt)
+                 (python-mode        . black)
+                 (typescript-ts-mode . prettier)
+                 (js-ts-mode         . prettier)
+                 (vue-ts-mode        . prettier)
+                 (java-ts-mode       . google-java-format)
+                 (nix-ts-mode        . nixfmt)))
+      (push m apheleia-mode-alist)))
 #+end_src
 
 *** Dtrt Indent
@@ -1163,30 +1159,51 @@ Writable Grep:
 - wgrep: Allows editing of grep buffers, enabling changes to be applied directly to files.
 
 #+begin_src emacs-lisp
-  (use-package wgrep)
-
-  (evil-leader/set-key
-    "we" 'wgrep-change-to-wgrep-mode
-    "ws" 'wgrep-finish-edit)
+  (use-package wgrep
+    :ensure t
+    :defer t
+    :commands (wgrep-change-to-wgrep-mode wgrep-finish-edit)
+    :init
+    (with-eval-after-load 'evil-leader
+      (evil-leader/set-key
+        "we" 'wgrep-change-to-wgrep-mode
+        "ws" 'wgrep-finish-edit)))
 #+end_src
 
 *** Midnight
 Midnight package: Automatically cleans up unused buffers daily at 4:30am.
-- The following regexps ensure special and important buffers (tramp, minibuffer,
-- auto-save, directory, and all mu4e mail buffers) are never killed automatically.
+
+By default ~clean-buffer-list-kill-regexps~ is ~nil~, which means
+*nothing* is ever a candidate for cleanup — that's why midnight
+appeared to do nothing. We opt in to "kill anything" by setting it to
+~'(".*")~ and rely on ~clean-buffer-list-kill-never-regexps~ below to
+protect important buffers (scratch, messages, dashboard, tramp, mu4e,
+magit, ...). midnight only kills buffers that have been *idle* for at
+least ~clean-buffer-list-delay-general/-special~ seconds, so the
+buffer you are actively working in is always safe.
+
+For an *on-demand* "kill all buffers except the current one" (including
+vterm/term/process buffers), use ~SPC k a~ → ~kill-other-buffers~.
 
 #+begin_src emacs-lisp
   (use-package midnight
     :ensure t
     :config
-    (setq clean-buffer-list-delay-general 36000)    ;; Kill regular buffers unused for 10h
-    (setq clean-buffer-list-delay-special 36000)    ;; Kill special buffers unused for 10h
+    (setq clean-buffer-list-delay-general 36000   ;; ~10h for regular buffers
+          clean-buffer-list-delay-special 36000   ;; ~10h for special buffers
+          ;; Make every buffer a *candidate*; the never-regexps below
+          ;; whitelist what must survive.
+          clean-buffer-list-kill-regexps '(".*"))
     (setq clean-buffer-list-kill-never-regexps
-  	  '("^\\*tramp/.*\\*$"
+  	  '("^\\*scratch\\*$"
+  	    "^\\*Messages\\*$"
+  	    "^\\*dashboard\\*$"
+  	    "^\\*tramp/.*\\*$"
   	    "^ \\*Minibuf-.*\\*$"
-  	    "^#.*$"
+  	    "^#.*$"                  ;; ERC channels
   	    "^\\*\\*df\\.\\*\\**$"
-  	    "^\\*mu4e-.*\\*$"))
+  	    "^\\*mu4e-.*\\*$"
+  	    "^magit\\(:\\| \\).*"))
     (midnight-delay-set 'midnight-delay "4:30am"))
 #+end_src
 
@@ -1435,177 +1452,102 @@ This configuration makes system monitoring and process management seamless withi
 #+begin_src emacs-lisp
   (use-package dirvish
     :ensure t
+    :defer t
+    ;; Autoload these so SPC rf / M-x dirvish triggers loading lazily.
+    :commands (dirvish dirvish-side dirvish-fd dirvish-dwim
+                       dirvish-override-dired-mode)
     :init
-    (dirvish-override-dired-mode)
-    :config
-    (setq dirvish-mode-line-format
-  	  '(:left (sort symlink) :right (omit yank index)))
-    (setq dirvish-attributes           ; The order *MATTERS* for some attributes
-  	  '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size)
-  	  dirvish-side-attributes
-  	  '(vc-state nerd-icons collapse file-size))
-    (setq delete-by-moving-to-trash t)
-    (setq dired-listing-switches
-  	  "-l --almost-all --human-readable --group-directories-first --no-group")
+    ;; Defer the global override until dired is first used. This avoids
+    ;; loading dirvish (and its many deps) at startup, while still
+    ;; transparently turning every subsequent dired buffer into dirvish.
+    (with-eval-after-load 'dired
+      (dirvish-override-dired-mode))
+    (with-eval-after-load 'evil-leader
+      (evil-leader/set-key "rf" 'dirvish))
+    :custom
+    ;; :custom is evaluated at use-package macroexpansion time, so these
+    ;; take effect immediately — before dired/dirvish actually loads.
+    (dirvish-mode-line-format '(:left (sort symlink) :right (omit yank index)))
+    ;; The order *MATTERS* for some attributes.
+    (dirvish-attributes '(vc-state subtree-state nerd-icons collapse git-msg file-time file-size))
+    (dirvish-side-attributes '(vc-state nerd-icons collapse file-size))
+    (delete-by-moving-to-trash t)
+    (dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group")
     :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
-    (
-     :map dirvish-mode-map          ; Dirvish inherits `dired-mode-map'
-     ("M-f"   . dirvish-file-info-menu)
-     ("M-y"   . dirvish-yank-menu)
-     ("M-h" . dired-up-directory)
-     ("M-n" . dired-create-empty-file)
-     ("M-v"   . dirvish-vc-menu)      ; remapped `dired-view-file'
-     ("M-o" . dirvish-subtree-toggle)
-     ("M-l" . dirvish-ls-switches-menu)
-     ("M-m" . dirvish-mark-menu)
-     ("M-t" . dirvish-layout-toggle)
-     ("M-s" . dirvish-setup-menu)
-     ("M-e" . dirvish-emerge-menu)
-     ("M-q" . dirvish-quit)
-     ("M-j" . dirvish-fd-jump)))
+    (:map dirvish-mode-map           ; Dirvish inherits `dired-mode-map'
+          ("M-f" . dirvish-file-info-menu)
+          ("M-y" . dirvish-yank-menu)
+          ("M-h" . dired-up-directory)
+          ("M-n" . dired-create-empty-file)
+          ("M-v" . dirvish-vc-menu)   ; remapped `dired-view-file'
+          ("M-o" . dirvish-subtree-toggle)
+          ("M-l" . dirvish-ls-switches-menu)
+          ("M-m" . dirvish-mark-menu)
+          ("M-t" . dirvish-layout-toggle)
+          ("M-s" . dirvish-setup-menu)
+          ("M-e" . dirvish-emerge-menu)
+          ("M-q" . dirvish-quit)
+          ("M-j" . dirvish-fd-jump))
+    :hook
+    (dirvish-setup . (lambda ()
+                       (visual-line-mode -1)
+                       (setq-local truncate-lines t))))
 
+  ;; auto-revert in dired is generic (not dirvish-specific); set it
+  ;; outside the use-package so it doesn't gate on dirvish loading.
   (add-hook 'dired-mode-hook 'auto-revert-mode)
-  (add-hook 'dirvish-setup-hook (lambda ()
-                                  (visual-line-mode -1)
-                                  (setq-local truncate-lines t)))
-
-  (evil-leader/set-key
-    "rf" 'dirvish)
 #+end_src
 
 ** Keybindings
 
-Custom keymaps
+Generic, plugin-agnostic helpers and bindings. Anything that depends on
+a specific plugin (consult, projectile, vterm, ...) lives next to that
+plugin's =use-package= block so removing the plugin removes its
+keybindings with it.
+
 #+begin_src emacs-lisp
   ;; Kill all buffers except current working buffer
   (defun kill-other-buffers ()
-    "Kill all other buffers."
+    "Kill all buffers except the current one.
+  Forcibly kills buffers that have a live process (vterm, term, shell,
+  eshell, compilation, ...) by suppressing the kill-buffer query
+  functions and disabling each process' query-on-exit flag. Also hides
+  any posframe attached to a buffer (e.g. the floating vterm) and
+  skips the minibuffer and internal hidden buffers (those whose name
+  starts with a space)."
     (interactive)
-    (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-
-  (defun projectile-kill-other-buffers ()
-    "Kill all buffers in current project except for current buffer."
-    (interactive)
-    (let* ((current-buffer (current-buffer))
-  	 (buffers (projectile-project-buffers)))
-      (dolist (buffer buffers)
-        (unless (eq buffer current-buffer)
-  	(kill-buffer buffer)))))
+    (let ((current (current-buffer))
+          (kill-buffer-query-functions nil)
+          (killed 0))
+      (dolist (buf (buffer-list))
+        (unless (or (eq buf current)
+                    (minibufferp buf)
+                    (string-prefix-p " " (buffer-name buf)))
+          ;; Hide any posframe attached to the buffer (e.g. vterm posframe).
+          (when (fboundp 'posframe-hide)
+            (ignore-errors (posframe-hide (buffer-name buf))))
+          ;; Disable query on exit for any live processes.
+          (when-let ((proc (get-buffer-process buf)))
+            (set-process-query-on-exit-flag proc nil))
+          (when (ignore-errors (kill-buffer buf))
+            (setq killed (1+ killed)))))
+      (message "Killed %d buffer(s); kept %s"
+               killed (buffer-name current))))
 
   ;; Kill all dired buffers
   (defun kill-dired-buffers ()
+    "Kill every buffer whose major mode is `dired-mode'."
     (interactive)
     (mapc (lambda (buffer)
-        	  (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
-        	    (kill-buffer buffer)))
-        	(buffer-list)))
-
-
-  (defun my/projectile-switch-to-buffer-with-vterm ()
-    "Switch to a buffer whose name includes 'vterm using consult-projectile."
-    (interactive)
-    (let ((filtered-buffers (seq-filter (lambda (buf)
-    					(string-match-p "vterm" (buffer-name buf)))
-    				      (projectile-project-buffers))))
-      (if filtered-buffers
-    	(consult--read (mapcar #'buffer-name filtered-buffers)
-    		       :prompt "Switch to terminal: "
-    		       :require-match t
-    		       :sort nil
-    		       :category 'buffer
-    		       :history 'buffer-name-history
-    		       :state (consult--buffer-state))
-        (message "No buffers found with term: %s" "vterm"))))
-
-  (defun my/consult-projectile-grep-at-point ()
-    "Use consult to grep for the word at point within the projectile files. If a region is selected, use the selected text instead."
-    (interactive)
-    (let ((search-term (if (use-region-p)
-              		 (buffer-substring-no-properties (region-beginning) (region-end))
-              	       (let* ((word (thing-at-point 'word t))
-              		      (bounds (bounds-of-thing-at-point 'symbol))
-              		      (symbol (buffer-substring-no-properties (car bounds) (cdr bounds))))
-              		 (if (or (string-match-p "-" word) (string-match-p "_" word))
-              		     symbol
-              		   word)))))
-      (consult-ripgrep (projectile-project-root) search-term)))
-
-  (defun my/switch-to-previous-buffer ()
-    "Switch to the most recently visited buffer in the current Projectile project.
-    If no previous buffer is detected in the same project, then call
-    `consult-projectile-switch-to-buffer' as a fallback."
-    (interactive)
-    (let* ((current-project (projectile-project-root))
-    	 ;; Get all buffers that are visiting files and belong to the current project.
-    	 (project-buffers
-    	  (seq-filter
-    	   (lambda (buf)
-    	     (with-current-buffer buf
-    	       (when (buffer-file-name)
-    		 (and current-project
-    		      (string= (projectile-project-root (buffer-file-name)) current-project))))
-    	     )
-    	   (buffer-list))))
-      (if (and project-buffers (> (length project-buffers) 1))
-    	;; "nth 1" gives the second most recent buffer since the current buffer is the first.
-    	(switch-to-buffer (nth 1 project-buffers))
-        (message "No previous buffer in the current project; using consult-projectile-switch-to-buffer.")
-        (call-interactively #'consult-projectile-switch-to-buffer))))
-
-
-  (defun my/consult-replace-word-with-preview ()
-    "Replace occurrences of word under cursor using consult for visualization."
-    (interactive)
-    (let* ((bounds (if (evil-visual-state-p)
-        		     (cons (region-beginning) (region-end))
-        		   (bounds-of-thing-at-point 'word)))
-        	 (word (when bounds
-        		 (buffer-substring-no-properties (car bounds) (cdr bounds)))))
-      (when word
-        (if (evil-visual-state-p)
-        	  (evil-normal-state))
-        ;; First show the occurrences with consult-ripgrep
-        (consult-ripgrep nil (regexp-quote word))
-        ;; After viewing, prompt for replacement
-        (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
-        	(when new-word
-        	  (evil-ex (format "%%s/%s/%s/gc"
-        			   (regexp-quote word)
-        			   new-word)))))))
-
-
-  (defun my/consult-replace-word-in-buffer ()
-    "Replace word under cursor with preview using consult-line."
-    (interactive)
-    (let* ((bounds (if (evil-visual-state-p)
-      		     (cons (region-beginning) (region-end))
-      		   (bounds-of-thing-at-point 'word)))
-      	 (word (when bounds
-      		 (buffer-substring-no-properties (car bounds) (cdr bounds)))))
-      (when word
-        (if (evil-visual-state-p)
-      	  (evil-normal-state))
-        ;; Show occurrences with consult-line
-        (consult-line (regexp-quote word))
-        ;; After viewing, prompt for replacement
-        (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
-      	(when new-word
-      	  (evil-ex (format "%%s/%s/%s/gc"
-      			   (regexp-quote word)
-      			   new-word)))))))
+            (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+              (kill-buffer buffer)))
+          (buffer-list)))
 
   (evil-leader/set-key
-    "SPC" 'my/consult-projectile-grep-at-point
     "DEL" 'kill-buffer
-    "ka" 'kill-other-buffers
-    "kp" 'projectile-kill-other-buffers
-    "kd" 'kill-dired-buffers
-    "tr" 'rename-buffer
-    "tl" 'my/projectile-switch-to-buffer-with-vterm
-    "sb" 'my/consult-replace-word-with-preview
-    "sr" 'my/consult-replace-word-in-buffer)
-
-  (global-set-key (kbd "<C-tab>") #'my/switch-to-previous-buffer)
+    "ka"  'kill-other-buffers
+    "kd"  'kill-dired-buffers
+    "tr"  'rename-buffer)
 #+end_src
 
 ** Languages
@@ -1779,8 +1721,8 @@ Markdown Edit:
     :hook (sql-mode . sqlind-minor-mode))
 #+end_src
 
-*** Postgres
-PostgreSQL tooling. Two complementary entry points:
+*** Postgres / MySQL
+SQL tooling. Three complementary entry points:
 
 - =pgmacs= — a buffer-based browser/editor that talks the Postgres wire
   protocol directly via =pg.el= (no =psql= required). Connect once and
@@ -1788,38 +1730,79 @@ PostgreSQL tooling. Two complementary entry points:
 - =sql-postgres= — the classic =sql.el= comint REPL backed by =psql= for
   ad-hoc query sessions and shipping regions/paragraphs from a =.sql=
   buffer.
+- =sql-connect= — pick a named connection from =sql-connection-alist=.
+  Two local entries are defined: =postgres-local= (5432) and
+  =mysql-local= (3306). Password is prompted on connect; nothing is
+  stored on disk. To suppress the prompt, add a matching line to
+  =~/.authinfo= or =~/.pgpass= / =~/.my.cnf= as appropriate.
 
 All bindings live under the =SPC D= leader prefix (capital D — lowercase
 =d= is taken by =detached=).
 
 #+begin_src emacs-lisp
-  ;; sql.el / sql-postgres tweaks
+  ;; sql.el / sql-postgres / sql-mysql tweaks
   (use-package sql
     :defer t
     :custom
     ;; Echo each query before its results so result rows are not glued to
     ;; the prompt — see SqlMode wiki note. Must be upper-case ECHO.
     (sql-postgres-options '("--set=ECHO=all" "-P" "pager=off"))
+    ;; Pretty MySQL output (table format, no pager so result fits in comint).
+    (sql-mysql-options '("--table" "--pager=cat"))
+    ;; Named connections used by `sql-connect' (SPC Dc).
+    ;; The password is left unset on purpose: sql.el will prompt for it,
+    ;; or pick it up from ~/.authinfo (postgres uses ~/.pgpass natively,
+    ;; mysql honours ~/.my.cnf if present).
+    (sql-connection-alist
+     '((postgres-local
+        (sql-product 'postgres)
+        (sql-server  "localhost")
+        (sql-port    5432)
+        (sql-user    "postgres")
+        (sql-database "postgres"))
+       (mysql-local
+        (sql-product 'mysql)
+        (sql-server  "127.0.0.1")    ; mysql client treats "localhost" as a unix socket
+        (sql-port    3306)
+        (sql-user    "root")
+        (sql-database ""))))
     :config
-    ;; Persist comint history per product (psql, etc.)
+    ;; Persist comint history per product (psql, mysql, ...).
     (defun my/sql-save-history-hook ()
       (let ((dir (expand-file-name "sql/" user-emacs-directory)))
         (unless (file-directory-p dir) (make-directory dir t))
         (setq-local sql-input-ring-file-name
   		  (expand-file-name (format "%s-history.sql" sql-product) dir))))
-    (add-hook 'sql-interactive-mode-hook 'my/sql-save-history-hook))
+    (add-hook 'sql-interactive-mode-hook 'my/sql-save-history-hook)
+
+    ;; Convenience wrappers so we don't need to remember the connection name.
+    (defun my/sql-connect-postgres-local ()
+      "Open a sql-postgres comint REPL against localhost:5432."
+      (interactive)
+      (sql-connect 'postgres-local))
+
+    (defun my/sql-connect-mysql-local ()
+      "Open a sql-mysql comint REPL against 127.0.0.1:3306."
+      (interactive)
+      (sql-connect 'mysql-local)))
 
   ;; PGmacs — interactive PostgreSQL browser/editor
   (use-package pgmacs
     :ensure t
+    :defer t
     :commands (pgmacs pgmacs-open-string pgmacs-open-uri)
     :init
     (with-eval-after-load 'evil-leader
       (evil-leader/set-key
-        "Do" 'pgmacs                    ; Open: prompted connection form
-        "DO" 'pgmacs-open-string        ; Open via URI string
-        "Dp" 'sql-postgres              ; Plain psql REPL
-        "Dc" 'sql-connect)))            ; Use a named sql-connection-alist entry
+        ;; PGmacs (Postgres browser/editor over the wire protocol)
+        "Do" 'pgmacs                     ; Open: prompted connection form
+        "DO" 'pgmacs-open-string         ; Open via URI string
+        ;; sql.el comint REPLs
+        "Dc" 'sql-connect                ; Pick a named connection (alist below)
+        "Dp" 'my/sql-connect-postgres-local  ; Direct: postgres@localhost:5432
+        "Dm" 'my/sql-connect-mysql-local     ; Direct: mysql@127.0.0.1:3306
+        "DP" 'sql-postgres               ; Plain psql REPL (prompts for everything)
+        "DM" 'sql-mysql)))               ; Plain mysql REPL (prompts for everything)
 #+end_src
 
 *** Tailwind CSS
@@ -2083,11 +2066,51 @@ Setting up Consult for better navigation in Emacs
 #+begin_src emacs-lisp
   ;; Consulting completing-read
   (use-package consult
+    :ensure t
+    :custom
+    (consult-preview-key (list :debounce 0.1 'any))
     :config
+
+    (defun my/consult-replace-word-with-preview ()
+      "Replace occurrences of word under cursor using `consult-ripgrep' for preview.
+  If a region is active, use the selected text instead."
+      (interactive)
+      (let* ((bounds (if (evil-visual-state-p)
+                         (cons (region-beginning) (region-end))
+                       (bounds-of-thing-at-point 'word)))
+             (word (when bounds
+                     (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+        (when word
+          (when (evil-visual-state-p) (evil-normal-state))
+          (consult-ripgrep nil (regexp-quote word))
+          (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
+            (when new-word
+              (evil-ex (format "%%s/%s/%s/gc"
+                               (regexp-quote word)
+                               new-word)))))))
+
+    (defun my/consult-replace-word-in-buffer ()
+      "Replace word under cursor in the current buffer using `consult-line' preview."
+      (interactive)
+      (let* ((bounds (if (evil-visual-state-p)
+                         (cons (region-beginning) (region-end))
+                       (bounds-of-thing-at-point 'word)))
+             (word (when bounds
+                     (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+        (when word
+          (when (evil-visual-state-p) (evil-normal-state))
+          (consult-line (regexp-quote word))
+          (let ((new-word (read-string (format "Replace \"%s\" with: " word))))
+            (when new-word
+              (evil-ex (format "%%s/%s/%s/gc"
+                               (regexp-quote word)
+                               new-word)))))))
+
     (evil-leader/set-key
       "ff" 'consult-find
-      "fg" 'consult-ripgrep)
-    (setq consult-preview-key (list :debounce 0.1 'any)))
+      "fg" 'consult-ripgrep
+      "sb" 'my/consult-replace-word-with-preview
+      "sr" 'my/consult-replace-word-in-buffer))
 
   (use-package consult-lsp
     :ensure t
@@ -2097,12 +2120,58 @@ Setting up Consult for better navigation in Emacs
       "lw" 'consult-lsp-diagnostics))
 
   (use-package consult-projectile
+    :ensure t
+    :after (consult projectile)
     :config
+    (defun my/consult-projectile-grep-at-point ()
+      "Grep within the current project for the word/symbol at point.
+  If a region is active, use the selected text instead. Symbols
+  containing =-= or =_= are matched as a whole symbol rather than just
+  the word under point."
+      (interactive)
+      (let ((search-term
+             (if (use-region-p)
+                 (buffer-substring-no-properties (region-beginning) (region-end))
+               (let* ((word (thing-at-point 'word t))
+                      (bounds (bounds-of-thing-at-point 'symbol))
+                      (symbol (when bounds
+                                (buffer-substring-no-properties
+                                 (car bounds) (cdr bounds)))))
+                 (if (and word (or (string-match-p "-" word)
+                                   (string-match-p "_" word)))
+                     symbol
+                   word)))))
+        (consult-ripgrep (projectile-project-root) search-term)))
+
+    (defun my/switch-to-previous-buffer ()
+      "Switch to the most recently visited buffer in the current Projectile project.
+  Falls back to `consult-projectile-switch-to-buffer' when no other
+  project buffer is available."
+      (interactive)
+      (let* ((current-project (projectile-project-root))
+             (project-buffers
+              (seq-filter
+               (lambda (buf)
+                 (with-current-buffer buf
+                   (when (buffer-file-name)
+                     (and current-project
+                          (string= (projectile-project-root (buffer-file-name))
+                                   current-project)))))
+               (buffer-list))))
+        (if (and project-buffers (> (length project-buffers) 1))
+            ;; nth 1 = the buffer just under the current one in MRU order.
+            (switch-to-buffer (nth 1 project-buffers))
+          (message "No previous buffer in the current project; using consult-projectile-switch-to-buffer.")
+          (call-interactively #'consult-projectile-switch-to-buffer))))
+
     (evil-leader/set-key
-      "pf" 'consult-projectile-find-file
-      "pw" 'consult-projectile-find-file-other-window
-      "pp" 'consult-projectile-switch-project
-      "TAB" 'consult-projectile-switch-to-buffer))
+      "SPC" 'my/consult-projectile-grep-at-point
+      "pf"  'consult-projectile-find-file
+      "pw"  'consult-projectile-find-file-other-window
+      "pp"  'consult-projectile-switch-project
+      "TAB" 'consult-projectile-switch-to-buffer)
+
+    (global-set-key (kbd "<C-tab>") #'my/switch-to-previous-buffer))
 #+end_src
 
 *** Dumb Jump
@@ -2273,7 +2342,19 @@ Projectile is the go-to project package to use with Emacs.
   					   ("~/Projects/workspace/" . 1)
   					   ("~/Sources/" . 1)))
 
+    (defun projectile-kill-other-buffers ()
+      "Kill all buffers in current project except for the current buffer."
+      (interactive)
+      (let ((current (current-buffer))
+            (kill-buffer-query-functions nil))
+        (dolist (buffer (projectile-project-buffers))
+          (unless (eq buffer current)
+            (when-let ((proc (get-buffer-process buffer)))
+              (set-process-query-on-exit-flag proc nil))
+            (ignore-errors (kill-buffer buffer))))))
+
     (evil-leader/set-key
+      "kp" 'projectile-kill-other-buffers
       "pc" 'projectile-cleanup-known-projects
       "pd" 'projectile-discover-projects-in-search-path))
 #+end_src
@@ -2372,11 +2453,28 @@ Setup emacs-vterm
                                  default-directory)))
       (vterm)))
 
+  (defun my/projectile-switch-to-buffer-with-vterm ()
+    "Switch to a buffer whose name includes 'vterm using consult-projectile."
+    (interactive)
+    (let ((filtered-buffers (seq-filter (lambda (buf)
+    					  (string-match-p "vterm" (buffer-name buf)))
+    					(projectile-project-buffers))))
+      (if filtered-buffers
+    	  (consult--read (mapcar #'buffer-name filtered-buffers)
+    			 :prompt "Switch to terminal: "
+    			 :require-match t
+    			 :sort nil
+    			 :category 'buffer
+    			 :history 'buffer-name-history
+    			 :state (consult--buffer-state))
+        (message "No buffers found with term: %s" "vterm"))))
+
   (evil-leader/set-key
     "tt" 'vterm-toggle
     "tn" 'my/vterm-in-project-root
     "td" 'vterm
     "to" 'vterm-other-window
+    "tl" 'my/projectile-switch-to-buffer-with-vterm
     "tk" (lambda () (interactive)
   	   (when (get-buffer-process (current-buffer))
   	     (vterm-send-key "c" nil nil t))))
@@ -2637,7 +2735,9 @@ Two ways I use it:
 *** Vundo
 #+begin_src emacs-lisp
   (use-package vundo
-    :demand
+    :ensure t
+    :defer t
+    :commands vundo
     :custom
     (vundo-glyph-alist vundo-unicode-symbols))
 #+end_src

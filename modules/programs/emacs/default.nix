@@ -196,8 +196,6 @@ _: {
               nerd-icons-completion # Nerd icons for completion
               nerd-icons-corfu # Nerd icons for corfu
               powerline # A utility library for creating a custom mode-line
-              rainbow-delimiters # Highlight delimiters such as parentheses, brackets or braces according to their depth
-              rainbow-mode # Colourise colour names in buffers
 
               # Completion
               cape # Completion At Point Extensions.
@@ -218,12 +216,8 @@ _: {
               # Evil
               evil # Extensible vi layer for Emacs
               evil-collection # A set of keybindings for evil-mode
-              evil-commentary # Comment stuff out
               evil-leader # A set of keybindings for evil-mode
-              evil-matchit # Mat chit for evil-mode
               evil-mc # Multiple cursors for evil-mode
-              evil-org # Org-mode keybindings for evil-mode
-              evil-snipe # Snipe text objects
               evil-surround # Surround text objects with punctuation
               evil-visualstar # Start a * or # search from the visual selection
               evil-numbers # Increment and decrement numbers in Emacs
@@ -236,24 +230,18 @@ _: {
               dirvish # Directory viewer for Emacs
 
               # General
-              alert # Growl-like notifications
+              alert # Growl-like notifications (mu4e-alert dep)
               dash # A modern list library for Emacs
               editorconfig # EditorConfig Emacs Plugin
               envrc # .envrc support for Emacs
               f # A modern API for working with files and directories in Emacs
               fringe-helper # Helper functions for fringe bitmaps
-              general # Provides a more convenient way to define keybindings
-              gntp # Growl Notification Transport Protocol
-              goto-chg # Goto the point of the most recent edit
-              ligature # Ligature support for Emacs
+              gntp # Growl Notification Transport Protocol (alert dep)
+              goto-chg # Goto the point of the most recent edit (evil dep)
               log4e # Logging framework for Emacs
               s # The long lost Emacs string manipulation library
-              password-store # Emacs interface for pass, the standard Unix password manager
-              ripgrep # Ripgrep for Emacs
               wgrep # Writable grep buffer.
 
-              # grammars
-              citeproc
               # Tree-sitter support - specify only the grammars needed
               (treesit-grammars.with-grammars (
                 grammars: with grammars; [
@@ -276,9 +264,6 @@ _: {
                   tree-sitter-yaml
                 ]
               ))
-
-              # Optional:  Include tree-sitter-langs for MELPA updates
-              tree-sitter-langs
 
               # Programming language packages.
               haskell-ts-mode-custom # Haskell development environment
@@ -318,17 +303,12 @@ _: {
 
               # Org
               org # For keeping notes, maintaining TODO lists, and project planning
-              org-drill # A spaced repetition system for Emacs
               org-msg # A msg system used to compose emails for Emacs
               org-modern # A modern org-mode distribution
-              org-pomodoro # Pomodoro technique implementation
-              org-present # A simple org-mode presentation tool
               org-roam # A note-taking tool based on the principles of networked thought
-              org-roam-ui # A graphical user interface for org-roam
 
               # Project
               projectile # Project Interaction Library for Emacs
-              projectile-ripgrep # Ripgrep integration for Projectile
 
               # SSH
               tramp # Transparently access remote machines
