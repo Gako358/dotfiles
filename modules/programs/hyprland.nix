@@ -136,7 +136,7 @@
               kb_options = "grp:alt_shift_toggle";
             };
             dwindle = {
-              pseudotile = true;
+              smart_split = true;
               preserve_split = true;
             };
             misc = {
