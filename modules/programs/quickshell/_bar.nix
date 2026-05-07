@@ -25,6 +25,7 @@
       signal systemMonitorRequested()
       signal audioRequested()
       signal networkRequested()
+      signal trayRequested()
 
       property string cpuPct: "—"
       property string netState: "off"
@@ -102,6 +103,31 @@
           radius: 12
           border.width: 1
           border.color: "${c "base02"}"
+
+          Text {
+              id: clockText
+              visible: bar.isFocused
+              text: ""
+              font.family: "RobotoMono Nerd Font"
+              font.pixelSize: 13
+              color: "${c "base05"}"
+              anchors.horizontalCenter: parent.horizontalCenter
+              anchors.verticalCenter: parent.verticalCenter
+              z: 1
+              Timer {
+                  running: true
+                  repeat: true
+                  interval: 1000
+                  triggeredOnStart: true
+                  onTriggered: clockText.text =
+                      "󰥔 " + Qt.formatDateTime(new Date(), "ddd, dd MMM, hh:mm AP")
+              }
+              MouseArea {
+                  anchors.fill: parent
+                  cursorShape: Qt.PointingHandCursor
+                  onClicked: bar.calendarRequested()
+              }
+          }
 
           RowLayout {
               anchors.fill: parent
@@ -216,61 +242,59 @@
 
               Item { Layout.fillWidth: true }
 
-              // ── Clock (center) ───────────────────────────────
-              Text {
-                  id: clockText
+              // ── System tray (collapsed into a popup button) ──
+              Item {
+                  id: trayButton
                   visible: bar.isFocused
-                  text: ""
-                  font.family: "RobotoMono Nerd Font"
-                  font.pixelSize: 13
-                  color: "${c "base05"}"
-                  Timer {
-                      running: true
-                      repeat: true
-                      interval: 1000
-                      triggeredOnStart: true
-                      onTriggered: clockText.text =
-                          "󰥔 " + Qt.formatDateTime(new Date(), "ddd, dd MMM, hh:mm AP")
+                  Layout.alignment: Qt.AlignVCenter
+                  Layout.preferredHeight: 26
+                  Layout.preferredWidth: 32
+                  property int trayCount: SystemTray.items ? SystemTray.items.values.length : 0
+
+                  Rectangle {
+                      anchors.fill: parent
+                      radius: 13
+                      color: trayHover.hovered
+                          ? "${ca "base02" "cc"}"
+                          : "transparent"
+                      Behavior on color { ColorAnimation { duration: 120 } }
+                      HoverHandler { id: trayHover }
+
+                      Text {
+                          anchors.centerIn: parent
+                          text: "󱊖"
+                          font.family: "RobotoMono Nerd Font"
+                          font.pixelSize: 14
+                          color: trayButton.trayCount > 0
+                              ? "${c "base05"}"
+                              : "${c "base04"}"
+                      }
+
+                      // Small badge with the number of tray items
+                      Rectangle {
+                          visible: trayButton.trayCount > 0
+                          width: badgeText.implicitWidth + 6
+                          height: 12
+                          radius: 6
+                          color: "${c "base0D"}"
+                          anchors.right: parent.right
+                          anchors.top: parent.top
+                          anchors.rightMargin: 1
+                          anchors.topMargin: 1
+                          Text {
+                              id: badgeText
+                              anchors.centerIn: parent
+                              text: trayButton.trayCount
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 9
+                              color: "${c "base00"}"
+                          }
+                      }
                   }
                   MouseArea {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
-                      onClicked: bar.calendarRequested()
-                  }
-              }
-
-              Item { Layout.fillWidth: true }
-
-              // ── System tray ──────────────────────────────────
-              Row {
-                  visible: bar.isFocused
-                  Layout.alignment: Qt.AlignVCenter
-                  spacing: 8
-                  Repeater {
-                      model: SystemTray.items
-                      Item {
-                          required property SystemTrayItem modelData
-                          width: 18
-                          height: 18
-                          Image {
-                              anchors.fill: parent
-                              source: modelData.icon
-                              fillMode: Image.PreserveAspectFit
-                              sourceSize.width: 18
-                              sourceSize.height: 18
-                          }
-                          MouseArea {
-                              anchors.fill: parent
-                              acceptedButtons: Qt.LeftButton | Qt.RightButton
-                              cursorShape: Qt.PointingHandCursor
-                              onClicked: function(mouse) {
-                                  if (mouse.button === Qt.LeftButton)
-                                      modelData.activate();
-                                  else
-                                      modelData.secondaryActivate();
-                              }
-                          }
-                      }
+                      onClicked: bar.trayRequested()
                   }
               }
 
@@ -312,7 +336,7 @@
                         && statusPill.battery.isPresent
                         && statusPill.battery.type === UPowerDeviceType.Battery
                     readonly property real batPct:
-                        statusPill.battery ? statusPill.battery.percentage : 0
+                        statusPill.battery ? statusPill.battery.percentage * 100 : 0
                     readonly property bool batCharging:
                         statusPill.battery
                         && (statusPill.battery.state === UPowerDeviceState.Charging

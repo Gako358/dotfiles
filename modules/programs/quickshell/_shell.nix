@@ -16,11 +16,13 @@
       SystemMonitor { id: sysmon }
       VolumePanel   { id: volumePanel }
       NetworkPanel  { id: networkPanel }
+      TrayPanel     { id: trayPanel }
 
       function showOnly(which) {
           if (which !== "sysmon")    sysmon.hide()
           if (which !== "volume")    volumePanel.hide()
           if (which !== "network")   networkPanel.hide()
+          if (which !== "tray")      trayPanel.hide()
           if (which !== "dashboard") dashboard.hide()
           if (which !== "session")   session.hide()
           if (which !== "launcher")  launcher.hide()
@@ -39,6 +41,7 @@
               onSystemMonitorRequested: { root.showOnly("sysmon");    sysmon.toggle() }
               onAudioRequested:         { root.showOnly("volume");    volumePanel.toggle() }
               onNetworkRequested:       { root.showOnly("network");   networkPanel.toggle() }
+              onTrayRequested:          { root.showOnly("tray");      trayPanel.toggle() }
           }
       }
   }
