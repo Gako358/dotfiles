@@ -176,6 +176,10 @@
               "${mainMod}, j, movefocus, d"
               "${mainMod}, l, movefocus, r"
               "${mainMod}, h, movefocus, l"
+              "${mainMod} ALT, k, swapwindow, u"
+              "${mainMod} ALT, j, swapwindow, d"
+              "${mainMod} ALT, l, swapwindow, r"
+              "${mainMod} ALT, h, swapwindow, l"
               "${mainMod}, left,  workspace, e-1"
               "${mainMod}, right, workspace, e+1"
               "${mainMod}, 1, workspace, 1"
@@ -204,10 +208,6 @@
               "${mainMod} ${TERTIARY}, j, resizeactive, 0 20"
               "${mainMod} ${TERTIARY}, l, resizeactive, 20 0"
               "${mainMod} ${TERTIARY}, h, resizeactive, -20 0"
-              "${mainMod} ALT,  k, moveactive, 0 -20"
-              "${mainMod} ALT,  j, moveactive, 0 20"
-              "${mainMod} ALT,  l, moveactive, 20 0"
-              "${mainMod} ALT,  h, moveactive, -20 0"
             ];
             bindm = [
               "${mainMod}, mouse:272, movewindow"
