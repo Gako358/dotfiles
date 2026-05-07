@@ -64,6 +64,7 @@
               "[workspace 9 silent] discord"
             ];
             general = {
+              layout = "master";
               gaps_in = 7;
               gaps_out = 7;
               border_size = 2;
@@ -135,9 +136,15 @@
               kb_layout = "us,no";
               kb_options = "grp:alt_shift_toggle";
             };
-            dwindle = {
-              smart_split = true;
-              preserve_split = true;
+            master = {
+              new_status = "slave";
+              new_on_top = false;
+              mfact = 0.55;
+              orientation = "left";
+              inherit_fullscreen = true;
+              allow_small_split = false;
+              smart_resizing = true;
+              drop_at_cursor = true;
             };
             misc = {
               disable_autoreload = true;
