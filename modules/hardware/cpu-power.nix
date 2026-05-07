@@ -14,7 +14,6 @@ _: {
 
         powerManagement = {
           cpuFreqGovernor = lib.mkDefault "powersave";
-          powertop.enable = false;
         };
 
         systemd.tmpfiles.rules = [

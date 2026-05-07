@@ -1148,10 +1148,21 @@ My email configuration transforms Emacs into a powerful email client with severa
 
 *** direnv
 #+begin_src emacs-lisp
-  ;;; Direnv integration
-  (use-package envrc
+  ;;; Direnv integration (asynchronous fork of envrc)
+  (use-package ben
     :ensure t
-    :hook (after-init . envrc-global-mode))
+    :bind
+    (:map ben-mode-map
+          ("C-c e" . ben-command-map))
+    :config
+    ;; Use a nerd-icons cube glyph in the mode-line status indicator.
+    ;; `substring-no-properties' avoids rendering glitches when the icon is
+    ;; propertized inside a composite mode-line construct.
+    (with-eval-after-load 'nerd-icons
+      (setq ben-indicator
+            `(,(substring-no-properties (nerd-icons-faicon "nf-fa-cubes"))
+              "[" (:eval (ben--status)) "]")))
+    :hook (after-init . ben-global-mode))
 #+end_src
 
 *** Grep

@@ -45,6 +45,24 @@ _: {
         '';
       };
 
+      ben-custom = pkgs.emacs.pkgs.melpaBuild {
+        pname = "ben";
+        version = "0.12.12";
+        commit = "c91cce703deb0cafb9f344cbc66d63791665fcb2";
+
+        src = pkgs.fetchgit {
+          url = "https://codeberg.org/pastor/ben.el.git";
+          rev = "c91cce703deb0cafb9f344cbc66d63791665fcb2";
+          sha256 = "sha256-p7KjEYEzBEk4vrUIaeMFezZkOJdhTuWiFt/y5ptOmhY=";
+        };
+
+        packageRequires = with pkgs.emacs.pkgs; [ inheritenv ];
+
+        recipe = pkgs.writeText "recipe" ''
+          (ben :fetcher git :url "https://codeberg.org/pastor/ben.el.git")
+        '';
+      };
+
       pg-el-custom = pkgs.emacs.pkgs.melpaBuild {
         pname = "pg";
         version = "0.65";
@@ -233,7 +251,7 @@ _: {
               alert # Growl-like notifications (mu4e-alert dep)
               dash # A modern list library for Emacs
               editorconfig # EditorConfig Emacs Plugin
-              envrc # .envrc support for Emacs
+              ben-custom # Asynchronous .envrc/direnv support (fork of envrc)
               f # A modern API for working with files and directories in Emacs
               fringe-helper # Helper functions for fringe bitmaps
               gntp # Growl Notification Transport Protocol (alert dep)
