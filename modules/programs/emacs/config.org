@@ -293,9 +293,6 @@ Complete `use-package' configuration for copilot, incorporating:
     ;; Follow the chat output as it streams
     (setq copilot-chat-follow t)
 
-    ;; Auto-generate commit messages with copilot
-    (add-hook 'git-commit-setup-hook 'copilot-chat-insert-commit-message)
-
     :bind
     (:map global-map
           ("C-c a c" . copilot-chat-display)
@@ -309,6 +306,7 @@ Complete `use-package' configuration for copilot, incorporating:
           ("C-c a f" . copilot-chat-fix)
           ("C-c a o" . copilot-chat-optimize)
           ("C-c a t" . copilot-chat-test)
+          ("C-c a g" . copilot-chat-insert-commit-message)
           ("C-c a m" . copilot-chat-set-model)
           ("C-c a T" . copilot-chat-transient)
   	("C-c a w" . copilot-chat-add-workspace)
@@ -1155,13 +1153,25 @@ My email configuration transforms Emacs into a powerful email client with severa
     (:map ben-mode-map
           ("C-c e" . ben-command-map))
     :config
-    ;; Use a nerd-icons cube glyph in the mode-line status indicator.
-    ;; `substring-no-properties' avoids rendering glitches when the icon is
-    ;; propertized inside a composite mode-line construct.
     (with-eval-after-load 'nerd-icons
-      (setq ben-indicator
-            `(,(substring-no-properties (nerd-icons-faicon "nf-fa-cubes"))
-              "[" (:eval (ben--status)) "]")))
+      (let ((icon (nerd-icons-faicon "nf-fa-cubes")))
+        (setq ben-none-indicator
+              `(,icon " " (:propertize "none"
+                                       face ben-mode-line-none-face
+                                       mouse-face mode-line-highlight))
+              ben-on-indicator
+              `(,icon " " (:propertize "on"
+                                       face ben-mode-line-on-face
+                                       mouse-face mode-line-highlight))
+              ben-denied-indicator
+              `(,icon " " (:propertize "denied"
+                                       face ben-mode-line-denied-face
+                                       mouse-face mode-line-highlight))
+              ben-error-indicator
+              `(,icon " " (:propertize "error"
+                                       face ben-mode-line-error-face
+                                       mouse-face mode-line-highlight)))
+        (setq ben-indicator '(" " (:eval (ben--status))))))
     :hook (after-init . ben-global-mode))
 #+end_src
 
