@@ -71,6 +71,8 @@
           WlrLayershell.layer: WlrLayer.Overlay
           WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
+          exclusionMode: ExclusionMode.Ignore
+
           anchors {
               top: true
               right: true
