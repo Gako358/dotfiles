@@ -2753,6 +2753,84 @@ Two ways I use it:
       "/" 'magit-status))
 #+end_src
 
+*** Consult-GH
+GitHub-wide search and discovery layer on top of the =gh= CLI. Fills
+the gap between =magit= (local git), =forge= (per-repo issues/PRs you
+have already pulled) and =pr-review= (review/approve/merge a known
+PR):
+
+- =SPC G r= search any repository on GitHub
+- =SPC G p= search pull requests across GitHub
+- =SPC G i= search issues
+- =SPC G c= search code (jumps directly to the matching line)
+- =SPC G o= browse repositories of one or more users/orgs
+- =SPC G G= open the consult-gh transient menu
+
+Issues open in a Magit/Forge buffer (familiar UX), and PRs are routed
+through =pr-review= so you can actually review/approve/merge directly.
+=gh= handles authentication, so no extra token in =~/.authinfo= is
+required for consult-gh itself.
+
+#+begin_src emacs-lisp
+  (use-package consult-gh
+    :ensure t
+    :after (consult forge)
+    :commands (consult-gh
+               consult-gh-search-repos
+               consult-gh-search-prs
+               consult-gh-search-issues
+               consult-gh-search-code
+               consult-gh-orgs
+               consult-gh-repo-list
+               consult-gh-issue-list
+               consult-gh-pr-list
+               consult-gh-transient)
+    :init
+    (evil-leader/set-key
+      "Gr" 'consult-gh-search-repos
+      "Gp" 'consult-gh-search-prs
+      "Gi" 'consult-gh-search-issues
+      "Gc" 'consult-gh-search-code
+      "Go" 'consult-gh-orgs
+      "GG" 'consult-gh-transient)
+    :config
+    (require 'consult-gh-embark)
+    (require 'consult-gh-forge)
+    (require 'consult-gh-transient)
+    (consult-gh-embark-mode +1)
+    (consult-gh-forge-mode +1)
+
+    (setq consult-gh-default-clone-directory "~/Sources/"
+          consult-gh-preview-key "M-o"
+          consult-gh-forge-timeout-seconds 20)
+
+    ;; Issues -> open in a Magit/Forge buffer.
+    (setq consult-gh-issue-action #'consult-gh-forge--issue-view-action)
+
+    ;; PRs -> open in pr-review (so we can actually review / approve /
+    ;; merge). Falls back to consult-gh's built-in viewer if the URL
+    ;; cannot be resolved or pr-review is unavailable.
+    (defun my/consult-gh-pr-review-action (cand)
+      "Open the selected consult-gh PR CAND in `pr-review'."
+      (let ((url (and (stringp cand)
+                      (or (get-text-property 0 :url cand)
+                          (let ((repo   (get-text-property 0 :repo cand))
+                                (number (get-text-property 0 :number cand)))
+                            (when (and repo number)
+                              (format "https://github.com/%s/pull/%s"
+                                      repo number)))))))
+        (if (and url (fboundp 'pr-review-open-url))
+            (pr-review-open-url url)
+          (consult-gh--pr-view-action cand))))
+    (setq consult-gh-pr-action #'my/consult-gh-pr-review-action)
+
+    (with-eval-after-load 'evil
+      (evil-ex-define-cmd "ghr" #'consult-gh-search-repos)
+      (evil-ex-define-cmd "ghp" #'consult-gh-search-prs)
+      (evil-ex-define-cmd "ghi" #'consult-gh-search-issues)
+      (evil-ex-define-cmd "ghc" #'consult-gh-search-code)))
+#+end_src
+
 *** Vundo
 #+begin_src emacs-lisp
   (use-package vundo

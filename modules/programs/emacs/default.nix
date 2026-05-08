@@ -155,6 +155,7 @@ _: {
         pkgs.black
         pkgs.dtach
         pkgs.gemini-cli
+        pkgs.gh
         pkgs.kotlin-language-server
         pkgs.nil
         pkgs.nixfmt
@@ -315,6 +316,7 @@ _: {
 
               # Navigation
               consult # Consulting completing-read
+              consult-gh # Search GitHub via gh CLI through consult
               consult-lsp # Consult LSP for diagnostics
               consult-projectile # Consult interface for Projectile
               dumb-jump # Heuristic jump-to-definition via grep/ripgrep (xref backend)
