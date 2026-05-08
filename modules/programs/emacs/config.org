@@ -2794,22 +2794,12 @@ required for consult-gh itself.
       "Go" 'consult-gh-orgs
       "GG" 'consult-gh-transient)
     :config
-    (require 'consult-gh-embark)
-    (require 'consult-gh-forge)
     (require 'consult-gh-transient)
-    (consult-gh-embark-mode +1)
-    (consult-gh-forge-mode +1)
 
     (setq consult-gh-default-clone-directory "~/Sources/"
           consult-gh-preview-key "M-o"
           consult-gh-forge-timeout-seconds 20)
 
-    ;; Issues -> open in a Magit/Forge buffer.
-    (setq consult-gh-issue-action #'consult-gh-forge--issue-view-action)
-
-    ;; PRs -> open in pr-review (so we can actually review / approve /
-    ;; merge). Falls back to consult-gh's built-in viewer if the URL
-    ;; cannot be resolved or pr-review is unavailable.
     (defun my/consult-gh-pr-review-action (cand)
       "Open the selected consult-gh PR CAND in `pr-review'."
       (let ((url (and (stringp cand)
@@ -2829,6 +2819,20 @@ required for consult-gh itself.
       (evil-ex-define-cmd "ghp" #'consult-gh-search-prs)
       (evil-ex-define-cmd "ghi" #'consult-gh-search-issues)
       (evil-ex-define-cmd "ghc" #'consult-gh-search-code)))
+
+  (use-package consult-gh-embark
+    :ensure t
+    :after consult-gh
+    :config
+    (consult-gh-embark-mode +1))
+
+  (use-package consult-gh-forge
+    :ensure t
+    :after consult-gh
+    :config
+    (consult-gh-forge-mode +1)
+    ;; Issues -> open in a Magit/Forge buffer.
+    (setq consult-gh-issue-action #'consult-gh-forge--issue-view-action))
 #+end_src
 
 *** Vundo

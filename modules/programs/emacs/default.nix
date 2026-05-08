@@ -317,6 +317,8 @@ _: {
               # Navigation
               consult # Consulting completing-read
               consult-gh # Search GitHub via gh CLI through consult
+              consult-gh-embark # Embark integration for consult-gh
+              consult-gh-forge # Forge integration for consult-gh (issue viewer)
               consult-lsp # Consult LSP for diagnostics
               consult-projectile # Consult interface for Projectile
               dumb-jump # Heuristic jump-to-definition via grep/ripgrep (xref backend)
