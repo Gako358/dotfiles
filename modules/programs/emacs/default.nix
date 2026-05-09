@@ -272,6 +272,7 @@ _: {
                   tree-sitter-java
                   tree-sitter-javascript
                   tree-sitter-kotlin
+                  tree-sitter-lua
                   tree-sitter-markdown
                   tree-sitter-nix
                   tree-sitter-python

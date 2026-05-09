@@ -1462,6 +1462,7 @@ This configuration makes system monitoring and process management seamless withi
   	      (java-mode . java-ts-mode) ;; Remap Java mode to Tree-sitter mode
   	      (javascript-mode . js-ts-mode) ;; Remap JavaScript mode to Tree-sitter mode
   	      (kotlin-mode . kotlin-ts-mode) ;; Remap Kotlin mode to Tree-sitter mode
+  	      (lua-mode . lua-ts-mode) ;; Remap Lua mode to Tree-sitter mode
   	      (python-mode . python-ts-mode) ;; Remap Python mode to Tree-sitter mode
   	      (scala-mode . scala-ts-mode) ;; Remap Scala mode to Tree-sitter mode
   	      (sh-mode . bash-ts-mode) ;; Remap Shell Script mode to Tree-sitter mode
@@ -1659,6 +1660,14 @@ entry points live alongside the rest of the Java leader bindings under
     :init
     :mode "\\.kt\\'")
 
+#+end_src
+
+*** Lua
+#+begin_src emacs-lisp
+  ;; lua-ts-mode is built-in to Emacs 30+, no external package needed.
+  (use-package lua-ts-mode
+    :ensure nil
+    :mode "\\.lua\\'")
 #+end_src
 
 *** Markdown
