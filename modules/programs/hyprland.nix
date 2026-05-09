@@ -52,11 +52,15 @@
 
   flake.homeModules.programs-hyprland =
     {
+      config,
       lib,
       pkgs,
       osConfig,
       ...
     }:
+    let
+      inherit (config.colorScheme) palette;
+    in
     {
       config = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
         # Hyprland 0.55+ checks for hyprland.lua at startup and uses it
@@ -133,8 +137,8 @@
                   gaps_out    = 7,
                   border_size = 2,
                   col = {
-                      active_border   = { colors = { "rgb(B48EAD)", "rgb(5E81AC)", "rgb(719cd6)" }, angle = 45 },
-                      inactive_border = "rgb(3B4252)",
+                      active_border   = { colors = { "rgb(${palette.base0E})", "rgb(${palette.base0F})", "rgb(${palette.base0D})" }, angle = 45 },
+                      inactive_border = "rgb(${palette.base02})",
                   },
                   hover_icon_on_border    = true,
                   extend_border_grab_area = 15,
