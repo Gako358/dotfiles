@@ -66,7 +66,7 @@
         # Hyprland 0.55+ checks for hyprland.lua at startup and uses it
         # instead of hyprland.conf if present.
         # The only Nix interpolation here is the cursor theme store path.
-        xdg.configFile."hypr/hyprland.lua".text = ''
+        xdg.configFile."hypr/hyprland.lua".text = /* lua */ ''
           -- Hyprland 0.55+ Lua config
           -- See: https://wiki.hypr.land/Configuring/Start/
 
