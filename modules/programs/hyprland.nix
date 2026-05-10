@@ -19,10 +19,6 @@
           variables.NIXOS_OZONE_WL = "1";
         };
 
-        # NOTE: Hyprland 0.55+ uses a Lua config (~/.config/hypr/hyprland.lua),
-        # which takes precedence at startup if it exists. The Lua file itself
-        # is written by the home module below; here we just enable the program
-        # and provide the package/portal/plugins.
         programs.hyprland = {
           enable = true;
           withUWSM = true;
@@ -60,16 +56,18 @@
     }:
     let
       inherit (config.colorScheme) palette;
+
+      hyprSettings = osConfig.programs.hyprland.settings or { };
+      monitorList = hyprSettings.monitor or [ ];
+      workspaceList = hyprSettings.workspace or [ ];
+
+      escapeLua = s: builtins.replaceStrings [ "\\" "\"" ] [ "\\\\" "\\\"" ] s;
+      toLuaStr = s: "\"${escapeLua s}\"";
+      toLuaList = items: "{ " + (lib.concatMapStringsSep ", " toLuaStr items) + " }";
     in
     {
       config = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
-        # Hyprland 0.55+ checks for hyprland.lua at startup and uses it
-        # instead of hyprland.conf if present.
-        # The only Nix interpolation here is the cursor theme store path.
         xdg.configFile."hypr/hyprland.lua".text = /* lua */ ''
-          -- Hyprland 0.55+ Lua config
-          -- See: https://wiki.hypr.land/Configuring/Start/
-
           local mainMod   = "SUPER"
           local SECONDARY = "SHIFT"
           local TERTIARY  = "CTRL"
@@ -101,6 +99,72 @@
               })
           end
 
+          ----------------------------------------
+          -- Helpers: parse hyprlang-style strings
+          -- coming from the per-host Nix config.
+          ----------------------------------------
+
+          local function splitCommas(s)
+              local result, from = {}, 1
+              while true do
+                  local i = string.find(s, ",", from, true)
+                  if not i then
+                      table.insert(result, (string.gsub(string.sub(s, from), "^%s*(.-)%s*$", "%1")))
+                      break
+                  end
+                  table.insert(result, (string.gsub(string.sub(s, from, i - 1), "^%s*(.-)%s*$", "%1")))
+                  from = i + 1
+              end
+              return result
+          end
+
+          local function applyMonitor(spec)
+              local p = splitCommas(spec)
+              local output = p[1] or ""
+              local mode = p[2] or "preferred"
+              if mode == "disable" or mode == "disabled" then
+                  hl.monitor({ output = output, disabled = true })
+                  return
+              end
+              local position = p[3] or "auto"
+              local scale_str = p[4] or "1"
+              local scale = tonumber(scale_str) or scale_str
+              hl.monitor({
+                  output   = output,
+                  mode     = mode,
+                  position = position,
+                  scale    = scale,
+              })
+          end
+
+          -- "1, monitor:DP-1" or "1, monitor:desc:Foo Bar"
+          local _seenMonitorDefault = {}
+          local function applyWorkspaceMonitor(spec)
+              local id, rest = string.match(spec, "^%s*([^,]+)%s*,%s*(.*)$")
+              if not id then return end
+              local mon = string.match(rest, "^monitor:(.+)$")
+              if not mon then return end
+              mon = (string.gsub(mon, "^%s*(.-)%s*$", "%1"))
+              local isDefault = not _seenMonitorDefault[mon]
+              _seenMonitorDefault[mon] = true
+              hl.workspace_rule({
+                  workspace = id,
+                  monitor   = mon,
+                  default   = isDefault,
+              })
+          end
+
+          ------------------
+          ----- MONITORS -----
+          ------------------
+
+          for _, spec in ipairs(${toLuaList monitorList}) do
+              applyMonitor(spec)
+          end
+          for _, spec in ipairs(${toLuaList workspaceList}) do
+              applyWorkspaceMonitor(spec)
+          end
+
           ---------------------------------
           ----- ENVIRONMENT VARIABLES -----
           ---------------------------------
@@ -120,10 +184,11 @@
               hl.exec_cmd("wl-clip-persist --clipboard both &")
               hl.exec_cmd("wl-paste --watch cliphist store &")
               hl.exec_cmd("uwsm finalize")
-              hl.exec_cmd("[workspace 1 silent] zen")
-              hl.exec_cmd("[workspace 2 silent] emacsclient -c -n")
-              hl.exec_cmd("[workspace 8 silent] slack")
-              hl.exec_cmd("[workspace 9 silent] discord")
+
+              hl.exec_cmd("uwsm app -- zen",                  { workspace = "1" })
+              hl.exec_cmd("uwsm app -- emacsclient -c -n",    { workspace = "2" })
+              hl.exec_cmd("uwsm app -- slack",                { workspace = "8" })
+              hl.exec_cmd("uwsm app -- discord",              { workspace = "9" })
           end)
 
           -------------------------
@@ -147,7 +212,8 @@
               },
 
               cursor = {
-                  inactive_timeout = 5,
+                  inactive_timeout    = 5,
+                  no_hardware_cursors = true,
               },
 
               decoration = {
@@ -185,14 +251,13 @@
               },
 
               master = {
-                  new_status         = "slave",
-                  new_on_top         = false,
-                  mfact              = 0.55,
-                  orientation        = "left",
-                  inherit_fullscreen = true,
-                  allow_small_split  = false,
-                  smart_resizing     = true,
-                  drop_at_cursor     = true,
+                  new_status        = "slave",
+                  new_on_top        = false,
+                  mfact             = 0.55,
+                  orientation       = "left",
+                  allow_small_split = false,
+                  smart_resizing    = true,
+                  drop_at_cursor    = true,
               },
 
               misc = {
@@ -200,6 +265,7 @@
                   force_default_wallpaper      = 0,
                   animate_mouse_windowdragging = false,
                   vrr                          = 1,
+                  on_focus_under_fullscreen    = true,
               },
 
               xwayland = {
@@ -303,8 +369,8 @@
 
           -- Numbered workspaces 1..9
           for i = 1, 9 do
-              hl.bind(k(mainMod, tostring(i)),            hl.dsp.focus({ workspace = i }))
-              hl.bind(k(mainMod, SECONDARY, tostring(i)), hl.dsp.window.move({ workspace = i }))
+              hl.bind(k(mainMod, tostring(i)),            hl.dsp.focus({ workspace = tostring(i) }))
+              hl.bind(k(mainMod, SECONDARY, tostring(i)), hl.dsp.window.move({ workspace = tostring(i) }))
           end
 
           -- Resize (repeatable)
@@ -359,7 +425,6 @@
               opacity = "0.91 override 0.73 override",
           })
 
-          -- Default workspace assignments
           for _, r in ipairs({
               { match = { class = "^(zen)$" },                   workspace = "1" },
               { match = { class = "^(Emacs)$" },                 workspace = "2" },

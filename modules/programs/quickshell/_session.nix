@@ -33,7 +33,7 @@
           root.hide()
       }
       function doSuspend()  { run(["systemctl", "suspend"]) }
-      function doLogout()   { run(["hyprctl", "dispatch", "exit"]) }
+      function doLogout()   { run(["uwsm", "stop"]) }
       function doReboot()   { run(["systemctl", "reboot"]) }
       function doShutdown() { run(["systemctl", "poweroff"]) }
 

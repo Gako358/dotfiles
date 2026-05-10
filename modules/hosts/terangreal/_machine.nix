@@ -29,7 +29,6 @@ in
     monitor = [
       "${monitorLeft},2560x1440,0x0,1"
       "${monitorRight},2560x1440,2560x0,1"
-      ",highrr,auto,1"
     ];
 
     workspace = [
@@ -37,9 +36,9 @@ in
       "2, monitor:${monitorLeft}"
       "3, monitor:${monitorLeft}"
       "4, monitor:${monitorLeft}"
-      "5, monitor:${monitorLeft}"
+      "5, monitor:${monitorRight}"
       "6, monitor:${monitorRight}"
-      "7, monitor:${monitorRight}"
+      "7, monitor:${monitorLeft}"
       "8, monitor:${monitorRight}"
       "9, monitor:${monitorRight}"
     ];
