@@ -29,6 +29,7 @@ in
     monitor = [
       "${monitorLeft},2560x1440,0x0,1"
       "${monitorRight},2560x1440,2560x0,1"
+      ",highrr,auto,1"
     ];
 
     workspace = [

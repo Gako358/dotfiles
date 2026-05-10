@@ -29,6 +29,7 @@ in
     monitor = [
       "${laptop},1920x1200,2560x1440,1"
       "${office},2560x1440,0x0,1"
+      ",highrr,auto,1"
     ];
 
     workspace = [
