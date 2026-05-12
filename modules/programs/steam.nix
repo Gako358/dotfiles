@@ -22,6 +22,8 @@ _: {
             directories = [
               ".steam"
               ".local/share/Steam"
+              ".cache/mesa_shader_cache"
+              ".cache/mesa_shader_cache_db"
             ];
           };
         };
