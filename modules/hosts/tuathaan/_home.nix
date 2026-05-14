@@ -11,6 +11,12 @@ let
 in
 {
   program.quickshell.battery.enable = true;
+  program.quickshell.lock.monitors = [
+    "HP E27u"
+    "DP-1"
+    "HDMI-A-1"
+    "eDP-1"
+  ];
 
   services.hyprpaper.settings = lib.mkMerge [
     {

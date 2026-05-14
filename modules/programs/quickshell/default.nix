@@ -35,7 +35,10 @@ _: {
       notificationsQml = import ./_notifications.nix { inherit c ca; };
       launcherQml = import ./_launcher.nix { inherit c ca; };
       sessionQml = import ./_session.nix { inherit c ca; };
-      lockQml = import ./_lock.nix { inherit c ca; };
+      lockQml = import ./_lock.nix {
+        inherit c ca lib;
+        lockMonitors = cfg.lock.monitors;
+      };
       sysmonQml = import ./_system-monitor.nix { inherit c ca; };
       volumePanelQml = import ./_volume-panel.nix { inherit c ca; };
       networkPanelQml = import ./_network-panel.nix { inherit c ca; };
@@ -63,6 +66,25 @@ _: {
             type = lib.types.bool;
             default = false;
             description = "Enable the battery widget in the quickshell bar (laptops only).";
+          };
+        };
+
+        lock = {
+          monitors = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            example = [
+              "CN41332M2N"
+              "eDP-1"
+            ];
+            description = ''
+              Ordered list of monitor identifiers. The lock screen UI is drawn
+              on the first connected monitor whose name / manufacturer / model
+              / serial number contains one of these strings; other monitors
+              get a plain dark surface. "desc:" prefixes (Hyprland-style) are
+              stripped before matching. When the list is empty (the default),
+              the UI is shown on every connected monitor.
+            '';
           };
         };
       };

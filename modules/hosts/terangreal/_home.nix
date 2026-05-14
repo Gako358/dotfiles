@@ -10,6 +10,8 @@ let
   cat = "${pkgs.coreutils}/bin/cat";
 in
 {
+  program.quickshell.lock.monitors = [ "DP-2" ];
+
   services.hyprpaper.settings = lib.mkMerge [
     {
       wallpaper = [
