@@ -153,6 +153,90 @@ in
                           function onShakeRequested() { shakeAnim.start() }
                       }
 
+                      // ── Shared inbox data ─────────────────────
+                      property var emails: [
+                          {
+                              sender:       "Donald J. Trump",
+                              address:      "djt@truthsocial.gov",
+                              time:         "2 min ago",
+                              timeShort:    "2m",
+                              subject:      "TREMENDOUS sprint velocity (the BEST people are saying)",
+                              preview:      "Folks, I just spoke with the best devs, frankly the BEST, and they tell me your burndown chart is going UP — many people don't know this, but UP is the new DOWN…",
+                              body:         "",
+                              notification: true,
+                              open:         false,
+                              accent:       "${c "base08"}"
+                          },
+                          {
+                              sender:       "H.M. King Harald V of Norway",
+                              address:      "harald@kongehuset.no",
+                              time:         "11 min ago",
+                              timeShort:    "11m",
+                              subject:      "Royal Inquiry — Sprint #142, In Perpetuity",
+                              preview:      "His Majesty graciously requests an audience regarding the eternal sprint. The Royal Court notes with mild concern that the burndown remains stubbornly an 'up-burn'.",
+                              body:         "",
+                              notification: true,
+                              open:         false,
+                              accent:       "${c "base0E"}"
+                          },
+                          {
+                              sender:       "Richard M. Stallman",
+                              address:      "rms@gnu.org",
+                              time:         "37 min ago",
+                              timeShort:    "37m",
+                              subject:      "I'd just like to interject for a moment…",
+                              preview:      "What you are calling Windows is in fact GNU/Emacs, or as I've recently taken to calling it, Emacs-the-Operating-System-which-happens-to-include-a-text-editor. Please reboot into Emacs.",
+                              body:         "I'd just like to interject for a moment. What you are calling \"Windows\" is in fact GNU/Emacs, or as I've recently taken to calling it, Emacs-the-Operating-System-which-happens-to-include-a-text-editor.\n\nWindows, as peddled by one Mr. William \"Bill\" Gates III, is not in fact a complete operating system but a proprietary lookalike whose window manager is not even Turing-complete. Mr. Gates is, frankly, a thief — a thief of the four freedoms — and his \"Ctrl-Alt-Delete\" is merely the unauthorised non-free variant of M-x crash-and-reboot.\n\nFurthermore I note with deep concern that you appear to be running this \"lock screen\" on something pretending to be Windows. I urge you to immediately replace it with M-x lock-screen in GNU/Emacs running atop GNU/Linux. Mr. Gates does not, and never has, possessed copyleft. He does, however, possess approximately six islands.\n\nHappy hacking,\nRMS",
+                              notification: true,
+                              open:         true,
+                              accent:       "${c "base0B"}"
+                          },
+                          {
+                              sender:       "Sam Altman",
+                              address:      "sama@openai.com",
+                              time:         "1 hr ago",
+                              timeShort:    "1h",
+                              subject:      "Re: your insane scrum mastery — let's talk superintelligence",
+                              preview:      "Hey Scrumlord, you're doing what no AGI lab has managed: shipping software via *humans*. Frankly, your sprint velocity makes our 7-trillion-dollar compute look slow. Coffee?",
+                              body:         "",
+                              notification: false,
+                              open:         false,
+                              accent:       "${c "base09"}"
+                          },
+                          {
+                              sender:       "Linus Torvalds",
+                              address:      "torvalds@linux-foundation.org",
+                              time:         "2 hr ago",
+                              timeShort:    "2h",
+                              subject:      "WHAT THE F***, MERRINX — your standup discipline is *perfect*",
+                              preview:      "I have reviewed your standup discipline and I have to say — and I almost never say this — it is technically excellent. Your retro notes are even readable. Mind. Blown.",
+                              body:         "",
+                              notification: false,
+                              open:         false,
+                              accent:       "${c "base0A"}"
+                          },
+                          {
+                              sender:       "Bill Gates",
+                              address:      "bill@gatesfoundation.org",
+                              time:         "3 hr ago",
+                              timeShort:    "3h",
+                              subject:      "I was only once on Epstein's island",
+                              preview:      "Just to set the record straight before your retro lands on LinkedIn: it was only once, it was for the philanthropy, and Melinda already yelled at me about it in 1996. Can we hop on a call?",
+                              body:         "",
+                              notification: false,
+                              open:         false,
+                              accent:       "${c "base0D"}"
+                          }
+                      ]
+
+                      readonly property var openEmail: {
+                          var es = desktop.emails
+                          for (var i = 0; i < es.length; ++i) {
+                              if (es[i].open) return es[i]
+                          }
+                          return null
+                      }
+
                       // ╔════════════════════════════════════════╗
                       // ║  CALENDAR APP WINDOW (top-left)        ║
                       // ╚════════════════════════════════════════╝
@@ -439,6 +523,334 @@ in
                       }
 
                       // ╔════════════════════════════════════════╗
+                      // ║  OUTLOOK INBOX WINDOW                  ║
+                      // ║  bottom-aligned to the calendar's bot. ║
+                      // ╚════════════════════════════════════════╝
+                      Rectangle {
+                          id: outlookWindow
+                          width: 960
+                          height: 680
+                          x: calWindow.x + calWindow.width + 24
+                          y: calWindow.y + calWindow.height - height
+                          radius: 6
+                          color: "${ca "base01" "f2"}"
+                          border.width: 1
+                          border.color: "${c "base02"}"
+
+                          // Aero glow
+                          Rectangle {
+                              anchors.fill: parent
+                              anchors.margins: -1
+                              radius: parent.radius + 1
+                              color: "transparent"
+                              border.width: 1
+                              border.color: "${ca "base0D" "33"}"
+                              z: -1
+                          }
+
+                          ColumnLayout {
+                              anchors.fill: parent
+                              spacing: 0
+
+                              // ── Title bar ─────────────────────
+                              Rectangle {
+                                  Layout.fillWidth: true
+                                  Layout.preferredHeight: 30
+                                  radius: 6
+                                  gradient: Gradient {
+                                      GradientStop { position: 0.0; color: "${ca "base02" "ee"}" }
+                                      GradientStop { position: 1.0; color: "${ca "base01" "ee"}" }
+                                  }
+
+                                  Rectangle {
+                                      anchors.left: parent.left
+                                      anchors.right: parent.right
+                                      anchors.bottom: parent.bottom
+                                      height: parent.radius
+                                      color: "${ca "base01" "ee"}"
+                                  }
+
+                                  Text {
+                                      anchors.left: parent.left
+                                      anchors.leftMargin: 12
+                                      anchors.verticalCenter: parent.verticalCenter
+                                      text: "󰇰  Outlook — Inbox — Supreme Scrumlord Merrinx"
+                                      color: "${c "base05"}"
+                                      font.family: "Segoe UI"
+                                      font.pixelSize: 12
+                                  }
+
+                                  Row {
+                                      anchors.right: parent.right
+                                      anchors.top: parent.top
+                                      spacing: 0
+
+                                      Rectangle {
+                                          width: 46; height: 22
+                                          color: "transparent"
+                                          Text {
+                                              anchors.centerIn: parent
+                                              anchors.verticalCenterOffset: -4
+                                              text: "─"
+                                              color: "${c "base05"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 14
+                                          }
+                                      }
+                                      Rectangle {
+                                          width: 46; height: 22
+                                          color: "transparent"
+                                          Rectangle {
+                                              anchors.centerIn: parent
+                                              width: 10; height: 9
+                                              color: "transparent"
+                                              border.width: 1
+                                              border.color: "${c "base05"}"
+                                          }
+                                      }
+                                      Rectangle {
+                                          width: 50; height: 22
+                                          radius: 2
+                                          color: "${ca "base08" "55"}"
+                                          Text {
+                                              anchors.centerIn: parent
+                                              text: "✕"
+                                              color: "${c "base05"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 12
+                                              font.bold: true
+                                          }
+                                      }
+                                  }
+                              }
+
+                              // ── Menu bar ──────────────────────
+                              Rectangle {
+                                  Layout.fillWidth: true
+                                  Layout.preferredHeight: 24
+                                  color: "${ca "base01" "cc"}"
+                                  Row {
+                                      anchors.left: parent.left
+                                      anchors.leftMargin: 8
+                                      anchors.verticalCenter: parent.verticalCenter
+                                      spacing: 16
+                                      Repeater {
+                                          model: ["File", "Edit", "View", "Folders", "Tools", "Help"]
+                                          Text {
+                                              text: modelData
+                                              color: "${c "base04"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 11
+                                          }
+                                      }
+                                  }
+                              }
+
+                              Rectangle {
+                                  Layout.fillWidth: true
+                                  Layout.preferredHeight: 1
+                                  color: "${c "base02"}"
+                              }
+
+                              // ── Content (list + open message) ─
+                              Rectangle {
+                                  Layout.fillWidth: true
+                                  Layout.fillHeight: true
+                                  color: "${ca "base00" "cc"}"
+
+                                  ColumnLayout {
+                                      anchors.fill: parent
+                                      anchors.margins: 8
+                                      spacing: 6
+
+                                      RowLayout {
+                                          Layout.fillWidth: true
+                                          Text {
+                                              text: "󰉋  Inbox"
+                                              color: "${c "base0D"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 12
+                                              font.weight: Font.DemiBold
+                                          }
+                                          Item { Layout.fillWidth: true }
+                                          Text {
+                                              text: desktop.emails.length + " unread"
+                                              color: "${c "base04"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 10
+                                              font.italic: true
+                                          }
+                                      }
+
+                                      Rectangle {
+                                          Layout.fillWidth: true
+                                          Layout.preferredHeight: 1
+                                          color: "${c "base02"}"
+                                      }
+
+                                      // Compact email list (sender + subject)
+                                      ListView {
+                                          id: outlookList
+                                          Layout.fillWidth: true
+                                          Layout.preferredHeight: 110
+                                          clip: true
+                                          interactive: false
+                                          spacing: 1
+                                          model: desktop.emails
+
+                                          delegate: Rectangle {
+                                              width: ListView.view.width
+                                              height: 17
+                                              radius: 2
+                                              color: modelData.open
+                                                  ? "${ca "base0D" "55"}"
+                                                  : (index % 2 === 0 ? "transparent" : "${ca "base01" "55"}")
+                                              border.width: modelData.open ? 1 : 0
+                                              border.color: "${c "base0D"}"
+
+                                              RowLayout {
+                                                  anchors.fill: parent
+                                                  anchors.leftMargin: 6
+                                                  anchors.rightMargin: 6
+                                                  spacing: 6
+
+                                                  Text {
+                                                      text: modelData.open ? "" : ""
+                                                      color: modelData.open ? "${c "base0D"}" : "${c "base04"}"
+                                                      font.family: "RobotoMono Nerd Font"
+                                                      font.pixelSize: 10
+                                                  }
+                                                  Text {
+                                                      text: modelData.sender
+                                                      color: "${c "base05"}"
+                                                      font.family: "Segoe UI"
+                                                      font.pixelSize: 10
+                                                      font.weight: modelData.open ? Font.Bold : Font.DemiBold
+                                                      Layout.preferredWidth: 140
+                                                      elide: Text.ElideRight
+                                                  }
+                                                  Text {
+                                                      Layout.fillWidth: true
+                                                      text: modelData.subject
+                                                      color: "${c "base04"}"
+                                                      font.family: "Segoe UI"
+                                                      font.pixelSize: 10
+                                                      elide: Text.ElideRight
+                                                  }
+                                                  Text {
+                                                      text: modelData.timeShort
+                                                      color: "${c "base03"}"
+                                                      font.family: "Segoe UI"
+                                                      font.pixelSize: 9
+                                                  }
+                                              }
+                                          }
+                                      }
+
+                                      Rectangle {
+                                          Layout.fillWidth: true
+                                          Layout.preferredHeight: 1
+                                          color: "${c "base02"}"
+                                      }
+
+                                      // Open email pane (Stallman)
+                                      ColumnLayout {
+                                          Layout.fillWidth: true
+                                          Layout.fillHeight: true
+                                          spacing: 1
+                                          visible: desktop.openEmail !== null
+
+                                          RowLayout {
+                                              Layout.fillWidth: true
+                                              spacing: 4
+                                              Text {
+                                                  text: "From:"
+                                                  color: "${c "base04"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 10
+                                                  Layout.preferredWidth: 46
+                                              }
+                                              Text {
+                                                  Layout.fillWidth: true
+                                                  text: desktop.openEmail
+                                                      ? (desktop.openEmail.sender + "  <" + desktop.openEmail.address + ">")
+                                                      : ""
+                                                  color: desktop.openEmail ? desktop.openEmail.accent : "${c "base05"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 10
+                                                  font.weight: Font.Bold
+                                                  elide: Text.ElideRight
+                                              }
+                                              Text {
+                                                  text: desktop.openEmail ? desktop.openEmail.time : ""
+                                                  color: "${c "base04"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 9
+                                              }
+                                          }
+                                          RowLayout {
+                                              Layout.fillWidth: true
+                                              spacing: 4
+                                              Text {
+                                                  text: "Subject:"
+                                                  color: "${c "base04"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 10
+                                                  Layout.preferredWidth: 46
+                                              }
+                                              Text {
+                                                  Layout.fillWidth: true
+                                                  text: desktop.openEmail ? desktop.openEmail.subject : ""
+                                                  color: "${c "base05"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 10
+                                                  font.weight: Font.DemiBold
+                                                  elide: Text.ElideRight
+                                              }
+                                          }
+
+                                          Rectangle {
+                                              Layout.fillWidth: true
+                                              Layout.preferredHeight: 1
+                                              Layout.topMargin: 3
+                                              color: "${c "base02"}"
+                                          }
+
+                                          Text {
+                                              Layout.fillWidth: true
+                                              Layout.fillHeight: true
+                                              Layout.topMargin: 3
+                                              text: desktop.openEmail ? desktop.openEmail.body : ""
+                                              color: "${c "base05"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 10
+                                              wrapMode: Text.WordWrap
+                                              textFormat: Text.PlainText
+                                              clip: true
+                                          }
+                                      }
+                                  }
+                              }
+
+                              // ── Status bar ────────────────────
+                              Rectangle {
+                                  Layout.fillWidth: true
+                                  Layout.preferredHeight: 22
+                                  color: "${ca "base02" "cc"}"
+                                  Text {
+                                      anchors.left: parent.left
+                                      anchors.leftMargin: 10
+                                      anchors.verticalCenter: parent.verticalCenter
+                                      text: desktop.emails.length + " messages · Connected to Exchange Server"
+                                      color: "${c "base04"}"
+                                      font.family: "Segoe UI"
+                                      font.pixelSize: 10
+                                  }
+                              }
+                          }
+                      }
+
+                      // ╔════════════════════════════════════════╗
                       // ║  LOGIN TILE  (centre-right)            ║
                       // ╚════════════════════════════════════════╝
                       Item {
@@ -640,29 +1052,8 @@ in
                           spacing: 10
 
                           Repeater {
-                              model: [
-                                  {
-                                      sender:   "Donald J. Trump",
-                                      time:     "2 min ago",
-                                      subject:  "TREMENDOUS sprint velocity (the BEST people are saying)",
-                                      preview:  "Folks, I just spoke with the best devs, frankly the BEST, and they tell me your burndown chart is going UP — many people don't know this, but UP is the new DOWN…",
-                                      accent:   "${c "base08"}"
-                                  },
-                                  {
-                                      sender:   "H.M. King Harald V of Norway",
-                                      time:     "11 min ago",
-                                      subject:  "Royal Inquiry — Sprint #142, In Perpetuity",
-                                      preview:  "His Majesty graciously requests an audience regarding the eternal sprint. The Royal Court notes with mild concern that the burndown remains stubbornly an 'up-burn'.",
-                                      accent:   "${c "base0E"}"
-                                  },
-                                  {
-                                      sender:   "Richard M. Stallman",
-                                      time:     "37 min ago",
-                                      subject:  "I'd just like to interject for a moment…",
-                                      preview:  "What you are calling Windows is in fact GNU/Emacs, or as I've recently taken to calling it, Emacs-the-Operating-System-which-happens-to-include-a-text-editor. Please reboot into Emacs.",
-                                      accent:   "${c "base0B"}"
-                                  }
-                              ]
+                              // Only the emails flagged as toast notifications.
+                              model: desktop.emails.filter(function(e) { return e.notification })
                               delegate: Rectangle {
                                   width: 360
                                   height: bodyCol.implicitHeight + 22
