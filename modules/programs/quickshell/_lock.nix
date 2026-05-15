@@ -226,6 +226,30 @@ in
                               notification: false,
                               open:         false,
                               accent:       "${c "base0D"}"
+                          },
+                          {
+                              sender:       "Sigurd J. Brattland",
+                              address:      "sigurdbrattland@hnikt.no",
+                              time:         "4 hr ago",
+                              timeShort:    "4h",
+                              subject:      "Magnus er naken i kantinen igjen",
+                              preview:      "",
+                              body:         "",
+                              notification: false,
+                              open:         false,
+                              accent:       "${c "base0C"}"
+                          },
+                          {
+                              sender:       "Kristian Nedrevol Hansen",
+                              address:      "kristianhansen@hnikt.no",
+                              time:         "5 hr ago",
+                              timeShort:    "5h",
+                              subject:      "Timeføring er scopecreep",
+                              preview:      "",
+                              body:         "",
+                              notification: false,
+                              open:         false,
+                              accent:       "${c "base0E"}"
                           }
                       ]
 
@@ -235,6 +259,113 @@ in
                               if (es[i].open) return es[i]
                           }
                           return null
+                      }
+
+                      // ╔════════════════════════════════════════╗
+                      // ║  DESKTOP FOLDERS (top-right)           ║
+                      // ╚════════════════════════════════════════╝
+                      Component {
+                          id: folderDelegate
+                          Item {
+                              width: 86
+                              height: 84
+
+                              ColumnLayout {
+                                  anchors.fill: parent
+                                  spacing: 2
+
+                                  Item {
+                                      Layout.alignment: Qt.AlignHCenter
+                                      Layout.preferredWidth: 56
+                                      Layout.preferredHeight: 50
+
+                                      // Folder back tab
+                                      Rectangle {
+                                          x: 4
+                                          y: 4
+                                          width: 26
+                                          height: 8
+                                          radius: 2
+                                          gradient: Gradient {
+                                              GradientStop { position: 0.0; color: "${ca "base0A" "cc"}" }
+                                              GradientStop { position: 1.0; color: "${ca "base09" "cc"}" }
+                                          }
+                                          border.width: 1
+                                          border.color: "${ca "base02" "aa"}"
+                                      }
+                                      // Folder body
+                                      Rectangle {
+                                          x: 2
+                                          y: 10
+                                          width: 52
+                                          height: 36
+                                          radius: 3
+                                          gradient: Gradient {
+                                              GradientStop { position: 0.0; color: "${ca "base0A" "ee"}" }
+                                              GradientStop { position: 1.0; color: "${ca "base09" "ee"}" }
+                                          }
+                                          border.width: 1
+                                          border.color: "${ca "base02" "aa"}"
+
+                                          // subtle highlight stripe
+                                          Rectangle {
+                                              anchors.left: parent.left
+                                              anchors.right: parent.right
+                                              anchors.top: parent.top
+                                              anchors.margins: 2
+                                              height: 6
+                                              radius: 2
+                                              color: "${ca "base05" "22"}"
+                                          }
+                                      }
+                                  }
+
+                                  Text {
+                                      Layout.fillWidth: true
+                                      horizontalAlignment: Text.AlignHCenter
+                                      text: modelData
+                                      color: "${c "base07"}"
+                                      font.family: "Segoe UI"
+                                      font.pixelSize: 11
+                                      font.weight: Font.DemiBold
+                                      elide: Text.ElideRight
+                                      style: Text.Outline
+                                      styleColor: "${ca "base00" "cc"}"
+                                  }
+                              }
+                          }
+                      }
+
+                      Item {
+                          id: desktopFolders
+                          anchors.right: parent.right
+                          anchors.top: parent.top
+                          anchors.rightMargin: 40
+                          anchors.topMargin: 48
+                          width: row2.width
+                          height: row1.height + row2.height + 18
+
+                          Row {
+                              id: row1
+                              anchors.right: parent.right
+                              spacing: 10
+                              Repeater {
+                                  model: [ "NixOS", "Bitcoins" ]
+                                  delegate: folderDelegate
+                              }
+                          }
+
+                          Row {
+                              id: row2
+                              anchors.right: parent.right
+                              anchors.top: row1.bottom
+                              anchors.topMargin: 18
+                              spacing: 10
+                              Repeater {
+                                  model: [ "HR", "Passord", "Allmøte-opptak" ]
+                                  delegate: folderDelegate
+                              }
+                          }
                       }
 
                       // ╔════════════════════════════════════════╗
@@ -529,7 +660,7 @@ in
                       Rectangle {
                           id: outlookWindow
                           width: 960
-                          height: 680
+                          height: 716
                           x: calWindow.x + calWindow.width + 24
                           y: calWindow.y + calWindow.height - height
                           radius: 6
@@ -692,7 +823,7 @@ in
                                       ListView {
                                           id: outlookList
                                           Layout.fillWidth: true
-                                          Layout.preferredHeight: 110
+                                          Layout.preferredHeight: 146
                                           clip: true
                                           interactive: false
                                           spacing: 1
@@ -1152,6 +1283,230 @@ in
                       }
 
                       // ╔════════════════════════════════════════╗
+                      // ║  WINDOWS SETUP — INSTALLING NIXOS      ║
+                      // ║  (top-center, modal-style)             ║
+                      // ╚════════════════════════════════════════╝
+                      Rectangle {
+                          id: installerWindow
+                          anchors.top: parent.top
+                          anchors.horizontalCenter: parent.horizontalCenter
+                          anchors.topMargin: 28
+                          width: 520
+                          height: 196
+                          radius: 6
+                          color: "${ca "base01" "f2"}"
+                          border.width: 1
+                          border.color: "${c "base02"}"
+
+                          // Aero glow
+                          Rectangle {
+                              anchors.fill: parent
+                              anchors.margins: -1
+                              radius: parent.radius + 1
+                              color: "transparent"
+                              border.width: 1
+                              border.color: "${ca "base0D" "33"}"
+                              z: -1
+                          }
+
+                          ColumnLayout {
+                              anchors.fill: parent
+                              spacing: 0
+
+                              // ── Title bar ─────────────────────
+                              Rectangle {
+                                  Layout.fillWidth: true
+                                  Layout.preferredHeight: 30
+                                  radius: 6
+                                  gradient: Gradient {
+                                      GradientStop { position: 0.0; color: "${ca "base02" "ee"}" }
+                                      GradientStop { position: 1.0; color: "${ca "base01" "ee"}" }
+                                  }
+
+                                  Rectangle {
+                                      anchors.left: parent.left
+                                      anchors.right: parent.right
+                                      anchors.bottom: parent.bottom
+                                      height: parent.radius
+                                      color: "${ca "base01" "ee"}"
+                                  }
+
+                                  RowLayout {
+                                      anchors.left: parent.left
+                                      anchors.leftMargin: 10
+                                      anchors.verticalCenter: parent.verticalCenter
+                                      spacing: 6
+
+                                      Text {
+                                          text: "󰖳"
+                                          color: "${c "base0D"}"
+                                          font.family: "RobotoMono Nerd Font"
+                                          font.pixelSize: 13
+                                      }
+                                      Text {
+                                          text: "Windows Setup"
+                                          color: "${c "base05"}"
+                                          font.family: "Segoe UI"
+                                          font.pixelSize: 12
+                                      }
+                                  }
+
+                                  Row {
+                                      anchors.right: parent.right
+                                      anchors.top: parent.top
+                                      spacing: 0
+
+                                      Rectangle {
+                                          width: 46; height: 22
+                                          color: "transparent"
+                                          Text {
+                                              anchors.centerIn: parent
+                                              anchors.verticalCenterOffset: -4
+                                              text: "─"
+                                              color: "${c "base05"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 14
+                                          }
+                                      }
+                                      Rectangle {
+                                          width: 50; height: 22
+                                          radius: 2
+                                          color: "${ca "base08" "55"}"
+                                          Text {
+                                              anchors.centerIn: parent
+                                              text: "✕"
+                                              color: "${c "base05"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 12
+                                              font.bold: true
+                                          }
+                                      }
+                                  }
+                              }
+
+                              // ── Body ──────────────────────────
+                              Rectangle {
+                                  Layout.fillWidth: true
+                                  Layout.fillHeight: true
+                                  color: "${ca "base00" "ee"}"
+
+                                  RowLayout {
+                                      anchors.fill: parent
+                                      anchors.margins: 18
+                                      spacing: 18
+
+                                      // NixOS-ish snowflake icon
+                                      Rectangle {
+                                          Layout.preferredWidth: 64
+                                          Layout.preferredHeight: 64
+                                          Layout.alignment: Qt.AlignTop
+                                          radius: 8
+                                          color: "${ca "base0D" "22"}"
+                                          border.width: 1
+                                          border.color: "${ca "base0D" "66"}"
+
+                                          Text {
+                                              anchors.centerIn: parent
+                                              text: "󱄅"
+                                              color: "${c "base0D"}"
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 38
+                                          }
+                                      }
+
+                                      ColumnLayout {
+                                          Layout.fillWidth: true
+                                          Layout.fillHeight: true
+                                          spacing: 6
+
+                                          Text {
+                                              text: "Installing NixOS…"
+                                              color: "${c "base05"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 16
+                                              font.weight: Font.DemiBold
+                                          }
+
+                                          Text {
+                                              id: installerStep
+                                              Layout.fillWidth: true
+                                              text: "Step 142 of ∞ — Building flake.lock…"
+                                              color: "${c "base04"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 11
+                                              elide: Text.ElideRight
+
+                                              property var steps: [
+                                                  "Step 142 of ∞ — Building flake.lock…",
+                                                  "Step 143 of ∞ — Garbage collecting /nix/store…",
+                                                  "Step 144 of ∞ — Asking Stallman for permission…",
+                                                  "Step 145 of ∞ — Switching to generation 41334…",
+                                                  "Step 146 of ∞ — Recompiling the kernel (again)…",
+                                                  "Step 147 of ∞ — Convincing systemd to behave…"
+                                              ]
+                                              property int stepIdx: 0
+
+                                              Timer {
+                                                  running: true; repeat: true; interval: 2400
+                                                  onTriggered: {
+                                                      installerStep.stepIdx =
+                                                          (installerStep.stepIdx + 1) % installerStep.steps.length
+                                                      installerStep.text =
+                                                          installerStep.steps[installerStep.stepIdx]
+                                                  }
+                                              }
+                                          }
+
+                                          // Progress bar
+                                          Rectangle {
+                                              Layout.fillWidth: true
+                                              Layout.preferredHeight: 16
+                                              Layout.topMargin: 4
+                                              radius: 3
+                                              color: "${ca "base00" "ee"}"
+                                              border.width: 1
+                                              border.color: "${c "base02"}"
+
+                                              Rectangle {
+                                                  id: progressFill
+                                                  anchors.left: parent.left
+                                                  anchors.top: parent.top
+                                                  anchors.bottom: parent.bottom
+                                                  anchors.margins: 2
+                                                  radius: 2
+                                                  gradient: Gradient {
+                                                      orientation: Gradient.Horizontal
+                                                      GradientStop { position: 0.0; color: "${c "base0B"}" }
+                                                      GradientStop { position: 1.0; color: "${c "base0D"}" }
+                                                  }
+
+                                                  property real pct: 0.62
+                                                  width: (parent.width - 4) * pct
+
+                                                  SequentialAnimation on pct {
+                                                      loops: Animation.Infinite
+                                                      NumberAnimation { from: 0.04; to: 0.97; duration: 9000; easing.type: Easing.InOutCubic }
+                                                      NumberAnimation { from: 0.97; to: 0.10; duration: 600;  easing.type: Easing.OutQuad }
+                                                  }
+                                              }
+                                          }
+
+                                          Text {
+                                              text: "Estimated time remaining: 11 sprints"
+                                              color: "${c "base04"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 10
+                                              font.italic: true
+                                          }
+
+                                          Item { Layout.fillHeight: true }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+
+                      // ╔════════════════════════════════════════╗
                       // ║  TASKBAR (bottom)                      ║
                       // ╚════════════════════════════════════════╝
                       Rectangle {
@@ -1213,7 +1568,9 @@ in
                                       { icon: "󰉋", color: "${c "base0A"}", active: false },
                                       { icon: "󰈙", color: "${c "base09"}", active: false },
                                       { icon: "󰓪", color: "${c "base0B"}", active: false },
-                                      { icon: "󰆍", color: "${c "base04"}", active: false }
+                                      { icon: "󰆍", color: "${c "base04"}", active: false },
+                                      { icon: "", color: "${c "base0E"}", active: false },
+                                      { icon: "󱂖", color: "${c "base09"}", active: false }
                                   ]
                                   Rectangle {
                                       width: 40; height: 32
