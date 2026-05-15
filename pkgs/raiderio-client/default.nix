@@ -5,7 +5,7 @@
 }:
 
 let
-  version = "4.10.7";
+  version = "4.11.0";
   pname = "raiderio-client";
 
   src = fetchurl {

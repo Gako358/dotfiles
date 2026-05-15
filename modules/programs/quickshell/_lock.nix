@@ -555,7 +555,9 @@ in
                                               { time: "14:00", title: "Cross-Functional Synergy Alignment", tag: "SYNERGY" },
                                               { time: "15:00", title: "AI-First Re-imagining of 'cat'",     tag: "AI"      },
                                               { time: "16:00", title: "Backlog Triage → Won't Fix",         tag: "JIRA"    },
-                                              { time: "17:00", title: "Mandatory Optional Team Building",   tag: "FUN!"    }
+                                              { time: "17:00", title: "Mandatory Optional Team Building",   tag: "FUN!"    },
+                                              { time: "17:20", title: "Do some actually work (coding)",    tag: "CODE"    },
+                                              { time: "17:30", title: "Home",                              tag: "HOME"    }
                                           ]
                                           delegate: Rectangle {
                                               width: ListView.view.width
@@ -644,7 +646,7 @@ in
                                       anchors.left: parent.left
                                       anchors.leftMargin: 10
                                       anchors.verticalCenter: parent.verticalCenter
-                                      text: "10 items · synced with Stakeholder Cloud™"
+                                      text: "12 items · synced with Stakeholder Cloud™"
                                       color: "${c "base04"}"
                                       font.family: "Segoe UI"
                                       font.pixelSize: 10
@@ -1646,11 +1648,13 @@ in
                               }
 
                               Column {
+                                  id: trayClock
                                   anchors.verticalCenter: parent.verticalCenter
+                                  width: 70
                                   spacing: 0
                                   Text {
                                       id: trayTime
-                                      text: ""
+                                      text: Qt.formatDateTime(new Date(), "HH:mm")
                                       color: "${c "base05"}"
                                       font.family: "Segoe UI"
                                       font.pixelSize: 12
@@ -1664,7 +1668,7 @@ in
                                   }
                                   Text {
                                       id: trayDate
-                                      text: ""
+                                      text: Qt.formatDateTime(new Date(), "ddd, MMM d")
                                       color: "${c "base04"}"
                                       font.family: "Segoe UI"
                                       font.pixelSize: 10
