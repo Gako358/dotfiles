@@ -16,8 +16,12 @@ _: {
         package = inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
         settings = {
-          ipc = "on";
-          preload = [ "${desktop.theme.wallpaper}" ];
+          wallpaper = [
+            {
+              monitor = "";
+              path = desktop.theme.wallpaper;
+            }
+          ];
         };
       };
     };

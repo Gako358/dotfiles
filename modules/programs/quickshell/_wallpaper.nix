@@ -51,22 +51,19 @@
           }
       }
 
-      // ── Apply a wallpaper via hyprpaper ──────────────────
       Process { id: applyProc }
       function apply(path) {
           if (!path) return
-          var prev = root.currentPath
           applyProc.command = ["sh", "-c",
-              "set -e; P=\"$1\"; PREV=\"$2\"; " +
-              "hyprctl hyprpaper preload \"$P\" >/dev/null; " +
-              "hyprctl hyprpaper wallpaper \",$P\" >/dev/null; " +
+              "set -e; P=\"$1\"; " +
+              "for m in $(hyprctl monitors 2>/dev/null | awk '/^Monitor /{print $2}'); do " +
+              "  hyprctl hyprpaper wallpaper \"$m, $P\" >/dev/null; " +
+              "done; " +
+              "hyprctl hyprpaper wallpaper \", $P\" >/dev/null; " +
               "STATE=\"$HOME/.local/state/quickshell\"; " +
               "mkdir -p \"$STATE\"; " +
-              "printf '%s' \"$P\" > \"$STATE/wallpaper\"; " +
-              "if [ -n \"$PREV\" ] && [ \"$PREV\" != \"$P\" ]; then " +
-              "  hyprctl hyprpaper unload \"$PREV\" >/dev/null 2>&1 || true; " +
-              "fi",
-              "sh", path, prev]
+              "printf '%s' \"$P\" > \"$STATE/wallpaper\"",
+              "sh", path]
           applyProc.running = true
           root.currentPath = path
       }

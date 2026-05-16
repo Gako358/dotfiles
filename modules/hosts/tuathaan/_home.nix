@@ -21,8 +21,14 @@ in
   services.hyprpaper.settings = lib.mkMerge [
     {
       wallpaper = [
-        "eDP-1,${desktop.theme.wallpaper}"
-        "desc:HP Inc. HP E27u G4 CN41332M2N,${desktop.theme.wallpaper}"
+        {
+          monitor = "eDP-1";
+          path = desktop.theme.wallpaper;
+        }
+        {
+          monitor = "desc:HP Inc. HP E27u G4 CN41332M2N";
+          path = desktop.theme.wallpaper;
+        }
       ];
     }
   ];

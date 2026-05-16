@@ -39,7 +39,7 @@
       inputs.hyprland.follows = "hyprland";
     };
     hyprpaper = {
-      url = "github:hyprwm/hyprpaper/1733e0025b194c9bc083f4cd8782c5f151858a58";
+      url = "github:hyprwm/hyprpaper/v0.8.4";
       inputs = {
         hyprgraphics.follows = "hyprland/hyprgraphics";
         hyprlang.follows = "hyprland/hyprlang";

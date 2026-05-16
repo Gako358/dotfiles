@@ -15,8 +15,14 @@ in
   services.hyprpaper.settings = lib.mkMerge [
     {
       wallpaper = [
-        "DP-2,${desktop.theme.wallpaper}"
-        "DP-3,${desktop.theme.wallpaper}"
+        {
+          monitor = "DP-2";
+          path = desktop.theme.wallpaper;
+        }
+        {
+          monitor = "DP-3";
+          path = desktop.theme.wallpaper;
+        }
       ];
     }
   ];
