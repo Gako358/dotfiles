@@ -43,6 +43,10 @@ _: {
       volumePanelQml = import ./_volume-panel.nix { inherit c ca; };
       networkPanelQml = import ./_network-panel.nix { inherit c ca; };
       trayPanelQml = import ./_tray-panel.nix { inherit c ca; };
+      wallpaperQml = import ./_wallpaper.nix {
+        inherit c ca;
+        wallpaperDir = cfg.wallpaper.directory;
+      };
 
       bivrostConfig = pkgs.runCommand "quickshell-bivrost" { } ''
         mkdir -p $out
@@ -57,6 +61,7 @@ _: {
         cp ${pkgs.writeText "VolumePanel.qml" volumePanelQml}     $out/VolumePanel.qml
         cp ${pkgs.writeText "NetworkPanel.qml" networkPanelQml}   $out/NetworkPanel.qml
         cp ${pkgs.writeText "TrayPanel.qml" trayPanelQml}         $out/TrayPanel.qml
+        cp ${pkgs.writeText "Wallpaper.qml" wallpaperQml}         $out/Wallpaper.qml
       '';
     in
     {
@@ -84,6 +89,20 @@ _: {
               get a plain dark surface. "desc:" prefixes (Hyprland-style) are
               stripped before matching. When the list is empty (the default),
               the UI is shown on every connected monitor.
+            '';
+          };
+        };
+
+        wallpaper = {
+          directory = lib.mkOption {
+            type = lib.types.str;
+            default = "${config.home.homeDirectory}/Sources/archive/images/wallpapers";
+            example = "/home/user/Pictures/Wallpapers";
+            description = ''
+              Directory the Quickshell wallpaper panel scans for images.
+              Selecting an image from the panel applies it through
+              hyprpaper IPC, and "Add image…" copies a chosen file
+              into this directory. Created on demand if it doesn't exist.
             '';
           };
         };

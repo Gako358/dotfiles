@@ -17,6 +17,7 @@
       VolumePanel   { id: volumePanel }
       NetworkPanel  { id: networkPanel }
       TrayPanel     { id: trayPanel }
+      Wallpaper     { id: wallpaper }
 
       function showOnly(which) {
           if (which !== "sysmon")    sysmon.hide()
@@ -26,6 +27,7 @@
           if (which !== "dashboard") dashboard.hide()
           if (which !== "session")   session.hide()
           if (which !== "launcher")  launcher.hide()
+          if (which !== "wallpaper") wallpaper.hide()
       }
 
       Variants {
@@ -42,6 +44,7 @@
               onAudioRequested:         { root.showOnly("volume");    volumePanel.toggle() }
               onNetworkRequested:       { root.showOnly("network");   networkPanel.toggle() }
               onTrayRequested:          { root.showOnly("tray");      trayPanel.toggle() }
+              onWallpaperRequested:     { root.showOnly("wallpaper"); wallpaper.toggle() }
           }
       }
   }

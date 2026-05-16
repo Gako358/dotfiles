@@ -26,6 +26,7 @@
       signal audioRequested()
       signal networkRequested()
       signal trayRequested()
+      signal wallpaperRequested()
 
       property string cpuPct: "—"
       property string netState: "off"
@@ -563,6 +564,20 @@
                             }
                         }
                       ''}
+                  }
+              }
+
+              // ── Wallpaper switcher ───────────────────────────
+              Text {
+                  visible: bar.isFocused
+                  text: "󰸉"
+                  font.family: "RobotoMono Nerd Font"
+                  font.pixelSize: 14
+                  color: "${c "base0E"}"
+                  MouseArea {
+                      anchors.fill: parent
+                      cursorShape: Qt.PointingHandCursor
+                      onClicked: bar.wallpaperRequested()
                   }
               }
 

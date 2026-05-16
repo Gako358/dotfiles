@@ -312,6 +312,7 @@
               "quickshell-launcher",
               "quickshell-session",
               "quickshell-lock",
+              "quickshell-wallpaper",
           }) do
               hl.layer_rule({
                   match        = { namespace = "^(" .. ns .. ")$" },
@@ -333,6 +334,7 @@
           hl.bind(k(mainMod, SECONDARY, "D"),         hl.dsp.exec_cmd(runOnce("pcmanfm")))
           hl.bind(k(mainMod, SECONDARY, "L"),         hl.dsp.exec_cmd("qs -c bivrost ipc call lock lock"))
           hl.bind(k(mainMod, "A"),                    hl.dsp.exec_cmd("qs -c bivrost ipc call dashboard toggle"))
+          hl.bind(k(mainMod, "W"),                    hl.dsp.exec_cmd("qs -c bivrost ipc call wallpaper toggle"))
           hl.bind(k(mainMod, "Escape"),               hl.dsp.exec_cmd("qs -c bivrost ipc call session toggle"))
           hl.bind(k(mainMod, SECONDARY, "P"),         hl.dsp.exec_cmd(runOnce("grimblast --notify copy area")))
 
