@@ -11,7 +11,7 @@ _: {
 
         wallpaper = lib.mkOption {
           type = lib.types.str;
-          default = "/home/merrinx/Sources/archive/images/wallpapers/moon.png";
+          default = "/home/merrinx/Sources/archive/images/wallpapers/wot_cleans.jpg";
           example = "/home/user/Pictures/wallpaper.png";
           description = "Path to the wallpaper image file";
         };
