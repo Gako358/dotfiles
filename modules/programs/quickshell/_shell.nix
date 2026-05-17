@@ -12,10 +12,12 @@
       Dashboard     {
           id: dashboard
           notifications: notifications
+          onMonitorsRequested: { root.showOnly("monitors"); monitorsPanel.show() }
       }
       SystemMonitor { id: sysmon }
       VolumePanel   { id: volumePanel }
       NetworkPanel  { id: networkPanel }
+      MonitorsPanel { id: monitorsPanel }
       TrayPanel     { id: trayPanel }
       Wallpaper     { id: wallpaper }
 
@@ -23,6 +25,7 @@
           if (which !== "sysmon")    sysmon.hide()
           if (which !== "volume")    volumePanel.hide()
           if (which !== "network")   networkPanel.hide()
+          if (which !== "monitors")  monitorsPanel.hide()
           if (which !== "tray")      trayPanel.hide()
           if (which !== "dashboard") dashboard.hide()
           if (which !== "session")   session.hide()

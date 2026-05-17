@@ -42,6 +42,7 @@ _: {
       sysmonQml = import ./_system-monitor.nix { inherit c ca; };
       volumePanelQml = import ./_volume-panel.nix { inherit c ca; };
       networkPanelQml = import ./_network-panel.nix { inherit c ca; };
+      monitorsPanelQml = import ./_monitors-panel.nix { inherit c ca; };
       trayPanelQml = import ./_tray-panel.nix { inherit c ca; };
       wallpaperQml = import ./_wallpaper.nix {
         inherit c ca;
@@ -60,6 +61,7 @@ _: {
         cp ${pkgs.writeText "SystemMonitor.qml" sysmonQml}        $out/SystemMonitor.qml
         cp ${pkgs.writeText "VolumePanel.qml" volumePanelQml}     $out/VolumePanel.qml
         cp ${pkgs.writeText "NetworkPanel.qml" networkPanelQml}   $out/NetworkPanel.qml
+        cp ${pkgs.writeText "MonitorsPanel.qml" monitorsPanelQml} $out/MonitorsPanel.qml
         cp ${pkgs.writeText "TrayPanel.qml" trayPanelQml}         $out/TrayPanel.qml
         cp ${pkgs.writeText "Wallpaper.qml" wallpaperQml}         $out/Wallpaper.qml
       '';

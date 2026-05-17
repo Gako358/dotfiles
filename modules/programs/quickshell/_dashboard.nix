@@ -14,6 +14,8 @@
       property var notifications: null
       property bool opened: false
 
+      signal monitorsRequested()
+
       function toggle() { root.opened = !root.opened }
       function show()   { root.opened = true }
       function hide()   { root.opened = false }
@@ -145,6 +147,72 @@
                               running: true; repeat: true; interval: 30000; triggeredOnStart: true
                               onTriggered: bigDate.text =
                                   Qt.formatDateTime(new Date(), "dddd, MMMM d")
+                          }
+                      }
+                  }
+
+                  // ── Quick actions ────────────────────────────
+                  RowLayout {
+                      Layout.fillWidth: true
+                      spacing: 8
+
+                      Rectangle {
+                          id: displaysBtn
+                          Layout.fillWidth: true
+                          Layout.preferredHeight: 52
+                          color: displaysHover.hovered
+                              ? "${ca "base02" "cc"}"
+                              : "${ca "base01" "75"}"
+                          Behavior on color { ColorAnimation { duration: 120 } }
+                          radius: 12
+                          border.width: 1
+                          border.color: "${c "base02"}"
+                          HoverHandler { id: displaysHover }
+
+                          RowLayout {
+                              anchors.fill: parent
+                              anchors.leftMargin: 12
+                              anchors.rightMargin: 12
+                              spacing: 10
+
+                              Text {
+                                  text: "󰍹"
+                                  color: "${c "base0D"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 20
+                              }
+                              ColumnLayout {
+                                  Layout.fillWidth: true
+                                  spacing: 0
+                                  Text {
+                                      text: "Displays"
+                                      color: "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 12
+                                      font.weight: Font.Medium
+                                  }
+                                  Text {
+                                      text: "Mirror, extend or single"
+                                      color: "${c "base04"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 10
+                                  }
+                              }
+                              Text {
+                                  text: "󰅂"
+                                  color: "${c "base04"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 14
+                              }
+                          }
+
+                          MouseArea {
+                              anchors.fill: parent
+                              cursorShape: Qt.PointingHandCursor
+                              onClicked: {
+                                  root.hide()
+                                  root.monitorsRequested()
+                              }
                           }
                       }
                   }
