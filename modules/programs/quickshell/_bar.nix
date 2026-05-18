@@ -63,6 +63,53 @@
           onTriggered: barNetProc.running = true
       }
 
+      // ── Workspace clients (for hover preview) ────────────────────
+      property var clientsByWs: ({})
+      property var hoveredDockItem: null
+      property int hoveredWsId: -1
+
+      Process {
+          id: clientsProc
+          command: ["sh", "-c", "hyprctl clients -j 2>/dev/null"]
+          stdout: StdioCollector { id: clientsOut }
+          onExited: {
+              try {
+                  var arr = JSON.parse(clientsOut.text || "[]")
+                  var map = {}
+                  for (var i = 0; i < arr.length; ++i) {
+                      var c = arr[i]
+                      var ws = c.workspace ? c.workspace.id : 0
+                      if (!map[ws]) map[ws] = []
+                      map[ws].push({
+                          title: c.title || "",
+                          cls:   c.class || "",
+                          pinned: !!c.pinned,
+                          floating: !!c.floating,
+                      })
+                  }
+                  bar.clientsByWs = map
+              } catch (e) {}
+          }
+      }
+      Timer {
+          id: clientsTimer
+          running: true
+          repeat: true
+          interval: 3000
+          triggeredOnStart: true
+          onTriggered: clientsProc.running = true
+      }
+
+      // Hide-preview debounce: avoid flicker when moving between items
+      Timer {
+          id: previewHideTimer
+          interval: 120
+          repeat: false
+          onTriggered: {
+              if (bar.hoveredDockItem === null) bar.hoveredWsId = -1
+          }
+      }
+
       PwObjectTracker {
           objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
       }
@@ -205,8 +252,8 @@
                   color: "${ca "base02" "88"}"
               }
 
-              // ── Pinned app dock ──────────────────────────────────
-              // Apps: emacs, alacritty, zen, pcmanfm, proton pass, discord, slack
+              // ── Workspace switcher (styled as Win11 dock) ────────
+              // Workspaces: 1=Browser, 2=Coding, 3=Terminal, 5=VM, 8=Slack, 9=Discord
               Row {
                   id: dockRow
                   anchors.verticalCenter: parent.verticalCenter
@@ -214,13 +261,12 @@
 
                   Repeater {
                       model: [
-                          { icon: "󰅴", label: "Emacs",       cmd: "emacs" },
-                          { icon: "󰆍", label: "Alacritty",   cmd: "alacritty" },
-                          { icon: "󰈹", label: "Zen Browser", cmd: "zen" },
-                          { icon: "󰝰", label: "Files",       cmd: "pcmanfm" },
-                          { icon: "󰦝", label: "Proton Pass",  cmd: "proton-pass" },
-                          { icon: "󰙯", label: "Discord",     cmd: "discord" },
-                          { icon: "󰒱", label: "Slack",       cmd: "slack" }
+                          { wsId: 1, icon: "󰈹", label: "Browser"         },
+                          { wsId: 2, icon: "󰅴", label: "Coding"          },
+                          { wsId: 3, icon: "󰆍", label: "Terminal"        },
+                          { wsId: 5, icon: "󰢹", label: "Virtual Machine" },
+                          { wsId: 8, icon: "󰒱", label: "Slack"           },
+                          { wsId: 9, icon: "󰙯", label: "Discord"         }
                       ]
 
                       Item {
@@ -231,16 +277,32 @@
                           height: 44
 
                           property bool hov: dockItemHover.hovered
+                          property bool isActive: Hyprland.focusedWorkspace
+                              && Hyprland.focusedWorkspace.id === modelData.wsId
+                          property bool hasWindows: {
+                              var list = Hyprland.workspaces
+                                  ? Hyprland.workspaces.values
+                                  : []
+                              for (var i = 0; i < list.length; ++i) {
+                                  if (list[i] && list[i].id === dockItem.modelData.wsId)
+                                      return true
+                              }
+                              return false
+                          }
 
                           Rectangle {
                               id: dockItemBg
                               anchors.centerIn: parent
-                              width: dockItem.hov ? 38 : 34
-                              height: dockItem.hov ? 38 : 34
+                              width: (dockItem.hov || dockItem.isActive) ? 38 : 34
+                              height: (dockItem.hov || dockItem.isActive) ? 38 : 34
                               radius: 8
-                              color: dockItem.hov
-                                  ? "${ca "base02" "cc"}"
-                                  : "transparent"
+                              color: dockItem.isActive
+                                  ? "${ca "base0D" "33"}"
+                                  : (dockItem.hov
+                                      ? "${ca "base02" "cc"}"
+                                      : "transparent")
+                              border.width: dockItem.isActive ? 1 : 0
+                              border.color: "${ca "base0D" "88"}"
                               Behavior on width  { NumberAnimation { duration: 150; easing.type: Easing.OutQuint } }
                               Behavior on height { NumberAnimation { duration: 150; easing.type: Easing.OutQuint } }
                               Behavior on color  { ColorAnimation  { duration: 120 } }
@@ -252,48 +314,66 @@
                                   NumberAnimation { duration: 150; easing.type: Easing.OutQuint }
                               }
 
-                              HoverHandler { id: dockItemHover }
+                              HoverHandler {
+                                  id: dockItemHover
+                                  onHoveredChanged: {
+                                      if (hovered) {
+                                          bar.hoveredDockItem = dockItem
+                                          bar.hoveredWsId     = dockItem.modelData.wsId
+                                          previewHideTimer.stop()
+                                          clientsProc.running = true
+                                      } else if (bar.hoveredDockItem === dockItem) {
+                                          bar.hoveredDockItem = null
+                                          previewHideTimer.restart()
+                                      }
+                                  }
+                              }
 
                               Text {
                                   anchors.centerIn: parent
                                   text: dockItem.modelData.icon
                                   font.family: "RobotoMono Nerd Font"
                                   font.pixelSize: 20
-                                  color: dockItem.hov ? "${c "base05"}" : "${c "base06"}"
+                                  color: dockItem.isActive
+                                      ? "${c "base0D"}"
+                                      : (dockItem.hov
+                                          ? "${c "base05"}"
+                                          : (dockItem.hasWindows
+                                              ? "${c "base05"}"
+                                              : "${c "base04"}"))
                                   Behavior on color { ColorAnimation { duration: 120 } }
-                              }
-
-                              // Tooltip
-                              ToolTip {
-                                  visible: dockItem.hov
-                                  delay: 500
-                                  text: dockItem.modelData.label
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 11
                               }
                           }
 
-                          // Running dot indicator
+                          // Win11-style running/active indicator (underline)
+                          // - Active workspace  → wide accent pill
+                          // - Has windows       → small accent dot
+                          // - Empty + inactive  → hidden
                           Rectangle {
+                              id: runDot
                               anchors.horizontalCenter: parent.horizontalCenter
                               anchors.bottom: parent.bottom
-                              anchors.bottomMargin: 1
-                              width: 4
-                              height: 4
-                              radius: 2
+                              anchors.bottomMargin: 2
+                              width: dockItem.isActive
+                                  ? 14
+                                  : (dockItem.hasWindows ? 4 : 0)
+                              height: 3
+                              radius: 1.5
                               color: "${c "base0D"}"
-                              visible: false // TODO: connect to window tracking
+                              visible: dockItem.isActive || dockItem.hasWindows
+                              opacity: dockItem.isActive ? 1.0 : 0.75
+                              Behavior on width {
+                                  NumberAnimation { duration: 200; easing.type: Easing.OutQuint }
+                              }
+                              Behavior on opacity { NumberAnimation { duration: 150 } }
                           }
 
                           MouseArea {
                               anchors.fill: parent
                               cursorShape: Qt.PointingHandCursor
-                              onClicked: {
-                                  var proc = Qt.createQmlObject(
-                                      "import Quickshell.Io; Process { command: [\"sh\", \"-c\", \"" +
-                                      dockItem.modelData.cmd + " &\"]; running: true }",
-                                      dockItem, "dockLaunch")
-                              }
+                              onClicked: Hyprland.dispatch(
+                                  "hl.dsp.focus({ workspace = "
+                                  + dockItem.modelData.wsId + " })")
                           }
                       }
                   }
@@ -490,6 +570,189 @@
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
                       onClicked: Hyprland.dispatch("togglespecialworkspace")
+                  }
+              }
+          }
+      }
+
+      // ══════════════════════════════════════════════════════════════
+      // Workspace hover preview (Win11-style thumbnail card)
+      // ══════════════════════════════════════════════════════════════
+      PopupWindow {
+          id: wsPreview
+          parentWindow: bar
+          visible: bar.hoveredWsId > 0
+
+          // Width/height of the preview card
+          implicitWidth:  260
+          implicitHeight: previewCard.implicitHeight + 4
+
+          // Anchor centered above the hovered dock item.
+          // anchor.rect uses coordinates relative to parentWindow.
+          anchor.window: bar
+          anchor.rect.x: bar.hoveredDockItem
+              ? bar.hoveredDockItem.mapToItem(null,
+                    bar.hoveredDockItem.width / 2, 0).x - wsPreview.implicitWidth / 2
+              : 0
+          anchor.rect.y: -wsPreview.implicitHeight - 6
+          anchor.rect.width: wsPreview.implicitWidth
+          anchor.rect.height: wsPreview.implicitHeight
+
+          color: "transparent"
+
+          // Resolve hovered ws metadata
+          readonly property var hoveredMeta: {
+              switch (bar.hoveredWsId) {
+                  case 1: return { icon: "󰈹", label: "Browser"         }
+                  case 2: return { icon: "󰅴", label: "Coding"          }
+                  case 3: return { icon: "󰆍", label: "Terminal"        }
+                  case 5: return { icon: "󰢹", label: "Virtual Machine" }
+                  case 8: return { icon: "󰒱", label: "Slack"           }
+                  case 9: return { icon: "󰙯", label: "Discord"         }
+                  default: return { icon: "󰧞", label: "Workspace" }
+              }
+          }
+          readonly property var clients:
+              bar.clientsByWs[bar.hoveredWsId] || []
+
+          Rectangle {
+              id: previewCard
+              anchors.fill: parent
+              anchors.margins: 2
+              color: "${ca "base00" "ee"}"
+              radius: 12
+              border.width: 1
+              border.color: "${c "base02"}"
+
+              implicitHeight: previewCol.implicitHeight + 20
+
+              ColumnLayout {
+                  id: previewCol
+                  anchors.fill: parent
+                  anchors.margins: 10
+                  spacing: 6
+
+                  // Header: icon + workspace label + count
+                  RowLayout {
+                      Layout.fillWidth: true
+                      spacing: 8
+
+                      Text {
+                          text: wsPreview.hoveredMeta.icon
+                          font.family: "RobotoMono Nerd Font"
+                          font.pixelSize: 18
+                          color: "${c "base0D"}"
+                      }
+                      ColumnLayout {
+                          Layout.fillWidth: true
+                          spacing: 0
+                          Text {
+                              text: wsPreview.hoveredMeta.label
+                              color: "${c "base05"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 12
+                              font.weight: Font.Medium
+                              elide: Text.ElideRight
+                          }
+                          Text {
+                              text: "Workspace " + bar.hoveredWsId
+                              color: "${c "base04"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 9
+                          }
+                      }
+                      Rectangle {
+                          Layout.alignment: Qt.AlignVCenter
+                          width: countText.implicitWidth + 12
+                          height: 16
+                          radius: 8
+                          color: wsPreview.clients.length > 0
+                              ? "${ca "base0D" "44"}"
+                              : "${ca "base02" "88"}"
+                          Text {
+                              id: countText
+                              anchors.centerIn: parent
+                              text: wsPreview.clients.length + " "
+                                  + (wsPreview.clients.length === 1 ? "window" : "windows")
+                              color: wsPreview.clients.length > 0
+                                  ? "${c "base0D"}"
+                                  : "${c "base04"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 9
+                          }
+                      }
+                  }
+
+                  Rectangle {
+                      Layout.fillWidth: true
+                      Layout.preferredHeight: 1
+                      color: "${ca "base02" "80"}"
+                  }
+
+                  // Empty state
+                  Text {
+                      Layout.fillWidth: true
+                      visible: wsPreview.clients.length === 0
+                      text: "Empty workspace"
+                      color: "${c "base04"}"
+                      font.family: "RobotoMono Nerd Font"
+                      font.pixelSize: 10
+                      horizontalAlignment: Text.AlignHCenter
+                  }
+
+                  // Window list
+                  ColumnLayout {
+                      Layout.fillWidth: true
+                      spacing: 3
+                      visible: wsPreview.clients.length > 0
+
+                      Repeater {
+                          model: wsPreview.clients.slice(0, 6)
+                          RowLayout {
+                              Layout.fillWidth: true
+                              spacing: 6
+                              required property var modelData
+
+                              Rectangle {
+                                  width: 4
+                                  height: 4
+                                  radius: 2
+                                  color: "${c "base0D"}"
+                                  Layout.alignment: Qt.AlignVCenter
+                              }
+                              Text {
+                                  Layout.fillWidth: true
+                                  text: (modelData.title && modelData.title.length > 0)
+                                      ? modelData.title
+                                      : (modelData.cls || "—")
+                                  color: "${c "base05"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 10
+                                  elide: Text.ElideRight
+                              }
+                              Text {
+                                  visible: modelData.cls
+                                      && modelData.cls.length > 0
+                                  text: modelData.cls
+                                  color: "${c "base04"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 9
+                                  elide: Text.ElideRight
+                                  Layout.maximumWidth: 80
+                              }
+                          }
+                      }
+
+                      // Overflow indicator
+                      Text {
+                          Layout.fillWidth: true
+                          visible: wsPreview.clients.length > 6
+                          text: "+ " + (wsPreview.clients.length - 6) + " more…"
+                          color: "${c "base04"}"
+                          font.family: "RobotoMono Nerd Font"
+                          font.pixelSize: 9
+                          horizontalAlignment: Text.AlignHCenter
+                      }
                   }
               }
           }
