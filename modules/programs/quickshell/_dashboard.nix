@@ -1,4 +1,9 @@
-{ c, ca }:
+{
+  c,
+  ca,
+  lib,
+  battery ? false,
+}:
 ''
   import QtQuick
   import QtQuick.Controls
@@ -8,6 +13,7 @@
   import Quickshell.Io
   import Quickshell.Services.Mpris
   import Quickshell.Services.Pipewire
+  ${lib.optionalString battery "import Quickshell.Services.UPower"}
 
   Scope {
       id: root
@@ -128,6 +134,34 @@
           if (s > 0)   return "󰤟"
           return "󰤮"
       }
+      ${lib.optionalString battery ''
+        readonly property var batDevice:  UPower.displayDevice
+        readonly property bool hasBat:
+            batDevice && batDevice.isPresent
+            && batDevice.type === UPowerDeviceType.Battery
+        readonly property real batPct:      hasBat ? batDevice.percentage * 100 : 0
+        readonly property bool batCharging:
+            hasBat && (batDevice.state === UPowerDeviceState.Charging
+                    || batDevice.state === UPowerDeviceState.FullyCharged)
+
+        function batteryIcon(p, charging) {
+            if (charging) return "󰂄"
+            if (p >= 95) return "󰁹"
+            if (p >= 80) return "󰂂"
+            if (p >= 65) return "󰂀"
+            if (p >= 50) return "󰁾"
+            if (p >= 35) return "󰁼"
+            if (p >= 20) return "󰁻"
+            if (p >= 10) return "󰁺"
+            return "󰂎"
+        }
+        function batteryColor(p, charging) {
+            if (charging) return "${c "base0B"}"
+            if (p <= 15)  return "${c "base08"}"
+            if (p <= 30)  return "${c "base0A"}"
+            return "${c "base0B"}"
+        }
+      ''}
 
       PanelWindow {
           id: panel
@@ -451,7 +485,7 @@
                   // ── System info card ─────────────────────────
                   Rectangle {
                       Layout.fillWidth: true
-                      Layout.preferredHeight: 210
+                      Layout.preferredHeight: ${if battery then "240" else "210"}
                       color: "${ca "base01" "75"}"
                       radius: 12
                       border.width: 1
@@ -490,6 +524,25 @@
                                   font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
                               }
                           }
+                          ${lib.optionalString battery ''
+                            // Battery
+                            RowLayout {
+                                Layout.fillWidth: true
+                                visible: root.hasBat
+                                Text {
+                                    text: root.batteryIcon(root.batPct, root.batCharging) + " Battery"
+                                    color: root.batteryColor(root.batPct, root.batCharging)
+                                    font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                }
+                                Item { Layout.fillWidth: true }
+                                Text {
+                                    text: Math.round(root.batPct) + "%"
+                                        + (root.batCharging ? " (charging)" : "")
+                                    color: "${c "base05"}"
+                                    font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                }
+                            }
+                          ''}
                           // Volume — click to open volume panel, scroll to adjust
                           Rectangle {
                               Layout.fillWidth: true

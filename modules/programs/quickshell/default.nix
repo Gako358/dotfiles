@@ -31,7 +31,10 @@ _: {
         inherit c ca lib;
         battery = cfg.battery.enable;
       };
-      dashboardQml = import ./_dashboard.nix { inherit c ca; };
+      dashboardQml = import ./_dashboard.nix {
+        inherit c ca lib;
+        battery = cfg.battery.enable;
+      };
       notificationsQml = import ./_notifications.nix { inherit c ca; };
       launcherQml = import ./_launcher.nix { inherit c ca; };
       sessionQml = import ./_session.nix { inherit c ca; };
