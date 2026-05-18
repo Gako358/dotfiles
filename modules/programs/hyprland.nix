@@ -427,6 +427,14 @@
               opacity = "0.91 override 0.73 override",
           })
 
+          -- Force full opacity (no transparency) on these apps
+          for _, cls in ipairs({ "^(zen)$", "^(Slack)$", "^(discord)$" }) do
+              hl.window_rule({
+                  match   = { class = cls },
+                  opacity = "1.0 override 1.0 override",
+              })
+          end
+
           for _, r in ipairs({
               { match = { class = "^(zen)$" },                   workspace = "1" },
               { match = { class = "^(Emacs)$" },                 workspace = "2" },

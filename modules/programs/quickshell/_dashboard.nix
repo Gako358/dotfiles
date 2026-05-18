@@ -7,6 +7,7 @@
   import Quickshell.Wayland
   import Quickshell.Io
   import Quickshell.Services.Mpris
+  import Quickshell.Services.Pipewire
 
   Scope {
       id: root
@@ -15,6 +16,10 @@
       property bool opened: false
 
       signal monitorsRequested()
+      signal wallpaperRequested()
+      signal sessionRequested()
+      signal audioRequested()
+      signal networkRequested()
 
       function toggle() { root.opened = !root.opened }
       function show()   { root.opened = true }
@@ -30,6 +35,11 @@
       property string cpuPct:  "—"
       property string memUsed: "—"
       property string uptime:  "—"
+      property string volPctStr: "—"
+      property bool   volMuted:  false
+      property string netState:  "off"
+      property int    netSignal: 0
+      property string netSsid:   ""
 
       Process {
           id: cpuProc
@@ -52,6 +62,25 @@
           stdout: StdioCollector { id: upOut }
           onExited: root.uptime = (upOut.text || "").trim() || "—"
       }
+      Process {
+          id: netProc
+          command: ["sh", "-c",
+              "act=$(nmcli -t -f TYPE,STATE,CONNECTION device status 2>/dev/null | awk -F: '$2==\"connected\"{print $1\":\"$3; exit}'); " +
+              "if echo \"$act\" | grep -q '^wifi:'; then " +
+              "  ssid=$(echo \"$act\" | cut -d: -f2-); " +
+              "  sig=$(nmcli -t -f IN-USE,SIGNAL device wifi 2>/dev/null | awk -F: '$1==\"*\"{print $2; exit}'); " +
+              "  echo \"wifi|$sig|$ssid\"; " +
+              "elif echo \"$act\" | grep -q '^ethernet:'; then " +
+              "  echo \"wired|100|$(echo \"$act\" | cut -d: -f2-)\"; " +
+              "else echo \"off|0|\"; fi"]
+          stdout: StdioCollector { id: netOut }
+          onExited: {
+              var parts = ((netOut.text || "").trim() || "off|0|").split("|")
+              root.netState  = parts[0] || "off"
+              root.netSignal = parseInt(parts[1] || "0") || 0
+              root.netSsid   = parts[2] || ""
+          }
+      }
       Timer {
           id: pollTimer
           running: root.opened
@@ -62,7 +91,42 @@
               cpuProc.running = true
               memProc.running = true
               upProc.running = true
+              netProc.running = true
           }
+      }
+
+      // Volume tracking via Pipewire
+      PwObjectTracker {
+          objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
+      }
+      readonly property var audioSink: Pipewire.defaultAudioSink
+      Binding {
+          target: root
+          property: "volPctStr"
+          value: root.audioSink && root.audioSink.audio
+              ? Math.round(root.audioSink.audio.volume * 100) + "%"
+              : "—"
+      }
+      Binding {
+          target: root
+          property: "volMuted"
+          value: root.audioSink && root.audioSink.audio
+              ? root.audioSink.audio.muted
+              : false
+      }
+
+      function volIcon(p, m) {
+          if (m || p <= 0) return "󰝟"
+          if (p < 34)      return "󰕿"
+          if (p < 67)      return "󰖀"
+          return "󰕾"
+      }
+      function wifiIcon(s) {
+          if (s >= 75) return "󰤨"
+          if (s >= 50) return "󰤥"
+          if (s >= 25) return "󰤢"
+          if (s > 0)   return "󰤟"
+          return "󰤮"
       }
 
       PanelWindow {
@@ -75,35 +139,39 @@
 
           exclusionMode: ExclusionMode.Ignore
 
-          anchors {
-              top: true
-              right: true
-              bottom: true
-          }
-          margins {
-              top: 50
-              right: 8
-              bottom: 8
-          }
-          implicitWidth: 420
-          color: "transparent"
-
-          Shortcut {
-              sequences: ["Escape"]
-              onActivated: root.hide()
-          }
-
-          Rectangle {
-              id: dashCard
-              anchors.fill: parent
+              // Win11 Action Center: slides up from bottom-right corner
+              anchors { top: true; bottom: true; left: true; right: true }
+              color: "transparent"
+          
+              Shortcut {
+                  sequences: ["Escape"]
+                  onActivated: root.hide()
+              }
+          
+                  // Full-screen dismiss layer — stops at the bar so it never blocks it
+                  MouseArea {
+                      anchors.fill: parent
+                      anchors.bottomMargin: 48
+                      onClicked: root.hide()
+                  }
+          
+              Rectangle {
+                  id: dashCard
+                  width: 420
+                  height: 680
+                  anchors.bottom: parent.bottom
+                  anchors.right: parent.right
+                  anchors.bottomMargin: 52
+                  anchors.rightMargin: 8
               color: "${ca "base00" "e6"}"
               radius: 16
               border.width: 1
               border.color: "${c "base02"}"
 
-              property real slideY: root.opened ? 0 : -18
+              // Slide up from bottom on open
+              property real slideY: root.opened ? 0 : 18
               transform: Translate { y: dashCard.slideY }
-              transformOrigin: Item.TopRight
+              transformOrigin: Item.BottomRight
               opacity: root.opened ? 1 : 0
               scale: root.opened ? 1 : 0.96
               Behavior on opacity {
@@ -116,9 +184,21 @@
                   NumberAnimation { duration: 280; easing.type: Easing.OutQuint }
               }
 
-              ColumnLayout {
+              clip: true
+
+              ScrollView {
                   anchors.fill: parent
-                  anchors.margins: 18
+                  anchors.margins: 4
+                  contentWidth: availableWidth
+                  topPadding: 14
+                  bottomPadding: 14
+                  leftPadding: 14
+                  rightPadding: 14
+                  ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                  ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
+              ColumnLayout {
+                  width: parent.width
                   spacing: 16
 
                   // ── Greeting / Time ──────────────────────────
@@ -151,11 +231,14 @@
                       }
                   }
 
-                  // ── Quick actions ────────────────────────────
-                  RowLayout {
+                  // ── Quick actions (3 buttons row) ────────────
+                  GridLayout {
                       Layout.fillWidth: true
-                      spacing: 8
+                      columns: 3
+                      rowSpacing: 8
+                      columnSpacing: 8
 
+                      // Displays button
                       Rectangle {
                           id: displaysBtn
                           Layout.fillWidth: true
@@ -168,51 +251,105 @@
                           border.width: 1
                           border.color: "${c "base02"}"
                           HoverHandler { id: displaysHover }
-
-                          RowLayout {
-                              anchors.fill: parent
-                              anchors.leftMargin: 12
-                              anchors.rightMargin: 12
-                              spacing: 10
-
+                          ColumnLayout {
+                              anchors.centerIn: parent
+                              spacing: 2
                               Text {
+                                  Layout.alignment: Qt.AlignHCenter
                                   text: "󰍹"
                                   color: "${c "base0D"}"
                                   font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 20
-                              }
-                              ColumnLayout {
-                                  Layout.fillWidth: true
-                                  spacing: 0
-                                  Text {
-                                      text: "Displays"
-                                      color: "${c "base05"}"
-                                      font.family: "RobotoMono Nerd Font"
-                                      font.pixelSize: 12
-                                      font.weight: Font.Medium
-                                  }
-                                  Text {
-                                      text: "Mirror, extend or single"
-                                      color: "${c "base04"}"
-                                      font.family: "RobotoMono Nerd Font"
-                                      font.pixelSize: 10
-                                  }
+                                  font.pixelSize: 18
                               }
                               Text {
-                                  text: "󰅂"
-                                  color: "${c "base04"}"
+                                  Layout.alignment: Qt.AlignHCenter
+                                  text: "Displays"
+                                  color: "${c "base05"}"
                                   font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 14
+                                  font.pixelSize: 10
                               }
                           }
-
                           MouseArea {
                               anchors.fill: parent
                               cursorShape: Qt.PointingHandCursor
-                              onClicked: {
-                                  root.hide()
-                                  root.monitorsRequested()
+                              onClicked: { root.hide(); root.monitorsRequested() }
+                          }
+                      }
+
+                      // Wallpaper button
+                      Rectangle {
+                          id: wallpaperBtn
+                          Layout.fillWidth: true
+                          Layout.preferredHeight: 52
+                          color: wallpaperHover.hovered
+                              ? "${ca "base02" "cc"}"
+                              : "${ca "base01" "75"}"
+                          Behavior on color { ColorAnimation { duration: 120 } }
+                          radius: 12
+                          border.width: 1
+                          border.color: "${c "base02"}"
+                          HoverHandler { id: wallpaperHover }
+                          ColumnLayout {
+                              anchors.centerIn: parent
+                              spacing: 2
+                              Text {
+                                  Layout.alignment: Qt.AlignHCenter
+                                  text: "󰸉"
+                                  color: "${c "base0E"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 18
                               }
+                              Text {
+                                  Layout.alignment: Qt.AlignHCenter
+                                  text: "Wallpaper"
+                                  color: "${c "base05"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 10
+                              }
+                          }
+                          MouseArea {
+                              anchors.fill: parent
+                              cursorShape: Qt.PointingHandCursor
+                              onClicked: { root.hide(); root.wallpaperRequested() }
+                          }
+                      }
+
+                      // Session / reboot button
+                      Rectangle {
+                          id: sessionBtn
+                          Layout.fillWidth: true
+                          Layout.preferredHeight: 52
+                          color: sessionBtnHover.hovered
+                              ? "${ca "base08" "33"}"
+                              : "${ca "base01" "75"}"
+                          Behavior on color { ColorAnimation { duration: 120 } }
+                          radius: 12
+                          border.width: 1
+                          border.color: sessionBtnHover.hovered ? "${c "base08"}" : "${c "base02"}"
+                          Behavior on border.color { ColorAnimation { duration: 120 } }
+                          HoverHandler { id: sessionBtnHover }
+                          ColumnLayout {
+                              anchors.centerIn: parent
+                              spacing: 2
+                              Text {
+                                  Layout.alignment: Qt.AlignHCenter
+                                  text: "󰐥"
+                                  color: "${c "base08"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 18
+                              }
+                              Text {
+                                  Layout.alignment: Qt.AlignHCenter
+                                  text: "Session"
+                                  color: "${c "base05"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 10
+                              }
+                          }
+                          MouseArea {
+                              anchors.fill: parent
+                              cursorShape: Qt.PointingHandCursor
+                              onClicked: { root.hide(); root.sessionRequested() }
                           }
                       }
                   }
@@ -314,7 +451,7 @@
                   // ── System info card ─────────────────────────
                   Rectangle {
                       Layout.fillWidth: true
-                      Layout.preferredHeight: 110
+                      Layout.preferredHeight: 210
                       color: "${ca "base01" "75"}"
                       radius: 12
                       border.width: 1
@@ -325,6 +462,7 @@
                           anchors.margins: 14
                           spacing: 8
 
+                          // CPU
                           RowLayout {
                               Layout.fillWidth: true
                               Text {
@@ -338,6 +476,7 @@
                                   font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
                               }
                           }
+                          // Memory
                           RowLayout {
                               Layout.fillWidth: true
                               Text {
@@ -351,6 +490,104 @@
                                   font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
                               }
                           }
+                          // Volume — click to open volume panel, scroll to adjust
+                          Rectangle {
+                              Layout.fillWidth: true
+                              height: 28
+                              radius: 6
+                              color: volRowHover.hovered
+                                  ? "${ca "base02" "cc"}"
+                                  : "transparent"
+                              Behavior on color { ColorAnimation { duration: 100 } }
+                              HoverHandler { id: volRowHover }
+
+                              RowLayout {
+                                  anchors.fill: parent
+                                  anchors.leftMargin: 4
+                                  anchors.rightMargin: 4
+                                  Text {
+                                      text: root.volIcon(
+                                          root.audioSink && root.audioSink.audio
+                                              ? root.audioSink.audio.volume * 100 : 0,
+                                          root.volMuted) + " Volume"
+                                      color: root.volMuted ? "${c "base08"}" : "${c "base0E"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                  }
+                                  Item { Layout.fillWidth: true }
+                                  Text {
+                                      text: root.volMuted ? "muted" : root.volPctStr
+                                      color: "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                  }
+                              }
+
+                              MouseArea {
+                                  anchors.fill: parent
+                                  cursorShape: Qt.PointingHandCursor
+                                  acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+                                  onClicked: function(mouse) {
+                                      if (mouse.button === Qt.MiddleButton) {
+                                          if (root.audioSink && root.audioSink.audio)
+                                              root.audioSink.audio.muted = !root.audioSink.audio.muted
+                                      } else {
+                                          root.hide()
+                                          root.audioRequested()
+                                      }
+                                  }
+                                  onWheel: function(wheel) {
+                                      if (!root.audioSink || !root.audioSink.audio) return
+                                      var step = wheel.angleDelta.y > 0 ? 0.03 : -0.03
+                                      var v = Math.max(0, Math.min(1, root.audioSink.audio.volume + step))
+                                      root.audioSink.audio.volume = v
+                                  }
+                              }
+                          }
+
+                          // Network — click to open network panel
+                          Rectangle {
+                              Layout.fillWidth: true
+                              height: 28
+                              radius: 6
+                              color: netRowHover.hovered
+                                  ? "${ca "base02" "cc"}"
+                                  : "transparent"
+                              Behavior on color { ColorAnimation { duration: 100 } }
+                              HoverHandler { id: netRowHover }
+
+                              RowLayout {
+                                  anchors.fill: parent
+                                  anchors.leftMargin: 4
+                                  anchors.rightMargin: 4
+                                  Text {
+                                      text: (root.netState === "wired" ? "󰈀" : root.wifiIcon(root.netSignal)) + " Network"
+                                      color: root.netState === "off" ? "${c "base08"}" : "${c "base0B"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                  }
+                                  Item { Layout.fillWidth: true }
+                                  Text {
+                                      text: root.netState === "off"
+                                          ? "offline"
+                                          : (root.netState === "wired"
+                                              ? "Wired"
+                                              : (root.netSsid.length > 16
+                                                  ? root.netSsid.substring(0, 16) + "…"
+                                                  : root.netSsid))
+                                      color: "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                      elide: Text.ElideRight
+                                  }
+                              }
+
+                              MouseArea {
+                                  anchors.fill: parent
+                                  cursorShape: Qt.PointingHandCursor
+                                  onClicked: {
+                                      root.hide()
+                                      root.networkRequested()
+                                  }
+                              }
+                          }
+                          // Uptime
                           RowLayout {
                               Layout.fillWidth: true
                               Text {
@@ -612,6 +849,7 @@
                       }
                   }
               }
+              } // ScrollView
           }
       }
   }

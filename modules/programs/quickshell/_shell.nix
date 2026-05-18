@@ -12,7 +12,11 @@
       Dashboard     {
           id: dashboard
           notifications: notifications
-          onMonitorsRequested: { root.showOnly("monitors"); monitorsPanel.show() }
+          onMonitorsRequested:  { root.showOnly("monitors");  monitorsPanel.show() }
+          onWallpaperRequested: { root.showOnly("wallpaper"); wallpaper.toggle() }
+          onSessionRequested:   { root.showOnly("session");   session.toggle() }
+          onAudioRequested:     { root.showOnly("volume");    volumePanel.toggle() }
+          onNetworkRequested:   { root.showOnly("network");   networkPanel.toggle() }
       }
       SystemMonitor { id: sysmon }
       VolumePanel   { id: volumePanel }

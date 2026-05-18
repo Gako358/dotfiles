@@ -45,36 +45,37 @@
           WlrLayershell.layer: WlrLayer.Overlay
           WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-          anchors {
-              top: true
-              right: true
-          }
-          margins {
-              top: 48
-              right: 8
-          }
-
-          implicitWidth: 280
-          implicitHeight: contentCol.implicitHeight + 28
-          color: "transparent"
-
-          Shortcut {
-              sequences: ["Escape"]
-              onActivated: root.hide()
-          }
-
-          Rectangle {
-              id: sessionCard
-              anchors.fill: parent
+              anchors { top: true; bottom: true; left: true; right: true }
+              color: "transparent"
+          
+              Shortcut {
+                  sequences: ["Escape"]
+                  onActivated: root.hide()
+              }
+          
+                  // Full-screen dismiss layer — stops at the bar so it never blocks it
+                  MouseArea {
+                      anchors.fill: parent
+                      anchors.bottomMargin: 48
+                      onClicked: root.hide()
+                  }
+          
+              Rectangle {
+                  id: sessionCard
+                  width: 280
+                  height: contentCol.implicitHeight + 28
+                  anchors.bottom: parent.bottom
+                  anchors.right: parent.right
+                  anchors.bottomMargin: 52
+                  anchors.rightMargin: 8
               color: "${ca "base00" "ee"}"
               radius: 16
               border.width: 1
               border.color: "${c "base02"}"
 
-              property real slideY: root.opened ? 0 : -18
-              transform: Translate { y: sessionCard.slideY }
-
-              transformOrigin: Item.TopRight
+                            property real slideY: root.opened ? 0 : 18
+                            transform: Translate { y: sessionCard.slideY }
+                            transformOrigin: Item.BottomRight
               opacity: root.opened ? 1 : 0
               scale: root.opened ? 1 : 0.96
               Behavior on opacity {

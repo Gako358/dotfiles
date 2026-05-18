@@ -6,8 +6,10 @@
 }:
 ''
   import QtQuick
+  import QtQuick.Controls
   import QtQuick.Layouts
   import Quickshell
+  import Quickshell.Widgets
   import Quickshell.Hyprland
   import Quickshell.Io
   import Quickshell.Services.Pipewire
@@ -28,18 +30,10 @@
       signal trayRequested()
       signal wallpaperRequested()
 
-      property string cpuPct: "—"
-      property string netState: "off"
+      // ── Data properties ───────────────────────────────────────────
+      property string netState:  "off"
       property int    netSignal: 0
-      property string netSsid: ""
-
-      Process {
-          id: barCpuProc
-          command: ["sh", "-c",
-              "top -bn1 | awk '/Cpu/ { printf \"%.0f\", 100 - $8 }'"]
-          stdout: StdioCollector { id: barCpuOut }
-          onExited: bar.cpuPct = ((barCpuOut.text || "").trim() || "0")
-      }
+      property string netSsid:   ""
 
       Process {
           id: barNetProc
@@ -64,18 +58,65 @@
       Timer {
           running: true
           repeat: true
-          interval: 3000
+          interval: 5000
           triggeredOnStart: true
-          onTriggered: {
-              barCpuProc.running = true
-              barNetProc.running = true
-          }
+          onTriggered: barNetProc.running = true
       }
 
       PwObjectTracker {
           objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] : []
       }
 
+      readonly property var audioSink: Pipewire.defaultAudioSink
+      readonly property real volPct:   audioSink && audioSink.audio ? audioSink.audio.volume * 100 : 0
+      readonly property bool muted:    audioSink && audioSink.audio ? audioSink.audio.muted : true
+
+      ${lib.optionalString battery ''
+        readonly property var batDevice:  UPower.displayDevice
+        readonly property bool hasBat:
+            batDevice && batDevice.isPresent
+            && batDevice.type === UPowerDeviceType.Battery
+        readonly property real batPct:      hasBat ? batDevice.percentage * 100 : 0
+        readonly property bool batCharging:
+            hasBat && (batDevice.state === UPowerDeviceState.Charging
+                    || batDevice.state === UPowerDeviceState.FullyCharged)
+      ''}
+
+      // ── Helpers ───────────────────────────────────────────────────
+      function volIcon(p, m) {
+          if (m || p <= 0) return "󰝟"
+          if (p < 34)      return "󰕿"
+          if (p < 67)      return "󰖀"
+          return "󰕾"
+      }
+      function wifiIcon(s) {
+          if (s >= 75) return "󰤨"
+          if (s >= 50) return "󰤥"
+          if (s >= 25) return "󰤢"
+          if (s > 0)   return "󰤟"
+          return "󰤮"
+      }
+      ${lib.optionalString battery ''
+        function batteryIcon(p, charging) {
+            if (charging) return "󰂄"
+            if (p >= 95) return "󰁹"
+            if (p >= 80) return "󰂂"
+            if (p >= 65) return "󰂀"
+            if (p >= 50) return "󰁾"
+            if (p >= 35) return "󰁼"
+            if (p >= 20) return "󰁻"
+            if (p >= 10) return "󰁺"
+            return "󰂎"
+        }
+        function batteryColor(p, charging) {
+            if (charging) return "${c "base0B"}"
+            if (p <= 15)  return "${c "base08"}"
+            if (p <= 30)  return "${c "base0A"}"
+            return "${c "base0B"}"
+        }
+      ''}
+
+      // ── Shell geometry ────────────────────────────────────────────
       WlrLayershell.namespace: "quickshell-bar"
 
       readonly property bool isFocused:
@@ -84,67 +125,70 @@
           && Hyprland.focusedMonitor.name === bar.screen.name
 
       anchors {
-          top: true
+          bottom: true
           left: true
           right: true
       }
       margins {
-          top: 4
-          left: 8
-          right: 8
+          bottom: 0
+          left: 0
+          right: 0
       }
 
-      implicitHeight: 36
-      exclusiveZone: 40
+      implicitHeight: 48
+      exclusiveZone: 48
       color: "transparent"
 
+      // ── Background ────────────────────────────────────────────────
       Rectangle {
           anchors.fill: parent
-          color: "${ca "base00" "75"}"
-          radius: 12
-          border.width: 1
-          border.color: "${c "base02"}"
+          // Win11-style: slightly translucent strip, no rounding on bar itself
+          color: "${ca "base00" "b8"}"
+          border.width: 0
 
-          Text {
-              id: clockText
-              visible: bar.isFocused
-              text: ""
-              font.family: "RobotoMono Nerd Font"
-              font.pixelSize: 13
-              color: "${c "base05"}"
-              anchors.horizontalCenter: parent.horizontalCenter
-              anchors.verticalCenter: parent.verticalCenter
-              z: 1
-              Timer {
-                  running: true
-                  repeat: true
-                  interval: 1000
-                  triggeredOnStart: true
-                  onTriggered: clockText.text =
-                      "󰥔 " + Qt.formatDateTime(new Date(), "ddd, dd MMM, hh:mm AP")
-              }
-              MouseArea {
-                  anchors.fill: parent
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: bar.calendarRequested()
-              }
+          // ── Top border line (Win11 thin separator) ───────────────
+          Rectangle {
+              anchors.top: parent.top
+              anchors.left: parent.left
+              anchors.right: parent.right
+              height: 1
+              color: "${ca "base02" "88"}"
           }
 
-          RowLayout {
-              anchors.fill: parent
-              anchors.leftMargin: 14
-              anchors.rightMargin: 14
-              spacing: 14
+          // ══════════════════════════════════════════════════════════
+          // CENTER ZONE — NixOS logo + dock
+          // ══════════════════════════════════════════════════════════
+          Row {
+              id: centerZone
+              anchors.horizontalCenter: parent.horizontalCenter
+              anchors.verticalCenter: parent.verticalCenter
+              spacing: 2
 
+              // ── NixOS / launcher button ──────────────────────────
               Item {
-                  Layout.preferredWidth: 26
-                  Layout.fillHeight: true
-                  Text {
-                      anchors.centerIn: parent
-                      text: "󱄅"
-                      font.family: "RobotoMono Nerd Font"
-                      font.pixelSize: 18
-                      color: "${c "base0D"}"
+                  id: nixBtn
+                  width: 42
+                  height: 42
+
+                  Rectangle {
+                      anchors.fill: parent
+                      radius: 8
+                      color: nixHover.hovered
+                          ? "${ca "base0D" "30"}"
+                          : "transparent"
+                      Behavior on color { ColorAnimation { duration: 150 } }
+                      HoverHandler { id: nixHover }
+
+                      Text {
+                          anchors.centerIn: parent
+                          text: "󱄅"
+                          font.family: "RobotoMono Nerd Font"
+                          font.pixelSize: 26
+                          color: nixHover.hovered
+                              ? "${c "base0D"}"
+                              : "${ca "base0D" "cc"}"
+                          Behavior on color { ColorAnimation { duration: 150 } }
+                      }
                   }
                   MouseArea {
                       anchors.fill: parent
@@ -153,145 +197,200 @@
                   }
               }
 
-              // ── Workspaces ───────────────────────────────────
+              // ── Thin separator ───────────────────────────────────
+              Rectangle {
+                  width: 1
+                  height: 28
+                  anchors.verticalCenter: parent.verticalCenter
+                  color: "${ca "base02" "88"}"
+              }
+
+              // ── Pinned app dock ──────────────────────────────────
+              // Apps: emacs, alacritty, zen, pcmanfm, proton pass, discord, slack
               Row {
-                  Layout.alignment: Qt.AlignVCenter
-                  spacing: 4
+                  id: dockRow
+                  anchors.verticalCenter: parent.verticalCenter
+                  spacing: 2
+
                   Repeater {
-                      model: 9
+                      model: [
+                          { icon: "󰅴", label: "Emacs",       cmd: "emacs" },
+                          { icon: "󰆍", label: "Alacritty",   cmd: "alacritty" },
+                          { icon: "󰈹", label: "Zen Browser", cmd: "zen" },
+                          { icon: "󰝰", label: "Files",       cmd: "pcmanfm" },
+                          { icon: "󰦝", label: "Proton Pass",  cmd: "proton-pass" },
+                          { icon: "󰙯", label: "Discord",     cmd: "discord" },
+                          { icon: "󰒱", label: "Slack",       cmd: "slack" }
+                      ]
+
                       Item {
-                          id: ws
-                          property int wsId: index + 1
-                          property bool isActive: Hyprland.focusedWorkspace
-                              && Hyprland.focusedWorkspace.id === wsId
-                          property bool hasIcon: wsId === 1 || wsId === 2
-                              || wsId === 3 || wsId === 5
-                              || wsId === 8 || wsId === 9
-                          property bool wsExists: {
-                              var list = Hyprland.workspaces
-                                  ? Hyprland.workspaces.values
-                                  : []
-                              for (var i = 0; i < list.length; ++i) {
-                                  if (list[i] && list[i].id === ws.wsId)
-                                      return true
-                              }
-                              return false
-                          }
-                          property string icon: {
-                              switch (wsId) {
-                                  case 1: return "󰈹"   // browsing  (nf-md-firefox)
-                                  case 2: return "󰅴"   // coding    (nf-md-emacs)
-                                  case 3: return "󰆍"   // terminal  (nf-md-console)
-                                  case 5: return "󰢹"   // qemu / vm (nf-md-monitor)
-                                  case 8: return "󰒱"   // slack     (nf-md-slack)
-                                  case 9: return "󰙯"   // discord   (nf-md-discord)
-                                  default: return wsId.toString()
-                              }
-                          }
+                          id: dockItem
+                          required property var modelData
+                          required property int index
+                          width: 44
+                          height: 44
 
-                          visible: hasIcon || wsExists || isActive
-
-                          width: isActive ? 34 : 22
-                          height: 22
-
-                          Behavior on width {
-                              NumberAnimation { duration: 240; easing.type: Easing.OutQuint }
-                          }
+                          property bool hov: dockItemHover.hovered
 
                           Rectangle {
-                              anchors.fill: parent
-                              radius: height / 2
-                              color: ws.isActive
-                                  ? "${c "base0D"}"
-                                  : (wsHover.hovered
-                                      ? "${ca "base02" "cc"}"
-                                      : "transparent")
-                              Behavior on color {
-                                  ColorAnimation { duration: 180 }
+                              id: dockItemBg
+                              anchors.centerIn: parent
+                              width: dockItem.hov ? 38 : 34
+                              height: dockItem.hov ? 38 : 34
+                              radius: 8
+                              color: dockItem.hov
+                                  ? "${ca "base02" "cc"}"
+                                  : "transparent"
+                              Behavior on width  { NumberAnimation { duration: 150; easing.type: Easing.OutQuint } }
+                              Behavior on height { NumberAnimation { duration: 150; easing.type: Easing.OutQuint } }
+                              Behavior on color  { ColorAnimation  { duration: 120 } }
+
+                              // Vertical offset (lift on hover)
+                              property real offsetY: dockItem.hov ? -3 : 0
+                              transform: Translate { y: dockItemBg.offsetY }
+                              Behavior on offsetY {
+                                  NumberAnimation { duration: 150; easing.type: Easing.OutQuint }
                               }
 
-                              HoverHandler { id: wsHover }
+                              HoverHandler { id: dockItemHover }
 
                               Text {
                                   anchors.centerIn: parent
-                                  text: ws.icon
-                                  color: ws.isActive
-                                      ? "${c "base00"}"
-                                      : "${c "base04"}"
+                                  text: dockItem.modelData.icon
                                   font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: ws.isActive ? 14 : 11
-                                  Behavior on font.pixelSize {
-                                      NumberAnimation {
-                                          duration: 240
-                                          easing.type: Easing.OutQuint
-                                      }
-                                  }
-                                  Behavior on color {
-                                      ColorAnimation { duration: 180 }
-                                  }
+                                  font.pixelSize: 20
+                                  color: dockItem.hov ? "${c "base05"}" : "${c "base06"}"
+                                  Behavior on color { ColorAnimation { duration: 120 } }
                               }
+
+                              // Tooltip
+                              ToolTip {
+                                  visible: dockItem.hov
+                                  delay: 500
+                                  text: dockItem.modelData.label
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 11
+                              }
+                          }
+
+                          // Running dot indicator
+                          Rectangle {
+                              anchors.horizontalCenter: parent.horizontalCenter
+                              anchors.bottom: parent.bottom
+                              anchors.bottomMargin: 1
+                              width: 4
+                              height: 4
+                              radius: 2
+                              color: "${c "base0D"}"
+                              visible: false // TODO: connect to window tracking
                           }
 
                           MouseArea {
                               anchors.fill: parent
                               cursorShape: Qt.PointingHandCursor
-                              onClicked: Hyprland.dispatch("hl.dsp.focus({ workspace = " + ws.wsId + " })")
+                              onClicked: {
+                                  var proc = Qt.createQmlObject(
+                                      "import Quickshell.Io; Process { command: [\"sh\", \"-c\", \"" +
+                                      dockItem.modelData.cmd + " &\"]; running: true }",
+                                      dockItem, "dockLaunch")
+                              }
                           }
                       }
                   }
               }
+          }
 
-              Item { Layout.fillWidth: true }
+          // ══════════════════════════════════════════════════════════
+          // RIGHT ZONE — system tray corner + clock (opens dashboard)
+          // ══════════════════════════════════════════════════════════
+          Row {
+              id: rightZone
+              anchors.right: parent.right
+              anchors.verticalCenter: parent.verticalCenter
+              anchors.rightMargin: 6
+              spacing: 2
+              visible: bar.isFocused
 
-              // ── System tray (collapsed into a popup button) ──
+              // ── Win11-style system tray corner ───────────────────
+              // Shows up to 4 tray icons in a 2×2 grid, click to open
+              // the full tray panel. Styled like Win11's corner icons.
               Item {
-                  id: trayButton
-                  visible: bar.isFocused
-                  Layout.alignment: Qt.AlignVCenter
-                  Layout.preferredHeight: 26
-                  Layout.preferredWidth: 32
-                  property int trayCount: SystemTray.items ? SystemTray.items.values.length : 0
+                  id: trayCorner
+                  property var items: SystemTray.items ? SystemTray.items.values : []
+                  property int trayCount: items.length
+                  // Width: fits 2 icon columns (14px each) + padding
+                  width: trayCorner.trayCount > 0 ? 44 : 32
+                  height: 42
+                  Behavior on width { NumberAnimation { duration: 150 } }
 
                   Rectangle {
                       anchors.fill: parent
-                      radius: 13
-                      color: trayHover.hovered
+                      radius: 6
+                      color: trayCornerHover.hovered
                           ? "${ca "base02" "cc"}"
                           : "transparent"
                       Behavior on color { ColorAnimation { duration: 120 } }
-                      HoverHandler { id: trayHover }
+                      HoverHandler { id: trayCornerHover }
 
-                      Text {
+                      // When there are actual tray items: show up to 4 icons in 2×2 grid
+                      Grid {
+                          visible: trayCorner.trayCount > 0
                           anchors.centerIn: parent
-                          text: "󱊖"
-                          font.family: "RobotoMono Nerd Font"
-                          font.pixelSize: 14
-                          color: trayButton.trayCount > 0
-                              ? "${c "base05"}"
-                              : "${c "base04"}"
+                          columns: 2
+                          rows: 2
+                          spacing: 2
+
+                          Repeater {
+                              model: Math.min(trayCorner.items.length, 4)
+                              Item {
+                                  width: 14
+                                  height: 14
+                                  required property int index
+                                  property var trayItem: trayCorner.items[index] || null
+
+                                  IconImage {
+                                      anchors.fill: parent
+                                      source: parent.trayItem
+                                          ? (parent.trayItem.icon || "")
+                                          : ""
+                                      implicitSize: 14
+                                  }
+                              }
+                          }
                       }
 
-                      // Small badge with the number of tray items
+                      // When empty: show a subtle expand chevron
+                      Text {
+                          visible: trayCorner.trayCount === 0
+                          anchors.centerIn: parent
+                          text: "󰅃"
+                          font.family: "RobotoMono Nerd Font"
+                          font.pixelSize: 13
+                          color: "${c "base04"}"
+                      }
+
+                      // Overflow indicator dot when >4 items
                       Rectangle {
-                          visible: trayButton.trayCount > 0
-                          width: badgeText.implicitWidth + 6
+                          visible: trayCorner.trayCount > 4
+                          width: overflowText.implicitWidth + 6
                           height: 12
                           radius: 6
                           color: "${c "base0D"}"
                           anchors.right: parent.right
-                          anchors.top: parent.top
+                          anchors.bottom: parent.bottom
                           anchors.rightMargin: 1
-                          anchors.topMargin: 1
+                          anchors.bottomMargin: 1
                           Text {
-                              id: badgeText
+                              id: overflowText
                               anchors.centerIn: parent
-                              text: trayButton.trayCount
+                              text: "+" + (trayCorner.trayCount - 4)
                               font.family: "RobotoMono Nerd Font"
-                              font.pixelSize: 9
+                              font.pixelSize: 8
                               color: "${c "base00"}"
                           }
                       }
                   }
+
                   MouseArea {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
@@ -299,295 +398,70 @@
                   }
               }
 
-              // ── Status pill (segmented, caelestia-style) ─────
+              // ── Thin separator ───────────────────────────────────
               Rectangle {
-                  id: statusPill
-                  visible: bar.isFocused
-                  Layout.alignment: Qt.AlignVCenter
-                  Layout.preferredHeight: 26
-                  Layout.preferredWidth: statusRow.implicitWidth + 6
-                  color: "${ca "base01" "aa"}"
-                  border.color: "${c "base02"}"
-                  border.width: 1
-                  radius: 13
-
-                  readonly property var sink: Pipewire.defaultAudioSink
-                  readonly property real volPct:
-                      sink && sink.audio ? sink.audio.volume * 100 : 0
-                  readonly property bool muted:
-                      sink && sink.audio ? sink.audio.muted : true
-
-                  function volIcon(p, m) {
-                      if (m || p <= 0) return "󰝟"
-                      if (p < 34)      return "󰕿"
-                      if (p < 67)      return "󰖀"
-                      return "󰕾"
-                  }
-                  function wifiIcon(s) {
-                      if (s >= 75) return "󰤨"
-                      if (s >= 50) return "󰤥"
-                      if (s >= 25) return "󰤢"
-                      if (s > 0)   return "󰤟"
-                      return "󰤮"
-                  }
-                  ${lib.optionalString battery ''
-                    readonly property var battery: UPower.displayDevice
-                    readonly property bool hasBattery:
-                        statusPill.battery
-                        && statusPill.battery.isPresent
-                        && statusPill.battery.type === UPowerDeviceType.Battery
-                    readonly property real batPct:
-                        statusPill.battery ? statusPill.battery.percentage * 100 : 0
-                    readonly property bool batCharging:
-                        statusPill.battery
-                        && (statusPill.battery.state === UPowerDeviceState.Charging
-                            || statusPill.battery.state === UPowerDeviceState.FullyCharged)
-
-                    function batteryIcon(p, charging) {
-                        if (charging) return "󰂄"
-                        if (p >= 95) return "󰁹"
-                        if (p >= 80) return "󰂂"
-                        if (p >= 65) return "󰂀"
-                        if (p >= 50) return "󰁾"
-                        if (p >= 35) return "󰁼"
-                        if (p >= 20) return "󰁻"
-                        if (p >= 10) return "󰁺"
-                        return "󰂎"
-                    }
-                    function batteryColor(p, charging) {
-                        if (charging) return "${c "base0B"}"
-                        if (p <= 15)  return "${c "base08"}"
-                        if (p <= 30)  return "${c "base0A"}"
-                        return "${c "base0B"}"
-                    }
-                  ''}
-
-                  Row {
-                      id: statusRow
-                      anchors.centerIn: parent
-                      spacing: 0
-
-                      // ── System monitor segment (CPU%) ────────
-                      Rectangle {
-                          id: cpuSeg
-                          width: cpuRow.implicitWidth + 16
-                          height: statusPill.height
-                          color: cpuHover.hovered
-                              ? "${ca "base02" "cc"}"
-                              : "transparent"
-                          radius: 13
-                          Behavior on color { ColorAnimation { duration: 120 } }
-                          HoverHandler { id: cpuHover }
-                          Row {
-                              id: cpuRow
-                              anchors.centerIn: parent
-                              spacing: 6
-                              Text {
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  text: "󰻠"
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 13
-                                  color: "${c "base0C"}"
-                              }
-                              Text {
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  text: bar.cpuPct + "%"
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 11
-                                  color: "${c "base05"}"
-                              }
-                          }
-                          MouseArea {
-                              anchors.fill: parent
-                              cursorShape: Qt.PointingHandCursor
-                              onClicked: bar.systemMonitorRequested()
-                          }
-                      }
-
-                      Rectangle {
-                          width: 1; height: statusPill.height - 10
-                          anchors.verticalCenter: parent.verticalCenter
-                          color: "${ca "base03" "80"}"
-                      }
-
-                      // ── Volume segment ───────────────────────
-                      Rectangle {
-                          id: volSeg
-                          width: volRow.implicitWidth + 16
-                          height: statusPill.height
-                          color: volHover.hovered
-                              ? "${ca "base02" "cc"}"
-                              : "transparent"
-                          Behavior on color { ColorAnimation { duration: 120 } }
-                          HoverHandler { id: volHover }
-                          Row {
-                              id: volRow
-                              anchors.centerIn: parent
-                              spacing: 6
-                              Text {
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  text: statusPill.volIcon(statusPill.volPct, statusPill.muted)
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 13
-                                  color: statusPill.muted
-                                      ? "${c "base08"}"
-                                      : "${c "base0E"}"
-                              }
-                              Text {
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  text: statusPill.muted
-                                      ? "muted"
-                                      : Math.round(statusPill.volPct) + "%"
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 11
-                                  color: "${c "base05"}"
-                              }
-                          }
-                          MouseArea {
-                              anchors.fill: parent
-                              cursorShape: Qt.PointingHandCursor
-                              acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-                              onClicked: function(mouse) {
-                                  if (mouse.button === Qt.MiddleButton) {
-                                      if (statusPill.sink && statusPill.sink.audio)
-                                          statusPill.sink.audio.muted = !statusPill.sink.audio.muted
-                                  } else {
-                                      bar.audioRequested()
-                                  }
-                              }
-                              onWheel: function(wheel) {
-                                  if (!statusPill.sink || !statusPill.sink.audio) return
-                                  var step = wheel.angleDelta.y > 0 ? 0.05 : -0.05
-                                  var v = Math.max(0, Math.min(1,
-                                      statusPill.sink.audio.volume + step))
-                                  statusPill.sink.audio.volume = v
-                              }
-                          }
-                      }
-
-                      Rectangle {
-                          width: 1; height: statusPill.height - 10
-                          anchors.verticalCenter: parent.verticalCenter
-                          color: "${ca "base03" "80"}"
-                      }
-
-                      // ── Network segment ──────────────────────
-                      Rectangle {
-                          id: netSeg
-                          width: netRow.implicitWidth + 16
-                          height: statusPill.height
-                          color: netHover.hovered
-                              ? "${ca "base02" "cc"}"
-                              : "transparent"
-                          radius: 13
-                          Behavior on color { ColorAnimation { duration: 120 } }
-                          HoverHandler { id: netHover }
-                          Row {
-                              id: netRow
-                              anchors.centerIn: parent
-                              spacing: 6
-                              Text {
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  text: bar.netState === "wired"
-                                      ? "󰈀"
-                                      : statusPill.wifiIcon(bar.netSignal)
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 13
-                                  color: bar.netState === "off"
-                                      ? "${c "base08"}"
-                                      : "${c "base0B"}"
-                              }
-                              Text {
-                                  visible: text !== ""
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  text: bar.netState === "off"
-                                      ? "offline"
-                                      : (bar.netState === "wired"
-                                          ? "wired"
-                                          : (bar.netSsid.length > 12
-                                              ? bar.netSsid.substring(0, 12) + "…"
-                                              : bar.netSsid))
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 11
-                                  color: "${c "base05"}"
-                                  elide: Text.ElideRight
-                              }
-                          }
-                          MouseArea {
-                              anchors.fill: parent
-                              cursorShape: Qt.PointingHandCursor
-                              onClicked: bar.networkRequested()
-                          }
-                      }
-                      ${lib.optionalString battery ''
-                        Rectangle {
-                            visible: statusPill.hasBattery
-                            width: 1; height: statusPill.height - 10
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: "${ca "base03" "80"}"
-                        }
-
-                        // ── Battery segment ──────────────────────
-                        Rectangle {
-                            id: batSeg
-                            visible: statusPill.hasBattery
-                            width: visible ? batRow.implicitWidth + 16 : 0
-                            height: statusPill.height
-                            color: batHover.hovered
-                                ? "${ca "base02" "cc"}"
-                                : "transparent"
-                            radius: 13
-                            Behavior on color { ColorAnimation { duration: 120 } }
-                            HoverHandler { id: batHover }
-                            Row {
-                                id: batRow
-                                anchors.centerIn: parent
-                                spacing: 6
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: statusPill.batteryIcon(
-                                        statusPill.batPct,
-                                        statusPill.batCharging)
-                                    font.family: "RobotoMono Nerd Font"
-                                    font.pixelSize: 13
-                                    color: statusPill.batteryColor(
-                                        statusPill.batPct,
-                                        statusPill.batCharging)
-                                }
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: Math.round(statusPill.batPct) + "%"
-                                    font.family: "RobotoMono Nerd Font"
-                                    font.pixelSize: 11
-                                    color: "${c "base05"}"
-                                }
-                            }
-                        }
-                      ''}
-                  }
+                  width: 1
+                  height: 26
+                  anchors.verticalCenter: parent.verticalCenter
+                  color: "${ca "base02" "66"}"
               }
 
-              // ── Wallpaper switcher ───────────────────────────
-              Text {
-                  visible: bar.isFocused
-                  text: "󰸉"
-                  font.family: "RobotoMono Nerd Font"
-                  font.pixelSize: 14
-                  color: "${c "base0E"}"
-                  MouseArea {
+              // ── Clock block (opens dashboard / action center) ────
+              Item {
+                  id: clockItem
+                  width: clockCol.implicitWidth + 20
+                  height: 42
+
+                  Rectangle {
                       anchors.fill: parent
-                      cursorShape: Qt.PointingHandCursor
-                      onClicked: bar.wallpaperRequested()
-                  }
-              }
+                      radius: 6
+                      color: clockHover.hovered
+                          ? "${ca "base02" "cc"}"
+                          : "transparent"
+                      Behavior on color { ColorAnimation { duration: 120 } }
+                      HoverHandler { id: clockHover }
 
-              // ── Dashboard toggle ─────────────────────────────
-              Text {
-                  visible: bar.isFocused
-                  text: "󰕮"
-                  font.family: "RobotoMono Nerd Font"
-                  font.pixelSize: 14
-                  color: "${c "base0A"}"
+                      Column {
+                          id: clockCol
+                          anchors.centerIn: parent
+                          spacing: 0
+
+                          Text {
+                              id: clockTime
+                              anchors.horizontalCenter: parent.horizontalCenter
+                              text: ""
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 14
+                              font.weight: Font.Medium
+                              color: "${c "base05"}"
+                              Timer {
+                                  running: true
+                                  repeat: true
+                                  interval: 1000
+                                  triggeredOnStart: true
+                                  onTriggered: clockTime.text =
+                                      Qt.formatDateTime(new Date(), "hh:mm AP")
+                              }
+                          }
+                          Text {
+                              id: clockDate
+                              anchors.horizontalCenter: parent.horizontalCenter
+                              text: ""
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 10
+                              color: "${c "base04"}"
+                              Timer {
+                                  running: true
+                                  repeat: true
+                                  interval: 60000
+                                  triggeredOnStart: true
+                                  onTriggered: clockDate.text =
+                                      Qt.formatDateTime(new Date(), "dd/MM/yyyy")
+                              }
+                          }
+                      }
+                  }
+
                   MouseArea {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
@@ -595,17 +469,27 @@
                   }
               }
 
-              // ── Session / power menu ─────────────────────────
-              Text {
-                  visible: bar.isFocused
-                  text: "󰐥"
-                  font.family: "RobotoMono Nerd Font"
-                  font.pixelSize: 14
-                  color: "${c "base08"}"
+              // ── Show-desktop strip (Win11 rightmost edge) ────────
+              Rectangle {
+                  width: 4
+                  height: 42
+                  radius: 2
+                  color: showDeskHover.hovered
+                      ? "${ca "base0D" "88"}"
+                      : "transparent"
+                  Behavior on color { ColorAnimation { duration: 120 } }
+                  HoverHandler { id: showDeskHover }
+                  ToolTip {
+                      visible: showDeskHover.hovered
+                      delay: 600
+                      text: "Show desktop"
+                      font.family: "RobotoMono Nerd Font"
+                      font.pixelSize: 11
+                  }
                   MouseArea {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
-                      onClicked: bar.sessionRequested()
+                      onClicked: Hyprland.dispatch("togglespecialworkspace")
                   }
               }
           }

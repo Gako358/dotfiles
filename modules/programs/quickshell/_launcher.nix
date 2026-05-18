@@ -84,36 +84,39 @@
           WlrLayershell.layer: WlrLayer.Overlay
           WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
-          anchors {
-              top: true
-              left: true
-          }
-          margins {
-              top: 48
-              left: 8
-          }
-
-          implicitWidth: 460
-          implicitHeight: 520
-          color: "transparent"
-
-          Shortcut {
-              sequences: ["Escape"]
-              onActivated: root.hide()
-          }
-
-          Rectangle {
-              id: launcherCard
-              anchors.fill: parent
+                        anchors { top: true; bottom: true; left: true; right: true }
+                        color: "transparent"
+                    
+                        Shortcut {
+                            sequences: ["Escape"]
+                            onActivated: root.hide()
+                        }
+                    
+                            // Full-screen dismiss layer — stops at the bar so it never blocks it
+                            MouseArea {
+                                anchors.fill: parent
+                                anchors.bottomMargin: 48
+                                onClicked: root.hide()
+                            }
+                    
+                        Rectangle {
+                            id: launcherCard
+                            // Centered above the bar
+                            width: 460
+                            height: 520
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 52
               color: "${ca "base00" "ee"}"
               radius: 16
               border.width: 1
               border.color: "${c "base02"}"
 
-              property real slideY: root.opened ? 0 : -18
+              // Slide upward from the bar on open
+              property real slideY: root.opened ? 0 : 18
               transform: Translate { y: launcherCard.slideY }
 
-              transformOrigin: Item.TopLeft
+              transformOrigin: Item.Bottom
               opacity: root.opened ? 1 : 0
               scale: root.opened ? 1 : 0.96
               Behavior on opacity {
