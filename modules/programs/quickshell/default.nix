@@ -47,6 +47,7 @@ _: {
       networkPanelQml = import ./_network-panel.nix { inherit c ca; };
       monitorsPanelQml = import ./_monitors-panel.nix { inherit c ca; };
       trayPanelQml = import ./_tray-panel.nix { inherit c ca; };
+      processesPanelQml = import ./_processes-panel.nix { inherit c ca; };
       wallpaperQml = import ./_wallpaper.nix {
         inherit c ca;
         wallpaperDir = cfg.wallpaper.directory;
@@ -65,8 +66,9 @@ _: {
         cp ${pkgs.writeText "VolumePanel.qml" volumePanelQml}     $out/VolumePanel.qml
         cp ${pkgs.writeText "NetworkPanel.qml" networkPanelQml}   $out/NetworkPanel.qml
         cp ${pkgs.writeText "MonitorsPanel.qml" monitorsPanelQml} $out/MonitorsPanel.qml
-        cp ${pkgs.writeText "TrayPanel.qml" trayPanelQml}         $out/TrayPanel.qml
-        cp ${pkgs.writeText "Wallpaper.qml" wallpaperQml}         $out/Wallpaper.qml
+        cp ${pkgs.writeText "TrayPanel.qml" trayPanelQml}               $out/TrayPanel.qml
+        cp ${pkgs.writeText "Wallpaper.qml" wallpaperQml}               $out/Wallpaper.qml
+        cp ${pkgs.writeText "ProcessesPanel.qml" processesPanelQml}     $out/ProcessesPanel.qml
       '';
     in
     {

@@ -17,24 +17,31 @@
           onSessionRequested:   { root.showOnly("session");   session.toggle() }
           onAudioRequested:     { root.showOnly("volume");    volumePanel.toggle() }
           onNetworkRequested:   { root.showOnly("network");   networkPanel.toggle() }
+          onProcessesRequested: function(sortMode) {
+              root.showOnly("processes")
+              processesPanel.sortMode = sortMode
+              processesPanel.show()
+          }
       }
-      SystemMonitor { id: sysmon }
-      VolumePanel   { id: volumePanel }
-      NetworkPanel  { id: networkPanel }
-      MonitorsPanel { id: monitorsPanel }
-      TrayPanel     { id: trayPanel }
-      Wallpaper     { id: wallpaper }
+      SystemMonitor    { id: sysmon }
+      VolumePanel      { id: volumePanel }
+      NetworkPanel     { id: networkPanel }
+      MonitorsPanel    { id: monitorsPanel }
+      TrayPanel        { id: trayPanel }
+      Wallpaper        { id: wallpaper }
+      ProcessesPanel   { id: processesPanel }
 
       function showOnly(which) {
-          if (which !== "sysmon")    sysmon.hide()
-          if (which !== "volume")    volumePanel.hide()
-          if (which !== "network")   networkPanel.hide()
-          if (which !== "monitors")  monitorsPanel.hide()
-          if (which !== "tray")      trayPanel.hide()
-          if (which !== "dashboard") dashboard.hide()
-          if (which !== "session")   session.hide()
-          if (which !== "launcher")  launcher.hide()
-          if (which !== "wallpaper") wallpaper.hide()
+          if (which !== "sysmon")     sysmon.hide()
+          if (which !== "volume")     volumePanel.hide()
+          if (which !== "network")    networkPanel.hide()
+          if (which !== "monitors")   monitorsPanel.hide()
+          if (which !== "tray")       trayPanel.hide()
+          if (which !== "dashboard")  dashboard.hide()
+          if (which !== "session")    session.hide()
+          if (which !== "launcher")   launcher.hide()
+          if (which !== "wallpaper")  wallpaper.hide()
+          if (which !== "processes")  processesPanel.hide()
       }
 
       Variants {

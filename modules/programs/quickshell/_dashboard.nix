@@ -26,6 +26,7 @@
       signal sessionRequested()
       signal audioRequested()
       signal networkRequested()
+      signal processesRequested(string sortMode)
 
       function toggle() { root.opened = !root.opened }
       function show()   { root.opened = true }
@@ -496,32 +497,77 @@
                           anchors.margins: 14
                           spacing: 8
 
-                          // CPU
-                          RowLayout {
+                          // CPU — click to open process panel sorted by CPU
+                          Rectangle {
                               Layout.fillWidth: true
-                              Text {
-                                  text: "󰻠 CPU"; color: "${c "base0C"}"
-                                  font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                              height: 28
+                              radius: 6
+                              color: cpuRowHover.hovered
+                                  ? "${ca "base02" "cc"}"
+                                  : "transparent"
+                              Behavior on color { ColorAnimation { duration: 100 } }
+                              HoverHandler { id: cpuRowHover }
+
+                              RowLayout {
+                                  anchors.fill: parent
+                                  anchors.leftMargin: 4
+                                  anchors.rightMargin: 4
+                                  Text {
+                                      text: "󰻠 CPU"; color: "${c "base0C"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                  }
+                                  Item { Layout.fillWidth: true }
+                                  Text {
+                                      text: root.cpuPct
+                                      color: "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                  }
                               }
-                              Item { Layout.fillWidth: true }
-                              Text {
-                                  text: root.cpuPct
-                                  color: "${c "base05"}"
-                                  font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+
+                              MouseArea {
+                                  anchors.fill: parent
+                                  cursorShape: Qt.PointingHandCursor
+                                  onClicked: {
+                                      root.hide()
+                                      root.processesRequested("cpu")
+                                  }
                               }
                           }
-                          // Memory
-                          RowLayout {
+
+                          // Memory — click to open process panel sorted by MEM
+                          Rectangle {
                               Layout.fillWidth: true
-                              Text {
-                                  text: "󰍛 Memory"; color: "${c "base0E"}"
-                                  font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                              height: 28
+                              radius: 6
+                              color: memRowHover.hovered
+                                  ? "${ca "base02" "cc"}"
+                                  : "transparent"
+                              Behavior on color { ColorAnimation { duration: 100 } }
+                              HoverHandler { id: memRowHover }
+
+                              RowLayout {
+                                  anchors.fill: parent
+                                  anchors.leftMargin: 4
+                                  anchors.rightMargin: 4
+                                  Text {
+                                      text: "󰍛 Memory"; color: "${c "base0E"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                  }
+                                  Item { Layout.fillWidth: true }
+                                  Text {
+                                      text: root.memUsed
+                                      color: "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                  }
                               }
-                              Item { Layout.fillWidth: true }
-                              Text {
-                                  text: root.memUsed
-                                  color: "${c "base05"}"
-                                  font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+
+                              MouseArea {
+                                  anchors.fill: parent
+                                  cursorShape: Qt.PointingHandCursor
+                                  onClicked: {
+                                      root.hide()
+                                      root.processesRequested("mem")
+                                  }
                               }
                           }
                           ${lib.optionalString battery ''
