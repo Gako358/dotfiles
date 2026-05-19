@@ -26,6 +26,7 @@
       signal sessionRequested()
       signal audioRequested()
       signal networkRequested()
+      signal batteryRequested()
       signal processesRequested(string sortMode)
 
       function toggle() { root.opened = !root.opened }
@@ -571,21 +572,43 @@
                               }
                           }
                           ${lib.optionalString battery ''
-                            // Battery
-                            RowLayout {
+                            // Battery — click to open battery panel
+                            Rectangle {
                                 Layout.fillWidth: true
+                                height: 28
+                                radius: 6
                                 visible: root.hasBat
-                                Text {
-                                    text: root.batteryIcon(root.batPct, root.batCharging) + " Battery"
-                                    color: root.batteryColor(root.batPct, root.batCharging)
-                                    font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                color: batRowHover.hovered
+                                    ? "${ca "base02" "cc"}"
+                                    : "transparent"
+                                Behavior on color { ColorAnimation { duration: 100 } }
+                                HoverHandler { id: batRowHover }
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 4
+                                    anchors.rightMargin: 4
+                                    Text {
+                                        text: root.batteryIcon(root.batPct, root.batCharging) + " Battery"
+                                        color: root.batteryColor(root.batPct, root.batCharging)
+                                        font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                    }
+                                    Item { Layout.fillWidth: true }
+                                    Text {
+                                        text: Math.round(root.batPct) + "%"
+                                            + (root.batCharging ? " (charging)" : "")
+                                        color: "${c "base05"}"
+                                        font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+                                    }
                                 }
-                                Item { Layout.fillWidth: true }
-                                Text {
-                                    text: Math.round(root.batPct) + "%"
-                                        + (root.batCharging ? " (charging)" : "")
-                                    color: "${c "base05"}"
-                                    font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        root.hide()
+                                        root.batteryRequested()
+                                    }
                                 }
                             }
                           ''}

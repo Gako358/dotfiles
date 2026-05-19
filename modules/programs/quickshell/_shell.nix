@@ -1,3 +1,7 @@
+{
+  lib,
+  battery ? false,
+}:
 ''
   import QtQuick
   import Quickshell
@@ -17,6 +21,9 @@
           onSessionRequested:   { root.showOnly("session");   session.toggle() }
           onAudioRequested:     { root.showOnly("volume");    volumePanel.toggle() }
           onNetworkRequested:   { root.showOnly("network");   networkPanel.toggle() }
+          ${lib.optionalString battery ''
+            onBatteryRequested:   { root.showOnly("battery");   batteryPanel.toggle() }
+          ''}
           onProcessesRequested: function(sortMode) {
               root.showOnly("processes")
               processesPanel.sortMode = sortMode
@@ -30,6 +37,9 @@
       TrayPanel        { id: trayPanel }
       Wallpaper        { id: wallpaper }
       ProcessesPanel   { id: processesPanel }
+      ${lib.optionalString battery ''
+        BatteryPanel     { id: batteryPanel }
+      ''}
 
       function showOnly(which) {
           if (which !== "sysmon")     sysmon.hide()
@@ -42,6 +52,9 @@
           if (which !== "launcher")   launcher.hide()
           if (which !== "wallpaper")  wallpaper.hide()
           if (which !== "processes")  processesPanel.hide()
+          ${lib.optionalString battery ''
+            if (which !== "battery")    batteryPanel.hide()
+          ''}
       }
 
       Variants {
