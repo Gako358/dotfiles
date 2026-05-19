@@ -57,11 +57,11 @@
           WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
           anchors {
-              top: true
+              bottom: true
               right: true
           }
           margins {
-              top: 50
+              bottom: 56
               right: 8
           }
 

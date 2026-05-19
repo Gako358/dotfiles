@@ -1509,186 +1509,243 @@ in
                       }
 
                       // ╔════════════════════════════════════════╗
-                      // ║  TASKBAR (bottom)                      ║
+                      // ║  TASKBAR (bottom — Win11-style, matches Bar.qml) ║
                       // ╚════════════════════════════════════════╝
                       Rectangle {
                           id: taskbar
                           anchors.left: parent.left
                           anchors.right: parent.right
                           anchors.bottom: parent.bottom
-                          height: 40
-                          gradient: Gradient {
-                              GradientStop { position: 0.0; color: "${ca "base01" "ee"}" }
-                              GradientStop { position: 1.0; color: "${ca "base00" "ee"}" }
-                          }
-                          border.width: 1
-                          border.color: "${c "base02"}"
+                          height: 48
+                          // Win11-style: slightly translucent strip, no rounding
+                          color: "${ca "base00" "b8"}"
+                          border.width: 0
 
+                          // ── Top border line (Win11 thin separator) ───
                           Rectangle {
                               anchors.top: parent.top
                               anchors.left: parent.left
                               anchors.right: parent.right
                               height: 1
-                              color: "${ca "base0D" "55"}"
+                              color: "${ca "base02" "88"}"
                           }
 
-                          // ── Start orb ────────────────────────
-                          Rectangle {
-                              id: startOrb
-                              anchors.left: parent.left
-                              anchors.leftMargin: 4
-                              anchors.verticalCenter: parent.verticalCenter
-                              width: 44; height: 32
-                              radius: 16
-                              gradient: Gradient {
-                                  GradientStop { position: 0.0; color: "${c "base0D"}" }
-                                  GradientStop { position: 1.0; color: "${c "base0C"}" }
-                              }
-                              border.width: 1
-                              border.color: "${ca "base05" "55"}"
-
-                              Text {
-                                  anchors.centerIn: parent
-                                  text: "󰖳"
-                                  color: "${c "base00"}"
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 18
-                              }
-                          }
-
-                          // ── Pinned / running apps ────────────
+                          // ══════════════════════════════════════════
+                          // CENTER ZONE — NixOS logo + dock
+                          // ══════════════════════════════════════════
                           Row {
-                              anchors.left: startOrb.right
-                              anchors.leftMargin: 8
+                              id: taskbarCenter
+                              anchors.horizontalCenter: parent.horizontalCenter
                               anchors.verticalCenter: parent.verticalCenter
-                              spacing: 4
+                              spacing: 2
 
-                              Repeater {
-                                  model: [
-                                      { icon: "󰇮", color: "${c "base0D"}", active: true  },
-                                      { icon: "󰈹", color: "${c "base0E"}", active: false },
-                                      { icon: "󰉋", color: "${c "base0A"}", active: false },
-                                      { icon: "󰈙", color: "${c "base09"}", active: false },
-                                      { icon: "󰓪", color: "${c "base0B"}", active: false },
-                                      { icon: "󰆍", color: "${c "base04"}", active: false },
-                                      { icon: "", color: "${c "base0E"}", active: false },
-                                      { icon: "󱂖", color: "${c "base09"}", active: false }
-                                  ]
+                              // ── NixOS / launcher button ──────────
+                              Item {
+                                  id: tbNixBtn
+                                  width: 42
+                                  height: 42
+
                                   Rectangle {
-                                      width: 40; height: 32
-                                      radius: 3
-                                      color: modelData.active
-                                          ? "${ca "base02" "cc"}"
-                                          : "transparent"
-                                      border.width: modelData.active ? 1 : 0
-                                      border.color: "${ca "base0D" "66"}"
+                                      anchors.fill: parent
+                                      radius: 8
+                                      color: "transparent"
 
                                       Text {
                                           anchors.centerIn: parent
-                                          text: modelData.icon
-                                          color: modelData.color
+                                          text: "󱄅"
                                           font.family: "RobotoMono Nerd Font"
-                                          font.pixelSize: 18
+                                          font.pixelSize: 26
+                                          color: "${ca "base0D" "cc"}"
+                                      }
+                                  }
+                              }
+
+                              // ── Thin separator ───────────────────
+                              Rectangle {
+                                  width: 1
+                                  height: 28
+                                  anchors.verticalCenter: parent.verticalCenter
+                                  color: "${ca "base02" "88"}"
+                              }
+
+                              // ── Workspace dock (Win11-style, static) ─
+                              Row {
+                                  id: tbDockRow
+                                  anchors.verticalCenter: parent.verticalCenter
+                                  spacing: 2
+
+                                  Repeater {
+                                      model: [
+                                          { wsId: 1, icon: "󰈹", label: "Browser",         active: false, hasWindows: true  },
+                                          { wsId: 2, icon: "󰅴", label: "Coding",          active: true,  hasWindows: true  },
+                                          { wsId: 3, icon: "󰆍", label: "Terminal",        active: false, hasWindows: true  },
+                                          { wsId: 5, icon: "󰢹", label: "Virtual Machine", active: false, hasWindows: false },
+                                          { wsId: 8, icon: "󰒱", label: "Slack",           active: false, hasWindows: true  },
+                                          { wsId: 9, icon: "󰙯", label: "Discord",         active: false, hasWindows: false }
+                                      ]
+
+                                      Item {
+                                          id: tbDockItem
+                                          required property var modelData
+                                          width: 44
+                                          height: 44
+
+                                          Rectangle {
+                                              anchors.centerIn: parent
+                                              width: tbDockItem.modelData.active ? 38 : 34
+                                              height: tbDockItem.modelData.active ? 38 : 34
+                                              radius: 8
+                                              color: tbDockItem.modelData.active
+                                                  ? "${ca "base0D" "33"}"
+                                                  : "transparent"
+                                              border.width: tbDockItem.modelData.active ? 1 : 0
+                                              border.color: "${ca "base0D" "88"}"
+
+                                              Text {
+                                                  anchors.centerIn: parent
+                                                  text: tbDockItem.modelData.icon
+                                                  font.family: "RobotoMono Nerd Font"
+                                                  font.pixelSize: 20
+                                                  color: tbDockItem.modelData.active
+                                                      ? "${c "base0D"}"
+                                                      : (tbDockItem.modelData.hasWindows
+                                                          ? "${c "base05"}"
+                                                          : "${c "base04"}")
+                                              }
+                                          }
+
+                                          // Win11-style running/active indicator (underline)
+                                          Rectangle {
+                                              anchors.horizontalCenter: parent.horizontalCenter
+                                              anchors.bottom: parent.bottom
+                                              anchors.bottomMargin: 2
+                                              width: tbDockItem.modelData.active
+                                                  ? 14
+                                                  : (tbDockItem.modelData.hasWindows ? 4 : 0)
+                                              height: 3
+                                              radius: 1.5
+                                              color: "${c "base0D"}"
+                                              visible: tbDockItem.modelData.active || tbDockItem.modelData.hasWindows
+                                              opacity: tbDockItem.modelData.active ? 1.0 : 0.75
+                                          }
                                       }
                                   }
                               }
                           }
 
-                          // ── System tray + clock ──────────────
+                          // ══════════════════════════════════════════
+                          // RIGHT ZONE — tray corner + clock
+                          // ══════════════════════════════════════════
                           Row {
+                              id: taskbarRight
                               anchors.right: parent.right
                               anchors.verticalCenter: parent.verticalCenter
-                              anchors.rightMargin: 8
-                              spacing: 12
+                              anchors.rightMargin: 6
+                              spacing: 2
 
-                              Row {
-                                  spacing: 8
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  Text {
-                                      text: "󰖩"; color: "${c "base05"}"
-                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
-                                  }
-                                  Text {
-                                      text: "󰕾"; color: "${c "base05"}"
-                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
-                                  }
-                                  Text {
-                                      text: "󰂄"; color: "${c "base0B"}"
-                                      font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
-                                  }
-                                  Item {
-                                      width: 18; height: 18
-                                      Text {
+                              // ── Win11-style system tray corner (static 2x2 grid) ─
+                              Item {
+                                  id: tbTrayCorner
+                                  width: 44
+                                  height: 42
+
+                                  Rectangle {
+                                      anchors.fill: parent
+                                      radius: 6
+                                      color: "transparent"
+
+                                      Grid {
                                           anchors.centerIn: parent
-                                          text: "󰇰"; color: "${c "base0A"}"
-                                          font.family: "RobotoMono Nerd Font"; font.pixelSize: 13
-                                      }
-                                      Rectangle {
-                                          anchors.right: parent.right
-                                          anchors.top: parent.top
-                                          width: 12; height: 10
-                                          radius: 5
-                                          color: "${c "base08"}"
-                                          Text {
-                                              anchors.centerIn: parent
-                                              text: "3"
-                                              color: "${c "base00"}"
-                                              font.family: "Segoe UI"
-                                              font.pixelSize: 8
-                                              font.bold: true
+                                          columns: 2
+                                          rows: 2
+                                          spacing: 2
+
+                                          Repeater {
+                                              model: [
+                                                  { icon: "󰆩", color: "${c "base05"}" },
+                                                  { icon: "󰕾", color: "${c "base05"}" },
+                                                  { icon: "󰂄", color: "${c "base0B"}" },
+                                                  { icon: "󰂯", color: "${c "base0D"}" }
+                                              ]
+                                              Item {
+                                                  required property var modelData
+                                                  width: 14
+                                                  height: 14
+                                                  Text {
+                                                      anchors.centerIn: parent
+                                                      text: parent.modelData.icon
+                                                      color: parent.modelData.color
+                                                      font.family: "RobotoMono Nerd Font"
+                                                      font.pixelSize: 11
+                                                  }
+                                              }
                                           }
                                       }
                                   }
                               }
 
+                              // ── Thin separator ───────────────────
                               Rectangle {
-                                  width: 1; height: 24
+                                  width: 1
+                                  height: 26
                                   anchors.verticalCenter: parent.verticalCenter
-                                  color: "${c "base02"}"
+                                  color: "${ca "base02" "66"}"
                               }
 
-                              Column {
-                                  id: trayClock
-                                  anchors.verticalCenter: parent.verticalCenter
-                                  width: 70
-                                  spacing: 0
-                                  Text {
-                                      id: trayTime
-                                      text: Qt.formatDateTime(new Date(), "HH:mm")
-                                      color: "${c "base05"}"
-                                      font.family: "Segoe UI"
-                                      font.pixelSize: 12
-                                      horizontalAlignment: Text.AlignRight
-                                      width: parent.width
-                                      Timer {
-                                          running: true; repeat: true; interval: 1000; triggeredOnStart: true
-                                          onTriggered: trayTime.text =
-                                              Qt.formatDateTime(new Date(), "HH:mm")
-                                      }
-                                  }
-                                  Text {
-                                      id: trayDate
-                                      text: Qt.formatDateTime(new Date(), "ddd, MMM d")
-                                      color: "${c "base04"}"
-                                      font.family: "Segoe UI"
-                                      font.pixelSize: 10
-                                      horizontalAlignment: Text.AlignRight
-                                      width: parent.width
-                                      Timer {
-                                          running: true; repeat: true; interval: 30000; triggeredOnStart: true
-                                          onTriggered: trayDate.text =
-                                              Qt.formatDateTime(new Date(), "ddd, MMM d")
+                              // ── Clock block (two-line) ───────────
+                              Item {
+                                  id: tbClockItem
+                                  width: tbClockCol.implicitWidth + 20
+                                  height: 42
+
+                                  Rectangle {
+                                      anchors.fill: parent
+                                      radius: 6
+                                      color: "transparent"
+
+                                      Column {
+                                          id: tbClockCol
+                                          anchors.centerIn: parent
+                                          spacing: 0
+
+                                          Text {
+                                              id: tbClockTime
+                                              anchors.horizontalCenter: parent.horizontalCenter
+                                              text: Qt.formatDateTime(new Date(), "hh:mm AP")
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 14
+                                              font.weight: Font.Medium
+                                              color: "${c "base05"}"
+                                              Timer {
+                                                  running: true; repeat: true; interval: 1000; triggeredOnStart: true
+                                                  onTriggered: tbClockTime.text =
+                                                      Qt.formatDateTime(new Date(), "hh:mm AP")
+                                              }
+                                          }
+                                          Text {
+                                              id: tbClockDate
+                                              anchors.horizontalCenter: parent.horizontalCenter
+                                              text: Qt.formatDateTime(new Date(), "dd/MM/yyyy")
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 10
+                                              color: "${c "base04"}"
+                                              Timer {
+                                                  running: true; repeat: true; interval: 60000; triggeredOnStart: true
+                                                  onTriggered: tbClockDate.text =
+                                                      Qt.formatDateTime(new Date(), "dd/MM/yyyy")
+                                              }
+                                          }
                                       }
                                   }
                               }
 
+                              // ── Show-desktop strip (Win11 rightmost edge) ─
                               Rectangle {
-                                  width: 8; height: 32
-                                  anchors.verticalCenter: parent.verticalCenter
+                                  width: 4
+                                  height: 42
                                   radius: 2
-                                  color: "${ca "base02" "aa"}"
-                                  border.width: 1
-                                  border.color: "${c "base02"}"
+                                  color: "transparent"
+                                  anchors.verticalCenter: parent.verticalCenter
                               }
                           }
                       }
