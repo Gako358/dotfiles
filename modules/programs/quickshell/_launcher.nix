@@ -13,6 +13,18 @@
 
       property bool opened: false
 
+      function resolveIconSource(s) {
+          if (!s) return ""
+          var str = String(s)
+          if (str.indexOf("file://")  === 0) return str
+          if (str.indexOf("image://") === 0) return str
+          if (str.indexOf("qrc:")     === 0) return str
+          if (str.indexOf("http://")  === 0) return str
+          if (str.indexOf("https://") === 0) return str
+          if (str.charAt(0) === "/") return "file://" + str
+          return Quickshell.iconPath(str, "")
+      }
+
       function show() {
           root.opened = true
           searchField.forceActiveFocus()
@@ -86,19 +98,19 @@
 
                         anchors { top: true; bottom: true; left: true; right: true }
                         color: "transparent"
-                    
+
                         Shortcut {
                             sequences: ["Escape"]
                             onActivated: root.hide()
                         }
-                    
+
                             // Full-screen dismiss layer — stops at the bar so it never blocks it
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.bottomMargin: 48
                                 onClicked: root.hide()
                             }
-                    
+
                         Rectangle {
                             id: launcherCard
                             // Centered above the bar
@@ -227,7 +239,8 @@
                                   Layout.preferredWidth: 32
                                   Layout.preferredHeight: 32
                                   source: modelData
-                                      ? (modelData.icon || "application-x-executable")
+                                      ? root.resolveIconSource(
+                                          modelData.icon || "application-x-executable")
                                       : ""
                                   implicitSize: 32
                               }

@@ -205,6 +205,18 @@
       ''}
 
       // ── Helpers ───────────────────────────────────────────────────
+      function resolveIconSource(s) {
+          if (!s) return ""
+          var str = String(s)
+          if (str.indexOf("file://")  === 0) return str
+          if (str.indexOf("image://") === 0) return str
+          if (str.indexOf("qrc:")     === 0) return str
+          if (str.indexOf("http://")  === 0) return str
+          if (str.indexOf("https://") === 0) return str
+          if (str.charAt(0) === "/") return "file://" + str
+          return Quickshell.iconPath(str, "")
+      }
+
       function volIcon(p, m) {
           if (m || p <= 0) return "󰝟"
           if (p < 34)      return "󰕿"
@@ -506,7 +518,7 @@
                                   IconImage {
                                       anchors.fill: parent
                                       source: parent.trayItem
-                                          ? (parent.trayItem.icon || "")
+                                          ? bar.resolveIconSource(parent.trayItem.icon)
                                           : ""
                                       implicitSize: 14
                                   }

@@ -15,6 +15,18 @@
       function hide()   { root.opened = false }
       function toggle() { root.opened = !root.opened }
 
+      function resolveIconSource(s) {
+          if (!s) return ""
+          var str = String(s)
+          if (str.indexOf("file://")  === 0) return str
+          if (str.indexOf("image://") === 0) return str
+          if (str.indexOf("qrc:")     === 0) return str
+          if (str.indexOf("http://")  === 0) return str
+          if (str.indexOf("https://") === 0) return str
+          if (str.charAt(0) === "/") return "file://" + str
+          return Quickshell.iconPath(str, "")
+      }
+
       IpcHandler {
           target: "tray"
           function show()   { root.show() }
@@ -32,16 +44,16 @@
 
               anchors { top: true; bottom: true; left: true; right: true }
               color: "transparent"
-          
+
               Shortcut { sequences: ["Escape"]; onActivated: root.hide() }
-          
+
                   // Full-screen dismiss layer — stops at the bar so it never blocks it
                   MouseArea {
                       anchors.fill: parent
                       anchors.bottomMargin: 48
                       onClicked: root.hide()
                   }
-          
+
               Rectangle {
                   id: card
                   width: 320
@@ -147,7 +159,8 @@
                                   Image {
                                       Layout.preferredWidth: 22
                                       Layout.preferredHeight: 22
-                                      source: itemRow.modelData.icon
+                                      source: root.resolveIconSource(
+                                          itemRow.modelData.icon)
                                       fillMode: Image.PreserveAspectFit
                                       sourceSize.width: 22
                                       sourceSize.height: 22
