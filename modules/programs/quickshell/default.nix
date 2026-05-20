@@ -32,6 +32,7 @@ _: {
       };
       barQml = import ./_bar.nix {
         inherit c ca lib;
+        inherit (pkgs) grim;
         battery = cfg.battery.enable;
       };
       dashboardQml = import ./_dashboard.nix {

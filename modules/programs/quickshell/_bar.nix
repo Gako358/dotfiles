@@ -2,6 +2,7 @@
   c,
   ca,
   lib,
+  grim,
   battery ? false,
 }:
 ''
@@ -108,6 +109,80 @@
           onTriggered: {
               if (bar.hoveredDockItem === null) bar.hoveredWsId = -1
           }
+      }
+
+      // ── Workspace thumbnails (live + cached) ─────────────────────
+      property string thumbDir: "/tmp/quickshell-ws-thumbs"
+      property var    monThumbStamps: ({})
+      property var    pendingStampWsIds: []
+
+      Process {
+          id: grimProc
+          onExited: {
+              if (bar.pendingStampWsIds.length === 0) return
+              var stamps = ({})
+              for (var k in bar.monThumbStamps) stamps[k] = bar.monThumbStamps[k]
+              var now = Date.now()
+              for (var i = 0; i < bar.pendingStampWsIds.length; ++i) {
+                  stamps[bar.pendingStampWsIds[i]] = now
+              }
+              bar.monThumbStamps = stamps
+              bar.pendingStampWsIds = []
+          }
+      }
+
+      function snapshotAllVisible() {
+          var mons = Hyprland.monitors ? Hyprland.monitors.values : []
+          var cmds = []
+          var ids  = []
+          for (var i = 0; i < mons.length; ++i) {
+              var m = mons[i]
+              if (!m || !m.activeWorkspace) continue
+              var wsId = m.activeWorkspace.id
+              if (wsId <= 0) continue
+              cmds.push("${grim}/bin/grim -o '" + m.name
+                  + "' -t png -s 0.4 '" + bar.thumbDir
+                  + "/" + wsId + ".png'")
+              ids.push(wsId)
+          }
+          if (cmds.length === 0) return
+          bar.pendingStampWsIds = ids
+          grimProc.command = ["sh", "-c",
+              "mkdir -p '" + bar.thumbDir + "' && "
+              + cmds.join(" & ") + " ; wait"]
+          grimProc.running = true
+      }
+
+      // Map a workspace id → the HyprlandMonitor currently showing it
+      // (null if the workspace is hidden on every output).
+      function monitorForWs(wsId) {
+          var mons = Hyprland.monitors ? Hyprland.monitors.values : []
+          for (var i = 0; i < mons.length; ++i) {
+              var m = mons[i]
+              if (m && m.activeWorkspace && m.activeWorkspace.id === wsId)
+                  return m
+          }
+          return null
+      }
+
+      // Map a HyprlandMonitor → the matching Quickshell ShellScreen
+      // (needed as a captureSource for ScreencopyView).
+      function screenForMonitor(mon) {
+          if (!mon) return null
+          var screens = Quickshell.screens
+          for (var i = 0; i < screens.length; ++i) {
+              if (screens[i].name === mon.name) return screens[i]
+          }
+          return null
+      }
+
+      Timer {
+          id: snapshotTimer
+          interval: 3000
+          repeat: true
+          running: true
+          triggeredOnStart: true
+          onTriggered: bar.snapshotAllVisible()
       }
 
       PwObjectTracker {
@@ -584,8 +659,27 @@
           visible: bar.hoveredWsId > 0
 
           // Width/height of the preview card
-          implicitWidth:  260
+          implicitWidth:  300
           implicitHeight: previewCard.implicitHeight + 4
+
+          // ── Thumbnail resolution ──────────────────────────────────
+          // Is this workspace currently visible on some monitor?
+          // If so, we can show a true live ScreencopyView feed.
+          readonly property var liveMonitor:
+              bar.hoveredWsId > 0
+                  ? bar.monitorForWs(bar.hoveredWsId)
+                  : null
+          readonly property var liveScreen:
+              bar.screenForMonitor(wsPreview.liveMonitor)
+          readonly property bool hasLive:
+              wsPreview.liveScreen !== null
+
+          // Cached PNG stamp (epoch ms of last successful grim).
+          // Used both to detect "have a cache" and to bust QML's
+          // image cache when the file is overwritten on disk.
+          readonly property int cacheStamp:
+              bar.monThumbStamps[bar.hoveredWsId] || 0
+          readonly property bool hasCached: wsPreview.cacheStamp > 0
 
           // Anchor centered above the hovered dock item.
           // anchor.rect uses coordinates relative to parentWindow.
@@ -631,6 +725,89 @@
                   anchors.fill: parent
                   anchors.margins: 10
                   spacing: 6
+
+                  // ── Live or cached preview thumbnail ─────────────
+                  // 16:9 area: live ScreencopyView on top if the
+                  // workspace is visible on a monitor, otherwise a
+                  // cached PNG from the periodic snapshotter.
+                  Item {
+                      Layout.fillWidth: true
+                      Layout.preferredHeight: 158
+                      visible: wsPreview.hasLive || wsPreview.hasCached
+
+                      Rectangle {
+                          anchors.fill: parent
+                          radius: 8
+                          color: "${ca "base01" "cc"}"
+                          border.width: 1
+                          border.color: "${ca "base02" "aa"}"
+                          clip: true
+
+                          // Live feed — only instantiated while the
+                          // popup is visible and the workspace is
+                          // currently shown somewhere.
+                          Loader {
+                              anchors.fill: parent
+                              active: wsPreview.visible && wsPreview.hasLive
+                              sourceComponent: Component {
+                                  ScreencopyView {
+                                      captureSource: wsPreview.liveScreen
+                                      live: true
+                                  }
+                              }
+                          }
+
+                          // Cached snapshot fallback. The `?t=` query
+                          // string busts QML's image cache when the
+                          // file on disk is replaced by a fresh grim.
+                          Image {
+                              anchors.fill: parent
+                              visible: !wsPreview.hasLive && wsPreview.hasCached
+                              source: wsPreview.hasCached
+                                  ? ("file://" + bar.thumbDir + "/"
+                                      + bar.hoveredWsId + ".png?t="
+                                      + wsPreview.cacheStamp)
+                                  : ""
+                              fillMode: Image.PreserveAspectCrop
+                              cache: false
+                              asynchronous: true
+                              smooth: true
+                          }
+
+                          // "LIVE" badge — top-right corner of the
+                          // thumbnail, visible only for live feeds.
+                          Rectangle {
+                              visible: wsPreview.hasLive
+                              anchors.top: parent.top
+                              anchors.right: parent.right
+                              anchors.margins: 6
+                              width: liveBadgeRow.implicitWidth + 10
+                              height: 16
+                              radius: 8
+                              color: "${ca "base08" "cc"}"
+                              Row {
+                                  id: liveBadgeRow
+                                  anchors.centerIn: parent
+                                  spacing: 4
+                                  Rectangle {
+                                      anchors.verticalCenter: parent.verticalCenter
+                                      width: 5
+                                      height: 5
+                                      radius: 2.5
+                                      color: "${c "base00"}"
+                                  }
+                                  Text {
+                                      anchors.verticalCenter: parent.verticalCenter
+                                      text: "LIVE"
+                                      color: "${c "base00"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 8
+                                      font.weight: Font.Bold
+                                  }
+                              }
+                          }
+                      }
+                  }
 
                   // Header: icon + workspace label + count
                   RowLayout {

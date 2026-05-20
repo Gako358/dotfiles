@@ -3,6 +3,7 @@
   import QtQuick
   import QtQuick.Layouts
   import Quickshell
+  import Quickshell.Widgets
   import Quickshell.Wayland
   import Quickshell.Services.Notifications
 
@@ -38,6 +39,7 @@
                   body: notif.body || "",
                   appName: notif.appName || "",
                   image: notif.image || "",
+                  appIcon: notif.appIcon || "",
                   urgency: notif.urgency,
                   time: Qt.formatDateTime(new Date(), "hh:mm")
               }
@@ -86,6 +88,7 @@
                       required property string body
                       required property string appName
                       required property string image
+                      required property string appIcon
                       required property int urgency
 
                       Layout.fillWidth: true
@@ -117,14 +120,102 @@
                               Layout.fillWidth: true
                               spacing: 10
 
-                              Image {
-                                  visible: toast.image !== ""
-                                  source: toast.image
-                                  sourceSize.width: 36
-                                  sourceSize.height: 36
-                                  Layout.preferredWidth: 36
-                                  Layout.preferredHeight: 36
-                                  fillMode: Image.PreserveAspectFit
+                              // ── Avatar / icon block ──────────────
+                              Item {
+                                  id: avatar
+                                  Layout.preferredWidth: 40
+                                  Layout.preferredHeight: 40
+                                  Layout.alignment: Qt.AlignTop
+
+                                  readonly property bool hasImage:
+                                      toast.image !== ""
+                                  readonly property string resolvedAppIcon:
+                                      toast.appIcon !== ""
+                                          ? Quickshell.iconPath(toast.appIcon, "")
+                                          : ""
+                                  readonly property bool hasAppIcon:
+                                      resolvedAppIcon !== ""
+                                  readonly property string fallbackLetter:
+                                      toast.appName.length > 0
+                                          ? toast.appName.charAt(0).toUpperCase()
+                                          : "?"
+
+                                  // (1) Circular user avatar.
+                                  ClippingRectangle {
+                                      anchors.fill: parent
+                                      visible: avatar.hasImage
+                                      radius: width / 2
+                                      color: "${ca "base01" "cc"}"
+
+                                      Image {
+                                          anchors.fill: parent
+                                          source: toast.image
+                                          sourceSize.width: 80
+                                          sourceSize.height: 80
+                                          fillMode: Image.PreserveAspectCrop
+                                          smooth: true
+                                          cache: false
+                                      }
+                                  }
+
+                                  // (2) Square app icon (no user image).
+                                  Image {
+                                      anchors.fill: parent
+                                      visible: !avatar.hasImage
+                                          && avatar.hasAppIcon
+                                      source: avatar.hasAppIcon
+                                          ? avatar.resolvedAppIcon
+                                          : ""
+                                      sourceSize.width: 80
+                                      sourceSize.height: 80
+                                      fillMode: Image.PreserveAspectFit
+                                      smooth: true
+                                  }
+
+                                  // (3) Letter fallback.
+                                  Rectangle {
+                                      anchors.fill: parent
+                                      visible: !avatar.hasImage
+                                          && !avatar.hasAppIcon
+                                      radius: width / 2
+                                      color: "${ca "base0D" "55"}"
+                                      border.width: 1
+                                      border.color: "${ca "base0D" "aa"}"
+                                      Text {
+                                          anchors.centerIn: parent
+                                          text: avatar.fallbackLetter
+                                          color: "${c "base05"}"
+                                          font.family: "RobotoMono Nerd Font"
+                                          font.pixelSize: 18
+                                          font.weight: Font.Bold
+                                      }
+                                  }
+
+                                  // App-icon badge (corner) — only when
+                                  // we already show a user avatar and
+                                  // also have a distinct app icon.
+                                  Rectangle {
+                                      visible: avatar.hasImage
+                                          && avatar.hasAppIcon
+                                      anchors.right: parent.right
+                                      anchors.bottom: parent.bottom
+                                      width: 18
+                                      height: 18
+                                      radius: 9
+                                      color: "${ca "base00" "ee"}"
+                                      border.width: 1
+                                      border.color: "${c "base02"}"
+
+                                      Image {
+                                          anchors.fill: parent
+                                          anchors.margins: 2
+                                          source: avatar.resolvedAppIcon
+                                          sourceSize.width: 32
+                                          sourceSize.height: 32
+                                          fillMode: Image.PreserveAspectFit
+                                          smooth: true
+                                      }
+                                  }
                               }
 
                               ColumnLayout {

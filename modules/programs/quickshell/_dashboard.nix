@@ -9,6 +9,7 @@
   import QtQuick.Controls
   import QtQuick.Layouts
   import Quickshell
+  import Quickshell.Widgets
   import Quickshell.Wayland
   import Quickshell.Io
   import Quickshell.Services.Mpris
@@ -799,10 +800,13 @@
                               ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
                               delegate: Rectangle {
+                                  id: histDelegate
                                   required property int index
                                   required property string summary
                                   required property string body
                                   required property string appName
+                                  required property string image
+                                  required property string appIcon
                                   required property string time
                                   required property int urgency
 
@@ -820,6 +824,96 @@
                                       anchors.fill: parent
                                       anchors.margins: 8
                                       spacing: 8
+
+                                      // ── Avatar / icon (compact) ──
+                                      Item {
+                                          id: histAvatar
+                                          Layout.preferredWidth: 28
+                                          Layout.preferredHeight: 28
+                                          Layout.alignment: Qt.AlignTop
+
+                                          readonly property bool hasImage:
+                                              histDelegate.image !== ""
+                                          readonly property string resolvedAppIcon:
+                                              histDelegate.appIcon !== ""
+                                                  ? Quickshell.iconPath(histDelegate.appIcon, "")
+                                                  : ""
+                                          readonly property bool hasAppIcon:
+                                              resolvedAppIcon !== ""
+                                          readonly property string fallbackLetter:
+                                              histDelegate.appName.length > 0
+                                                  ? histDelegate.appName.charAt(0).toUpperCase()
+                                                  : "?"
+
+                                          ClippingRectangle {
+                                              anchors.fill: parent
+                                              visible: histAvatar.hasImage
+                                              radius: width / 2
+                                              color: "${ca "base01" "cc"}"
+                                              Image {
+                                                  anchors.fill: parent
+                                                  source: histDelegate.image
+                                                  sourceSize.width: 56
+                                                  sourceSize.height: 56
+                                                  fillMode: Image.PreserveAspectCrop
+                                                  smooth: true
+                                                  cache: false
+                                              }
+                                          }
+
+                                          Image {
+                                              anchors.fill: parent
+                                              visible: !histAvatar.hasImage
+                                                  && histAvatar.hasAppIcon
+                                              source: histAvatar.hasAppIcon
+                                                  ? histAvatar.resolvedAppIcon
+                                                  : ""
+                                              sourceSize.width: 56
+                                              sourceSize.height: 56
+                                              fillMode: Image.PreserveAspectFit
+                                              smooth: true
+                                          }
+
+                                          Rectangle {
+                                              anchors.fill: parent
+                                              visible: !histAvatar.hasImage
+                                                  && !histAvatar.hasAppIcon
+                                              radius: width / 2
+                                              color: "${ca "base0D" "55"}"
+                                              border.width: 1
+                                              border.color: "${ca "base0D" "aa"}"
+                                              Text {
+                                                  anchors.centerIn: parent
+                                                  text: histAvatar.fallbackLetter
+                                                  color: "${c "base05"}"
+                                                  font.family: "RobotoMono Nerd Font"
+                                                  font.pixelSize: 12
+                                                  font.weight: Font.Bold
+                                              }
+                                          }
+
+                                          Rectangle {
+                                              visible: histAvatar.hasImage
+                                                  && histAvatar.hasAppIcon
+                                              anchors.right: parent.right
+                                              anchors.bottom: parent.bottom
+                                              width: 13
+                                              height: 13
+                                              radius: 6.5
+                                              color: "${ca "base00" "ee"}"
+                                              border.width: 1
+                                              border.color: "${c "base02"}"
+                                              Image {
+                                                  anchors.fill: parent
+                                                  anchors.margins: 1
+                                                  source: histAvatar.resolvedAppIcon
+                                                  sourceSize.width: 24
+                                                  sourceSize.height: 24
+                                                  fillMode: Image.PreserveAspectFit
+                                                  smooth: true
+                                              }
+                                          }
+                                      }
 
                                       ColumnLayout {
                                           Layout.fillWidth: true
