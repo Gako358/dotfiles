@@ -33,13 +33,13 @@ in
     ];
 
     workspace = [
+      "1, monitor:${office}"
       "2, monitor:${office}"
       "3, monitor:${office}"
       "4, monitor:${office}"
       "5, monitor:${office}"
       "6, monitor:${office}"
       "7, monitor:${office}"
-      "1, monitor:${laptop}"
       "8, monitor:${laptop}"
       "9, monitor:${laptop}"
     ];
