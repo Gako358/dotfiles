@@ -3,6 +3,7 @@
   ca,
   lib,
   lockMonitors ? [ ],
+  wallpaperSrc ? null,
 }:
 let
   monitorsJs =
@@ -140,11 +141,20 @@ in
                       id: desktop
                       anchors.fill: parent
 
-                      // ── Aero-ish gradient "wallpaper" ────────
-                      gradient: Gradient {
-                          GradientStop { position: 0.0; color: "${c "base01"}" }
-                          GradientStop { position: 0.5; color: "${c "base00"}" }
-                          GradientStop { position: 1.0; color: "${c "base01"}" }
+                      // ── Window minimize state ─────────────────
+                      property bool calMinimized:     false
+                      property bool outlookMinimized: false
+
+                      // ── Wallpaper image (falls back to gradient) ──
+                      color: "${c "base00"}"
+
+                      Image {
+                          anchors.fill: parent
+                          source: "${if wallpaperSrc != null then "file://${wallpaperSrc}" else ""}"
+                          visible: source !== ""
+                          fillMode: Image.PreserveAspectCrop
+                          asynchronous: false
+                          cache: true
                       }
 
                       // React to PAM failure
@@ -382,6 +392,13 @@ in
                           border.width: 1
                           border.color: "${c "base02"}"
 
+                          visible: opacity > 0.01
+                          opacity: desktop.calMinimized ? 0 : 1
+                          scale:   desktop.calMinimized ? 0.85 : 1
+                          transformOrigin: Item.Bottom
+                          Behavior on opacity { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                          Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+
                           // Soft outer "Aero" glow
                           Rectangle {
                               anchors.fill: parent
@@ -433,7 +450,9 @@ in
 
                                       Rectangle {
                                           width: 46; height: 22
-                                          color: "transparent"
+                                          color: calMinHover.hovered ? "${ca "base03" "44"}" : "transparent"
+                                          Behavior on color { ColorAnimation { duration: 100 } }
+                                          HoverHandler { id: calMinHover }
                                           Text {
                                               anchors.centerIn: parent
                                               anchors.verticalCenterOffset: -4
@@ -441,6 +460,11 @@ in
                                               color: "${c "base05"}"
                                               font.family: "Segoe UI"
                                               font.pixelSize: 14
+                                          }
+                                          MouseArea {
+                                              anchors.fill: parent
+                                              cursorShape: Qt.PointingHandCursor
+                                              onClicked: desktop.calMinimized = true
                                           }
                                       }
                                       Rectangle {
@@ -670,6 +694,13 @@ in
                           border.width: 1
                           border.color: "${c "base02"}"
 
+                          visible: opacity > 0.01
+                          opacity: desktop.outlookMinimized ? 0 : 1
+                          scale:   desktop.outlookMinimized ? 0.85 : 1
+                          transformOrigin: Item.Bottom
+                          Behavior on opacity { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                          Behavior on scale   { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+
                           // Aero glow
                           Rectangle {
                               anchors.fill: parent
@@ -720,7 +751,9 @@ in
 
                                       Rectangle {
                                           width: 46; height: 22
-                                          color: "transparent"
+                                          color: outMinHover.hovered ? "${ca "base03" "44"}" : "transparent"
+                                          Behavior on color { ColorAnimation { duration: 100 } }
+                                          HoverHandler { id: outMinHover }
                                           Text {
                                               anchors.centerIn: parent
                                               anchors.verticalCenterOffset: -4
@@ -728,6 +761,11 @@ in
                                               color: "${c "base05"}"
                                               font.family: "Segoe UI"
                                               font.pixelSize: 14
+                                          }
+                                          MouseArea {
+                                              anchors.fill: parent
+                                              cursorShape: Qt.PointingHandCursor
+                                              onClicked: desktop.outlookMinimized = true
                                           }
                                       }
                                       Rectangle {
@@ -1628,6 +1666,112 @@ in
                                               visible: tbDockItem.modelData.active || tbDockItem.modelData.hasWindows
                                               opacity: tbDockItem.modelData.active ? 1.0 : 0.75
                                           }
+                                      }
+                                  }
+
+                                  // ── Thin separator ───────────────────
+                                  Rectangle {
+                                      width: 1
+                                      height: 28
+                                      anchors.verticalCenter: parent.verticalCenter
+                                      color: "${ca "base02" "88"}"
+                                  }
+
+                                  // ── Calendar taskbar button ───────────
+                                  Item {
+                                      id: tbCalBtn
+                                      width: 44
+                                      height: 44
+
+                                      Rectangle {
+                                          anchors.centerIn: parent
+                                          width: !desktop.calMinimized ? 38 : 34
+                                          height: !desktop.calMinimized ? 38 : 34
+                                          radius: 8
+                                          color: !desktop.calMinimized
+                                              ? "${ca "base0D" "33"}"
+                                              : (calBtnHover.hovered ? "${ca "base02" "66"}" : "transparent")
+                                          border.width: !desktop.calMinimized ? 1 : 0
+                                          border.color: "${ca "base0D" "88"}"
+                                          Behavior on color { ColorAnimation { duration: 120 } }
+
+                                          Text {
+                                              anchors.centerIn: parent
+                                              text: "󰃭"
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 20
+                                              color: !desktop.calMinimized
+                                                  ? "${c "base0D"}"
+                                                  : "${c "base05"}"
+                                          }
+
+                                          HoverHandler { id: calBtnHover }
+                                          MouseArea {
+                                              anchors.fill: parent
+                                              cursorShape: Qt.PointingHandCursor
+                                              onClicked: desktop.calMinimized = !desktop.calMinimized
+                                          }
+                                      }
+
+                                      Rectangle {
+                                          anchors.horizontalCenter: parent.horizontalCenter
+                                          anchors.bottom: parent.bottom
+                                          anchors.bottomMargin: 2
+                                          width: !desktop.calMinimized ? 14 : 4
+                                          height: 3
+                                          radius: 1.5
+                                          color: "${c "base0D"}"
+                                          opacity: !desktop.calMinimized ? 1.0 : 0.6
+                                          Behavior on width { NumberAnimation { duration: 150 } }
+                                      }
+                                  }
+
+                                  // ── Outlook taskbar button ────────────
+                                  Item {
+                                      id: tbOutBtn
+                                      width: 44
+                                      height: 44
+
+                                      Rectangle {
+                                          anchors.centerIn: parent
+                                          width: !desktop.outlookMinimized ? 38 : 34
+                                          height: !desktop.outlookMinimized ? 38 : 34
+                                          radius: 8
+                                          color: !desktop.outlookMinimized
+                                              ? "${ca "base0D" "33"}"
+                                              : (outBtnHover.hovered ? "${ca "base02" "66"}" : "transparent")
+                                          border.width: !desktop.outlookMinimized ? 1 : 0
+                                          border.color: "${ca "base0D" "88"}"
+                                          Behavior on color { ColorAnimation { duration: 120 } }
+
+                                          Text {
+                                              anchors.centerIn: parent
+                                              text: "󰇮"
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 20
+                                              color: !desktop.outlookMinimized
+                                                  ? "${c "base0D"}"
+                                                  : "${c "base05"}"
+                                          }
+
+                                          HoverHandler { id: outBtnHover }
+                                          MouseArea {
+                                              anchors.fill: parent
+                                              cursorShape: Qt.PointingHandCursor
+                                              onClicked: desktop.outlookMinimized = !desktop.outlookMinimized
+                                          }
+                                      }
+
+                                      Rectangle {
+                                          anchors.horizontalCenter: parent.horizontalCenter
+                                          anchors.bottom: parent.bottom
+                                          anchors.bottomMargin: 2
+                                          width: !desktop.outlookMinimized ? 14 : 4
+                                          height: 3
+                                          radius: 1.5
+                                          color: "${c "base0D"}"
+                                          opacity: !desktop.outlookMinimized ? 1.0 : 0.6
+                                          Behavior on width { NumberAnimation { duration: 150 } }
                                       }
                                   }
                               }
