@@ -53,6 +53,9 @@ _: {
       monitorsPanelQml = import ./_monitors-panel.nix { inherit c ca; };
       trayPanelQml = import ./_tray-panel.nix { inherit c ca; };
       processesPanelQml = import ./_processes-panel.nix { inherit c ca; };
+      notificationsPanelQml = import ./_notifications-panel.nix { inherit c ca; };
+      appointmentsQml = import ./_appointments.nix { };
+      appointmentEditorQml = import ./_appointment-editor.nix { inherit c ca; };
       wallpaperQml = import ./_wallpaper.nix {
         inherit c ca;
         wallpaperDir = cfg.wallpaper.directory;
@@ -75,6 +78,9 @@ _: {
         cp ${pkgs.writeText "TrayPanel.qml" trayPanelQml}               $out/TrayPanel.qml
         cp ${pkgs.writeText "Wallpaper.qml" wallpaperQml}               $out/Wallpaper.qml
         cp ${pkgs.writeText "ProcessesPanel.qml" processesPanelQml}     $out/ProcessesPanel.qml
+        cp ${pkgs.writeText "NotificationsPanel.qml" notificationsPanelQml} $out/NotificationsPanel.qml
+        cp ${pkgs.writeText "Appointments.qml" appointmentsQml}             $out/Appointments.qml
+        cp ${pkgs.writeText "AppointmentEditor.qml" appointmentEditorQml}   $out/AppointmentEditor.qml
       '';
     in
     {

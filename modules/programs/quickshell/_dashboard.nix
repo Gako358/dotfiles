@@ -20,6 +20,7 @@
       id: root
 
       property var notifications: null
+      property var appointments: null
       property bool opened: false
 
       signal monitorsRequested()
@@ -29,6 +30,9 @@
       signal networkRequested()
       signal batteryRequested()
       signal processesRequested(string sortMode)
+      signal notificationsRequested()
+      signal appointmentRequested(string dateStr)
+      signal appointmentEditRequested(string id)
 
       function toggle() { root.opened = !root.opened }
       function show()   { root.opened = true }
@@ -179,19 +183,19 @@
               // Win11 Action Center: slides up from bottom-right corner
               anchors { top: true; bottom: true; left: true; right: true }
               color: "transparent"
-          
+
               Shortcut {
                   sequences: ["Escape"]
                   onActivated: root.hide()
               }
-          
+
                   // Full-screen dismiss layer — stops at the bar so it never blocks it
                   MouseArea {
                       anchors.fill: parent
                       anchors.bottomMargin: 48
                       onClicked: root.hide()
                   }
-          
+
               Rectangle {
                   id: dashCard
                   width: 420
@@ -735,13 +739,30 @@
                       Layout.fillWidth: true
                       Layout.fillHeight: true
                       Layout.minimumHeight: 200
-                      color: "${ca "base01" "75"}"
+                      color: notifCardHover.hovered
+                          ? "${ca "base02" "55"}"
+                          : "${ca "base01" "75"}"
+                      Behavior on color { ColorAnimation { duration: 120 } }
                       radius: 12
                       border.width: 1
-                      border.color: "${c "base02"}"
+                      border.color: notifCardHover.hovered
+                          ? "${c "base0A"}"
+                          : "${c "base02"}"
+                      Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                      HoverHandler { id: notifCardHover }
 
                       readonly property var histModel:
                           root.notifications ? root.notifications.historyModel : null
+
+                      MouseArea {
+                          anchors.fill: parent
+                          cursorShape: Qt.PointingHandCursor
+                          onClicked: {
+                              root.hide()
+                              root.notificationsRequested()
+                          }
+                      }
 
                       ColumnLayout {
                           anchors.fill: parent
@@ -758,6 +779,24 @@
                                   font.weight: Font.Medium
                               }
                               Item { Layout.fillWidth: true }
+                              // Expand to full notifications panel
+                              Text {
+                                  text: "󰁌"
+                                  color: notifCardHover.hovered
+                                      ? "${c "base0A"}"
+                                      : "${c "base04"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 12
+                                  Behavior on color { ColorAnimation { duration: 120 } }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: {
+                                          root.hide()
+                                          root.notificationsRequested()
+                                      }
+                                  }
+                              }
                               Text {
                                   visible: notifCard.histModel
                                       && notifCard.histModel.count > 0
@@ -812,12 +851,26 @@
 
                                   width: notifList.width
                                   height: row.implicitHeight + 12
-                                  color: "${ca "base00" "80"}"
+                                  color: histRowHover.hovered
+                                      ? "${ca "base01" "cc"}"
+                                      : "${ca "base00" "80"}"
+                                  Behavior on color { ColorAnimation { duration: 100 } }
                                   radius: 8
                                   border.width: 1
                                   border.color: urgency === 2
                                       ? "${c "base08"}"
                                       : "${c "base02"}"
+
+                                  HoverHandler { id: histRowHover }
+
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: {
+                                          root.hide()
+                                          root.notificationsRequested()
+                                      }
+                                  }
 
                                   RowLayout {
                                       id: row
@@ -987,7 +1040,7 @@
                   Rectangle {
                       id: calCard
                       Layout.fillWidth: true
-                      Layout.preferredHeight: 170
+                      Layout.preferredHeight: 250
                       color: "${ca "base01" "75"}"
                       radius: 12
                       border.width: 1
@@ -997,22 +1050,97 @@
                       property int year:  today.getFullYear()
                       property int month: today.getMonth()
 
+                      // YYYY-MM-DD for today, for highlighting
+                      readonly property string todayStr:
+                          today.getFullYear().toString().padStart(4, "0")
+                          + "-" + (today.getMonth() + 1).toString().padStart(2, "0")
+                          + "-" + today.getDate().toString().padStart(2, "0")
+
+                      // Live month count, re-binds via revision
+                      readonly property int monthApptCount:
+                          (root.appointments && root.appointments.revision >= 0)
+                              ? root.appointments.listInMonth(calCard.year, calCard.month)
+                              : 0
+
+                      // Today's appointments (used by the strip below the grid)
+                      readonly property var todayAppts:
+                          (root.appointments && root.appointments.revision >= 0)
+                              ? root.appointments.listForDate(calCard.todayStr)
+                              : []
+
                       ColumnLayout {
                           anchors.fill: parent
                           anchors.margins: 12
                           spacing: 6
 
-                          Text {
-                              Layout.alignment: Qt.AlignHCenter
-                              text: Qt.formatDateTime(calCard.today, "MMMM yyyy")
-                              color: "${c "base0D"}"
-                              font.family: "RobotoMono Nerd Font"
-                              font.pixelSize: 13
+                          // Header row: month + count badge + add button
+                          RowLayout {
+                              Layout.fillWidth: true
+                              spacing: 6
+
+                              Text {
+                                  text: Qt.formatDateTime(calCard.today, "MMMM yyyy")
+                                  color: "${c "base0D"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 13
+                                  font.weight: Font.Medium
+                              }
+
+                              Rectangle {
+                                  visible: calCard.monthApptCount > 0
+                                  Layout.preferredHeight: 16
+                                  Layout.preferredWidth: monthBadge.implicitWidth + 12
+                                  radius: 8
+                                  color: "${ca "base0A" "33"}"
+                                  border.width: 1
+                                  border.color: "${ca "base0A" "aa"}"
+                                  Text {
+                                      id: monthBadge
+                                      anchors.centerIn: parent
+                                      text: calCard.monthApptCount
+                                      color: "${c "base0A"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 9
+                                      font.weight: Font.Medium
+                                  }
+                              }
+
+                              Item { Layout.fillWidth: true }
+
+                              // Add appointment for today
+                              Rectangle {
+                                  Layout.preferredWidth: 22
+                                  Layout.preferredHeight: 22
+                                  radius: 11
+                                  color: addApptHover.hovered
+                                      ? "${ca "base0D" "55"}"
+                                      : "${ca "base02" "cc"}"
+                                  border.width: 1
+                                  border.color: addApptHover.hovered ? "${c "base0D"}" : "${c "base02"}"
+                                  Behavior on color { ColorAnimation { duration: 120 } }
+                                  HoverHandler { id: addApptHover }
+                                  Text {
+                                      anchors.centerIn: parent
+                                      text: "+"
+                                      color: addApptHover.hovered ? "${c "base0D"}" : "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 14
+                                      font.weight: Font.Bold
+                                  }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: {
+                                          root.hide()
+                                          root.appointmentRequested(calCard.todayStr)
+                                      }
+                                  }
+                              }
                           }
 
                           GridLayout {
                               Layout.fillWidth: true
-                              Layout.fillHeight: true
+                              Layout.preferredHeight: 140
                               columns: 7
                               rowSpacing: 2
                               columnSpacing: 2
@@ -1034,7 +1162,7 @@
                                   Item {
                                       id: cell
                                       Layout.fillWidth: true
-                                      Layout.preferredHeight: 18
+                                      Layout.preferredHeight: 22
                                       property var firstOfMonth: new Date(calCard.year, calCard.month, 1)
                                       property int firstDow: (firstOfMonth.getDay() + 6) % 7
                                       property int dayNum: index - firstDow + 1
@@ -1043,23 +1171,161 @@
                                           && cellDate.getMonth() === calCard.month
                                       property bool isToday: inMonth
                                           && cellDate.getDate() === calCard.today.getDate()
+                                      readonly property string dateStr:
+                                          inMonth
+                                              ? calCard.year.toString().padStart(4, "0")
+                                                + "-" + (calCard.month + 1).toString().padStart(2, "0")
+                                                + "-" + dayNum.toString().padStart(2, "0")
+                                              : ""
+                                      readonly property int apptCount:
+                                          (inMonth && root.appointments && root.appointments.revision >= 0)
+                                              ? root.appointments.countOn(dateStr)
+                                              : 0
+                                      readonly property bool hasAppt: apptCount > 0
 
                                       Rectangle {
+                                          id: cellBg
                                           anchors.centerIn: parent
-                                          width: 22; height: 18
-                                          radius: 4
-                                          color: cell.isToday ? "${c "base0D"}" : "transparent"
+                                          width: 26; height: 22
+                                          radius: 5
+                                          color: cell.isToday
+                                              ? "${c "base0D"}"
+                                              : (cellHover.hovered && cell.inMonth
+                                                  ? "${ca "base02" "cc"}"
+                                                  : "transparent")
+                                          border.width: cell.hasAppt && !cell.isToday ? 1 : 0
+                                          border.color: "${ca "base0A" "aa"}"
+                                          Behavior on color { ColorAnimation { duration: 100 } }
+                                          HoverHandler { id: cellHover; enabled: cell.inMonth }
+
                                           Text {
-                                              anchors.centerIn: parent
+                                              anchors.horizontalCenter: parent.horizontalCenter
+                                              anchors.top: parent.top
+                                              anchors.topMargin: 2
                                               text: cell.inMonth ? cell.dayNum : ""
                                               color: cell.isToday
                                                   ? "${c "base00"}"
-                                                  : "${c "base05"}"
+                                                  : (cell.hasAppt
+                                                      ? "${c "base05"}"
+                                                      : "${c "base05"}")
                                               font.family: "RobotoMono Nerd Font"
                                               font.pixelSize: 10
+                                              font.weight: cell.hasAppt ? Font.Medium : Font.Normal
+                                          }
+
+                                          // Appointment indicator(s)
+                                          Row {
+                                              anchors.horizontalCenter: parent.horizontalCenter
+                                              anchors.bottom: parent.bottom
+                                              anchors.bottomMargin: 2
+                                              spacing: 1
+                                              visible: cell.hasAppt
+                                              Repeater {
+                                                  model: Math.min(cell.apptCount, 3)
+                                                  Rectangle {
+                                                      width: 3; height: 3
+                                                      radius: 1.5
+                                                      color: cell.isToday
+                                                          ? "${c "base00"}"
+                                                          : "${c "base0A"}"
+                                                  }
+                                              }
+                                          }
+
+                                          MouseArea {
+                                              anchors.fill: parent
+                                              enabled: cell.inMonth
+                                              cursorShape: cell.inMonth
+                                                  ? Qt.PointingHandCursor
+                                                  : Qt.ArrowCursor
+                                              onClicked: {
+                                                  if (!cell.inMonth) return
+                                                  root.hide()
+                                                  root.appointmentRequested(cell.dateStr)
+                                              }
                                           }
                                       }
                                   }
+                              }
+                          }
+
+                          // Strip: today's appointments (up to 3)
+                          Rectangle {
+                              Layout.fillWidth: true
+                              Layout.preferredHeight: 1
+                              color: "${ca "base02" "80"}"
+                              visible: calCard.todayAppts.length > 0
+                          }
+
+                          ColumnLayout {
+                              Layout.fillWidth: true
+                              spacing: 2
+                              visible: calCard.todayAppts.length > 0
+                              Repeater {
+                                  model: calCard.todayAppts.slice(0, 3)
+                                  Rectangle {
+                                      required property int index
+                                      required property var modelData
+                                      Layout.fillWidth: true
+                                      Layout.preferredHeight: 20
+                                      radius: 4
+                                      color: todayApptHover.hovered
+                                          ? "${ca "base02" "cc"}"
+                                          : "transparent"
+                                      Behavior on color { ColorAnimation { duration: 100 } }
+                                      HoverHandler { id: todayApptHover }
+                                      RowLayout {
+                                          anchors.fill: parent
+                                          anchors.leftMargin: 4
+                                          anchors.rightMargin: 4
+                                          spacing: 6
+                                          Rectangle {
+                                              Layout.preferredWidth: 3
+                                              Layout.preferredHeight: 12
+                                              radius: 1.5
+                                              color: "${c "base0A"}"
+                                          }
+                                          Text {
+                                              text: modelData.time
+                                              color: "${c "base0C"}"
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 10
+                                              font.weight: Font.Medium
+                                          }
+                                          Text {
+                                              Layout.fillWidth: true
+                                              text: modelData.title
+                                              color: "${c "base05"}"
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 10
+                                              elide: Text.ElideRight
+                                          }
+                                          Text {
+                                              visible: modelData.leadMins > 0
+                                              text: "󰂟"
+                                              color: "${c "base0A"}"
+                                              font.family: "RobotoMono Nerd Font"
+                                              font.pixelSize: 9
+                                          }
+                                      }
+                                      MouseArea {
+                                          anchors.fill: parent
+                                          cursorShape: Qt.PointingHandCursor
+                                          onClicked: {
+                                              root.hide()
+                                              root.appointmentEditRequested(modelData.id)
+                                          }
+                                      }
+                                  }
+                              }
+                              Text {
+                                  visible: calCard.todayAppts.length > 3
+                                  Layout.fillWidth: true
+                                  horizontalAlignment: Text.AlignHCenter
+                                  text: "+" + (calCard.todayAppts.length - 3) + " more today"
+                                  color: "${c "base04"}"
+                                  font.family: "RobotoMono Nerd Font"
+                                  font.pixelSize: 9
                               }
                           }
                       }
