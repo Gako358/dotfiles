@@ -28,12 +28,188 @@
               var arr = []
               if (Pipewire.defaultAudioSink)   arr.push(Pipewire.defaultAudioSink)
               if (Pipewire.defaultAudioSource) arr.push(Pipewire.defaultAudioSource)
+              var nodes = Pipewire.nodes ? Pipewire.nodes.values : []
+              for (var i = 0; i < nodes.length; i++) {
+                  var n = nodes[i]
+                  if (n && n.audio && !n.isStream) arr.push(n)
+              }
               return arr
           }
       }
 
       readonly property var sink:   Pipewire.defaultAudioSink
       readonly property var source: Pipewire.defaultAudioSource
+
+      function _audioDevices(wantSink) {
+          var result = []
+          var nodes = Pipewire.nodes ? Pipewire.nodes.values : []
+          for (var i = 0; i < nodes.length; i++) {
+              var n = nodes[i]
+              if (n && n.audio && !n.isStream && n.isSink === wantSink)
+                  result.push(n)
+          }
+          return result
+      }
+
+      readonly property var sinks:   _audioDevices(true)
+      readonly property var sources: _audioDevices(false)
+
+      function _nodeLabel(n) {
+          if (!n) return "—"
+          return n.description || n.nickname || n.name || "—"
+      }
+
+      // ── Themed device picker ─────────────────────────────────
+      component DeviceCombo: ComboBox {
+          id: combo
+
+          property var devices: []
+          property var currentNode: null
+          property string emptyText: "No device"
+          property string itemIcon: "󰓃" // generic speaker/output by default
+          signal pick(var node)
+
+          Layout.fillWidth: true
+          Layout.preferredHeight: 30
+          font.family: "RobotoMono Nerd Font"
+          font.pixelSize: 11
+
+          model: devices
+          enabled: devices.length > 0
+          currentIndex: {
+              if (!currentNode) return -1
+              for (var i = 0; i < devices.length; i++)
+                  if (devices[i] === currentNode) return i
+              return -1
+          }
+          displayText: currentIndex >= 0
+              ? root._nodeLabel(devices[currentIndex])
+              : (devices.length === 0 ? emptyText : "—")
+
+          onActivated: (index) => combo.pick(combo.devices[index])
+
+          background: Rectangle {
+              radius: 8
+              color: combo.popup.visible
+                  ? "${ca "base02" "cc"}"
+                  : (combo.hovered ? "${ca "base02" "99"}" : "${ca "base01" "cc"}")
+              border.width: 1
+              border.color: combo.popup.visible
+                  ? "${c "base0E"}"
+                  : "${ca "base02" "aa"}"
+              Behavior on color  { ColorAnimation { duration: 120 } }
+              Behavior on border.color { ColorAnimation { duration: 120 } }
+          }
+
+          contentItem: RowLayout {
+              spacing: 8
+
+              Text {
+                  Layout.leftMargin: 10
+                  text: combo.itemIcon
+                  color: combo.enabled ? "${c "base0E"}" : "${c "base04"}"
+                  font.family: "RobotoMono Nerd Font"
+                  font.pixelSize: 13
+                  verticalAlignment: Text.AlignVCenter
+              }
+              Text {
+                  Layout.fillWidth: true
+                  text: combo.displayText
+                  font: combo.font
+                  color: combo.enabled ? "${c "base05"}" : "${c "base04"}"
+                  verticalAlignment: Text.AlignVCenter
+                  elide: Text.ElideRight
+              }
+          }
+
+          indicator: Text {
+              x: combo.width - width - 10
+              y: (combo.height - height) / 2
+              text: "󰅀" // nf-md-chevron_down
+              font.family: "RobotoMono Nerd Font"
+              font.pixelSize: 14
+              color: combo.enabled ? "${c "base04"}" : "${ca "base04" "80"}"
+              rotation: combo.popup.visible ? 180 : 0
+              Behavior on rotation { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+          }
+
+          delegate: ItemDelegate {
+              id: del
+              required property var modelData
+              required property int index
+              width: combo.width
+              height: 28
+              padding: 0
+
+              contentItem: RowLayout {
+                  anchors.fill: parent
+                  anchors.leftMargin: 8
+                  anchors.rightMargin: 8
+                  spacing: 8
+
+                  Text {
+                      Layout.preferredWidth: 14
+                      text: combo.currentIndex === del.index ? "󰄬" : ""
+                      color: "${c "base0E"}"
+                      font.family: "RobotoMono Nerd Font"
+                      font.pixelSize: 12
+                      horizontalAlignment: Text.AlignHCenter
+                      verticalAlignment: Text.AlignVCenter
+                  }
+                  Text {
+                      Layout.fillWidth: true
+                      text: root._nodeLabel(del.modelData)
+                      color: combo.currentIndex === del.index
+                          ? "${c "base0E"}"
+                          : "${c "base05"}"
+                      font.family: "RobotoMono Nerd Font"
+                      font.pixelSize: 11
+                      elide: Text.ElideRight
+                      verticalAlignment: Text.AlignVCenter
+                  }
+              }
+
+              background: Rectangle {
+                  radius: 6
+                  color: del.highlighted
+                      ? "${ca "base02" "cc"}"
+                      : (combo.currentIndex === del.index
+                          ? "${ca "base02" "55"}"
+                          : "transparent")
+              }
+              highlighted: combo.highlightedIndex === del.index
+          }
+
+          popup: Popup {
+              y: combo.height + 4
+              width: combo.width
+              implicitHeight: Math.min(contentItem.implicitHeight + 8, 240)
+              padding: 4
+
+              contentItem: ListView {
+                  clip: true
+                  implicitHeight: contentHeight
+                  model: combo.popup.visible ? combo.delegateModel : null
+                  currentIndex: combo.highlightedIndex
+                  ScrollIndicator.vertical: ScrollIndicator { }
+              }
+
+              background: Rectangle {
+                  radius: 10
+                  color: "${ca "base00" "f2"}"
+                  border.width: 1
+                  border.color: "${c "base02"}"
+              }
+
+              enter: Transition {
+                  NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 140; easing.type: Easing.OutCubic }
+                  NumberAnimation { property: "scale";   from: 0.96; to: 1; duration: 180; easing.type: Easing.OutQuint }
+              }
+              exit: Transition {
+                  NumberAnimation { property: "opacity"; from: 1; to: 0; duration: 120; easing.type: Easing.InCubic }
+              }
+          }
+      }
 
       PanelWindow {
           id: panel
@@ -144,15 +320,15 @@
                                   font.family: "RobotoMono Nerd Font"
                                   font.pixelSize: 10
                               }
-                              Text {
-                                  Layout.fillWidth: true
-                                  text: root.sink
-                                      ? (root.sink.description || root.sink.name || "—")
-                                      : "No device"
-                                  color: "${c "base05"}"
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 11
-                                  elide: Text.ElideRight
+
+                              DeviceCombo {
+                                  id: sinkCombo
+                                  devices: root.sinks
+                                  currentNode: root.sink
+                                  itemIcon: "󰓃"
+                                  onPick: (node) => {
+                                      if (node) Pipewire.preferredDefaultAudioSink = node
+                                  }
                               }
                           }
 
@@ -183,12 +359,12 @@
                       Layout.fillWidth: true
                       Layout.preferredHeight: 1
                       color: "${ca "base02" "80"}"
-                      visible: root.source !== null
+                      visible: root.source !== null || root.sources.length > 0
                   }
 
                   // ── Input (source) ───────────────────────────
                   ColumnLayout {
-                      visible: root.source !== null
+                      visible: root.source !== null || root.sources.length > 0
                       Layout.fillWidth: true
                       spacing: 6
 
@@ -233,15 +409,15 @@
                                   font.family: "RobotoMono Nerd Font"
                                   font.pixelSize: 10
                               }
-                              Text {
-                                  Layout.fillWidth: true
-                                  text: root.source
-                                      ? (root.source.description || root.source.name || "—")
-                                      : "No device"
-                                  color: "${c "base05"}"
-                                  font.family: "RobotoMono Nerd Font"
-                                  font.pixelSize: 11
-                                  elide: Text.ElideRight
+
+                              DeviceCombo {
+                                  id: sourceCombo
+                                  devices: root.sources
+                                  currentNode: root.source
+                                  itemIcon: "󰍬"
+                                  onPick: (node) => {
+                                      if (node) Pipewire.preferredDefaultAudioSource = node
+                                  }
                               }
                           }
 
