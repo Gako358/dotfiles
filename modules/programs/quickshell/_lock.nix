@@ -1027,11 +1027,31 @@ in
                       Item {
                           id: loginTile
                           width: 360
-                          height: 360
+                          height: 400
                           anchors.verticalCenter: parent.verticalCenter
                           anchors.verticalCenterOffset: -40
                           x: Math.max(calWindow.x + calWindow.width + 80,
                                       parent.width / 2 + (parent.width / 2 - width) / 2)
+
+                          // ── Translucent dark backing panel ─────────
+                          Rectangle {
+                              anchors.fill: parent
+                              anchors.margins: -20
+                              radius: 10
+                              color: "${ca "base00" "cc"}"
+                              border.width: 1
+                              border.color: "${ca "base0D" "55"}"
+
+                              // Subtle inner highlight (Win7 Aero feel)
+                              Rectangle {
+                                  anchors.fill: parent
+                                  anchors.margins: 1
+                                  radius: parent.radius - 1
+                                  color: "transparent"
+                                  border.width: 1
+                                  border.color: "${ca "base05" "11"}"
+                              }
+                          }
 
                           ColumnLayout {
                               anchors.fill: parent
