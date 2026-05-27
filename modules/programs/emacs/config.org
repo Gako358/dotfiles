@@ -2299,39 +2299,63 @@ modeline indicator, since =SPC TAB TAB= already surfaces the full tree.
     ;; --- Consult integration ---------------------------------------------
     ;; space-tree exposes its state in two hash tables; we walk them to
     ;; produce a flat, depth-ordered candidate list for `consult--read'.
-    (defun my/space-tree--collect (node prefix)
+    (defun my/space-tree--collect (node prefix last-flags)
       "Recursively collect all addresses under NODE with address PREFIX.
-  Returns a list of (ADDRESS . NAME-OR-NIL) pairs in pre-order."
-      (let (acc)
-        (dolist (k (sort (hash-table-keys node) #'<))
-          (let* ((addr  (append prefix (list k)))
-                 (child (gethash k node))
-                 (name  (gethash addr space-tree-space-name-tbl)))
-            (push (cons addr name) acc)
+  LAST-FLAGS is a list of booleans (one per ancestor level) recording
+  whether that ancestor was the last sibling at its level; it is used
+  by the formatter to draw tree-branch glyphs.
+  Returns a list of (ADDRESS NAME-OR-NIL LAST-FLAGS) entries in
+  pre-order."
+      (let* ((keys     (sort (hash-table-keys node) #'<))
+             (last-key (car (last keys)))
+             acc)
+        (dolist (k keys)
+          (let* ((addr     (append prefix (list k)))
+                 (child    (gethash k node))
+                 (name     (gethash addr space-tree-space-name-tbl))
+                 (is-last  (equal k last-key))
+                 (flags    (append last-flags (list is-last))))
+            (push (list addr name flags) acc)
             (setq acc (append (nreverse
-                               (my/space-tree--collect child addr))
+                               (my/space-tree--collect child addr flags))
                               acc))))
         (nreverse acc)))
 
     (defun my/space-tree--format-candidate (entry current)
-      "Format ENTRY (ADDRESS . NAME) for the consult prompt.
+      "Format ENTRY (ADDRESS NAME LAST-FLAGS) for the consult prompt.
   CURRENT is the address of the currently-selected space; the matching
-  candidate is decorated with a small bullet."
-      (let* ((addr     (car entry))
-             (name     (cdr entry))
-             (depth    (length addr))
-             (indent   (make-string (* 2 (1- depth)) ?\s))
-             (addr-str (mapconcat #'number-to-string addr "."))
-             (label    (or name (format "space %s" addr-str)))
-             (mark     (if (equal addr current)
-                           (propertize " ●" 'face 'success)
-                         ""))
-             (display  (format "%s%s  %s%s"
-                               indent
-                               (propertize (format "[%s]" addr-str)
-                                           'face 'shadow)
-                               label
-                               mark)))
+  candidate is decorated with a small bullet.  Top-level spaces are
+  rendered without a tree prefix and in bold so they stand out from
+  their (indented) descendants, which are drawn with Unicode
+  box-drawing branches."
+      (pcase-let* ((`(,addr ,name ,last-flags) entry)
+                   (depth    (length addr))
+                   (top-p    (= depth 1))
+                   ;; Build tree-branch prefix using box-drawing chars.
+                   ;; Ancestor levels contribute "│  " (more siblings
+                   ;; follow) or "   " (parent was the last sibling);
+                   ;; the current level contributes "├─ " or "└─ ".
+                   (prefix
+                    (if top-p
+                        ""
+                      (concat
+                       (mapconcat (lambda (last?)
+                                    (if last? "   " "│  "))
+                                  (butlast last-flags) "")
+                       (if (car (last last-flags)) "└─ " "├─ "))))
+                   (addr-str (mapconcat #'number-to-string addr "."))
+                   (label    (or name (format "space %s" addr-str)))
+                   (mark     (if (equal addr current)
+                                 (propertize " ●" 'face 'success)
+                               ""))
+                   (addr-face (if top-p '(bold shadow) 'shadow))
+                   (label-str (if top-p (propertize label 'face 'bold) label))
+                   (display  (format "%s%s  %s%s"
+                                     (propertize prefix 'face 'shadow)
+                                     (propertize (format "[%s]" addr-str)
+                                                 'face addr-face)
+                                     label-str
+                                     mark)))
         (propertize display 'space-tree-address addr)))
 
     (defun my/consult-space-tree ()
@@ -2349,7 +2373,7 @@ modeline indicator, since =SPC TAB TAB= already surfaces the full tree.
         (space-tree-init))
       (unless space-tree-current-address
         (user-error "space-tree not initialised; run M-x space-tree-init"))
-      (let* ((entries    (my/space-tree--collect space-tree-tree nil))
+      (let* ((entries    (my/space-tree--collect space-tree-tree nil nil))
              (current    space-tree-current-address)
              (candidates (mapcar (lambda (e)
                                    (my/space-tree--format-candidate e current))
@@ -2388,6 +2412,21 @@ modeline indicator, since =SPC TAB TAB= already surfaces the full tree.
       (unless (string-empty-p name)
         (space-tree-name-current-space name)))
 
+    (defun my/consult-space-tree-new-sub (name)
+      "Create a new sub-space (child of the current space) and name it NAME.
+  The new child becomes the current space.  Uses `space-tree-switch-or-create'
+  to pick the next free child number at depth +1 under the current address."
+      (interactive "sName for new sub-space: ")
+      (require 'space-tree)
+      (unless space-tree-current-address
+        (user-error "space-tree not initialised; run M-x space-tree-init"))
+      (let* ((parent space-tree-current-address)
+             (children (hash-table-keys (space-tree--get parent)))
+             (next     (if children (1+ (apply #'max children)) 1)))
+        (space-tree-switch-or-create (append parent (list next))))
+      (unless (string-empty-p name)
+        (space-tree-name-current-space name)))
+
     ;; --- Evil normal-state bindings --------------------------------------
     ;; Repurpose vim's tab bindings for spaces (we don't use tab-bar).
     (with-eval-after-load 'evil
@@ -2404,6 +2443,7 @@ modeline indicator, since =SPC TAB TAB= already surfaces the full tree.
       "TAB ,"   'space-tree-go-to-last-space      ; toggle last visited
       "TAB n"   'my/consult-space-tree-new        ; new sibling (named)
       "TAB N"   'my/consult-space-tree-new-top    ; new top-level (named)
+      "TAB s"   'my/consult-space-tree-new-sub    ; new sub-space / child (named)
       "TAB r"   'space-tree-name-current-space    ; rename current
       "TAB d"   'space-tree-delete-space          ; delete current
       "TAB l"   'space-tree-go-right              ; next sibling
