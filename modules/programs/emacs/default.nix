@@ -117,24 +117,6 @@ _: {
         '';
       };
 
-      space-tree-custom = pkgs.emacs.pkgs.melpaBuild {
-        pname = "space-tree";
-        version = "0.1.9";
-        commit = "ce075d23879c1527c2a39be8fa8743073b1be087";
-        src = pkgs.fetchFromGitHub {
-          owner = "chiply";
-          repo = "space-tree";
-          rev = "ce075d23879c1527c2a39be8fa8743073b1be087";
-          hash = "sha256-eaF3LM2nvJ5r5Rl0FyTn5TXNV3KptmWnYbwTmh7PHC4=";
-        };
-        recipe = pkgs.writeText "recipe" ''
-          (space-tree
-           :repo "chiply/space-tree"
-           :fetcher github
-           :files ("*.el"))
-        '';
-      };
-
       bivrost-theme = pkgs.emacs.pkgs.melpaBuild {
         pname = "bivrost-theme";
         version = "20250330";
@@ -339,7 +321,6 @@ _: {
               consult-lsp # Consult LSP for diagnostics
               consult-projectile # Consult interface for Projectile
               dumb-jump # Heuristic jump-to-definition via grep/ripgrep (xref backend)
-              space-tree-custom # Tree-based workspace manager (no tab-bar)
 
               # Org
               org # For keeping notes, maintaining TODO lists, and project planning
