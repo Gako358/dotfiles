@@ -45,7 +45,7 @@ _: {
       lockQml = import ./_lock.nix {
         inherit c ca lib;
         lockMonitors = cfg.lock.monitors;
-        wallpaperSrc = "/home/merrinx/Sources/archive/images/wallpapers/hnikt_scrum.jpg";
+        wallpaperSrc = "/home/merrinx/Sources/archive/images/wallpapers/linux_11.jpg";
       };
       sysmonQml = import ./_system-monitor.nix { inherit c ca; };
       volumePanelQml = import ./_volume-panel.nix { inherit c ca; };
