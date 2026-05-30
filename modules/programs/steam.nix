@@ -14,7 +14,19 @@ _: {
             extraCompatPackages = [
               pkgs.proton-ge-bin
             ];
-            gamescopeSession.enable = true;
+            gamescopeSession = {
+              enable = true;
+              args = [
+                "--prefer-output"
+                "HDMI-A-1"
+                "--output-width"
+                "3840"
+                "--output-height"
+                "2160"
+                "--nested-refresh"
+                "60"
+              ];
+            };
 
             remotePlay.openFirewall = true;
             dedicatedServer.openFirewall = true;
