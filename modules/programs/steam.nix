@@ -15,8 +15,25 @@ _: {
               pkgs.proton-ge-bin
             ];
             gamescopeSession.enable = true;
+
+            remotePlay.openFirewall = true;
+            dedicatedServer.openFirewall = true;
+            localNetworkGameTransfers.openFirewall = true;
+
+            protontricks.enable = true;
+
+            extraPackages = [
+              pkgs.mangohud
+            ];
+          };
+
+          gamescope = {
+            enable = true;
+            capSysNice = true;
           };
         };
+
+        services.displayManager.defaultSession = "steam";
         environment.persistence."/persist" = {
           users.merrinx = {
             directories = [
