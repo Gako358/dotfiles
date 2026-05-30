@@ -45,7 +45,6 @@ _: {
           };
         };
 
-        services.displayManager.defaultSession = "steam";
         environment.persistence."/persist" = {
           users.merrinx = {
             directories = [
