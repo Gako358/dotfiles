@@ -19,7 +19,7 @@ _: {
 
       home = {
         inherit username homeDirectory;
-        stateVersion = "26.05";
+        stateVersion = "26.11";
       };
 
       systemd.user.startServices = "sd-switch";
