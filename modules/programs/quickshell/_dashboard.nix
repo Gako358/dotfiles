@@ -1050,7 +1050,51 @@
                       property int year:  today.getFullYear()
                       property int month: today.getMonth()
 
-                      // YYYY-MM-DD for today, for highlighting
+                      Timer {
+                          running: true
+                          repeat: true
+                          interval: 60000
+                          triggeredOnStart: true
+                          onTriggered: {
+                              var now = new Date()
+                              if (now.getFullYear() !== calCard.today.getFullYear()
+                                  || now.getMonth() !== calCard.today.getMonth()
+                                  || now.getDate()  !== calCard.today.getDate()) {
+                                  calCard.today = now
+                              }
+                          }
+                      }
+
+                      Connections {
+                          target: root
+                          function onOpenedChanged() {
+                              if (!root.opened) return
+                              var now = new Date()
+                              calCard.today = now
+                              calCard.year  = now.getFullYear()
+                              calCard.month = now.getMonth()
+                          }
+                      }
+
+                      function shiftMonth(delta) {
+                          var m = calCard.month + delta
+                          var y = calCard.year
+                          while (m < 0)  { m += 12; y -= 1 }
+                          while (m > 11) { m -= 12; y += 1 }
+                          calCard.month = m
+                          calCard.year  = y
+                      }
+                      function shiftYear(delta) { calCard.year += delta }
+                      function goToday() {
+                          var now = new Date()
+                          calCard.today = now
+                          calCard.year  = now.getFullYear()
+                          calCard.month = now.getMonth()
+                      }
+                      readonly property bool viewingCurrentMonth:
+                          calCard.month === calCard.today.getMonth()
+                          && calCard.year === calCard.today.getFullYear()
+
                       readonly property string todayStr:
                           today.getFullYear().toString().padStart(4, "0")
                           + "-" + (today.getMonth() + 1).toString().padStart(2, "0")
@@ -1073,17 +1117,126 @@
                           anchors.margins: 12
                           spacing: 6
 
-                          // Header row: month + count badge + add button
+                          // Header row: nav arrows + month label + count badge + today/add buttons
                           RowLayout {
                               Layout.fillWidth: true
-                              spacing: 6
+                              spacing: 4
 
+                              // Prev year ‹‹
+                              Rectangle {
+                                  Layout.preferredWidth: 22
+                                  Layout.preferredHeight: 22
+                                  radius: 11
+                                  color: prevYrHover.hovered
+                                      ? "${ca "base02" "cc"}"
+                                      : "transparent"
+                                  Behavior on color { ColorAnimation { duration: 120 } }
+                                  HoverHandler { id: prevYrHover }
+                                  Text {
+                                      anchors.centerIn: parent
+                                      text: "«"
+                                      color: prevYrHover.hovered ? "${c "base0D"}" : "${c "base04"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 14
+                                      font.weight: Font.Bold
+                                  }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: calCard.shiftYear(-1)
+                                  }
+                              }
+
+                              // Prev month ‹
+                              Rectangle {
+                                  Layout.preferredWidth: 22
+                                  Layout.preferredHeight: 22
+                                  radius: 11
+                                  color: prevMoHover.hovered
+                                      ? "${ca "base02" "cc"}"
+                                      : "transparent"
+                                  Behavior on color { ColorAnimation { duration: 120 } }
+                                  HoverHandler { id: prevMoHover }
+                                  Text {
+                                      anchors.centerIn: parent
+                                      text: "‹"
+                                      color: prevMoHover.hovered ? "${c "base0D"}" : "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 16
+                                      font.weight: Font.Bold
+                                  }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: calCard.shiftMonth(-1)
+                                  }
+                              }
+
+                              // Month / Year label (click to jump back to current month)
                               Text {
-                                  text: Qt.formatDateTime(calCard.today, "MMMM yyyy")
+                                  id: monthLabel
+                                  text: Qt.formatDate(new Date(calCard.year, calCard.month, 1), "MMMM yyyy")
                                   color: "${c "base0D"}"
                                   font.family: "RobotoMono Nerd Font"
                                   font.pixelSize: 13
                                   font.weight: Font.Medium
+                                  horizontalAlignment: Text.AlignHCenter
+                                  Layout.alignment: Qt.AlignVCenter
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: calCard.goToday()
+                                  }
+                              }
+
+                              // Next month ›
+                              Rectangle {
+                                  Layout.preferredWidth: 22
+                                  Layout.preferredHeight: 22
+                                  radius: 11
+                                  color: nextMoHover.hovered
+                                      ? "${ca "base02" "cc"}"
+                                      : "transparent"
+                                  Behavior on color { ColorAnimation { duration: 120 } }
+                                  HoverHandler { id: nextMoHover }
+                                  Text {
+                                      anchors.centerIn: parent
+                                      text: "›"
+                                      color: nextMoHover.hovered ? "${c "base0D"}" : "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 16
+                                      font.weight: Font.Bold
+                                  }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: calCard.shiftMonth(1)
+                                  }
+                              }
+
+                              // Next year ››
+                              Rectangle {
+                                  Layout.preferredWidth: 22
+                                  Layout.preferredHeight: 22
+                                  radius: 11
+                                  color: nextYrHover.hovered
+                                      ? "${ca "base02" "cc"}"
+                                      : "transparent"
+                                  Behavior on color { ColorAnimation { duration: 120 } }
+                                  HoverHandler { id: nextYrHover }
+                                  Text {
+                                      anchors.centerIn: parent
+                                      text: "»"
+                                      color: nextYrHover.hovered ? "${c "base0D"}" : "${c "base04"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 14
+                                      font.weight: Font.Bold
+                                  }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: calCard.shiftYear(1)
+                                  }
                               }
 
                               Rectangle {
@@ -1106,6 +1259,35 @@
                               }
 
                               Item { Layout.fillWidth: true }
+
+                              // Jump back to current month (only when not viewing it)
+                              Rectangle {
+                                  visible: !calCard.viewingCurrentMonth
+                                  Layout.preferredHeight: 22
+                                  Layout.preferredWidth: todayLbl.implicitWidth + 14
+                                  radius: 11
+                                  color: todayBtnHover.hovered
+                                      ? "${ca "base0D" "55"}"
+                                      : "${ca "base02" "cc"}"
+                                  border.width: 1
+                                  border.color: todayBtnHover.hovered ? "${c "base0D"}" : "${c "base02"}"
+                                  Behavior on color { ColorAnimation { duration: 120 } }
+                                  HoverHandler { id: todayBtnHover }
+                                  Text {
+                                      id: todayLbl
+                                      anchors.centerIn: parent
+                                      text: "Today"
+                                      color: todayBtnHover.hovered ? "${c "base0D"}" : "${c "base05"}"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 10
+                                      font.weight: Font.Medium
+                                  }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      onClicked: calCard.goToday()
+                                  }
+                              }
 
                               // Add appointment for today
                               Rectangle {
@@ -1170,6 +1352,8 @@
                                       property bool inMonth: dayNum >= 1
                                           && cellDate.getMonth() === calCard.month
                                       property bool isToday: inMonth
+                                          && cellDate.getFullYear() === calCard.today.getFullYear()
+                                          && cellDate.getMonth() === calCard.today.getMonth()
                                           && cellDate.getDate() === calCard.today.getDate()
                                       readonly property string dateStr:
                                           inMonth
