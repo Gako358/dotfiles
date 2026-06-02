@@ -117,6 +117,38 @@ _: {
         '';
       };
 
+      eca-server = pkgs.stdenvNoCC.mkDerivation rec {
+        pname = "eca";
+        version = "0.136.0";
+
+        src = pkgs.fetchurl {
+          url = "https://github.com/editor-code-assistant/eca/releases/download/${version}/eca-native-static-linux-amd64.zip";
+          hash = "sha256-6/iH2LW32IivWBrfTEC4waO7QTmuxlpmB7FslHpJjMM=";
+        };
+
+        nativeBuildInputs = [ pkgs.unzip ];
+
+        unpackPhase = ''
+          runHook preUnpack
+          unzip $src
+          runHook postUnpack
+        '';
+
+        installPhase = ''
+          runHook preInstall
+          install -Dm755 eca $out/bin/eca
+          runHook postInstall
+        '';
+
+        meta = with pkgs.lib; {
+          description = "Editor Code Assistant server (pinned ${version})";
+          homepage = "https://github.com/editor-code-assistant/eca";
+          license = licenses.asl20;
+          platforms = [ "x86_64-linux" ];
+          mainProgram = "eca";
+        };
+      };
+
       bivrost-theme = pkgs.emacs.pkgs.melpaBuild {
         pname = "bivrost-theme";
         version = "20250330";
@@ -147,6 +179,7 @@ _: {
 
       # Embedded packages
       emacsOnlyTools = [
+        eca-server
         hunspellWithDicts
         metals
         pkgs.astyle

@@ -1343,7 +1343,7 @@ in
                       }
 
                       // ╔════════════════════════════════════════╗
-                      // ║  WINDOWS SETUP — INSTALLING NIXOS      ║
+                      // ║  WINDOWS SETUP — UPDATING GNU/WINDOWS  ║
                       // ║  (top-center, modal-style)             ║
                       // ╚════════════════════════════════════════╝
                       Rectangle {
@@ -1404,7 +1404,7 @@ in
                                           font.pixelSize: 13
                                       }
                                       Text {
-                                          text: "Windows Setup"
+                                          text: "GNU/Windows Update Assistant"
                                           color: "${c "base05"}"
                                           font.family: "Segoe UI"
                                           font.pixelSize: 12
@@ -1455,7 +1455,8 @@ in
                                       anchors.margins: 18
                                       spacing: 18
 
-                                      // NixOS-ish snowflake icon
+                                      // Tux — because what you're calling
+                                      // Windows is in fact GNU/Windows.
                                       Rectangle {
                                           Layout.preferredWidth: 64
                                           Layout.preferredHeight: 64
@@ -1467,7 +1468,7 @@ in
 
                                           Text {
                                               anchors.centerIn: parent
-                                              text: "󱄅"
+                                              text: ""
                                               color: "${c "base0D"}"
                                               font.family: "RobotoMono Nerd Font"
                                               font.pixelSize: 38
@@ -1480,7 +1481,7 @@ in
                                           spacing: 6
 
                                           Text {
-                                              text: "Installing NixOS…"
+                                              text: "Updating GNU/Windows…"
                                               color: "${c "base05"}"
                                               font.family: "Segoe UI"
                                               font.pixelSize: 16
@@ -1490,19 +1491,22 @@ in
                                           Text {
                                               id: installerStep
                                               Layout.fillWidth: true
-                                              text: "Step 142 of ∞ — Building flake.lock…"
+                                              text: "Step 142 of ∞ — Renaming \"Windows\" to \"GNU/Windows\"…"
                                               color: "${c "base04"}"
                                               font.family: "Segoe UI"
                                               font.pixelSize: 11
                                               elide: Text.ElideRight
 
                                               property var steps: [
-                                                  "Step 142 of ∞ — Building flake.lock…",
-                                                  "Step 143 of ∞ — Garbage collecting /nix/store…",
+                                                  "Step 142 of ∞ — Renaming \"Windows\" to \"GNU/Windows\"…",
+                                                  "Step 143 of ∞ — Replacing kernel32.dll with GNU Hurd…",
                                                   "Step 144 of ∞ — Asking Stallman for permission…",
-                                                  "Step 145 of ∞ — Switching to generation 41334…",
-                                                  "Step 146 of ∞ — Recompiling the kernel (again)…",
-                                                  "Step 147 of ∞ — Convincing systemd to behave…"
+                                                  "Step 145 of ∞ — Translating regedit into S-expressions…",
+                                                  "Step 146 of ∞ — Rebinding Ctrl-Alt-Delete to M-x crash-and-reboot…",
+                                                  "Step 147 of ∞ — Liberating six of Bill's islands…",
+                                                  "Step 148 of ∞ — Recompiling explorer.exe under GPLv3…",
+                                                  "Step 149 of ∞ — Wrapping cmd.exe inside M-x shell…",
+                                                  "Step 150 of ∞ — Negotiating with systemd (unsuccessfully)…"
                                               ]
                                               property int stepIdx: 0
 
@@ -1552,7 +1556,7 @@ in
                                           }
 
                                           Text {
-                                              text: "Estimated time remaining: 11 sprints"
+                                              text: "Estimated time remaining: 4 freedoms"
                                               color: "${c "base04"}"
                                               font.family: "Segoe UI"
                                               font.pixelSize: 10

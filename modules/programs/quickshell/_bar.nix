@@ -131,6 +131,36 @@
           }
       }
 
+      Process {
+          id: scanCacheProc
+          running: true
+          command: ["sh", "-c",
+              "mkdir -p '" + bar.thumbDir + "' && "
+              + "for f in '" + bar.thumbDir + "'/*.png; do "
+              + "  [ -e \"$f\" ] || continue; "
+              + "  ws=$(basename \"$f\" .png); "
+              + "  mt=$(stat -c %Y \"$f\" 2>/dev/null); "
+              + "  echo \"$ws $mt\"; "
+              + "done"]
+          stdout: StdioCollector { id: scanCacheOut }
+          onExited: {
+              var stamps = ({})
+              for (var k in bar.monThumbStamps) stamps[k] = bar.monThumbStamps[k]
+              var lines = (scanCacheOut.text || "").split("\n")
+              for (var i = 0; i < lines.length; ++i) {
+                  var line = lines[i].trim()
+                  if (!line) continue
+                  var parts = line.split(" ")
+                  var wsId  = parseInt(parts[0])
+                  var mtime = parseInt(parts[1])
+                  if (wsId > 0 && !isNaN(mtime) && !stamps[wsId]) {
+                      stamps[wsId] = mtime * 1000
+                  }
+              }
+              bar.monThumbStamps = stamps
+          }
+      }
+
       function snapshotAllVisible() {
           var mons = Hyprland.monitors ? Hyprland.monitors.values : []
           var cmds = []
