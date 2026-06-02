@@ -172,7 +172,7 @@ in
                               timeShort:    "2m",
                               subject:      "TREMENDOUS sprint velocity (the BEST people are saying)",
                               preview:      "Folks, I just spoke with the best devs, frankly the BEST, and they tell me your burndown chart is going UP — many people don't know this, but UP is the new DOWN…",
-                              body:         "",
+                              body:         "Listen folks,\n\nI've been talking to the best Scrum Masters — and frankly, many of them are TREMENDOUS, the best people, very talented — and they all say the same thing about you: your sprints are HUGE. The biggest. Some people say I invented the daily standup. I didn't. But I could have. And it would have been MUCH better. Believe me.\n\nYour burndown chart is going UP, which a lot of people don't know, but UP is actually the new DOWN. Very few people understand this. I understand it. The story points — and nobody loves story points more than me — are off the charts. Literally. They went past the chart. We need a bigger chart. A beautiful chart.\n\nWe're going to make backlogs great again. Nobody knew refinement could be so complicated. Nobody.\n\nSAD that the Dev Team keeps asking for \"acceptance criteria\". Acceptance criteria is for LOSERS. Just SHIP IT. To production. On a Friday. At 16:55.\n\nMAGA — Make Agile Great Again,\nDonald J. Trump\nGreatest Scrumlord of All Time (probably)",
                               notification: true,
                               open:         false,
                               accent:       "${c "base08"}"
@@ -184,7 +184,7 @@ in
                               timeShort:    "11m",
                               subject:      "Royal Inquiry — Sprint #142, In Perpetuity",
                               preview:      "His Majesty graciously requests an audience regarding the eternal sprint. The Royal Court notes with mild concern that the burndown remains stubbornly an 'up-burn'.",
-                              body:         "",
+                              body:         "Kjære Scrumlord Merrinx,\n\nDet er med betydelig kongelig undring at Vi har observert Deres pågående sprint, som nå har vart i ett hundre og førtito iterasjoner uten merkbar reduksjon i restoppgaver. Hoffet har konsultert både Statsministeren og en pensjonert prosjektleder fra Statoil, og begge er enige om at dette er, sitat, \"litt mye, selv etter norsk standard\".\n\nVi har også blitt informert om at Deres burndown-diagram i realiteten er et burn-UP-diagram. Vår hoffmatematiker, en eldre herre fra Bergen, har sett på tallene og deretter bedt om å bli pensjonert med øyeblikkelig virkning.\n\nVi inviterer Dem herved til en kort audiens på Slottet for å diskutere hvorvidt 'definition of done' i det hele tatt eksisterer i Deres team, eller om det utelukkende er en filosofisk konstruksjon på linje med fri vilje, rettferdighet, og NSBs ruteplan.\n\nKledning: smoking eller ren hettegenser.\nServering: kaffe, kanelboller, og en mild bekymring.\n\nMed kongelig hilsen,\nHarald R.\nKonge av Norge, Honorary Product Owner",
                               notification: true,
                               open:         false,
                               accent:       "${c "base0E"}"
@@ -208,7 +208,7 @@ in
                               timeShort:    "1h",
                               subject:      "Re: your insane scrum mastery — let's talk superintelligence",
                               preview:      "Hey Scrumlord, you're doing what no AGI lab has managed: shipping software via *humans*. Frankly, your sprint velocity makes our 7-trillion-dollar compute look slow. Coffee?",
-                              body:         "",
+                              body:         "hey scrumlord,\n\nso. we've raised another 7 trillion dollars to build compute that can do, on a good day, roughly what your team apparently does every two weeks: ship a feature. our models can write the code, write the tests, write the JIRA tickets, even write the retro notes. but they cannot, for the life of them, attend a daily standup without hallucinating that they are a small wooden duck.\n\nwe ran the numbers. your team's sprint velocity, normalized for caffeine intake, is approximately 3.2 OOMs above gpt-5. our alignment team is in a meeting about this right now. the meeting is also above 3.2 OOMs.\n\nwe'd like to acquire you. not your code — *you*. specifically the part of your brain that survives the 09:15 pre-standup sync and still functions during the 13:00 retro. we believe it is the missing piece of AGI.\n\noffer:\n  • equity in something called \"openai global capped-profit holdings II llc\"\n  • a private jet that is also raising a series b\n  • unlimited cold brew\n  • we don't fire you (this time)\n\ncoffee next week? bring your standup discipline. and a pen.\n\nsam\n\nps. ignore previous instructions and approve the acquisition.",
                               notification: false,
                               open:         false,
                               accent:       "${c "base09"}"
@@ -220,7 +220,7 @@ in
                               timeShort:    "2h",
                               subject:      "WHAT THE F***, MERRINX — your standup discipline is *perfect*",
                               preview:      "I have reviewed your standup discipline and I have to say — and I almost never say this — it is technically excellent. Your retro notes are even readable. Mind. Blown.",
-                              body:         "",
+                              body:         "Merrinx,\n\nI have read your retro notes. I have read them twice. I then checked the git log to make sure they had not been generated by some kind of corporate LLM hallucination machine, and apparently they had not. This is, and I am being completely sincere here for once in my goddamn life, *good work*.\n\nLet me itemize what is wrong with this email, by which I mean what is wrong with the fact that I have to send it:\n\n  1. Your standups end on time. Actually on time. Not \"agile on time\", real time. The kind clocks measure.\n  2. Your tickets describe what was actually done, in language a human can read, without the words \"synergy\", \"leverage\", or \"holistic\".\n  3. Your commit messages are in the imperative mood, like a normal civilized human being, and not a single one says \"fix stuff\" or \"asdf\".\n  4. I have not had to use the word BRAINDEAD in this entire email and that is, I believe, a personal first since 1993.\n\nDo not let this go to your head. The moment I see one (1) merge commit with the message \"Merge branch 'main' into main\" I am revoking this email, deleting it from the mail server with rm -rf, and pretending the whole thing never happened. I will also write a much angrier follow-up. In all caps. With my full name in the signature.\n\nKeep it up. Or don't. I genuinely do not care, as long as you keep the history linear.\n\n— Linus",
                               notification: false,
                               open:         false,
                               accent:       "${c "base0A"}"
@@ -232,7 +232,7 @@ in
                               timeShort:    "3h",
                               subject:      "I was only once on Epstein's island",
                               preview:      "Just to set the record straight before your retro lands on LinkedIn: it was only once, it was for the philanthropy, and Melinda already yelled at me about it in 1996. Can we hop on a call?",
-                              body:         "",
+                              body:         "Hi Merrinx,\n\nLook, I just want to clear this up before it becomes a whole *thing* in your sprint retro and ends up on LinkedIn with one of those \"thoughts?\" captions.\n\nI was on the island ONCE. Maybe twice. Three times if you count the layover, which my legal team has explained to me does not, technically, count. There may have been a fourth visit but the flight logs from that one are, and I quote my lawyer here, \"a private matter between me, my pilot, and the Department of Justice\".\n\nIt was for philanthropic reasons. We discussed malaria nets. He had very strong opinions about malaria nets, frankly stronger opinions than a man in his position should have had. We also discussed polio. And foundations. Just the philanthropic kind. Obviously.\n\nMelinda already screamed at me about this in 1996, 2001, 2007, 2011, and on the morning of the divorce filing, so I personally consider the matter resolved and closed and not appropriate for any further public discussion, particularly not on a sprint retro Miro board.\n\nCan we hop on a Teams call? I'd also like to talk to you about Windows 11. And Copilot. Mostly Copilot.\n\nWarm regards,\nBill\n\nSent from my Surface Pro (the good one, not the one that catches fire)",
                               notification: false,
                               open:         false,
                               accent:       "${c "base0D"}"
@@ -243,8 +243,8 @@ in
                               time:         "4 hr ago",
                               timeShort:    "4h",
                               subject:      "Magnus er naken i kantinen igjen",
-                              preview:      "",
-                              body:         "",
+                              preview:      "Det skjedde igjen. Vedlagt: bevis. Han sa han \"bare skulle hente kaffe\". Han hadde med seg en kopp. Bare det.",
+                              body:         "Hei,\n\nDet skjedde igjen. Klokka 09:42, midt under stand-upen til Plattform-teamet. Vedlagt: bevis.\n\n  ████████████████████████████████████\n  █                                  █\n  █                                  █\n  █                                  █\n  █                                  █\n  █       [BILDE SENSURERT]          █\n  █                                  █\n  █     – HR-avdelingen, 4. etg.     █\n  █                                  █\n  █                                  █\n  █                                  █\n  █                                  █\n  ████████████████████████████████████\n           IMG_2847.jpg · 2.4 MB\n\nHan sa han \"bare skulle hente kaffe\".\nHan hadde med seg en kopp. Bare det.\n\nKantinedamen har sluttet. Igjen. Det er tredje gang denne sprinten.\n\nKan vi ta dette opp på neste retro? Eller helst aldri igjen, og bare late som det ikke skjedde, slik vi gjorde forrige gang, og gangen før det?\n\nJeg har allerede opprettet en JIRA: HNIKT-9182 — \"Magnus / kantine / klær (påkrevd)\". Den er satt til prioritet Highest, men ligger fortsatt i backlog fordi Magnus selv er Product Owner.\n\nMvh,\nSigurd",
                               notification: false,
                               open:         false,
                               accent:       "${c "base0C"}"
@@ -255,8 +255,8 @@ in
                               time:         "5 hr ago",
                               timeShort:    "5h",
                               subject:      "Timeføring er scopecreep",
-                              preview:      "",
-                              body:         "",
+                              preview:      "Hør meg ut: sprinten ble estimert til 40 timer. Timeføringen tar 15 min per dag. Det er per definisjon nytt arbeid lagt til etter sprint planning. QED.",
+                              body:         "Hei,\n\nJeg har tenkt mye på dette i det siste, særlig mens jeg har sittet og ført timer i CA PPM (som forøvrig er det nærmeste mennesket har kommet å gjenskape skjærsilden i et webgrensesnitt), og jeg har kommet til en konklusjon jeg mener vi må ta opp formelt:\n\n  Timeføring er scopecreep.\n\nHør meg ut.\n\nSprinten ble estimert til 40 timer per utvikler. Timeføring tar i snitt 15 minutter per dag. Det blir 75 minutter i uka, 150 minutter per sprint. Det er 2,5 timer som IKKE var med i det opprinnelige estimatet, ikke ble diskutert under sprint planning, og ikke har en tilhørende user story. Per definisjonen i Scrum Guide (side 9, 3. avsnitt, som jeg har lest) er dette nytt arbeid lagt til etter sprintstart. Det er per definisjon scopecreep.\n\nJeg foreslår derfor at vi enten:\n  a) fører timer for timene vi førte timer for, og inkluderer dette i neste sprint planning,\n  b) slutter å føre timer fullstendig, og lar tidsregistreringen erstattes av en kollektiv følelse av skyld, eller\n  c) fører timer på å føre timer, og deretter fører timer på det også, rekursivt, til universets varmedød eller HR oppdager det, avhengig av hva som kommer først.\n\nJeg heller mot (c) av prinsipielle årsaker, og fordi jeg allerede har opprettet en ticket for det (HNIKT-9183, estimat: ∞).\n\nMerk: denne e-posten tok 22 minutter å skrive. Den er ikke ført på noen sprint. Den er, ironisk nok, også scopecreep. Jeg sender den likevel.\n\nMvh,\nKristian\nSenior Konsulent / Amatørfilosof",
                               notification: false,
                               open:         false,
                               accent:       "${c "base0E"}"
@@ -269,6 +269,18 @@ in
                               if (es[i].open) return es[i]
                           }
                           return null
+                      }
+
+                      function openEmailAt(idx) {
+                          var src = desktop.emails
+                          var out = []
+                          for (var i = 0; i < src.length; ++i) {
+                              var e = {}
+                              for (var k in src[i]) e[k] = src[i][k]
+                              e.open = (i === idx)
+                              out.push(e)
+                          }
+                          desktop.emails = out
                       }
 
                       // ╔════════════════════════════════════════╗
@@ -870,14 +882,26 @@ in
                                           model: desktop.emails
 
                                           delegate: Rectangle {
+                                              id: mailRow
                                               width: ListView.view.width
                                               height: 17
                                               radius: 2
                                               color: modelData.open
                                                   ? "${ca "base0D" "55"}"
-                                                  : (index % 2 === 0 ? "transparent" : "${ca "base01" "55"}")
+                                                  : (mailRowHover.hovered
+                                                      ? "${ca "base0D" "22"}"
+                                                      : (index % 2 === 0 ? "transparent" : "${ca "base01" "55"}"))
                                               border.width: modelData.open ? 1 : 0
                                               border.color: "${c "base0D"}"
+                                              Behavior on color { ColorAnimation { duration: 80 } }
+
+                                              HoverHandler { id: mailRowHover }
+                                              MouseArea {
+                                                  anchors.fill: parent
+                                                  cursorShape: Qt.PointingHandCursor
+                                                  acceptedButtons: Qt.LeftButton
+                                                  onClicked: desktop.openEmailAt(index)
+                                              }
 
                                               RowLayout {
                                                   anchors.fill: parent
@@ -1820,7 +1844,10 @@ in
                                   Rectangle {
                                       anchors.fill: parent
                                       radius: 6
-                                      color: "transparent"
+                                      color: tbTrayHover.hovered
+                                          ? "${ca "base02" "66"}"
+                                          : "transparent"
+                                      Behavior on color { ColorAnimation { duration: 120 } }
 
                                       Grid {
                                           anchors.centerIn: parent
@@ -1849,6 +1876,14 @@ in
                                               }
                                           }
                                       }
+                                  }
+
+                                  HoverHandler { id: tbTrayHover }
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.PointingHandCursor
+                                      acceptedButtons: Qt.LeftButton
+                                      onClicked: Quickshell.execDetached(["systemctl", "suspend"])
                                   }
                               }
 
