@@ -1595,6 +1595,215 @@ in
                       }
 
                       // ╔════════════════════════════════════════╗
+                      // ║  POST-IT NOTE (interactive, centre-ish) ║
+                      // ╚════════════════════════════════════════╝
+                      Item {
+                          id: postIt
+                          width:  220
+                          height: 230
+
+                          x: parent.width / 2 + 60
+                          y: parent.height / 2 - height - 60
+
+                          rotation: 6
+                          transformOrigin: Item.Center
+
+                          // ── Drop-shadow ──────────────────────────
+                          Rectangle {
+                              anchors.fill: parent
+                              anchors.margins: -2
+                              radius: 3
+                              color: "transparent"
+
+                              // Multi-layer shadow approximation
+                              Rectangle {
+                                  x: 5; y: 6
+                                  width:  parent.width
+                                  height: parent.height
+                                  radius: 3
+                                  color: "${ca "base00" "55"}"
+                                  z: -2
+                              }
+                              Rectangle {
+                                  x: 3; y: 4
+                                  width:  parent.width
+                                  height: parent.height
+                                  radius: 3
+                                  color: "${ca "base00" "33"}"
+                                  z: -1
+                              }
+                          }
+
+                          // ── Note body ────────────────────────────
+                          Rectangle {
+                              id: postItBody
+                              anchors.fill: parent
+                              radius: 2
+
+                              // Classic sticky-yellow — warm amber-ish tint.
+                              gradient: Gradient {
+                                  GradientStop { position: 0.0; color: "#f7e96b" }
+                                  GradientStop { position: 1.0; color: "#f0de55" }
+                              }
+
+                              // Subtle "folded corner" accent at top-left
+                              Rectangle {
+                                  x: 0; y: 0
+                                  width: 22; height: 22
+                                  color: "#e0c93a"
+                                  radius: 2
+
+                                  // Diagonal line to fake a crease
+                                  Rectangle {
+                                      x: -4; y: 10
+                                      width: 36; height: 1
+                                      rotation: 45
+                                      transformOrigin: Item.Left
+                                      color: "#c8b420"
+                                      opacity: 0.6
+                                  }
+                              }
+
+                              // ── Header strip ─────────────────────
+                              Rectangle {
+                                  id: postItHeader
+                                  anchors.top:   parent.top
+                                  anchors.left:  parent.left
+                                  anchors.right: parent.right
+                                  height: 30
+                                  radius: 2
+                                  color: "#e8d040"
+
+                                  Rectangle {
+                                      anchors.bottom: parent.bottom
+                                      anchors.left:   parent.left
+                                      anchors.right:  parent.right
+                                      height: parent.radius
+                                      color: parent.color
+                                  }
+
+                                  RowLayout {
+                                      anchors.fill: parent
+                                      anchors.leftMargin:  10
+                                      anchors.rightMargin: 8
+                                      spacing: 4
+
+                                      Text {
+                                          text: "📝"
+                                          font.pixelSize: 12
+                                      }
+                                      Text {
+                                          Layout.fillWidth: true
+                                          text: "Leave a message!"
+                                          color: "#5a4a00"
+                                          font.family: "Segoe UI"
+                                          font.pixelSize: 11
+                                          font.weight: Font.DemiBold
+                                          elide: Text.ElideRight
+                                      }
+
+                                      // Clear button
+                                      Rectangle {
+                                          width:  18
+                                          height: 18
+                                          radius: 3
+                                          color:  clearHover.hovered ? "#c8b420" : "transparent"
+                                          Behavior on color { ColorAnimation { duration: 100 } }
+
+                                          Text {
+                                              anchors.centerIn: parent
+                                              text: "✕"
+                                              color: "#5a4a00"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 10
+                                              font.bold: true
+                                          }
+
+                                          HoverHandler { id: clearHover }
+                                          MouseArea {
+                                              anchors.fill: parent
+                                              cursorShape: Qt.PointingHandCursor
+                                              onClicked: noteInput.text = ""
+                                          }
+                                      }
+                                  }
+                              }
+
+                              // ── Ruled lines (purely visual) ───────
+                              Column {
+                                  anchors.top:    postItHeader.bottom
+                                  anchors.left:   parent.left
+                                  anchors.right:  parent.right
+                                  anchors.bottom: parent.bottom
+                                  anchors.topMargin:    8
+                                  anchors.leftMargin:   8
+                                  anchors.rightMargin:  8
+                                  anchors.bottomMargin: 8
+                                  spacing: 0
+
+                                  Repeater {
+                                      model: 7
+                                      Rectangle {
+                                          width:  parent.width
+                                          height: 24
+                                          color:  "transparent"
+
+                                          Rectangle {
+                                              anchors.bottom: parent.bottom
+                                              anchors.left:   parent.left
+                                              anchors.right:  parent.right
+                                              height: 1
+                                              color: "#c8b42066"
+                                          }
+                                      }
+                                  }
+                              }
+
+                              // ── The actual text input ─────────────
+                              TextEdit {
+                                  id: noteInput
+                                  anchors.top:    postItHeader.bottom
+                                  anchors.left:   parent.left
+                                  anchors.right:  parent.right
+                                  anchors.bottom: parent.bottom
+                                  anchors.topMargin:    6
+                                  anchors.leftMargin:   10
+                                  anchors.rightMargin:  8
+                                  anchors.bottomMargin: 6
+
+                                  color: "#3a2e00"
+                                  font.family: "Segoe UI"
+                                  font.pixelSize: 13
+                                  wrapMode: TextEdit.Wrap
+                                  selectByMouse: true
+                                  clip: true
+
+                                  // Placeholder text
+                                  Text {
+                                      visible: noteInput.text === "" && !noteInput.activeFocus
+                                      anchors.fill: parent
+                                      text: "Write a note while I'm away…"
+                                      color: "#9a8a30"
+                                      font.family: "Segoe UI"
+                                      font.pixelSize: 13
+                                      font.italic: true
+                                      wrapMode: Text.Wrap
+                                  }
+
+                                  MouseArea {
+                                      anchors.fill: parent
+                                      cursorShape: Qt.IBeamCursor
+                                      // Let clicks through to TextEdit but also focus it
+                                      onClicked: (mouse) => {
+                                          noteInput.forceActiveFocus()
+                                          mouse.accepted = false
+                                      }
+                                  }
+                              }
+                          }
+                      }
+
+                      // ╔════════════════════════════════════════╗
                       // ║  TASKBAR (bottom — Win11-style, matches Bar.qml) ║
                       // ╚════════════════════════════════════════╝
                       Rectangle {
