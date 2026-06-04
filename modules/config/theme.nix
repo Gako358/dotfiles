@@ -11,7 +11,7 @@ _: {
 
         wallpaper = lib.mkOption {
           type = lib.types.str;
-          default = "/home/merrinx/Sources/archive/images/wallpapers/wot_rhuidian.jpg";
+          default = "/home/merrinx/Sources/archive/images/wallpapers/gruvbox_fire.jpg";
           example = "/home/user/Pictures/wallpaper.png";
           description = "Path to the wallpaper image file";
         };
