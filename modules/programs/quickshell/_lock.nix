@@ -145,6 +145,35 @@ in
                       property bool calMinimized:     false
                       property bool outlookMinimized: false
 
+                      // ── Suspend confirmation dialog state ─────
+                      property bool suspendDialogVisible: false
+                      property int  suspendCountdown:     5
+
+                      function showSuspendDialog() {
+                          desktop.suspendCountdown     = 5
+                          desktop.suspendDialogVisible = true
+                      }
+                      function cancelSuspend() {
+                          desktop.suspendDialogVisible = false
+                      }
+                      function doSuspend() {
+                          desktop.suspendDialogVisible = false
+                          Quickshell.execDetached(["systemctl", "suspend"])
+                      }
+
+                      Timer {
+                          id: suspendTimer
+                          interval: 1000
+                          repeat: true
+                          running: desktop.suspendDialogVisible
+                          onTriggered: {
+                              desktop.suspendCountdown -= 1
+                              if (desktop.suspendCountdown <= 0) {
+                                  desktop.doSuspend()
+                              }
+                          }
+                      }
+
                       // ── Wallpaper image (falls back to gradient) ──
                       color: "${c "base00"}"
 
@@ -2092,7 +2121,7 @@ in
                                       anchors.fill: parent
                                       cursorShape: Qt.PointingHandCursor
                                       acceptedButtons: Qt.LeftButton
-                                      onClicked: Quickshell.execDetached(["systemctl", "suspend"])
+                                      onClicked: desktop.showSuspendDialog()
                                   }
                               }
 
@@ -2159,6 +2188,310 @@ in
                                   color: "transparent"
                                   anchors.verticalCenter: parent.verticalCenter
                               }
+                          }
+                      }
+
+                      // ╔════════════════════════════════════════╗
+                      // ║  SUSPEND CONFIRMATION DIALOG (modal)   ║
+                      // ╚════════════════════════════════════════╝
+                      Item {
+                          id: suspendOverlay
+                          anchors.fill: parent
+                          z: 9999
+                          visible: desktop.suspendDialogVisible
+                          opacity: desktop.suspendDialogVisible ? 1 : 0
+                          Behavior on opacity { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
+
+                          // Dim/blur backdrop — also swallows clicks
+                          Rectangle {
+                              anchors.fill: parent
+                              color: "${ca "base00" "aa"}"
+                              MouseArea {
+                                  anchors.fill: parent
+                                  acceptedButtons: Qt.AllButtons
+                                  hoverEnabled: true
+                                  onClicked: {}
+                                  onWheel: {}
+                              }
+                          }
+
+                          // ── The dialog window itself ─────────────
+                          Rectangle {
+                              id: suspendDialog
+                              anchors.centerIn: parent
+                              width: 440
+                              height: 224
+                              radius: 6
+                              color: "${ca "base01" "f5"}"
+                              border.width: 1
+                              border.color: "${c "base02"}"
+
+                              // Aero-style outer glow
+                              Rectangle {
+                                  anchors.fill: parent
+                                  anchors.margins: -1
+                                  radius: parent.radius + 1
+                                  color: "transparent"
+                                  border.width: 1
+                                  border.color: "${ca "base0D" "55"}"
+                                  z: -1
+                              }
+
+                              // Subtle pop-in animation
+                              scale: desktop.suspendDialogVisible ? 1.0 : 0.94
+                              Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutBack } }
+
+                              ColumnLayout {
+                                  anchors.fill: parent
+                                  spacing: 0
+
+                                  // ── Title bar ─────────────────────
+                                  Rectangle {
+                                      Layout.fillWidth: true
+                                      Layout.preferredHeight: 30
+                                      radius: 6
+                                      gradient: Gradient {
+                                          GradientStop { position: 0.0; color: "${ca "base02" "ee"}" }
+                                          GradientStop { position: 1.0; color: "${ca "base01" "ee"}" }
+                                      }
+
+                                      // Mask the bottom rounding so it joins the body cleanly
+                                      Rectangle {
+                                          anchors.left: parent.left
+                                          anchors.right: parent.right
+                                          anchors.bottom: parent.bottom
+                                          height: parent.radius
+                                          color: "${ca "base01" "ee"}"
+                                      }
+
+                                      Text {
+                                          anchors.left: parent.left
+                                          anchors.leftMargin: 12
+                                          anchors.verticalCenter: parent.verticalCenter
+                                          text: "󰒲  Suspend Windows"
+                                          color: "${c "base05"}"
+                                          font.family: "Segoe UI"
+                                          font.pixelSize: 12
+                                      }
+
+                                      // Close (cancel) button — Win-style
+                                      Rectangle {
+                                          anchors.right: parent.right
+                                          anchors.top: parent.top
+                                          width: 50
+                                          height: 22
+                                          radius: 2
+                                          color: suspendCloseHover.hovered
+                                              ? "${ca "base08" "aa"}"
+                                              : "${ca "base08" "55"}"
+                                          Behavior on color { ColorAnimation { duration: 100 } }
+                                          HoverHandler { id: suspendCloseHover }
+                                          Text {
+                                              anchors.centerIn: parent
+                                              text: "✕"
+                                              color: "${c "base05"}"
+                                              font.family: "Segoe UI"
+                                              font.pixelSize: 12
+                                              font.bold: true
+                                          }
+                                          MouseArea {
+                                              anchors.fill: parent
+                                              cursorShape: Qt.PointingHandCursor
+                                              onClicked: desktop.cancelSuspend()
+                                          }
+                                      }
+                                  }
+
+                                  // ── Content area ──────────────────
+                                  Rectangle {
+                                      Layout.fillWidth: true
+                                      Layout.fillHeight: true
+                                      color: "${ca "base00" "cc"}"
+
+                                      RowLayout {
+                                          anchors.fill: parent
+                                          anchors.margins: 18
+                                          spacing: 16
+
+                                          // Big sleep glyph
+                                          Rectangle {
+                                              Layout.preferredWidth: 56
+                                              Layout.preferredHeight: 56
+                                              Layout.alignment: Qt.AlignVCenter
+                                              radius: 28
+                                              color: "${ca "base0D" "22"}"
+                                              border.width: 1
+                                              border.color: "${ca "base0D" "66"}"
+
+                                              Text {
+                                                  anchors.centerIn: parent
+                                                  text: "󰒲"
+                                                  color: "${c "base0D"}"
+                                                  font.family: "RobotoMono Nerd Font"
+                                                  font.pixelSize: 30
+                                              }
+                                          }
+
+                                          ColumnLayout {
+                                              Layout.fillWidth: true
+                                              Layout.alignment: Qt.AlignVCenter
+                                              spacing: 6
+
+                                              Text {
+                                                  Layout.fillWidth: true
+                                                  text: "Going to sleep…"
+                                                  color: "${c "base05"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 15
+                                                  font.weight: Font.DemiBold
+                                              }
+                                              Text {
+                                                  Layout.fillWidth: true
+                                                  text: "Suspending in " + desktop.suspendCountdown
+                                                      + " second" + (desktop.suspendCountdown === 1 ? "" : "s") + "."
+                                                  color: "${c "base04"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 12
+                                                  wrapMode: Text.Wrap
+                                              }
+
+                                              // Countdown progress strip
+                                              Rectangle {
+                                                  Layout.fillWidth: true
+                                                  Layout.topMargin: 6
+                                                  height: 4
+                                                  radius: 2
+                                                  color: "${ca "base02" "cc"}"
+
+                                                  Rectangle {
+                                                      anchors.left: parent.left
+                                                      anchors.top: parent.top
+                                                      anchors.bottom: parent.bottom
+                                                      width: parent.width
+                                                            * Math.max(0, desktop.suspendCountdown) / 5
+                                                      radius: 2
+                                                      color: "${c "base0D"}"
+                                                      Behavior on width {
+                                                          NumberAnimation { duration: 900; easing.type: Easing.Linear }
+                                                      }
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+
+                                  // ── Button row (Win-style, right aligned) ──
+                                  Rectangle {
+                                      Layout.fillWidth: true
+                                      Layout.preferredHeight: 52
+                                      color: "${ca "base01" "ee"}"
+
+                                      Rectangle {
+                                          anchors.left: parent.left
+                                          anchors.right: parent.right
+                                          anchors.top: parent.top
+                                          height: 1
+                                          color: "${c "base02"}"
+                                      }
+
+                                      Row {
+                                          anchors.right: parent.right
+                                          anchors.verticalCenter: parent.verticalCenter
+                                          anchors.rightMargin: 14
+                                          spacing: 10
+
+                                          // ── Suspend now (primary / accent) ──
+                                          Rectangle {
+                                              id: suspendNowBtn
+                                              width: 130
+                                              height: 30
+                                              radius: 3
+                                              border.width: 1
+                                              border.color: "${ca "base0D" "cc"}"
+                                              gradient: Gradient {
+                                                  GradientStop {
+                                                      position: 0.0
+                                                      color: suspendNowHover.hovered
+                                                          ? "${ca "base0D" "cc"}"
+                                                          : "${ca "base0D" "88"}"
+                                                  }
+                                                  GradientStop {
+                                                      position: 1.0
+                                                      color: suspendNowHover.hovered
+                                                          ? "${ca "base0D" "aa"}"
+                                                          : "${ca "base0D" "55"}"
+                                                  }
+                                              }
+
+                                              HoverHandler { id: suspendNowHover }
+
+                                              Text {
+                                                  anchors.centerIn: parent
+                                                  text: "󰒲  Suspend now"
+                                                  color: "${c "base07"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 12
+                                                  font.weight: Font.DemiBold
+                                              }
+
+                                              MouseArea {
+                                                  anchors.fill: parent
+                                                  cursorShape: Qt.PointingHandCursor
+                                                  onClicked: desktop.doSuspend()
+                                              }
+                                          }
+
+                                          // ── Cancel (secondary) ──
+                                          Rectangle {
+                                              id: suspendCancelBtn
+                                              width: 100
+                                              height: 30
+                                              radius: 3
+                                              border.width: 1
+                                              border.color: "${c "base02"}"
+                                              gradient: Gradient {
+                                                  GradientStop {
+                                                      position: 0.0
+                                                      color: suspendCancelHover.hovered
+                                                          ? "${ca "base02" "cc"}"
+                                                          : "${ca "base01" "ee"}"
+                                                  }
+                                                  GradientStop {
+                                                      position: 1.0
+                                                      color: suspendCancelHover.hovered
+                                                          ? "${ca "base02" "aa"}"
+                                                          : "${ca "base00" "cc"}"
+                                                  }
+                                              }
+
+                                              HoverHandler { id: suspendCancelHover }
+
+                                              Text {
+                                                  anchors.centerIn: parent
+                                                  text: "Cancel"
+                                                  color: "${c "base05"}"
+                                                  font.family: "Segoe UI"
+                                                  font.pixelSize: 12
+                                              }
+
+                                              MouseArea {
+                                                  anchors.fill: parent
+                                                  cursorShape: Qt.PointingHandCursor
+                                                  onClicked: desktop.cancelSuspend()
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+
+                          // Keyboard: Esc cancels, Enter suspends now
+                          Item {
+                              anchors.fill: parent
+                              focus: desktop.suspendDialogVisible
+                              Keys.onEscapePressed:  desktop.cancelSuspend()
+                              Keys.onReturnPressed:  desktop.doSuspend()
+                              Keys.onEnterPressed:   desktop.doSuspend()
                           }
                       }
                   }
