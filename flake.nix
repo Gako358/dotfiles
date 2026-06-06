@@ -19,6 +19,10 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    emacs-flake = {
+      url = "github:Gako358/emacs-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hardware.url = "github:nixos/nixos-hardware";
     hyprland.url = "github:hyprwm/hyprland";
     hypridle = {
