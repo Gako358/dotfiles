@@ -13,9 +13,6 @@ _: {
           serverAliveCountMax = 3;
           hashKnownHosts = false;
           userKnownHostsFile = "~/.ssh/known_hosts";
-          controlMaster = "no";
-          controlPath = "~/.ssh/master-%r@%n:%p";
-          controlPersist = "no";
         };
 
         "github.com" = {
@@ -26,6 +23,9 @@ _: {
           user = "git";
           identitiesOnly = true;
           identityFile = "~/.ssh/id_rsa";
+          controlMaster = "auto";
+          controlPath = "~/.ssh/master-%r@%n:%p";
+          controlPersist = "10m";
         };
 
         "10.0.0.*" = {
