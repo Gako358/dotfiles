@@ -1237,11 +1237,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1743293474,
-        "narHash": "sha256-R9UAjVm2yrkyKlVim3ZNhVG5R+iyOHYM1ZioC599u00=",
+        "lastModified": 1780824559,
+        "narHash": "sha256-HLqSV2XKKzMlouzpS30k5xJRuKe26yhHFe21qeHyZ6Q=",
         "owner": "gako358",
         "repo": "scram",
-        "rev": "cf3e0831c041bc15946641b9c02f61532f26f0d5",
+        "rev": "cd8a014d65ce34d28f318ca27040db8d0779f55a",
         "type": "github"
       },
       "original": {
