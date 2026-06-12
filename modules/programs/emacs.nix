@@ -16,6 +16,11 @@ _: {
       config = lib.mkIf (desktop.enable && desktop.develop) {
         programs.merrinx-emacs.enable = true;
 
+        programs.fish.shellAliases = {
+          vim = "emacs -nw";
+          vi = "emacs -nw";
+        };
+
         sops = lib.mkIf osConfig.service.sops.enable {
           secrets = {
             "forge_auth" = { };
