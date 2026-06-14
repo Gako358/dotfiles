@@ -137,7 +137,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Restore flake.lock
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: flake_lock
 
@@ -192,7 +192,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Restore flake.lock
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: flake_lock
 
@@ -210,7 +210,7 @@ jobs:
           token: "${{ secrets.TEST_TOKEN }}"
 
       - name: Restore flake.lock
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           name: flake_lock
 
