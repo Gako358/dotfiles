@@ -39,6 +39,15 @@ _: {
       };
     };
 
+    programs-cachix-merrinx-emacs = _: {
+      nix.settings = {
+        substituters = [ "https://merrinx-emacs.cachix.org" ];
+        trusted-public-keys = [
+          "merrinx-emacs.cachix.org-1:raHdfOzHuUJ02k7FuPa9Hfk87sNeQLUNyISGZqgmKCc="
+        ];
+      };
+    };
+
     programs-cachix-nix-community = _: {
       nix.settings = {
         substituters = [ "https://nix-community.cachix.org" ];

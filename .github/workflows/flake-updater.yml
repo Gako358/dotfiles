@@ -5,9 +5,6 @@ on:
   schedule:
     - cron: "0 2 * * 0"
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   generate_matrix:
     runs-on: ubuntu-latest
@@ -16,11 +13,11 @@ jobs:
         ${{ steps.gen_nixos_configurations.outputs.nixos_configurations }}
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: "${{ secrets.TEST_TOKEN }}"
       - name: Install nix
-        uses: cachix/install-nix-action@v30
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             auto-optimise-store = true
@@ -40,11 +37,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: "${{ secrets.TEST_TOKEN }}"
       - name: Install nix
-        uses: cachix/install-nix-action@v30
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             auto-optimise-store = true
@@ -54,7 +51,7 @@ jobs:
             trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= merrinx.cachix.org-1:xxPuUGRPdYkH1eAUy1hLXt9w3GCfKTFVrkiWdlPEN9E= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
       - name: Set up cachix
-        uses: cachix/cachix-action@v15
+        uses: cachix/cachix-action@v17
         with:
           name: merrinx
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
@@ -65,7 +62,7 @@ jobs:
       - name: Update the flake
         run: nix flake update
       - name: Store flake.lock
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: flake_lock
           path: flake.lock
@@ -115,12 +112,12 @@ jobs:
           df -h
 
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: "${{ secrets.TEST_TOKEN }}"
 
       - name: Install nix
-        uses: cachix/install-nix-action@v30
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             auto-optimise-store = true
@@ -134,13 +131,13 @@ jobs:
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
 
       - name: Set up cachix
-        uses: cachix/cachix-action@v15
+        uses: cachix/cachix-action@v17
         with:
           name: merrinx
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Restore flake.lock
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: flake_lock
 
@@ -173,12 +170,12 @@ jobs:
           df -h
 
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: "${{ secrets.TEST_TOKEN }}"
 
       - name: Install nix
-        uses: cachix/install-nix-action@v30
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             auto-optimise-store = true
@@ -189,13 +186,13 @@ jobs:
           install_url: https://releases.nixos.org/nix/nix-2.25.0/install
 
       - name: Set up cachix
-        uses: cachix/cachix-action@v15
+        uses: cachix/cachix-action@v17
         with:
           name: merrinx
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Restore flake.lock
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: flake_lock
 
@@ -208,12 +205,12 @@ jobs:
     needs: [update_flake, build_flake, check_flake]
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: "${{ secrets.TEST_TOKEN }}"
 
       - name: Restore flake.lock
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: flake_lock
 
