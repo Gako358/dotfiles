@@ -14,6 +14,23 @@
 set -euo pipefail
 
 select_machine() {
+    if [ -n "${1:-}" ]; then
+        machine="$1"
+        if [ ! -d "./modules/hosts/$machine" ]; then
+            echo "Unknown host: $machine"
+            echo "Available hosts:"
+            ls ./modules/hosts
+            exit 1
+        fi
+        echo "Target host: $machine"
+        read -r -p "Continue with installation? (y/n): " confirm
+        if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+            echo "Installation aborted."
+            exit 0
+        fi
+        return
+    fi
+
     echo "=================================="
     echo "NixOS Installation Script"
     echo "=================================="
@@ -123,6 +140,35 @@ restore_existing_host_key() {
     echo "[sops] Restored host key into $(dirname "$target_key")/."
 }
 
+restore_host_key_from_usb() {
+    local target_key="$1"
+    local dev mnt src
+    command -v blkid >/dev/null 2>&1 || return 1
+
+    dev=$(blkid -L SOPSKEY 2>/dev/null || true)
+    [ -n "$dev" ] || return 1
+
+    mnt=$(mktemp -d)
+    if ! mount "$dev" "$mnt" 2>/dev/null; then
+        rmdir "$mnt"
+        return 1
+    fi
+
+    src="${mnt}/hostkeys/${machine}/ssh_host_ed25519_key"
+    if [ -f "$src" ]; then
+        cp "$src" "$target_key"
+        [ -f "${src}.pub" ] && cp "${src}.pub" "${target_key}.pub"
+        chmod 0600 "$target_key"
+        [ -f "${target_key}.pub" ] && chmod 0644 "${target_key}.pub"
+        umount "$mnt"; rmdir "$mnt"
+        echo "[sops] Restored host key for ${machine} from installer USB."
+        return 0
+    fi
+
+    umount "$mnt"; rmdir "$mnt"
+    return 1
+}
+
 bootstrap_sops_host_key() {
     ensure_persist_mounted
 
@@ -134,6 +180,10 @@ bootstrap_sops_host_key() {
 
     if [ -f "$target_key" ]; then
         echo "[sops] Existing host key found at $target_key — re-using."
+        return
+    fi
+
+    if restore_host_key_from_usb "$target_key"; then
         return
     fi
 
@@ -169,7 +219,7 @@ run_install() {
 }
 
 main() {
-    select_machine
+    select_machine "$@"
     run_disko
     bootstrap_sops_host_key
     run_install

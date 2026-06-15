@@ -15,6 +15,15 @@ _: {
     in
     {
 
+      environment.etc."machine-id".source = "/persist/etc/machine-id";
+
+      system.activationScripts.persistMachineId = lib.stringAfter [ "specialfs" ] ''
+        if [ ! -s /persist/etc/machine-id ]; then
+          mkdir -p /persist/etc
+          tr -d '-' < /proc/sys/kernel/random/uuid > /persist/etc/machine-id
+        fi
+      '';
+
       environment.persistence."/persist" = {
         hideMounts = true;
         directories = [

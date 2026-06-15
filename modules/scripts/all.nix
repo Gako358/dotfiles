@@ -2,6 +2,7 @@ _: {
   flake.homeModules.scripts =
     { pkgs, ... }:
     let
+      build-installer = pkgs.callPackage ./_build-installer.nix { inherit pkgs; };
       countdown-timer = pkgs.callPackage ./_countdown-timer.nix { inherit pkgs; };
       gen-ssh-key = pkgs.callPackage ./_gen-ssh-key.nix { inherit pkgs; };
       orphant-persist = pkgs.callPackage ./_orphant-persist.nix { inherit pkgs; };
@@ -11,6 +12,7 @@ _: {
     in
     {
       home.packages = [
+        build-installer
         countdown-timer
         gen-ssh-key
         orphant-persist

@@ -233,6 +233,42 @@ nixos-rebuild switch --flake .#
 
 (This assumes your hostname matches one of the configurations in the flake. Otherwise pass the host explicitly: ~nixos-rebuild switch --flake .#aanallein~.)
 
+**** Fresh install via a prebuilt installer USB (recommended)
+
+~build-installer~ (in ~modules/scripts/~, available in the user environment) bakes a host's entire install onto a single bootable stick: a minimal NixOS live ISO with this flake embedded, plus a ~SOPSKEY~ partition carrying the sops secrets needed at install time. A reinstall of an existing host then becomes: boot, run one command, confirm the disk wipe.
+
+#+BEGIN_SRC shell
+# Build the ISO only (prints the built ISO's store path):
+build-installer terangreal
+
+# Build, flash to a USB, and write the SOPSKEY partition in one go:
+build-installer terangreal /dev/sdX
+
+# Building for a host other than the one you're on → point at its backed-up key:
+build-installer tuathaan /dev/sdX /path/to/tuathaan/ssh_host_ed25519_key
+#+END_SRC
+
+When a device is given it re-confirms the device, ~dd~'s the ISO, then appends a small vfat ~SOPSKEY~ partition containing:
+
+| File on SOPSKEY                               | Purpose                                                 |
+|-----------------------------------------------+---------------------------------------------------------|
+| ~keys.txt~                                    | the master/admin age key (for ~sops~ on the installer)  |
+| ~hostkeys/<host>/ssh_host_ed25519_key{,.pub}~ | the host's own sops identity, auto-restored on install  |
+
+The host key is grabbed from the live ~/etc/ssh~ when you build for the current host, or from the ~[host-key-path]~ argument otherwise. Both secrets are written *after* ~dd~ and live only on the physical USB — they never enter the (world-readable) nix store.
+
+On the target machine:
+
+1. Boot the USB.
+2. Run ~install-system~.
+3. Confirm the disk wipe once.
+
+~install-system~ copies the embedded flake to a writable dir and runs ~scripts/install.sh <host>~. With the host key present on ~SOPSKEY~ the sops bootstrap is automatic (Path B, no prompts). For a brand-new host with no key on the stick it falls back to the interactive bootstrap (Path A).
+
+#+BEGIN_QUOTE
+The ~SOPSKEY~ partition holds private keys in plaintext (it's vfat). Treat the stick as a secret-bearing device and wipe it after installing if you don't want it lying around.
+#+END_QUOTE
+
 **** Fresh install via the NixOS installer
 
 The installer script handles disko formatting *and* the sops-nix bootstrap that's otherwise a chicken-and-egg problem on fresh installs (the host has no ~/etc/ssh/ssh_host_ed25519_key~ yet, so sops-nix can't decrypt secrets during activation).
@@ -383,6 +419,24 @@ chmod 0644 /mnt/persist/etc/ssh/ssh_host_ed25519_key.pub
 
 # 3. install
 nixos-install --flake .#<host>
+#+END_SRC
+
+*** Persisted state: machine-id
+
+~/etc/machine-id~ is persisted via ~modules/services/impermanence.nix~: it is a symlink to ~/persist/etc/machine-id~, and an activation script seeds a fresh id there if one is missing, so fresh installs self-heal.
+
+Because that seed generates a *new random* id when ~/persist/etc/machine-id~ is absent, a host that has been running *without* a persisted machine-id must have its current id copied into ~/persist~ *before* the first rebuild that enables this — otherwise the host's machine-id changes. Run once per such host, before ~nh os switch~:
+
+#+BEGIN_SRC shell
+sudo rm -rf /persist/etc/machine-id            # drop any stray dir impermanence created
+cat /etc/machine-id | sudo tee /persist/etc/machine-id
+#+END_SRC
+
+Confirm it is a regular file with the expected id, then rebuild:
+
+#+BEGIN_SRC shell
+cat /persist/etc/machine-id
+nh os switch
 #+END_SRC
 
 *** Inspecting a build
