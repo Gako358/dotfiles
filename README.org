@@ -237,6 +237,29 @@ nixos-rebuild switch --flake .#
 
 ~build-installer~ (in ~modules/scripts/~, available in the user environment) bakes a host's entire install onto a single bootable stick: a minimal NixOS live ISO with this flake embedded, plus a ~SOPSKEY~ partition carrying the sops secrets needed at install time. A reinstall of an existing host then becomes: boot, run one command, confirm the disk wipe.
 
+***** Identify and prepare the USB stick
+
+A ~dd~-flashed bootable USB does *not* need to be pre-formatted — the raw image overwrites the whole device (partition table included), so any existing filesystem is wiped anyway. The only things that matter are picking the *right* device and making sure none of its partitions are mounted.
+
+#+BEGIN_SRC shell
+# 1. Find the device. Run before and after plugging the stick in and compare;
+#    match on size/model. Use the whole-disk node (/dev/sdX), NOT a partition
+#    (/dev/sdX1). On NVMe/SD it looks like /dev/nvme0n1 or /dev/mmcblk0.
+lsblk -o NAME,SIZE,MODEL,TRAN,MOUNTPOINTS
+
+# 2. Unmount any auto-mounted partitions of that device.
+sudo umount /dev/sdX?* 2>/dev/null || true
+
+# 3. (Optional) wipe old partition signatures to avoid stale-table confusion.
+sudo wipefs -a /dev/sdX
+#+END_SRC
+
+#+BEGIN_QUOTE
+Double-check the device path. ~dd~ to the wrong ~/dev/sdX~ will erase that disk irrecoverably.
+#+END_QUOTE
+
+***** Build and flash
+
 #+BEGIN_SRC shell
 # Build the ISO only (prints the built ISO's store path):
 build-installer terangreal
@@ -246,6 +269,15 @@ build-installer terangreal /dev/sdX
 
 # Building for a host other than the one you're on → point at its backed-up key:
 build-installer tuathaan /dev/sdX /path/to/tuathaan/ssh_host_ed25519_key
+#+END_SRC
+
+If you built the ISO without a device (first form above) and want to copy it to the stick by hand — note this gives you a bootable installer but *without* the ~SOPSKEY~ partition, so the sops bootstrap falls back to the interactive path:
+
+#+BEGIN_SRC shell
+iso=$(nix build .#nixosConfigurations.installer-terangreal.config.system.build.isoImage \
+  --no-link --print-out-paths)/iso/*.iso
+sudo dd if=$iso of=/dev/sdX bs=4M status=progress oflag=sync conv=fsync
+sync
 #+END_SRC
 
 When a device is given it re-confirms the device, ~dd~'s the ISO, then appends a small vfat ~SOPSKEY~ partition containing:
