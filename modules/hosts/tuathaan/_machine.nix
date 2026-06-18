@@ -48,6 +48,7 @@ in
   system = {
     disks.extraStoreDisk.enable = false;
     bluetooth.enable = true;
+    touchscreen.enable = true;
   };
 
   service = {
