@@ -27,7 +27,7 @@ _: {
             };
           };
           programs.dconf.enable = true; # Needed to manages user settings
-          systemd = {
+          systemd = lib.mkIf (config.environment.desktop.windowManager != "gnome") {
             user.services.polkit-gnome-authentication-agent-1 = {
               description = "polkit-gnome-authentication-agent-1";
               wantedBy = [ "graphical-session.target" ];
@@ -77,6 +77,7 @@ _: {
 
           environment.systemPackages = with pkgs; [
             gnome-tweaks
+            gjs
           ];
         })
       ];
