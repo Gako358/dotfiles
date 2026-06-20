@@ -31,9 +31,9 @@ _: {
               keybindings = "vim";
             };
             "org/gnome/desktop/background" = {
-              picture-uri = "file:///home/merrinx/Sources/archive/images/wallpapers/moon.png";
-              picture-uri-dark = "file:///home/merrinx/Sources/archive/images/wallpapers/moon.png";
-              primary-color = "#730166";
+              picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/sheet-l.jxl";
+              picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/sheet-d.jxl";
+              primary-color = "#1a5fb4";
             };
             "org/gnome/desktop/interface" = {
               color-scheme = "prefer-dark";
@@ -52,8 +52,8 @@ _: {
               ];
             };
             "org/gnome/desktop/screensaver" = {
-              picture-uri = "file:///home/merrinx/Sources/archive/images/wallpapers/moon.png";
-              primary-color = "#730166";
+              picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/sheet-l.jxl";
+              primary-color = "#1a5fb4";
               secondary-color = "#000000";
             };
             "org/gnome/desktop/session" = {
@@ -95,13 +95,10 @@ _: {
             "org/gnome/shell" = {
               disable-user-extensions = false;
               enabled-extensions = with pkgs.gnomeExtensions; [
-                appindicator.extensionUuid
                 caffeine.extensionUuid
                 clipboard-indicator.extensionUuid
-                open-bar.extensionUuid
                 tray-icons-reloaded.extensionUuid
                 user-themes.extensionUuid
-                vitals.extensionUuid
               ];
               favorite-apps = [
                 "org.gnome.Console.desktop"
@@ -124,35 +121,8 @@ _: {
               show-notification = false;
               user-enabled = true;
             };
-            "org/gnome/shell/extensions/openbar" = {
-              autotheme-dark = "Dark";
-              autotheme-light = "Dark";
-              bartype = "Islands";
-              dashdock-style = "Bar";
-              autotheme-refresh = true;
-              trigger-autotheme = true;
-              margin = 1.0;
-              neon = false;
-              height = 46.0;
-              balpha = 0.55;
-              bwidth = 1.0;
-              bradius = 19.0;
-              dbradius = 37.0;
-              isalpha = 0.71999999999999997;
-            };
             "org/gnome/shell/extensions/user-theme" = {
               name = "palenight";
-            };
-            "org/gnome/shell/extensions/vitals" = {
-              hot-sensors = [
-                "__temperature_avg__"
-                "_processor_usage_"
-                "_memory_usage_"
-              ];
-              position-in-panel = 0;
-              use-higher-precision = false;
-              alphabetize = true;
-              hide-zeros = false;
             };
             "org/gnome/shell/keybindings" = {
               switch-to-application-1 = [ ];
@@ -183,13 +153,10 @@ _: {
             );
 
             packages = with pkgs; [
-              gnomeExtensions.appindicator
               gnomeExtensions.caffeine
               gnomeExtensions.clipboard-indicator
-              gnomeExtensions.open-bar
               gnomeExtensions.tray-icons-reloaded
               gnomeExtensions.user-themes
-              gnomeExtensions.vitals
               palenight-theme
             ];
           };
