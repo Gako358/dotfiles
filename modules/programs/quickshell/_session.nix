@@ -12,8 +12,11 @@
       property var lockComponent: null
       property bool opened: false
 
+      property string pendingAction: ""
+      property string pendingLabel: ""
+
       function show()   { root.opened = true }
-      function hide()   { root.opened = false }
+      function hide()   { root.opened = false; root.cancelConfirm() }
       function toggle() { root.opened = !root.opened }
 
       IpcHandler {
@@ -33,9 +36,24 @@
           root.hide()
       }
       function doSuspend()  { run(["systemctl", "suspend"]) }
-      function doLogout()   { run(["uwsm", "stop"]) }
-      function doReboot()   { run(["systemctl", "reboot"]) }
-      function doShutdown() { run(["systemctl", "poweroff"]) }
+
+      function requestConfirm(action, label) {
+          root.pendingAction = action
+          root.pendingLabel = label
+      }
+      function cancelConfirm() {
+          root.pendingAction = ""
+          root.pendingLabel = ""
+      }
+      function confirmAction() {
+          var a = root.pendingAction
+          root.cancelConfirm()
+          switch (a) {
+              case "logout":   root.run(["uwsm", "stop"]);          break
+              case "reboot":   root.run(["systemctl", "reboot"]);   break
+              case "shutdown": root.run(["systemctl", "poweroff"]); break
+          }
+      }
 
       PanelWindow {
           id: panel
@@ -63,7 +81,7 @@
               Rectangle {
                   id: sessionCard
                   width: 280
-                  height: contentCol.implicitHeight + 28
+                  height: (root.pendingAction === "" ? contentCol.implicitHeight : confirmCol.implicitHeight) + 28
                   anchors.bottom: parent.bottom
                   anchors.right: parent.right
                   anchors.bottomMargin: 52
@@ -90,6 +108,7 @@
 
               ColumnLayout {
                   id: contentCol
+                  visible: root.pendingAction === ""
                   anchors.fill: parent
                   anchors.margins: 14
                   spacing: 8
@@ -159,14 +178,114 @@
                               cursorShape: Qt.PointingHandCursor
                               onClicked: {
                                   switch (modelData.action) {
-                                      case "lock":     root.doLock();     break
-                                      case "suspend":  root.doSuspend();  break
-                                      case "logout":   root.doLogout();   break
-                                      case "reboot":   root.doReboot();   break
-                                      case "shutdown": root.doShutdown(); break
+                                      case "lock":     root.doLock();    break
+                                      case "suspend":  root.doSuspend(); break
+                                      case "logout":   root.requestConfirm("logout", "Log out");    break
+                                      case "reboot":   root.requestConfirm("reboot", "Reboot");     break
+                                      case "shutdown": root.requestConfirm("shutdown", "Shutdown"); break
                                   }
                               }
                           }
+                      }
+                  }
+              }
+
+              ColumnLayout {
+                  id: confirmCol
+                  visible: root.pendingAction !== ""
+                  anchors.fill: parent
+                  anchors.margins: 14
+                  spacing: 8
+
+                  Text {
+                      Layout.alignment: Qt.AlignHCenter
+                      text: root.pendingLabel
+                      color: "${c "base0D"}"
+                      font.family: "RobotoMono Nerd Font"
+                      font.pixelSize: 14
+                      font.weight: Font.Medium
+                  }
+
+                  Text {
+                      Layout.fillWidth: true
+                      horizontalAlignment: Text.AlignHCenter
+                      text: "Are you sure?"
+                      color: "${c "base05"}"
+                      font.family: "RobotoMono Nerd Font"
+                      font.pixelSize: 12
+                  }
+
+                  Item { Layout.preferredHeight: 4 }
+
+                  Rectangle {
+                      Layout.fillWidth: true
+                      Layout.preferredHeight: 44
+                      radius: 10
+                      color: confirmHover.hovered ? "${ca "base08" "cc"}" : "${ca "base08" "55"}"
+                      border.width: 1
+                      border.color: "${c "base08"}"
+                      Behavior on color { ColorAnimation { duration: 120 } }
+                      HoverHandler { id: confirmHover }
+                      RowLayout {
+                          anchors.fill: parent
+                          anchors.leftMargin: 14
+                          anchors.rightMargin: 14
+                          spacing: 14
+                          Text {
+                              text: "󰄬"
+                              color: "${c "base05"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 20
+                          }
+                          Text {
+                              Layout.fillWidth: true
+                              text: "Confirm"
+                              color: "${c "base05"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 13
+                              font.weight: Font.Medium
+                          }
+                      }
+                      MouseArea {
+                          anchors.fill: parent
+                          cursorShape: Qt.PointingHandCursor
+                          onClicked: root.confirmAction()
+                      }
+                  }
+
+                  Rectangle {
+                      Layout.fillWidth: true
+                      Layout.preferredHeight: 44
+                      radius: 10
+                      color: cancelHover.hovered ? "${ca "base02" "cc"}" : "${ca "base01" "75"}"
+                      border.width: 1
+                      border.color: "${c "base02"}"
+                      Behavior on color { ColorAnimation { duration: 120 } }
+                      HoverHandler { id: cancelHover }
+                      RowLayout {
+                          anchors.fill: parent
+                          anchors.leftMargin: 14
+                          anchors.rightMargin: 14
+                          spacing: 14
+                          Text {
+                              text: "󰜺"
+                              color: "${c "base0B"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 20
+                          }
+                          Text {
+                              Layout.fillWidth: true
+                              text: "Cancel"
+                              color: "${c "base05"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 13
+                              font.weight: Font.Medium
+                          }
+                      }
+                      MouseArea {
+                          anchors.fill: parent
+                          cursorShape: Qt.PointingHandCursor
+                          onClicked: root.cancelConfirm()
                       }
                   }
               }

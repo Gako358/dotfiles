@@ -10,6 +10,8 @@ in
   ];
 
   networking.hostName = "terangreal";
+
+  environment.desktop.greeter.monitors = [ "DP-2" ];
   users.users = {
     merrinx = {
       isNormalUser = true;
