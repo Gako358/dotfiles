@@ -128,17 +128,21 @@ _: {
         };
       };
 
-      config.programs.quickshell = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
-        enable = true;
-        package = pkgs.quickshell;
-
-        configs.bivrost = bivrostConfig;
-        activeConfig = "bivrost";
-
-        systemd = {
+      config = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
+        programs.quickshell = {
           enable = true;
-          target = "graphical-session.target";
+          package = pkgs.quickshell;
+
+          configs.bivrost = bivrostConfig;
+          activeConfig = "bivrost";
+
+          systemd = {
+            enable = true;
+            target = "graphical-session.target";
+          };
         };
+
+        systemd.user.services.quickshell.Unit.PartOf = [ "graphical-session.target" ];
       };
     };
 }

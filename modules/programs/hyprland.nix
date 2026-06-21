@@ -343,8 +343,10 @@
           hl.bind(k(mainMod, "t"),                    hl.dsp.workspace.toggle_special(""))
 
           -- Session
-          -- NOTE: under uwsm, prefer `uwsm stop` over hl.dsp.exit() for clean shutdown
-          hl.bind(k(mainMod, SECONDARY, TERTIARY, "Q"), hl.dsp.exec_cmd("uwsm stop"))
+          -- Terminate the login session (not the user): logind drives it
+          -- externally and stops user@UID.service only after the session closes,
+          -- avoiding the teardown deadlock that froze the next login.
+          hl.bind(k(mainMod, SECONDARY, TERTIARY, "Q"), hl.dsp.exec_cmd("loginctl terminate-session \"$(loginctl --no-legend list-sessions | awk '$6 == \"user\" { print $1; exit }')\""))
 
           -- Window
           hl.bind(k(mainMod, "Q"),                    hl.dsp.window.close())

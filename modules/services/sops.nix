@@ -29,12 +29,10 @@ _: {
             # sops-nix decrypt secrets on the first activation.
             sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-            # Optional secondary identity: if a private age key is dropped at
-            # this path on a running host, sops-nix will use it as an extra
-            # decryption identity (e.g. the master/admin key for emergency
-            # recovery). This file is NOT used during a fresh install — the
-            # user's home directory does not exist yet at that point.
-            keyFile = "${config.users.users.merrinx.home}/.config/sops/age/keys.txt";
+            # Secondary identity for emergency recovery. Lives under /etc/sops
+            # (system-persisted, mounted early like /etc/ssh) so it is readable
+            # at activation; a user-home path would not be mounted yet.
+            keyFile = "/etc/sops/age/keys.txt";
           };
         };
       };

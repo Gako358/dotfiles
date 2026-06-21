@@ -49,7 +49,10 @@
           var a = root.pendingAction
           root.cancelConfirm()
           switch (a) {
-              case "logout":   root.run(["uwsm", "stop"]);          break
+              // Terminate the login session (not the user): logind drives it
+              // externally and stops user@UID.service only after the session
+              // closes, avoiding the teardown deadlock that froze the next login.
+              case "logout":   root.run(["sh", "-c", "loginctl terminate-session \"$(loginctl --no-legend list-sessions | awk '$6 == \"user\" { print $1; exit }')\""]); break
               case "reboot":   root.run(["systemctl", "reboot"]);   break
               case "shutdown": root.run(["systemctl", "poweroff"]); break
           }

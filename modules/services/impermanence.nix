@@ -29,6 +29,10 @@ _: {
         directories = [
           "/etc/NetworkManager/system-connections"
           "/etc/ssh"
+          {
+            directory = "/etc/sops";
+            mode = "0700";
+          }
           "/var/lib/nixos"
           "/var/lib/systemd/coredump"
           "/var/log"

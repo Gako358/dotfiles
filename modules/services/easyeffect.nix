@@ -14,6 +14,13 @@ _: {
         preset = "noise-cancellation";
       };
 
+      # `easyeffects --quit` stops over D-Bus, which hangs until TimeoutStopSec
+      # during logout once the bus is gone; SIGTERM exits cleanly instead.
+      systemd.user.services.easyeffects.Service = lib.mkIf desktop.enable {
+        ExecStop = lib.mkForce "";
+        TimeoutStopSec = lib.mkForce "5s";
+      };
+
       home.persistence."/persist/" = {
         directories = [
           ".config/easyeffects"

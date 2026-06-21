@@ -282,10 +282,10 @@ sync
 
 When a device is given it re-confirms the device, ~dd~'s the ISO, then appends a small vfat ~SOPSKEY~ partition containing:
 
-| File on SOPSKEY                               | Purpose                                                 |
-|-----------------------------------------------+---------------------------------------------------------|
-| ~keys.txt~                                    | the master/admin age key (for ~sops~ on the installer)  |
-| ~hostkeys/<host>/ssh_host_ed25519_key{,.pub}~ | the host's own sops identity, auto-restored on install  |
+| File on SOPSKEY                               | Purpose                                                                                       |
+|-----------------------------------------------+-----------------------------------------------------------------------------------------------|
+| ~keys.txt~                                    | the master/admin age key — used by ~sops~ on the installer *and* seeded to the host's ~/etc/sops/age/keys.txt~ |
+| ~hostkeys/<host>/ssh_host_ed25519_key{,.pub}~ | the host's own sops identity, auto-restored on install                                        |
 
 The host key is grabbed from the live ~/etc/ssh~ when you build for the current host, or from the ~[host-key-path]~ argument otherwise. Both secrets are written *after* ~dd~ and live only on the physical USB — they never enter the (world-readable) nix store.
 
@@ -315,7 +315,7 @@ Two USB drives is the simplest setup; you can also use one drive with two partit
 
    | File                                    | When you need it                                                                                       |
    |-----------------------------------------+--------------------------------------------------------------------------------------------------------|
-   | ~master-age-key.txt~                    | Path A (new host) only, *if* you want to run ~sops updatekeys~ on the installer itself                 |
+   | ~master-age-key.txt~                    | Recommended on *every* install — seeds the host's ~/etc/sops~ identity; also lets you run ~sops updatekeys~ on the installer (Path A). The script auto-detects it at ~/mnt/usb/master-age-key.txt~, ~/mnt/usb/keys.txt~, or ~$SOPS_AGE_KEY_FILE~ |
    | ~hosts/<host>/ssh_host_ed25519_key~     | Path B (reinstall) — restores the host's previous age identity                                         |
    | ~hosts/<host>/ssh_host_ed25519_key.pub~ | Path B — companion public key                                                                          |
    | ~hosts/<host>/ssh_host_rsa_key~ (opt)   | Path B — only if you want the host's old RSA SSH key to keep working too                               |
@@ -349,7 +349,8 @@ The script:
 1. Asks which host you're installing.
 2. Runs ~disko~ against ~modules/hosts/<host>/_disks.nix~ to format & mount.
 3. *Bootstraps the sops host key* into ~/mnt/persist/etc/ssh/~ — branches into one of three paths described below.
-4. Runs ~nixos-install --flake .#<host>~.
+4. *Seeds the master age key* into ~/mnt/persist/etc/sops/age/keys.txt~ (from ~$SOPS_AGE_KEY_FILE~), so the host's secondary sops identity exists on first boot. Skipped gracefully if no master key is available.
+5. Runs ~nixos-install --flake .#<host>~.
 
 ***** Path A — brand-new host (not yet in ~.sops.yaml~)
 
@@ -383,7 +384,11 @@ Two ways to do steps 1-5:
 
   Then back in the install script's shell, ~git pull~ and press ENTER.
 
-After ENTER, the script proceeds with ~nixos-install~. Activation runs, sops-nix derives the new host's age identity from ~/etc/ssh/ssh_host_ed25519_key~ (which you just seeded into ~/mnt/persist/etc/ssh/~), and decrypts every secret on the first try.
+After ENTER, the script proceeds with ~nixos-install~. On first boot sops-nix has two identities available — the host's age key derived from ~/etc/ssh/ssh_host_ed25519_key~ (bind-mounted from ~/persist/etc/ssh/~) and the seeded master key at ~/etc/sops/age/keys.txt~ (bind-mounted from ~/persist/etc/sops/~). Either one decrypts every secret, so secrets install on the first try; the master key even covers the window before the new host is added to ~.sops.yaml~.
+
+#+BEGIN_QUOTE
+The system ~sops.age.keyFile~ points at ~/etc/sops/age/keys.txt~ rather than a home path on purpose: ~sops-install-secrets~ runs at early activation, before per-user/home bind-mounts exist. ~/etc/sops~ is system-persisted (mounted early like ~/etc/ssh~), so the key is readable in time. A configured-but-missing ~keyFile~ is fatal, which is why the installer seeds it.
+#+END_QUOTE
 
 ***** Path B — reinstall of an existing host (already in ~.sops.yaml~)
 
@@ -449,7 +454,12 @@ cp /mnt/usb/hosts/<host>/ssh_host_ed25519_key.pub /mnt/persist/etc/ssh/
 chmod 0600 /mnt/persist/etc/ssh/ssh_host_ed25519_key
 chmod 0644 /mnt/persist/etc/ssh/ssh_host_ed25519_key.pub
 
-# 3. install
+# 3. seed the master age key as the host's secondary identity
+#    (source = the installer's loaded key, $SOPS_AGE_KEY_FILE / the SOPSKEY USB)
+install -d -m 0700 /mnt/persist/etc/sops/age
+install -m 0600 "$SOPS_AGE_KEY_FILE" /mnt/persist/etc/sops/age/keys.txt
+
+# 4. install
 nixos-install --flake .#<host>
 #+END_SRC
 

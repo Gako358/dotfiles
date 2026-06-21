@@ -19,6 +19,8 @@ _: {
       };
 
       config = lib.mkIf cfg.enable {
+        users.groups.plugdev = { };
+        users.users.merrinx.extraGroups = [ "plugdev" ];
         services = {
           udev.packages = [
             (pkgs.writeTextFile {

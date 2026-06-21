@@ -211,6 +211,55 @@ bootstrap_sops_host_key() {
     chmod 0644 "${target_key}.pub"
 }
 
+# ── sops secondary (master/admin) age key ───────────────────────────────────
+#
+# The system sops config sets keyFile = /etc/sops/age/keys.txt as an optional
+# secondary identity, bind-mounted early from /persist/etc/sops. A configured-
+# but-missing keyFile is fatal to sops-install-secrets, so seed it from the
+# installer's master key (SOPS_AGE_KEY_FILE, loaded from the SOPSKEY USB).
+
+seed_sops_master_key() {
+    ensure_persist_mounted
+
+    # Locate the master age key from whichever flow we're in: the installer's
+    # exported env (build-installer USB), the live user's sops dir, or a
+    # manually-mounted secrets USB.
+    local src=""
+    for cand in \
+        "${SOPS_AGE_KEY_FILE:-}" \
+        "/home/nixos/.config/sops/age/keys.txt" \
+        "$HOME/.config/sops/age/keys.txt" \
+        "/mnt/usb/keys.txt" \
+        "/mnt/usb/master-age-key.txt"; do
+        if [ -n "$cand" ] && [ -f "$cand" ]; then
+            src="$cand"
+            break
+        fi
+    done
+
+    if [ -z "$src" ]; then
+        echo "[sops] No master age key found (set SOPS_AGE_KEY_FILE or place it"
+        echo "       on the secrets USB). Skipping /etc/sops seed — first boot's"
+        echo "       sops will fail unless this host's sops.age.keyFile is unset."
+        return
+    fi
+    echo "[sops] Using master age key from $src"
+
+    local dest_dir="/mnt/persist/etc/sops/age"
+    local dest_key="${dest_dir}/keys.txt"
+
+    if [ -f "$dest_key" ]; then
+        echo "[sops] Existing key at $dest_key — re-using."
+        return
+    fi
+
+    install -d -m 0755 /mnt/persist/etc
+    install -d -m 0700 /mnt/persist/etc/sops
+    install -d -m 0700 "$dest_dir"
+    install -m 0600 "$src" "$dest_key"
+    echo "[sops] Seeded master age key -> $dest_key"
+}
+
 run_install() {
     local flake_target=".#$machine"
     echo "Installing NixOS on $machine..."
@@ -222,6 +271,7 @@ main() {
     select_machine "$@"
     run_disko
     bootstrap_sops_host_key
+    seed_sops_master_key
     run_install
 }
 
