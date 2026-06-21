@@ -11,6 +11,27 @@ _: {
       certificatesFile = "${config.xdg.configHome}/protonmail/bridge-v3/cert.pem";
       cfg = config.service.mail;
 
+      mbsyncWaitPorts = [ 1143 ] ++ lib.optional cfg.work.enable cfg.work.imapPort;
+
+      # `After=` waits for the bridge unit to be active, not for it to bind its
+      # port, so block until the gateways actually accept connections.
+      waitForBridge = pkgs.writeShellScript "wait-for-proton-bridge" ''
+        for port in ${toString mbsyncWaitPorts}; do
+          ready=
+          for _ in $(${pkgs.coreutils}/bin/seq 1 60); do
+            if ${lib.getExe' pkgs.netcat-openbsd "nc"} -z -w1 127.0.0.1 "$port"; then
+              ready=1
+              break
+            fi
+            ${pkgs.coreutils}/bin/sleep 1
+          done
+          if [ -z "$ready" ]; then
+            echo "mail gateway not reachable on 127.0.0.1:$port after 60s" >&2
+            exit 1
+          fi
+        done
+      '';
+
       davmailDir = "${config.xdg.configHome}/davmail";
       davmailProperties = "${davmailDir}/davmail.properties";
 
@@ -273,14 +294,17 @@ _: {
             Install.WantedBy = [ "default.target" ];
           };
 
-          mbsync.Unit = {
-            After = [
-              "protonmail-bridge.service"
-            ]
-            ++ lib.optional cfg.work.enable "davmail.service";
-            Requires = [ "protonmail-bridge.service" ];
-            PartOf = [ "protonmail-bridge.service" ];
-            Wants = lib.optional cfg.work.enable "davmail.service";
+          mbsync = {
+            Unit = {
+              After = [
+                "protonmail-bridge.service"
+              ]
+              ++ lib.optional cfg.work.enable "davmail.service";
+              Requires = [ "protonmail-bridge.service" ];
+              PartOf = [ "protonmail-bridge.service" ];
+              Wants = lib.optional cfg.work.enable "davmail.service";
+            };
+            Service.ExecStartPre = "${waitForBridge}";
           };
         };
       };
