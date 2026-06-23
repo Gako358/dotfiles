@@ -17,8 +17,8 @@ _: {
         programs.merrinx-emacs.enable = true;
 
         programs.fish.shellAliases = {
-          vim = "emacs -nw";
-          vi = "emacs -nw";
+          vim = "emacs-minimal";
+          vi = "emacs-minimal";
         };
 
         sops = lib.mkIf osConfig.service.sops.enable {
