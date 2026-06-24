@@ -326,11 +326,11 @@
           ----------------------
 
           -- Apps / launchers
-          hl.bind(k(mainMod, "Return"),               hl.dsp.exec_cmd(launch("alacritty")))
+          hl.bind(k(mainMod, "Return"),               hl.dsp.exec_cmd(launch("ghostty")))
           hl.bind(k(mainMod, "D"),                    hl.dsp.exec_cmd("qs -c bivrost ipc call launcher toggle"))
-          hl.bind(k(mainMod, "B"),                    hl.dsp.exec_cmd(toggle("alacritty -t btop -e btm")))
-          hl.bind(k(mainMod, "R"),                    hl.dsp.exec_cmd(toggle("alacritty -t ranger -e ranger")))
-          hl.bind(k(mainMod, "S"),                    hl.dsp.exec_cmd(toggle("alacritty -t spotify_player -e spotify_player")))
+          hl.bind(k(mainMod, "B"),                    hl.dsp.exec_cmd(toggle("ghostty --title=btop -e btm")))
+          hl.bind(k(mainMod, "R"),                    hl.dsp.exec_cmd(toggle("ghostty --title=ranger -e ranger")))
+          hl.bind(k(mainMod, "S"),                    hl.dsp.exec_cmd(toggle("ghostty --title=spotify_player -e spotify_player")))
           hl.bind(k(mainMod, SECONDARY, "D"),         hl.dsp.exec_cmd(runOnce("pcmanfm")))
           hl.bind(k(mainMod, SECONDARY, "L"),         hl.dsp.exec_cmd("qs -c bivrost ipc call lock lock"))
           hl.bind(k(mainMod, "A"),                    hl.dsp.exec_cmd("qs -c bivrost ipc call dashboard toggle"))
@@ -440,7 +440,7 @@
           for _, r in ipairs({
               { match = { class = "^(zen)$" },                   workspace = "1" },
               { match = { class = "^(Emacs)$" },                 workspace = "2" },
-              { match = { class = "^(Alacritty)$" },             workspace = "3" },
+              { match = { class = "^(com.mitchellh.ghostty)$" }, workspace = "3" },
               { match = { class = "^(Wfica)$" },                 workspace = "5" },
               { match = { class = "^(.virt-manager-wrapped)$" }, workspace = "5" },
               { match = { class = "^(steam)$" },                 workspace = "7" },

@@ -66,10 +66,10 @@ _: {
                 key = "Meta+Shift+Backspace";
                 command = "clear-kde-notifications";
               };
-              launch-alacritty = {
-                name = "Launch Alacritty";
+              launch-ghostty = {
+                name = "Launch Ghostty";
                 key = "Meta+Shift+Return";
-                command = "alacritty";
+                command = "ghostty";
               };
               launch-brave = {
                 name = "Launch Brave";
@@ -394,10 +394,10 @@ _: {
                   desktops = "Desktop_2";
                   desktopsrule = "3";
                 };
-                description = "Assign Alacritty to Desktop 2";
+                description = "Assign Ghostty to Desktop 2";
                 match = {
                   window-class = {
-                    value = "Alacritty";
+                    value = "ghostty";
                     type = "substring";
                   };
                   window-types = [ "normal" ];
