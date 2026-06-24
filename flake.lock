@@ -82,6 +82,22 @@
         "type": "github"
       }
     },
+    "bivrost": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782282169,
+        "narHash": "sha256-Si/RWzlNfLUaMjWxYA7mEaf0f2OggOkvM32VMXYlkVs=",
+        "owner": "gako358",
+        "repo": "bivrost",
+        "rev": "76fee52626db272b7bf1e92b29147e492609bd1d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gako358",
+        "repo": "bivrost",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -105,17 +121,18 @@
     },
     "emacs-flake": {
       "inputs": {
+        "bivrost": "bivrost",
         "flake-parts": "flake-parts",
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1782235239,
-        "narHash": "sha256-9LGljeP7VvM8wkCYBx91HC356U4wjHA85mU1WVkiqUk=",
+        "lastModified": 1782282267,
+        "narHash": "sha256-zRYaM+bGHOKuR0g525OEMOW1LkxPQCuy+WJ+nJZsHfU=",
         "owner": "Gako358",
         "repo": "emacs-flake",
-        "rev": "87f99ab47ebdfaeef4b58cbc950db9994b39763a",
+        "rev": "4aaa25b12b6d14f0ad25b708a07dab28c1b9c618",
         "type": "github"
       },
       "original": {
