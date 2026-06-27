@@ -43,11 +43,14 @@
       inputs.hyprland.follows = "hyprland";
     };
     hyprpaper = {
-      url = "github:hyprwm/hyprpaper/v0.8.4";
+      url = "github:hyprwm/hyprpaper";
       inputs = {
+        aquamarine.follows = "hyprland/aquamarine";
         hyprgraphics.follows = "hyprland/hyprgraphics";
         hyprlang.follows = "hyprland/hyprlang";
         hyprutils.follows = "hyprland/hyprutils";
+        hyprwayland-scanner.follows = "hyprland/hyprwayland-scanner";
+        hyprwire.follows = "hyprland/hyprwire";
         nixpkgs.follows = "hyprland/nixpkgs";
         systems.follows = "hyprland/systems";
       };
@@ -58,8 +61,6 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     lanzaboote = {
-      # Tracking master: the latest tag (v1.0.0) sets the now-removed
-      # boot.bootspec.enable option, which fails eval on current nixpkgs-unstable.
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
