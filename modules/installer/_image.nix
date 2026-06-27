@@ -71,6 +71,7 @@ in
     gptfdisk
     dosfstools
     util-linux
+    sbctl
   ]);
 
   environment.etc.dotfiles.source = flakeSrc;

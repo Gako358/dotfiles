@@ -260,6 +260,48 @@ seed_sops_master_key() {
     echo "[sops] Seeded master age key -> $dest_key"
 }
 
+# ── Secure Boot signing keys (lanzaboote) ───────────────────────────────────
+#
+# If the target host enables Secure Boot, lanzaboote signs the boot files
+# during `nixos-install` and needs its PKI bundle (/var/lib/sbctl) to exist.
+# We generate a fresh per-install key (enrollment into firmware is a manual
+# step anyway) and seed it into:
+#   - /mnt/persist/var/lib/sbctl : the persisted copy, bind-mounted on the
+#     running system so `nixos-rebuild` can keep re-signing across wipes.
+#   - /mnt/var/lib/sbctl         : the ephemeral root copy, so the install-time
+#     signing step finds the keys (impermanence wipes this on first boot).
+# Hosts without lanzaboote skip this entirely.
+
+seed_secureboot_keys() {
+    ensure_persist_mounted
+
+    local sb_enabled
+    sb_enabled=$(nix --experimental-features "nix-command flakes" \
+            eval --json ".#nixosConfigurations.${machine}.config.boot.lanzaboote.enable" \
+        2>/dev/null || echo "false")
+    if [ "$sb_enabled" != "true" ]; then
+        echo "[secureboot] lanzaboote not enabled for ${machine} — skipping key seed."
+        return
+    fi
+
+    local pki="/var/lib/sbctl"
+    if [ ! -d "$pki/keys" ]; then
+        echo "[secureboot] Generating fresh Secure Boot signing keys..."
+        sbctl create-keys
+    else
+        echo "[secureboot] Re-using existing sbctl keys at $pki."
+    fi
+
+    install -d -m 0700 /mnt/persist/var/lib
+    [ -d /mnt/persist/var/lib/sbctl ] || cp -a "$pki" /mnt/persist/var/lib/sbctl
+    install -d -m 0700 /mnt/var/lib
+    [ -d /mnt/var/lib/sbctl ] || cp -a "$pki" /mnt/var/lib/sbctl
+
+    echo "[secureboot] Seeded signing keys into /mnt/persist/var/lib/sbctl and /mnt/var/lib/sbctl."
+    echo "[secureboot] After first boot: put firmware in Setup Mode, then run"
+    echo "             'sbctl enroll-keys --microsoft' and enable Secure Boot."
+}
+
 run_install() {
     local flake_target=".#$machine"
     echo "Installing NixOS on $machine..."
@@ -272,6 +314,7 @@ main() {
     run_disko
     bootstrap_sops_host_key
     seed_sops_master_key
+    seed_secureboot_keys
     run_install
 }
 

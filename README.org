@@ -297,8 +297,29 @@ On the target machine:
 
 ~install-system~ copies the embedded flake to a writable dir and runs ~scripts/install.sh <host>~. With the host key present on ~SOPSKEY~ the sops bootstrap is automatic (Path B, no prompts). For a brand-new host with no key on the stick it falls back to the interactive bootstrap (Path A).
 
+That's the whole install: ~disko~, the sops bootstrap, Secure Boot key generation (for hosts that enable it), and ~nixos-install~ all run unattended. The machine reboots into a working, fully-signed system — no extra commands needed.
+
 #+BEGIN_QUOTE
 The ~SOPSKEY~ partition holds private keys in plaintext (it's vfat). Treat the stick as a secret-bearing device and wipe it after installing if you don't want it lying around.
+#+END_QUOTE
+
+***** After install: enable Secure Boot (only for Secure Boot hosts)
+
+For a host with ~hardware.secureboot.enable = true~ the install signs the boot files but does *not* enforce Secure Boot yet — the keys aren't enrolled in firmware. This is a one-time, per-machine step that must be done by hand (it requires physical firmware access; see [[*Secure Boot (lanzaboote)][Secure Boot (lanzaboote)]] for the full rationale):
+
+1. Reboot → firmware/BIOS → put Secure Boot into *Setup Mode* (erase the Platform Key).
+2. Boot the installed system, then enroll your keys (keep Microsoft's too, for option ROMs):
+
+   #+BEGIN_SRC shell
+   sudo sbctl enroll-keys --microsoft
+   #+END_SRC
+
+3. Reboot → firmware → *enable* Secure Boot. Confirm with ~bootctl status~ → ~Secure Boot: enabled (user)~.
+
+After this, every future ~install-system~ / ~nixos-rebuild~ on that machine stays signed automatically — you never repeat these steps. Hosts without Secure Boot skip this entirely.
+
+#+BEGIN_QUOTE
+You are usually in the firmware menu anyway: a machine that ships with Secure Boot *on* (factory Microsoft keys) won't boot the NixOS installer ISO, so you disable it to install — then just re-enable it after ~enroll-keys~.
 #+END_QUOTE
 
 **** Fresh install via the NixOS installer
@@ -350,7 +371,8 @@ The script:
 2. Runs ~disko~ against ~modules/hosts/<host>/_disks.nix~ to format & mount.
 3. *Bootstraps the sops host key* into ~/mnt/persist/etc/ssh/~ — branches into one of three paths described below.
 4. *Seeds the master age key* into ~/mnt/persist/etc/sops/age/keys.txt~ (from ~$SOPS_AGE_KEY_FILE~), so the host's secondary sops identity exists on first boot. Skipped gracefully if no master key is available.
-5. Runs ~nixos-install --flake .#<host>~.
+5. *Seeds Secure Boot signing keys* — only if the target host sets ~hardware.secureboot.enable = true~ (see [[*Secure Boot (lanzaboote)][Secure Boot (lanzaboote)]]). A no-op for every other host.
+6. Runs ~nixos-install --flake .#<host>~.
 
 ***** Path A — brand-new host (not yet in ~.sops.yaml~)
 
@@ -480,6 +502,168 @@ Confirm it is a regular file with the expected id, then rebuild:
 cat /persist/etc/machine-id
 nh os switch
 #+END_SRC
+
+*** Secure Boot (lanzaboote)
+
+Secure Boot is *opt-in per host* and off by default. It is implemented with [[https://github.com/nix-community/lanzaboote][lanzaboote]], which replaces ~systemd-boot~ with a signed bootloader and packs each generation's kernel + initrd into a signed Unified Kernel Image — so the *initramfs is signed too*, not just the kernel. That is the piece LUKS can't provide: it protects the (unencrypted) boot chain against tampering, e.g. an evil-maid swap of the initrd that sniffs the LUKS passphrase. It *complements* disk encryption and impermanence rather than replacing them — LUKS protects data at rest, Secure Boot protects boot-chain integrity, and impermanence is not a security boundary.
+
+**** Enabling it on a host
+
+In the host's ~_machine.nix~:
+
+#+BEGIN_SRC nix
+hardware.secureboot.enable = true;
+#+END_SRC
+
+That option (in ~modules/hardware/secureboot.nix~) forces ~systemd-boot~ off, enables ~boot.lanzaboote~ with ~pkiBundle = "/var/lib/sbctl"~, ships ~sbctl~, and — importantly for impermanence — persists ~/var/lib/sbctl~ via ~environment.persistence~. That directory holds the private keys that sign every boot file; the *signed outputs* land on the (never-wiped) ESP, but the *keys* live on the impermanent root, so without persisting them a later ~nixos-rebuild~ could no longer re-sign.
+
+**** Signing keys at install time
+
+The keys are a per-host secret, like the SSH host key — but they are *generated fresh on each install* rather than carried on the ~SOPSKEY~ USB. Enrolling keys into firmware needs physical Setup-Mode access anyway, so reusing the same key across reinstalls buys little, and it keeps the boot-signing private key off the (plaintext vfat) stick.
+
+~scripts/install.sh~ does this automatically: when the target host has ~boot.lanzaboote.enable = true~ it runs ~sbctl create-keys~ and seeds the bundle into two places —
+
+| Path                         | Why                                                                                                             |
+|------------------------------+-----------------------------------------------------------------------------------------------------------------|
+| ~/mnt/persist/var/lib/sbctl~ | the persisted copy, bind-mounted on the running system so ~nixos-rebuild~ can keep re-signing across wipes       |
+| ~/mnt/var/lib/sbctl~         | the ephemeral root copy, so lanzaboote can sign *during* ~nixos-install~ (impermanence wipes this on first boot) |
+
+Hosts without Secure Boot skip this step entirely.
+
+**** One-time firmware enrollment
+
+After the first boot, enrollment is manual — it needs firmware access, so it can't be automated from the USB:
+
+#+BEGIN_SRC shell
+# 1. confirm the boot files are signed
+sudo sbctl verify
+
+# 2. reboot into firmware setup, put Secure Boot into SETUP MODE (clear keys)
+
+# 3. back in Linux, enroll your keys — keep Microsoft's too, so GPU option
+#    ROMs / firmware blobs aren't rejected
+sudo sbctl enroll-keys --microsoft
+
+# 4. reboot, enable Secure Boot in firmware
+
+# 5. verify
+bootctl status        # → Secure Boot: enabled (user)
+#+END_SRC
+
+#+BEGIN_QUOTE
+A natural follow-on is TPM-sealed LUKS (~systemd-cryptenroll --tpm2-device=auto~): the TPM only releases the decryption key when the measured boot chain matches, so tampering blocks auto-unlock. That is a separate change with its own reinstall considerations and is not wired up here.
+#+END_QUOTE
+
+*** Testing a host in QEMU (rhuidean)
+
+~rhuidean~ is the disposable VM host: a single ~/dev/vda~ disk, a ~virtual-1~ monitor, and ~virtio~ in initrd. It is pre-wired to exercise the whole stack — LUKS + [[*Persisted state: machine-id][impermanence]] + sops + [[*Secure Boot (lanzaboote)][Secure Boot]] — so you can validate the real install/boot path under QEMU without touching hardware. The flow has *two phases*: install with the firmware in Setup Mode (Secure Boot can't be enforced yet — the installer ISO isn't signed by your keys), then enroll keys and boot the installed disk enforcing.
+
+Because ~rhuidean~ is not a recipient in ~.sops.yaml~, sops decrypts via the *master age key* seeded at install (the same master-key path used elsewhere) rather than a host identity.
+
+***** 1. Tooling (no system change)
+
+#+BEGIN_SRC shell
+# OVMFFull is the Secure-Boot-capable firmware; plain OVMF won't do.
+nix shell nixpkgs#qemu nixpkgs#OVMFFull nixpkgs#mtools
+cd ~/dotfiles
+#+END_SRC
+
+***** 2. Build the installer ISO
+
+#+BEGIN_SRC shell
+ISO=$(nix build --no-link --print-out-paths \
+  '.#nixosConfigurations.installer-rhuidean.config.system.build.isoImage')/iso/*.iso
+#+END_SRC
+
+***** 3. Build the virtual ~SOPSKEY~ "USB"
+
+Same payload ~build-installer~ writes: the master age key + a host key (so ~install.sh~ runs unattended via Path B). A throwaway host key is fine — the master key is what decrypts.
+
+#+BEGIN_SRC shell
+ssh-keygen -t ed25519 -N "" -C "root@rhuidean" -f /tmp/rhuidean_host_key
+
+truncate -s 64M sopskey.img
+mkfs.vfat -n SOPSKEY sopskey.img
+mcopy -i sopskey.img ~/.config/sops/age/keys.txt ::keys.txt
+mmd   -i sopskey.img ::hostkeys ::hostkeys/rhuidean
+mcopy -i sopskey.img /tmp/rhuidean_host_key     ::hostkeys/rhuidean/ssh_host_ed25519_key
+mcopy -i sopskey.img /tmp/rhuidean_host_key.pub ::hostkeys/rhuidean/ssh_host_ed25519_key.pub
+#+END_SRC
+
+***** 4. Target disk + writable firmware vars
+
+#+BEGIN_SRC shell
+qemu-img create -f qcow2 rhuidean.img 64G
+
+OVMF=$(nix build --no-link --print-out-paths nixpkgs#OVMFFull.fd)
+cp "$OVMF"/FV/OVMF_VARS.fd ./OVMF_VARS.rhuidean.fd   # per-VM copy; stores enrolled keys
+chmod +w ./OVMF_VARS.rhuidean.fd
+#+END_SRC
+
+The stock ~OVMF_VARS.fd~ is in Setup Mode (no Platform Key), so nothing is enforced until you enroll.
+
+***** 5. Phase 1 — install (Secure Boot present, not enforcing)
+
+Target is virtio (~/dev/vda~, what ~disko~ wipes); the SOPSKEY is USB (found by label, not path); boot the CD first.
+
+#+BEGIN_SRC shell
+qemu-system-x86_64 \
+  -enable-kvm -machine q35,smm=on -cpu host -m 6144 -smp 4 \
+  -global driver=cfi.pflash01,property=secure,value=on \
+  -drive if=pflash,format=raw,unit=0,readonly=on,file="$OVMF/FV/OVMF_CODE.fd" \
+  -drive if=pflash,format=raw,unit=1,file=./OVMF_VARS.rhuidean.fd \
+  -drive if=virtio,file=./rhuidean.img \
+  -device ahci,id=ahci \
+  -drive if=none,id=cd,media=cdrom,file="$ISO" \
+  -device ide-cd,drive=cd,bus=ahci.0,bootindex=0 \
+  -device qemu-xhci,id=xhci \
+  -drive if=none,id=sopskey,format=raw,file=./sopskey.img \
+  -device usb-storage,bus=xhci.0,drive=sopskey \
+  -device virtio-vga-gl -display gtk,gl=on -device usb-tablet
+#+END_SRC
+
+In the guest run ~install-system~. It formats ~/dev/vda~, restores the host key + master key from SOPSKEY, generates & seeds the Secure Boot keys (~sbctl create-keys~), and ~nixos-install~ signs the UKIs. Then ~poweroff~.
+
+***** 6. Phase 2 — boot installed disk, enroll, enforce
+
+Same vars file (so enrollment persists); no CD, no SOPSKEY:
+
+#+BEGIN_SRC shell
+qemu-system-x86_64 \
+  -enable-kvm -machine q35,smm=on -cpu host -m 6144 -smp 4 \
+  -global driver=cfi.pflash01,property=secure,value=on \
+  -drive if=pflash,format=raw,unit=0,readonly=on,file="$OVMF/FV/OVMF_CODE.fd" \
+  -drive if=pflash,format=raw,unit=1,file=./OVMF_VARS.rhuidean.fd \
+  -drive if=virtio,file=./rhuidean.img \
+  -device virtio-vga-gl -display gtk,gl=on -device usb-tablet
+#+END_SRC
+
+It boots unenforced, wipes root (impermanence), mounts ~/persist~, and sops activates. Then:
+
+#+BEGIN_SRC shell
+sudo sbctl status                     # Setup Mode: Enabled, Secure Boot: Disabled
+sudo sbctl verify                     # nixos-generation-*.efi should be ✓ signed
+sudo sbctl enroll-keys --microsoft    # enroll PK/KEK/db -> leaves Setup Mode
+sudo reboot
+#+END_SRC
+
+After reboot the firmware enforces; verify:
+
+#+BEGIN_SRC shell
+bootctl status                        # → Secure Boot: enabled (user)
+sudo SOPS_AGE_KEY_FILE=/etc/sops/age/keys.txt \
+  nix shell nixpkgs#sops -c sops -d secrets/default.yaml | head   # sops decrypts
+#+END_SRC
+
+#+BEGIN_QUOTE
+*Home-manager user secrets* additionally need a *user* age key at ~~/.config/sops/age/keys.txt~ (normally persisted), absent on a fresh VM, so the user sops service warns — the system still boots. To exercise them, copy the master key there (it decrypts everything) and re-activate: ~install -d -m700 ~/.config/sops/age && sudo install -m600 -o $USER /etc/sops/age/keys.txt ~/.config/sops/age/keys.txt~.
+
+*Cleanup:* ~rm -f rhuidean.img sopskey.img OVMF_VARS.rhuidean.fd /tmp/rhuidean_host_key*~.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+For a quick desktop/app smoke test that does *not* need Secure Boot, LUKS, impermanence or the installer, ~nixos-rebuild build-vm --flake .#rhuidean && ./result/bin/run-rhuidean-vm~ is far faster — but it bypasses the boot chain, so use the flow above to validate Secure Boot / sops.
+#+END_QUOTE
 
 *** Inspecting a build
 

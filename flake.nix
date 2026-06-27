@@ -57,6 +57,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     impermanence.url = "github:nix-community/impermanence";
+    lanzaboote = {
+      # Tracking master: the latest tag (v1.0.0) sets the now-removed
+      # boot.bootspec.enable option, which fails eval on current nixpkgs-unstable.
+      url = "github:nix-community/lanzaboote";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";

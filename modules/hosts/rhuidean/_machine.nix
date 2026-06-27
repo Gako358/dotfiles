@@ -53,5 +53,8 @@
     extraStoreDisk.enable = false;
   };
 
-  service.sops.enable = false;
+  # Disposable VM host: exercises the full stack (LUKS + impermanence + sops +
+  # Secure Boot) under QEMU. See the "Testing a host in QEMU" README section.
+  hardware.secureboot.enable = true;
+  service.sops.enable = true;
 }
