@@ -60,12 +60,17 @@ jobs:
           git config user.email "gako358@outlook.com"
           git config user.name "Gako358"
       - name: Update the flake
-        run: nix flake update
+        run: nix flake update 2>&1 | tee flake-update.log
       - name: Store flake.lock
         uses: actions/upload-artifact@v6
         with:
           name: flake_lock
           path: flake.lock
+      - name: Store update log
+        uses: actions/upload-artifact@v6
+        with:
+          name: flake_update_log
+          path: flake-update.log
 
   build_flake:
     runs-on: ubuntu-latest
@@ -136,18 +141,37 @@ jobs:
           name: merrinx
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
+      - name: Build current (pre-update) closure
+        run: |
+          nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel --out-link result-old
+
       - name: Restore flake.lock
         uses: actions/download-artifact@v7
         with:
           name: flake_lock
 
-      - name: Build NixOS Configuration
+      - name: Build updated closure
         run: |
-          nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel --out-link result
+          nix build .#nixosConfigurations.${{ matrix.nixos_configuration }}.config.system.build.toplevel --out-link result-new
 
       - name: Push to cachix
         run: |
-          nix path-info --recursive $(readlink -f result) | cachix push merrinx
+          nix path-info --recursive $(readlink -f result-new) | cachix push merrinx
+
+      - name: Generate per-host closure diff
+        run: |
+          mkdir -p diffs
+          {
+            echo '```'
+            nix run nixpkgs#nvd -- diff result-old result-new || true
+            echo '```'
+          } > "diffs/${{ matrix.nixos_configuration }}.md"
+
+      - name: Upload closure diff
+        uses: actions/upload-artifact@v6
+        with:
+          name: closure-diff-${{ matrix.nixos_configuration }}
+          path: diffs/${{ matrix.nixos_configuration }}.md
 
   check_flake:
     runs-on: ubuntu-latest
@@ -214,12 +238,50 @@ jobs:
         with:
           name: flake_lock
 
+      - name: Restore update log
+        uses: actions/download-artifact@v7
+        with:
+          name: flake_update_log
+
+      - name: Restore closure diffs
+        uses: actions/download-artifact@v7
+        with:
+          pattern: closure-diff-*
+          path: diffs
+          merge-multiple: true
+
       - name: Set up git
         run: |
           git config user.email "gako358@outlook.com"
           git config user.name "Gako358"
 
-      - name: Create and merge PR
+      - name: Assemble PR body
+        run: |
+          {
+            echo "Automatic flake update on $(date -I)."
+            echo ""
+            echo "Review the per-host package changes below before merging."
+            echo ""
+            echo "## Input changes"
+            echo ""
+            echo '```'
+            cat flake-update.log
+            echo '```'
+            echo ""
+            echo "## Per-host package diff"
+            echo ""
+            for f in $(ls diffs/*.md | sort); do
+              host=$(basename "$f" .md)
+              echo "<details><summary><b>$host</b></summary>"
+              echo ""
+              cat "$f"
+              echo ""
+              echo "</details>"
+              echo ""
+            done
+          } > pr-body.md
+
+      - name: Create PR
         run: |
           git switch -c updates-${{ github.run_id }}
           if git diff --quiet flake.lock; then
@@ -228,14 +290,12 @@ jobs:
           fi
           git commit -am "flake.lock: Update"
           git push -u origin updates-${{ github.run_id }}
-          PR=$(gh pr create \
+          gh pr create \
             --assignee Gako358 \
             --base main \
-            --body "Automatic flake update on $(date -I)" \
-            --fill \
+            --body-file pr-body.md \
             --label bot \
-            --title "Auto update $(date -I)")
-          gh pr merge $PR --rebase --delete-branch
+            --title "Auto update $(date -I)"
         env:
           GITHUB_TOKEN: ${{ secrets.TEST_TOKEN }}
 
