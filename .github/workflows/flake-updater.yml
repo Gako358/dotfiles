@@ -30,7 +30,7 @@ jobs:
         run: nix flake show --json > flake.json
       - id: gen_nixos_configurations
         run: |
-          nixos_configurations=$(jq -c '.nixosConfigurations | keys' < flake.json)
+          nixos_configurations=$(jq -c '[.nixosConfigurations | keys[] | select(startswith("installer-") | not)]' < flake.json)
           echo "nixos_configurations=$nixos_configurations" >> $GITHUB_OUTPUT
 
   update_flake:
