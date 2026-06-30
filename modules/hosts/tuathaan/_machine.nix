@@ -10,6 +10,8 @@ in
   ];
 
   networking.hostName = "tuathaan";
+
+  environment.desktop.greeter.monitors = [ "DP-1" ];
   users.users = {
     merrinx = {
       isNormalUser = true;
