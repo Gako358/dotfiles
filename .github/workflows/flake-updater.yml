@@ -57,7 +57,7 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Set up git
         run: |
-          git config user.email "gako358@outlook.com"
+          git config user.email "gako.footwork856@passinbox.com"
           git config user.name "Gako358"
       - name: Update the flake
         run: nix flake update 2>&1 | tee flake-update.log
@@ -252,7 +252,7 @@ jobs:
 
       - name: Set up git
         run: |
-          git config user.email "gako358@outlook.com"
+          git config user.email "gako.footwork856@passinbox.com"
           git config user.name "Gako358"
 
       - name: Assemble PR body

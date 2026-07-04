@@ -64,6 +64,7 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    mugge.url = "github:HNIKT-Tjenesteutvikling-Systemutvikling/mugge";
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
