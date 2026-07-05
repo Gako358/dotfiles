@@ -60,7 +60,9 @@ jobs:
           git config user.email "gako.footwork856@passinbox.com"
           git config user.name "Gako358"
       - name: Update the flake
-        run: nix flake update 2>&1 | tee flake-update.log
+        run: |
+          inputs=$(nix flake metadata --json | jq -r '.locks.nodes.root.inputs | keys[]' | grep -vx mugge)
+          nix flake update $inputs 2>&1 | tee flake-update.log
       - name: Store flake.lock
         uses: actions/upload-artifact@v6
         with:
