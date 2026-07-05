@@ -91,6 +91,8 @@ _: {
 
       nixpkgs = {
         config.allowUnfree = true;
+        # Pulled in transitively (build tool of another package); no direct use.
+        config.permittedInsecurePackages = [ "pnpm-10.34.0" ];
         hostPlatform = lib.mkDefault "x86_64-linux";
       };
       powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
