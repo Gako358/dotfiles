@@ -8,6 +8,8 @@ _: {
     }:
     let
       cfg = config.program.qemu;
+      win11-vm = pkgs.callPackage ./_win11-vm.nix { inherit pkgs; };
+      rhuidean-vm = pkgs.callPackage ./_rhuidean-vm.nix { inherit pkgs; };
     in
     {
       options.program.qemu = {
@@ -55,11 +57,15 @@ _: {
             virtio-win
             win-spice
             virtio-win
+            win11-vm
+            rhuidean-vm
           ];
           persistence."/persist" = {
             directories = [
               "/var/lib/libvirt/images"
             ];
+            # Disks, firmware vars and TPM state for win11-vm / rhuidean-vm.
+            users.merrinx.directories = [ ".local/share/vm" ];
           };
         };
 
