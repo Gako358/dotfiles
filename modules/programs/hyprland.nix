@@ -443,6 +443,7 @@
               { match = { class = "^(com.mitchellh.ghostty)$" }, workspace = "3" },
               { match = { class = "^(Wfica)$" },                 workspace = "5" },
               { match = { class = "^(.virt-manager-wrapped)$" }, workspace = "5" },
+              { match = { class = "^(qemu)$" },                  workspace = "5" },
               { match = { class = "^(steam)$" },                 workspace = "7" },
               { match = { title = "^(Friends List)$" },          workspace = "7" },
               { match = { class = "^(Slack)$" },                 workspace = "8" },
