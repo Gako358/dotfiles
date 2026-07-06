@@ -1,0 +1,94 @@
+#+TITLE: rhuidean — disposable QEMU test host
+#+OPTIONS: toc:2
+
+~rhuidean~ is the disposable VM host for validating the full stack (LUKS +
+impermanence + sops + Secure Boot) without touching hardware. The ~rhuidean-vm~
+script (installed on hosts with ~program.qemu.enable = true~, see
+~modules/programs/qemu/~) automates the whole flow — including building the
+installer ISO.
+
+VM state lives in ~~/.local/share/vm/rhuidean/~ (disk, firmware vars, SOPSKEY
+image) and is persisted across reboots.
+
+* Step 1 — First run: build ISO + boot the installer
+
+#+BEGIN_SRC shell
+cd ~/Sources/dotfiles   # must be inside the checkout (the script needs the flake)
+rhuidean-vm
+#+END_SRC
+
+No disk exists yet, so the script enters install mode and:
+
+1. Builds the installer ISO — the manual equivalent is:
+   #+BEGIN_SRC shell
+   nix build '.#nixosConfigurations.installer-rhuidean.config.system.build.isoImage' \
+     --no-link --print-out-paths
+   #+END_SRC
+   (the first build takes a while)
+2. Builds ~sopskey.img~ — a virtual "USB stick" with the master age key
+   (~~/.config/sops/age/keys.txt~) plus a throwaway host SSH key, so the
+   install runs unattended.
+3. Creates the VM state: a 64G ~rhuidean.qcow2~ and a per-VM copy of
+   ~OVMF_VARS.fd~ (firmware starts in Setup Mode — Secure Boot present but not
+   enforcing yet).
+4. Boots QEMU with the ISO as CD and the SOPSKEY image as a USB stick.
+
+* Step 2 — Inside the installer guest
+
+#+BEGIN_SRC shell
+install-system
+#+END_SRC
+
+This formats ~/dev/vda~ via disko, restores the keys from the SOPSKEY
+partition, creates the Secure Boot keys, and runs ~nixos-install~. When it
+finishes:
+
+#+BEGIN_SRC shell
+poweroff
+#+END_SRC
+
+* Step 3 — Boot the installed system
+
+#+BEGIN_SRC shell
+rhuidean-vm
+#+END_SRC
+
+The disk now exists, so it boots straight from it — no CD, no SOPSKEY. First
+boot wipes root (impermanence), mounts ~/persist~, and sops activates via the
+master key.
+
+* Step 4 (optional) — Enroll Secure Boot
+
+Inside the running rhuidean guest:
+
+#+BEGIN_SRC shell
+sudo sbctl status                   # Setup Mode: Enabled
+sudo sbctl verify                   # generations should be signed
+sudo sbctl enroll-keys --microsoft  # leaves Setup Mode
+sudo reboot
+#+END_SRC
+
+After the reboot, ~bootctl status~ should show ~Secure Boot: enabled (user)~.
+Enrollment persists because the vars file is kept in the state dir.
+
+* Day-to-day usage
+
+- Test new config features: rebuild inside the guest, or reinstall fresh from
+  your current tree:
+  #+BEGIN_SRC shell
+  rhuidean-vm --installer   # rebuild ISO, boot it against the existing disk
+  #+END_SRC
+  then run ~install-system~ again for a clean install of the latest config.
+- Start completely over: ~rhuidean-vm --reset~ (deletes disk, vars, sopskey),
+  then back to Step 1.
+- ~Ctrl+Alt+F~ toggles fullscreen, ~Ctrl+Alt+G~ releases the mouse grab.
+
+#+BEGIN_QUOTE
+The ISO is rebuilt from the working tree each time install mode runs — but
+since this is a flake, new files must be at least ~git add~-ed to be seen by
+~nix build~, same caveat as any flake eval.
+#+END_QUOTE
+
+For the full background (what the two phases do, why rhuidean is not a sops
+recipient, home-manager user secrets on a fresh VM), see [[file:../../../README.org][the top-level README]]
+section "Testing a host in QEMU (rhuidean)".
