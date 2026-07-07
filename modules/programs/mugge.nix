@@ -13,10 +13,14 @@ _: {
         "terangreal"
         "tuathaan"
       ];
+      onMuggeHost = lib.elem osConfig.networking.hostName muggeHosts;
     in
     {
-      home.packages = lib.mkIf (lib.elem osConfig.networking.hostName muggeHosts) [
-        muggePkgs.mugge
+      imports = [ inputs.mugge.homeManagerModules.default ];
+
+      services.mugge-chat.enable = onMuggeHost;
+
+      home.packages = lib.mkIf onMuggeHost [
         muggePkgs.mugge-azure
       ];
     };
