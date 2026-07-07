@@ -1095,11 +1095,11 @@
         "pre-commit-hooks-nix": "pre-commit-hooks-nix"
       },
       "locked": {
-        "lastModified": 1783430352,
-        "narHash": "sha256-qSTuEx3CpDHUGLsnPrZq6XU417XRi848skoh3mUhNdw=",
+        "lastModified": 1783445364,
+        "narHash": "sha256-+A63cM1Ofo0zlbfhr4199wrrsBDLt2mmbQap9zDiWsg=",
         "owner": "HNIKT-Tjenesteutvikling-Systemutvikling",
         "repo": "mugge",
-        "rev": "5972a9d29026a094e24988a4b08267f83afdc86a",
+        "rev": "298cea933361e50027c0a45d163b5b8e62c81c97",
         "type": "github"
       },
       "original": {
