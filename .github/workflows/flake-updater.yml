@@ -258,6 +258,9 @@ jobs:
           git config user.name "Gako358"
 
       - name: Assemble PR body
+        env:
+          MAX_BODY_BYTES: 63000
+          MAX_HOST_DIFF_LINES: 150
         run: |
           {
             echo "Automatic flake update on $(date -I)."
@@ -276,12 +279,28 @@ jobs:
               host=$(basename "$f" .md)
               echo "<details><summary><b>$host</b></summary>"
               echo ""
-              cat "$f"
+              total=$(wc -l < "$f")
+              if [ "$total" -gt "$MAX_HOST_DIFF_LINES" ]; then
+                head -n "$MAX_HOST_DIFF_LINES" "$f"
+                echo ""
+                echo "_… diff truncated ($total lines total); see the \`closure-diff-$host\` artifact for the full output._"
+              else
+                cat "$f"
+              fi
               echo ""
               echo "</details>"
               echo ""
             done
           } > pr-body.md
+
+          # Final safety net: hard-truncate the whole body if it still overflows.
+          if [ "$(wc -c < pr-body.md)" -gt "$MAX_BODY_BYTES" ]; then
+            note=$'\n\n_… PR body truncated to stay under GitHub'"'"'s size limit; see the closure-diff-* artifacts for full diffs._\n'
+            keep=$(( MAX_BODY_BYTES - ${#note} ))
+            head -c "$keep" pr-body.md > pr-body.trimmed
+            printf '%s' "$note" >> pr-body.trimmed
+            mv pr-body.trimmed pr-body.md
+          fi
 
       - name: Create PR
         run: |
