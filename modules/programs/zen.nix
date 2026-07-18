@@ -8,20 +8,27 @@ _: {
       ...
     }:
     let
-      # Create a wrapper script for zen-browser with Wayland enabled
-      zenWithWayland = pkgs.symlinkJoin {
-        name = "zen-browser-wayland";
-        paths = [ inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".default ];
-        buildInputs = [ pkgs.makeWrapper ];
-        postBuild = ''
-          wrapProgram $out/bin/zen \
-            --set MOZ_ENABLE_WAYLAND 1
-        '';
-      };
+      zen =
+        pkgs.wrapFirefox
+          inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".zen-browser-unwrapped
+          {
+            pname = "zen-browser";
+            extraPolicies = {
+              DisableAppUpdate = true;
+              DisableTelemetry = true;
+              DisablePocket = true;
+              ExtensionSettings = {
+                "78272b6fa58f4a1abaac99321d503a20@proton.me" = {
+                  installation_mode = "force_installed";
+                  install_url = "https://addons.mozilla.org/firefox/downloads/latest/proton-pass/latest.xpi";
+                };
+              };
+            };
+          };
     in
     {
       home = lib.mkIf osConfig.environment.desktop.enable {
-        packages = [ zenWithWayland ];
+        packages = [ zen ];
         persistence."/persist/" = {
           directories = [
             ".zen"
