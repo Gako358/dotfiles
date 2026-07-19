@@ -23,7 +23,6 @@ _: {
       home.packages = lib.mkIf onMuggeHost [
         muggePkgs.mugge-azure
         muggePkgs.mugge-bridge
-        muggePkgs.mugge-bridge-test
       ];
     };
 }
