@@ -10,6 +10,11 @@ _: {
       cfg = config.program.qemu;
       win11-vm = pkgs.callPackage ./_win11-vm.nix { inherit pkgs; };
       rhuidean-vm = pkgs.callPackage ./_rhuidean-vm.nix { inherit pkgs; };
+      mkDistroVm = name: url: pkgs.callPackage ./_distro-vm.nix { inherit pkgs name url; };
+      guix-vm = mkDistroVm "guix" "https://guix.gnu.org/en/download/";
+      arch-vm = mkDistroVm "arch" "https://archlinux.org/download/";
+      cachyos-vm = mkDistroVm "cachyos" "https://cachyos.org/download/";
+      fedora-vm = mkDistroVm "fedora" "https://fedoraproject.org/workstation/download";
     in
     {
       options.program.qemu = {
@@ -59,12 +64,16 @@ _: {
             virtio-win
             win11-vm
             rhuidean-vm
+            guix-vm
+            arch-vm
+            cachyos-vm
+            fedora-vm
           ];
           persistence."/persist" = {
             directories = [
               "/var/lib/libvirt/images"
             ];
-            # Disks, firmware vars and TPM state for win11-vm / rhuidean-vm.
+            # Disks, firmware vars and TPM state for the *-vm scripts.
             users.merrinx.directories = [ ".local/share/vm" ];
           };
         };
