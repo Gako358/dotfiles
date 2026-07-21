@@ -9,6 +9,8 @@ _: {
       set-monitor = pkgs.callPackage ./_set-monitor.nix { inherit pkgs; };
       handle-monitor = pkgs.callPackage ./_handle-monitor.nix { inherit pkgs; };
       convert-scala-utf8 = pkgs.callPackage ./_convert-scala-utf8.nix { inherit pkgs; };
+      git-lines-total = pkgs.callPackage ./_git-lines-total.nix { inherit pkgs; };
+      git-lines-by-repo = pkgs.callPackage ./_git-lines-by-repo.nix { inherit pkgs; };
     in
     {
       home.packages = [
@@ -19,6 +21,8 @@ _: {
         set-monitor
         handle-monitor
         convert-scala-utf8
+        git-lines-total
+        git-lines-by-repo
       ]
       ++ (pkgs.sxm.scripts or [ ]);
     };
