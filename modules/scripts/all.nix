@@ -11,6 +11,7 @@ _: {
       convert-scala-utf8 = pkgs.callPackage ./_convert-scala-utf8.nix { inherit pkgs; };
       git-lines-total = pkgs.callPackage ./_git-lines-total.nix { inherit pkgs; };
       git-lines-by-repo = pkgs.callPackage ./_git-lines-by-repo.nix { inherit pkgs; };
+      git-pull-all = pkgs.callPackage ./_git-pull-all.nix { inherit pkgs; };
     in
     {
       home.packages = [
@@ -23,6 +24,7 @@ _: {
         convert-scala-utf8
         git-lines-total
         git-lines-by-repo
+        git-pull-all
       ]
       ++ (pkgs.sxm.scripts or [ ]);
     };
