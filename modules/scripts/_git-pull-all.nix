@@ -15,6 +15,23 @@ pkgs.writeShellScriptBin "git-pull-all" ''
     repo=$(${dirname} "$gitdir")
     name=$(${basename} "$repo")
     printf "==> %s\n" "$name"
+
+    if ${git} -C "$repo" show-ref --verify --quiet refs/heads/master; then
+      branch=master
+    elif ${git} -C "$repo" show-ref --verify --quiet refs/heads/main; then
+      branch=main
+    else
+      failed=$((failed + 1))
+      printf "    ✗ no master/main branch, skipping %s\n" "$name"
+      continue
+    fi
+
+    if ! ${git} -C "$repo" checkout "$branch"; then
+      failed=$((failed + 1))
+      printf "    ✗ checkout %s failed for %s\n" "$branch" "$name"
+      continue
+    fi
+
     if ${git} -C "$repo" pull --rebase --autostash; then
       ok=$((ok + 1))
     else
