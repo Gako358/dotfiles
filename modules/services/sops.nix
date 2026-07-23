@@ -16,6 +16,13 @@ _: {
           default = true;
           description = "Enable Sops secrets";
         };
+
+        emergencyKeyFile = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          example = "/etc/sops/age/keys.txt";
+          description = "Optional secondary age identity for emergency recovery.";
+        };
       };
 
       config = lib.mkIf cfg.enable {
@@ -29,10 +36,7 @@ _: {
             # sops-nix decrypt secrets on the first activation.
             sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-            # Secondary identity for emergency recovery. Lives under /etc/sops
-            # (system-persisted, mounted early like /etc/ssh) so it is readable
-            # at activation; a user-home path would not be mounted yet.
-            keyFile = "/etc/sops/age/keys.txt";
+            keyFile = lib.mkIf (cfg.emergencyKeyFile != null) cfg.emergencyKeyFile;
           };
         };
       };

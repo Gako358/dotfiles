@@ -49,4 +49,6 @@ in
 
   # Modules loaded
   program.qemu.enable = true;
+
+  service.sops.emergencyKeyFile = "/etc/sops/age/keys.txt";
 }
