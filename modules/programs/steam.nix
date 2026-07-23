@@ -50,6 +50,7 @@ _: {
             directories = [
               ".steam"
               ".local/share/Steam"
+              ".local/share/feral-interactive"
               ".cache/mesa_shader_cache"
               ".cache/mesa_shader_cache_db"
             ];
