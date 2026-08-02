@@ -170,8 +170,8 @@
           ---------------------------------
 
           hl.env("GRIMBLAST_NO_CURSOR", "0")
-          hl.env("HYPRCURSOR_THEME", "${pkgs.capitaine-cursors}")
-          hl.env("HYPRCURSOR_SIZE", "16")
+          hl.env("XCURSOR_THEME", "capitaine-cursors-white")
+          hl.env("XCURSOR_SIZE", "16")
           hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 
           -------------------

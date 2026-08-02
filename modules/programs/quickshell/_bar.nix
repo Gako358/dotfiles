@@ -697,7 +697,6 @@
       // ══════════════════════════════════════════════════════════════
       PopupWindow {
           id: wsPreview
-          parentWindow: bar
           visible: bar.hoveredWsId > 0
 
           // Width/height of the preview card
@@ -724,7 +723,7 @@
           readonly property bool hasCached: wsPreview.cacheStamp > 0
 
           // Anchor centered above the hovered dock item.
-          // anchor.rect uses coordinates relative to parentWindow.
+          // anchor.rect uses coordinates relative to anchor.window.
           anchor.window: bar
           anchor.rect.x: bar.hoveredDockItem
               ? bar.hoveredDockItem.mapToItem(null,
