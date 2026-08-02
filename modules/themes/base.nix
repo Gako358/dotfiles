@@ -6,6 +6,9 @@ _: {
       lib,
       ...
     }:
+    let
+      flat-remix-gtk = pkgs.callPackage ../../pkgs/flat-remix-gtk { };
+    in
     {
       gtk = {
         enable = true;
@@ -16,7 +19,7 @@ _: {
         };
         theme = {
           name = "Flat-Remix-GTK-White-Dark";
-          package = pkgs.flat-remix-gtk;
+          package = flat-remix-gtk;
         };
         iconTheme = {
           name = "Flat-Remix-Blue-Light";
