@@ -1,5 +1,5 @@
 {
-  description = "MerrinX Flake (dendritic)";
+  description = "MerrinX Flake";
 
   outputs =
     inputs@{ flake-parts, import-tree, ... }:

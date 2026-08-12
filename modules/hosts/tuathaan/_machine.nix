@@ -56,5 +56,13 @@ in
   service = {
     blueman.enable = true;
     touchpad.enable = true;
+
+    protonvpn = {
+      enable = true;
+      autostart = false;
+      killSwitch = true;
+      endpoint = "95.173.205.163:51820";
+      publicKey = "7fu30seb7WT0ViYGe/tkjNzqgJZM3hPa0QF0g/SXnQM=";
+    };
   };
 }
