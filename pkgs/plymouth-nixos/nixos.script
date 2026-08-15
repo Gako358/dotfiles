@@ -1,0 +1,158 @@
+# Base layer beneath the edge-bleed bars below, sampled from the artwork so any
+# rounding gap is not a black seam.
+Window.SetBackgroundTopColor(0.706, 0.824, 0.906);
+Window.SetBackgroundBottomColor(0.627, 0.769, 0.859);
+
+theme.background = Image("nixos.png");
+
+# panel.png and bullet.png are authored at 3x the 1080p reference size and
+# scaled down, so the dialog keeps its proportions on a 1440p screen instead of
+# rendering at half the relative size.
+theme.panel = Image("panel.png");
+theme.bullet = Image("bullet.png");
+theme.asset_scale = 3;
+theme.ref_height = 1080;
+
+# Fit the whole image on screen without cropping. The artwork is 4:3, so on a
+# 16:9 panel filling the width instead would upscale it and cut 25% of the
+# height away.
+fun contain(image, width, height)
+  {
+    fit = width / image.GetWidth();
+    if (image.GetHeight() * fit > height)
+        fit = height / image.GetHeight();
+    return image.Scale(Math.Int(image.GetWidth() * fit),
+                       Math.Int(image.GetHeight() * fit));
+  }
+
+fun rescale(image, factor)
+  {
+    return image.Scale(Math.Int(image.GetWidth() * factor),
+                       Math.Int(image.GetHeight() * factor));
+  }
+
+# Plymouth centres every display inside a single max-width x max-height canvas
+# and draws every sprite on every display. So build one centred layout: a
+# per-display one bleeds onto the other monitor when they differ in size.
+canvas.x = Window.GetX();
+canvas.y = Window.GetY();
+canvas.width = Window.GetWidth();
+canvas.height = Window.GetHeight();
+
+ui_scale = canvas.height / theme.ref_height;
+
+bg = contain(theme.background, canvas.width, canvas.height);
+bg_x = canvas.x + Math.Int((canvas.width - bg.GetWidth()) / 2);
+bg_y = canvas.y + Math.Int((canvas.height - bg.GetHeight()) / 2);
+
+background = Sprite(bg);
+background.SetPosition(bg_x, bg_y, -100);
+
+# Stretch the artwork's own outermost columns across the pillarbox bars. A
+# linear top/bottom gradient cannot track this edge, which is near constant for
+# most of its height and then drops sharply in the last 1%.
+bar_width = Math.Int((canvas.width - bg.GetWidth()) / 2) + 1;
+if (bar_width > 1)
+  {
+    left_edge = bg.Crop(0, 0, 1, bg.GetHeight());
+    bar_left = Sprite(left_edge.Scale(bar_width, bg.GetHeight()));
+    bar_left.SetPosition(bg_x - bar_width, bg_y, -101);
+
+    right_edge = bg.Crop(bg.GetWidth() - 1, 0, 1, bg.GetHeight());
+    bar_right = Sprite(right_edge.Scale(bar_width, bg.GetHeight()));
+    bar_right.SetPosition(bg_x + bg.GetWidth(), bg_y, -101);
+  }
+
+panel_image = rescale(theme.panel, ui_scale / theme.asset_scale);
+bullet_image = rescale(theme.bullet, ui_scale / theme.asset_scale);
+bullet_spacing = bullet_image.GetWidth() * 1.7;
+font = "DejaVu Sans " + Math.Int(13 * ui_scale);
+
+panel_x = canvas.x + Math.Int((canvas.width - panel_image.GetWidth()) / 2);
+panel_y = canvas.y + Math.Int(canvas.height * @promptY@);
+
+center_x = panel_x + panel_image.GetWidth() / 2;
+prompt_y = panel_y + Math.Int(34 * ui_scale);
+entry_y = panel_y + Math.Int(92 * ui_scale);
+message_y = panel_y + panel_image.GetHeight() + Math.Int(20 * ui_scale);
+
+panel = Sprite(panel_image);
+panel.SetPosition(panel_x, panel_y, 100);
+panel.SetOpacity(0);
+
+prompt = Sprite();
+prompt.SetOpacity(0);
+
+message = Sprite();
+message.SetOpacity(0);
+
+# global.bullet[] is written explicitly: a bare assignment inside a function
+# creates a local unless the name already resolves globally, which would
+# silently discard the sprites.
+fun dialog_hide()
+  {
+    panel.SetOpacity(0);
+    prompt.SetOpacity(0);
+    for (i = 0; global.bullet[i]; i++)
+        global.bullet[i].SetOpacity(0);
+  }
+
+fun display_normal_callback()
+  {
+    dialog_hide();
+  }
+
+fun display_password_callback(text, bullets)
+  {
+    prompt_image = Image.Text(text, 0.796, 0.796, 0.796, 1, font);
+
+    panel.SetOpacity(1);
+
+    prompt.SetImage(prompt_image);
+    prompt.SetPosition(center_x - prompt_image.GetWidth() / 2, prompt_y, 101);
+    prompt.SetOpacity(1);
+
+    start_x = center_x - (bullets * bullet_spacing) / 2;
+
+    for (i = 0; global.bullet[i] || i < bullets; i++)
+      {
+        if (!global.bullet[i])
+            global.bullet[i] = Sprite(bullet_image);
+
+        global.bullet[i].SetPosition(start_x + i * bullet_spacing, entry_y, 101);
+
+        if (i < bullets)
+            global.bullet[i].SetOpacity(1);
+        else
+            global.bullet[i].SetOpacity(0);
+      }
+  }
+
+fun display_message_callback(text)
+  {
+    if (!text)
+        return;
+
+    message_image = Image.Text(text, 0.749, 0.380, 0.416, 1, font);
+
+    message.SetImage(message_image);
+    message.SetPosition(center_x - message_image.GetWidth() / 2, message_y, 200);
+    message.SetOpacity(1);
+  }
+
+fun hide_message_callback()
+  {
+    message.SetOpacity(0);
+  }
+
+fun quit_callback()
+  {
+    dialog_hide();
+    hide_message_callback();
+  }
+
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+Plymouth.SetDisplayMessageFunction(display_message_callback);
+Plymouth.SetHideMessageFunction(hide_message_callback);
+Plymouth.SetQuitFunction(quit_callback);
