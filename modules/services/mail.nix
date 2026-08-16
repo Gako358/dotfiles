@@ -134,7 +134,9 @@ _: {
             ++ lib.optional cfg.work.enable pkgs.davmail;
           persistence."/persist/" = {
             directories = [
+              (lib.removePrefix "${config.home.homeDirectory}/" config.accounts.email.maildirBasePath)
               ".config/protonmail"
+              ".local/share/protonmail"
             ]
             ++ lib.optional cfg.work.enable ".config/davmail";
           };

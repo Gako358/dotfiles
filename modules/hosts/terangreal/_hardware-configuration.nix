@@ -9,6 +9,7 @@
 
   boot = {
     extraModulePackages = [ ];
+    blacklistedKernelModules = [ "b43" ];
     initrd = {
       availableKernelModules = [
         "nvme"
