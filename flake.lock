@@ -1638,11 +1638,11 @@
         "pre-commit-hooks-nix": "pre-commit-hooks-nix_4"
       },
       "locked": {
-        "lastModified": 1785226208,
-        "narHash": "sha256-Pttr5IXOEvaUFX15aPrLh53TQCECsgM6p+s/wFrrHIY=",
+        "lastModified": 1786897959,
+        "narHash": "sha256-QUfwVTBRE4x/qmqwfMmuuTwZgifYQnMIh807BmLVaQI=",
         "owner": "gako358",
         "repo": "scram",
-        "rev": "c32556f403be2aa42aafd72087da28d8f477010e",
+        "rev": "19595501de0215f989be7eb27cb58fdf8ab27c75",
         "type": "github"
       },
       "original": {
