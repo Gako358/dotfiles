@@ -13,6 +13,7 @@ _: {
       git-lines-by-repo = pkgs.callPackage ./_git-lines-by-repo.nix { inherit pkgs; };
       git-lines-graph = pkgs.callPackage ./_git-lines-graph.nix { inherit pkgs; };
       git-pull-all = pkgs.callPackage ./_git-pull-all.nix { inherit pkgs; };
+      git-prune-branches = pkgs.callPackage ./_git-prune-branches.nix { inherit pkgs; };
     in
     {
       home.packages = [
@@ -27,6 +28,7 @@ _: {
         git-lines-by-repo
         git-lines-graph
         git-pull-all
+        git-prune-branches
       ]
       ++ (pkgs.sxm.scripts or [ ]);
     };
