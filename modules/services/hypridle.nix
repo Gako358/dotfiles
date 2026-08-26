@@ -52,7 +52,7 @@ _: {
           settings = {
             general = {
               before_sleep_cmd = "${qs} ipc call lock lock";
-              after-sleep-cmd = "${hyprctl} dispatch dpms on";
+              after_sleep_cmd = "${hyprctl} dispatch dpms on";
               lock_cmd = "${qs} ipc call lock lock";
               ignore_dbus_inhibit = true;
             };

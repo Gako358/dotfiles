@@ -29,7 +29,7 @@
     ];
   };
 
-  powerManagement.powertop.enable = true;
+  powerManagement.powertop.enable = false;
 
   services = {
     hardware.bolt.enable = true; # Thunderbolt, a userspace daemon to enable security levels for Thunderbolt 3 on GNU/Linux.

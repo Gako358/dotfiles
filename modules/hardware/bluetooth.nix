@@ -38,7 +38,7 @@ _: {
               AutoEnable = "true";
             };
             LE = {
-              EnableAdvMonInterleaveScan = "true";
+              EnableAdvMonInterleaveScan = 1;
             };
           };
         };
