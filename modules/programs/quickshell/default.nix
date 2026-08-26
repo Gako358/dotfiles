@@ -59,6 +59,7 @@ _: {
       appointmentEditorQml = import ./_appointment-editor.nix { inherit c ca; };
       wallpaperQml = import ./_wallpaper.nix {
         inherit c ca;
+        inherit (pkgs) hyprland jq;
         wallpaperDir = cfg.wallpaper.directory;
       };
 

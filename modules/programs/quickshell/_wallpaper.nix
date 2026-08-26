@@ -1,6 +1,8 @@
 {
   c,
   ca,
+  hyprland,
+  jq,
   wallpaperDir,
 }:
 ''
@@ -55,11 +57,16 @@
       function apply(path) {
           if (!path) return
           applyProc.command = ["sh", "-c",
-              "set -e; P=\"$1\"; " +
-              "for m in $(hyprctl monitors 2>/dev/null | awk '/^Monitor /{print $2}'); do " +
-              "  hyprctl hyprpaper wallpaper \"$m, $P\" >/dev/null; " +
+              "set -e; P=\"$1\"; HYPRCTL=\"${hyprland}/bin/hyprctl\"; JQ=\"${jq}/bin/jq\"; " +
+              "\"$HYPRCTL\" monitors -j 2>/dev/null | \"$JQ\" -r '.[] | [.name, .description] | @tsv' | " +
+              "while IFS=$(printf '\\t') read -r name description; do " +
+              "  if [ -n \"$description\" ]; then " +
+              "    \"$HYPRCTL\" hyprpaper wallpaper \"desc:$description,$P\" >/dev/null || " +
+              "      \"$HYPRCTL\" hyprpaper wallpaper \"$name,$P\" >/dev/null; " +
+              "  else " +
+              "    \"$HYPRCTL\" hyprpaper wallpaper \"$name,$P\" >/dev/null; " +
+              "  fi; " +
               "done; " +
-              "hyprctl hyprpaper wallpaper \", $P\" >/dev/null; " +
               "STATE=\"$HOME/.local/state/quickshell\"; " +
               "mkdir -p \"$STATE\"; " +
               "printf '%s' \"$P\" > \"$STATE/wallpaper\"",
