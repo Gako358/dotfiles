@@ -19,7 +19,7 @@
         "usb_storage"
         "sd_mod"
       ];
-      kernelModules = [ ];
+      kernelModules = [ "i915" ];
     };
     kernelModules = [
       "kvm-intel"
