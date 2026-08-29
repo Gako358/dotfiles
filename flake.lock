@@ -111,11 +111,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787990347,
-        "narHash": "sha256-b260KcVwOpbKG5tS5pNrQIKiY9S248P1i3R/jPjOymo=",
+        "lastModified": 1787998794,
+        "narHash": "sha256-eA9l8TSXNy1GEMUUqtSfEK+bc8KG5gzbnz5ocYGxE3A=",
         "owner": "Gako358",
         "repo": "emacs-flake",
-        "rev": "fc4f5294b72c1124d834d54d292e56d5b2d07950",
+        "rev": "f7917f0c5e0b967af500c469a5fd8dd32994ecd2",
         "type": "github"
       },
       "original": {
@@ -225,11 +225,11 @@
         "nixpkgs-lib": "nixpkgs-lib"
       },
       "locked": {
-        "lastModified": 1785627969,
-        "narHash": "sha256-4dtXQk/NMePegK/nWp5NSeuZKLATItOq61lpEvmXqGw=",
+        "lastModified": 1787559586,
+        "narHash": "sha256-onL0VLf9vPllmT0H/OlURIU5r5t5WIEl7t4tVNKT0Nw=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "427bf4bd9435fdf21321c8cc628c24efc14c0f7a",
+        "rev": "9d0d87172c374f89da73c1cfe6d81ae62feac1f1",
         "type": "github"
       },
       "original": {
