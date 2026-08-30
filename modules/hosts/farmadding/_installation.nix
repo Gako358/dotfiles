@@ -1,0 +1,4 @@
+{
+  ready = false;
+  device = null;
+}

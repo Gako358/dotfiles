@@ -24,11 +24,7 @@ _: {
           };
         })
         (lib.mkIf (desktop.windowManager == "kde") {
-          # Set gpg agent specific to KDE/Kwallet
-          services.gpg-agent = {
-            pinentry.package = lib.mkForce pkgs.kwalletcli;
-            extraConfig = "pinentry-program ${pkgs.kwalletcli}/bin/pinentry-kwallet";
-          };
+          services.gpg-agent.pinentry.package = lib.mkForce pkgs.pinentry-qt;
 
           programs.plasma = {
             enable = true;
@@ -607,7 +603,6 @@ _: {
                 ".local/share/klipper" # Clipboard history
                 ".local/share/konsole" # Konsole profiles/sessions
                 ".local/share/kscreen" # Screen configurations
-                ".local/share/kwalletd" # Encrypted passwords/secrets
                 ".local/share/kxmlgui5" # UI state for KDE apps
                 ".local/share/RecentDocuments" # Recent documents list
                 ".local/share/sddm" # SDDM state
