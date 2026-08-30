@@ -64,6 +64,7 @@ in
       enable = true;
       windowManager = "kde";
       develop = false;
+      kde.persistenceUsers = [ "farstrider" ];
     };
     gaming.enable = false;
     server.enable = false;
@@ -76,8 +77,6 @@ in
         "Pictures"
         "Videos"
         ".zen"
-        ".config"
-        ".local/share"
       ];
     };
   };
