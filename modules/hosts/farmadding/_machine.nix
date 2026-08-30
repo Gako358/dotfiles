@@ -115,6 +115,15 @@ in
         }
       ];
     }
+    {
+      users = [ "farstrider" ];
+      commands = [
+        {
+          command = "${pkgs.tailscale}/bin/tailscale up --operator=farstrider";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
   ];
 
   system.disks = {
