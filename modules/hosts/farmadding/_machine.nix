@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
@@ -33,6 +34,7 @@ in
     farstrider = {
       isNormalUser = true;
       hashedPassword = "!";
+      packages = [ inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default ];
       extraGroups = [
         "networkmanager"
         "video"
@@ -58,8 +60,6 @@ in
   ];
 
   environment = {
-    systemPackages = [ pkgs.firefox ];
-
     desktop = {
       enable = true;
       windowManager = "kde";
@@ -75,7 +75,7 @@ in
         "Music"
         "Pictures"
         "Videos"
-        ".mozilla"
+        ".zen"
         ".config"
         ".local/share"
       ];
