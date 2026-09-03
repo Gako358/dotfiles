@@ -1,13 +1,20 @@
 {
   lib,
+  pkgs,
   battery ? false,
 }:
 ''
   import QtQuick
   import Quickshell
+  import Quickshell.Io
 
   Scope {
       id: root
+
+      Process {
+          id: caffeine
+          command: ["${pkgs.systemd}/bin/systemd-inhibit", "--what=idle", "--who=Quickshell", "--why=Caffeine mode is active", "--mode=block", "--", "${pkgs.coreutils}/bin/sleep", "infinity"]
+      }
 
       Notifications { id: notifications }
       Appointments  { id: appointments }
@@ -80,7 +87,9 @@
 
           Bar {
               required property var modelData
+              caffeineActive: caffeine.running
               screen: modelData
+              onCaffeineRequested: caffeine.running = !caffeine.running
               onLauncherRequested:      { root.showOnly("launcher");  launcher.toggle() }
               onDashboardRequested:     { root.showOnly("dashboard"); dashboard.toggle() }
               onCalendarRequested:      { root.showOnly("dashboard"); dashboard.show() }

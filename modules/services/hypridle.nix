@@ -55,6 +55,7 @@ _: {
               after_sleep_cmd = "${hyprctl} dispatch dpms on";
               lock_cmd = "${qs} ipc call lock lock";
               ignore_dbus_inhibit = true;
+              ignore_systemd_inhibit = false;
             };
             listener =
               (lib.optional cfg.dpms {
