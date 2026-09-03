@@ -27,7 +27,7 @@ _: {
       ca = name: alpha: "#${alpha}${palette.${name}}";
 
       shellQml = import ./_shell.nix {
-        inherit lib pkgs;
+        inherit lib;
         battery = cfg.battery.enable;
       };
       barQml = import ./_bar.nix {

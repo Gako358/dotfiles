@@ -30,7 +30,6 @@
       signal networkRequested()
       signal trayRequested()
       signal wallpaperRequested()
-      signal caffeineRequested()
       required property bool caffeineActive
 
       // ── Data properties ───────────────────────────────────────────
@@ -284,6 +283,8 @@
 
       // ── Shell geometry ────────────────────────────────────────────
       WlrLayershell.namespace: "quickshell-bar"
+
+      IdleInhibitor { window: bar; enabled: bar.caffeineActive }
 
       readonly property bool isFocused:
           Hyprland.focusedMonitor !== null
@@ -668,55 +669,6 @@
                   }
               }
 
-              // ── Caffeine toggle ─────────────────────────────────
-              Item {
-                  width: caffeineCol.implicitWidth + 14
-                  height: 42
-
-                  Rectangle {
-                      anchors.fill: parent
-                      radius: 6
-                      color: caffeineHover.hovered
-                          ? "${ca "base02" "cc"}"
-                          : "transparent"
-                      Behavior on color { ColorAnimation { duration: 120 } }
-                      HoverHandler { id: caffeineHover }
-
-                      Column {
-                          id: caffeineCol
-                          anchors.centerIn: parent
-                          spacing: 0
-                          Text {
-                              anchors.horizontalCenter: parent.horizontalCenter
-                              text: bar.caffeineActive ? "󰅶" : "󰾪"
-                              font.family: "RobotoMono Nerd Font"
-                              font.pixelSize: 18
-                              color: bar.caffeineActive ? "${c "base0D"}" : "${c "base04"}"
-                          }
-                          Text {
-                              anchors.horizontalCenter: parent.horizontalCenter
-                              text: "Caffeine"
-                              font.family: "RobotoMono Nerd Font"
-                              font.pixelSize: 8
-                              color: "${c "base04"}"
-                          }
-                      }
-                  }
-
-                  ToolTip {
-                      visible: caffeineHover.hovered
-                      delay: 600
-                      text: bar.caffeineActive ? "Disable caffeine mode" : "Enable caffeine mode"
-                      font.family: "RobotoMono Nerd Font"
-                      font.pixelSize: 11
-                  }
-                  MouseArea {
-                      anchors.fill: parent
-                      cursorShape: Qt.PointingHandCursor
-                      onClicked: bar.caffeineRequested()
-                  }
-              }
-
               // ── Show-desktop strip (Win11 rightmost edge) ────────
               Rectangle {
                   width: 4
@@ -737,7 +689,7 @@
                   MouseArea {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
-                      onClicked: Hyprland.dispatch("togglespecialworkspace")
+                      onClicked: Hyprland.dispatch("hl.dsp.workspace.toggle_special(\"\")")
                   }
               }
           }

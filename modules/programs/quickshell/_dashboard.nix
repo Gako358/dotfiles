@@ -22,6 +22,7 @@
       property var notifications: null
       property var appointments: null
       property bool opened: false
+      required property bool caffeineActive
 
       signal monitorsRequested()
       signal wallpaperRequested()
@@ -29,6 +30,7 @@
       signal audioRequested()
       signal networkRequested()
       signal batteryRequested()
+      signal caffeineRequested()
       signal processesRequested(string sortMode)
       signal notificationsRequested()
       signal appointmentRequested(string dateStr)
@@ -243,31 +245,81 @@
                   spacing: 16
 
                   // ── Greeting / Time ──────────────────────────
-                  ColumnLayout {
-                      spacing: 2
-                      Text {
-                          id: bigTime
-                          text: ""
-                          color: "${c "base05"}"
-                          font.family: "RobotoMono Nerd Font"
-                          font.pixelSize: 38
-                          font.weight: Font.Light
-                          Timer {
-                              running: true; repeat: true; interval: 1000; triggeredOnStart: true
-                              onTriggered: bigTime.text =
-                                  Qt.formatDateTime(new Date(), "hh:mm")
+                  RowLayout {
+                      spacing: 10
+                      ColumnLayout {
+                          spacing: 2
+                          Text {
+                              id: bigTime
+                              text: ""
+                              color: "${c "base05"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 38
+                              font.weight: Font.Light
+                              Timer {
+                                  running: true; repeat: true; interval: 1000; triggeredOnStart: true
+                                  onTriggered: bigTime.text =
+                                      Qt.formatDateTime(new Date(), "hh:mm")
+                              }
+                          }
+                          Text {
+                              id: bigDate
+                              text: ""
+                              color: "${c "base0D"}"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 13
+                              Timer {
+                                  running: true; repeat: true; interval: 30000; triggeredOnStart: true
+                                  onTriggered: bigDate.text =
+                                      Qt.formatDateTime(new Date(), "dddd, MMMM d")
+                              }
                           }
                       }
-                      Text {
-                          id: bigDate
-                          text: ""
-                          color: "${c "base0D"}"
-                          font.family: "RobotoMono Nerd Font"
-                          font.pixelSize: 13
-                          Timer {
-                              running: true; repeat: true; interval: 30000; triggeredOnStart: true
-                              onTriggered: bigDate.text =
-                                  Qt.formatDateTime(new Date(), "dddd, MMMM d")
+
+                      Item {
+                          Layout.preferredWidth: 54
+                          Layout.preferredHeight: 54
+
+                          Rectangle {
+                              anchors.fill: parent
+                              radius: 10
+                              color: caffeineHover.hovered
+                                  ? "${ca "base02" "cc"}"
+                                  : "transparent"
+                              Behavior on color { ColorAnimation { duration: 120 } }
+                              HoverHandler { id: caffeineHover }
+
+                              Column {
+                                  anchors.centerIn: parent
+                                  spacing: 0
+                                  Text {
+                                      anchors.horizontalCenter: parent.horizontalCenter
+                                      text: root.caffeineActive ? "󰅶" : "󰾪"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 22
+                                      color: root.caffeineActive ? "${c "base0D"}" : "${c "base04"}"
+                                  }
+                                  Text {
+                                      anchors.horizontalCenter: parent.horizontalCenter
+                                      text: "Caffeine"
+                                      font.family: "RobotoMono Nerd Font"
+                                      font.pixelSize: 8
+                                      color: "${c "base04"}"
+                                  }
+                              }
+                          }
+
+                          ToolTip {
+                              visible: caffeineHover.hovered
+                              delay: 600
+                              text: root.caffeineActive ? "Disable caffeine mode" : "Enable caffeine mode"
+                              font.family: "RobotoMono Nerd Font"
+                              font.pixelSize: 11
+                          }
+                          MouseArea {
+                              anchors.fill: parent
+                              cursorShape: Qt.PointingHandCursor
+                              onClicked: root.caffeineRequested()
                           }
                       }
                   }
