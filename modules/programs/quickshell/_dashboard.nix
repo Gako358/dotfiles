@@ -246,6 +246,7 @@
 
                   // ── Greeting / Time ──────────────────────────
                   RowLayout {
+                      Layout.fillWidth: true
                       spacing: 10
                       ColumnLayout {
                           spacing: 2
@@ -277,8 +278,14 @@
                       }
 
                       Item {
+                          Layout.fillWidth: true
+                      }
+
+                      Item {
                           Layout.preferredWidth: 54
                           Layout.preferredHeight: 54
+                          Layout.alignment: Qt.AlignVCenter
+                          transform: Translate { y: -2 }
 
                           Rectangle {
                               anchors.fill: parent
