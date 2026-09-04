@@ -284,8 +284,7 @@
                       Item {
                           Layout.preferredWidth: 54
                           Layout.preferredHeight: 54
-                          Layout.alignment: Qt.AlignVCenter
-                          transform: Translate { y: -2 }
+                          Layout.alignment: Qt.AlignBottom
 
                           Rectangle {
                               anchors.fill: parent
