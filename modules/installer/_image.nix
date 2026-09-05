@@ -14,7 +14,7 @@ let
     dest="$HOME/dotfiles"
     if [ ! -e "$dest" ]; then
       echo ">> Copying flake to $dest ..."
-      cp -r --no-preserve=mode,ownership "$src" "$dest"
+      cp -rL --no-preserve=mode,ownership "$src" "$dest"
       chmod -R u+w "$dest"
     fi
     cd "$dest"
