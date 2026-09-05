@@ -18,8 +18,6 @@ in
     ./_hardware-configuration.nix
   ];
 
-  boot.kernelParams = [ "nouveau.noaccel=1" ];
-
   networking.hostName = "farmadding";
   users.users = {
     merrinx = {
