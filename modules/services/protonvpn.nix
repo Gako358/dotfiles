@@ -59,6 +59,11 @@ _: {
 
             oifname { "lo", "${cfg.interface}" } accept
 
+            ${lib.optionalString config.service.tailscale.enable ''
+              oifname "${config.services.tailscale.interfaceName}" ip daddr 100.64.0.0/10 accept
+              oifname "${config.services.tailscale.interfaceName}" ip6 daddr fd7a:115c:a1e0::/48 accept
+            ''}
+
             ip daddr ${endpointHost} udp dport ${endpointPort} accept
 
             ip daddr {
