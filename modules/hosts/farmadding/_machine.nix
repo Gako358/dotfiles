@@ -83,7 +83,14 @@ in
     };
   };
 
-  service.sops.enable = false;
+  service = {
+    sops.enable = false;
+    tailscale = {
+      enable = true;
+      openFirewall = true;
+      operator = "farstrider";
+    };
+  };
 
   services.openssh = {
     openFirewall = false;
@@ -92,11 +99,6 @@ in
       AllowUsers = [ "merrinx" ];
     };
   };
-  services.tailscale = {
-    enable = true;
-    openFirewall = true;
-    useRoutingFeatures = "none";
-  };
 
   networking.firewall = {
     enable = lib.mkForce true;
@@ -104,23 +106,12 @@ in
     interfaces.tailscale0.allowedTCPPorts = [ 22 ];
   };
 
-  environment.persistence."/persist".directories = [ "/var/lib/tailscale" ];
-
   security.sudo.extraRules = [
     {
       users = [ "merrinx" ];
       commands = [
         {
           command = "ALL";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-    {
-      users = [ "farstrider" ];
-      commands = [
-        {
-          command = "${pkgs.tailscale}/bin/tailscale up --operator=farstrider";
           options = [ "NOPASSWD" ];
         }
       ];

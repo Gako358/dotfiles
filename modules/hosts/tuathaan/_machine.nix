@@ -55,6 +55,7 @@ in
 
   service = {
     blueman.enable = true;
+    tailscale.enable = true;
     touchpad.enable = true;
 
     protonvpn = {

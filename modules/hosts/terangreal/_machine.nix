@@ -52,6 +52,7 @@ in
 
   service = {
     sops.emergencyKeyFile = "/etc/sops/age/keys.txt";
+    tailscale.enable = true;
     protonvpn = {
       enable = true;
       autostart = false;
