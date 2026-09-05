@@ -11,18 +11,26 @@ _: {
       extraStoreDevicePath = config.system.disks.extraStoreDevice;
       extraSteamDevicePath = config.system.disks.extraSteamDevice;
 
+      mainDiskMountOptions = [
+        "noatime"
+        "compress=zstd"
+      ]
+      ++ lib.optional config.system.disks.mainDisk.isSolidState "ssd"
+      ++ [ "space_cache=v2" ];
+      mainNixMountOptions = [
+        "noatime"
+        "noacl"
+        "compress=zstd"
+      ]
+      ++ lib.optional config.system.disks.mainDisk.isSolidState "ssd"
+      ++ [ "space_cache=v2" ];
+
       mainNixSubvol =
         if !storeCfg.enable then
           {
             "/nix" = {
               mountpoint = "/nix";
-              mountOptions = [
-                "noatime"
-                "noacl"
-                "compress=zstd"
-                "ssd"
-                "space_cache=v2"
-              ];
+              mountOptions = mainNixMountOptions;
             };
           }
         else
@@ -119,6 +127,11 @@ _: {
               default = "/dev/nvme0n1";
               description = "The block device path for the main system disk (containing root, boot, etc.).";
             };
+            mainDisk.isSolidState = lib.mkOption {
+              type = lib.types.bool;
+              default = true;
+              description = "Whether the main system disk is solid state.";
+            };
             extraStoreDisk.enable = lib.mkOption {
               type = lib.types.bool;
               default = true;
@@ -178,21 +191,11 @@ _: {
                       subvolumes = {
                         "/root" = {
                           mountpoint = "/";
-                          mountOptions = [
-                            "noatime"
-                            "compress=zstd"
-                            "ssd"
-                            "space_cache=v2"
-                          ];
+                          mountOptions = mainDiskMountOptions;
                         };
                         "/persist" = {
                           mountpoint = "/persist";
-                          mountOptions = [
-                            "noatime"
-                            "compress=zstd"
-                            "ssd"
-                            "space_cache=v2"
-                          ];
+                          mountOptions = mainDiskMountOptions;
                         };
                         "/swap" = {
                           mountpoint = "/.swapvol";

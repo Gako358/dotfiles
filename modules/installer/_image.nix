@@ -50,6 +50,8 @@ in
 {
   system.stateVersion = lib.mkDefault config.system.nixos.release;
 
+  boot.kernelParams = lib.optionals (host == "farmadding") [ "nouveau.noaccel=1" ];
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"

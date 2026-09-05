@@ -42,7 +42,6 @@ else
                       mountOptions = [
                         "noatime"
                         "compress=zstd"
-                        "ssd"
                         "space_cache=v2"
                       ];
                     };
@@ -51,7 +50,6 @@ else
                       mountOptions = [
                         "noatime"
                         "compress=zstd"
-                        "ssd"
                         "space_cache=v2"
                       ];
                     };
@@ -61,7 +59,6 @@ else
                         "noatime"
                         "noacl"
                         "compress=zstd"
-                        "ssd"
                         "space_cache=v2"
                       ];
                     };
