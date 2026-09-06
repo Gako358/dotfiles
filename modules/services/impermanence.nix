@@ -12,6 +12,33 @@ _: {
         ".npm"
         ".pulumi"
       ];
+      normalUsers = lib.attrNames (lib.filterAttrs (_: user: user.isNormalUser) config.users.users);
+      userDirectories = [
+        "Documents"
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Projects"
+        "Sources"
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
+        {
+          directory = ".ssh";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/direnv";
+          mode = "0700";
+        }
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
+      ]
+      ++ lib.optional (config.environment.desktop.windowManager == "gnome") "Desktop"
+      ++ lib.optionals config.environment.desktop.develop developSpecificDirs;
     in
     {
 
@@ -41,33 +68,9 @@ _: {
           # See: https://github.com/nix-community/impermanence/issues/253
           "/usr/systemd-placeholder"
         ];
-        users.merrinx = {
-          directories = [
-            "Documents"
-            "Downloads"
-            "Music"
-            "Pictures"
-            "Projects"
-            "Sources"
-            {
-              directory = ".gnupg";
-              mode = "0700";
-            }
-            {
-              directory = ".ssh";
-              mode = "0700";
-            }
-            {
-              directory = ".local/share/direnv";
-              mode = "0700";
-            }
-            {
-              directory = ".local/share/keyrings";
-              mode = "0700";
-            }
-          ]
-          ++ (lib.optionals config.environment.desktop.develop developSpecificDirs);
-        };
+        users = lib.genAttrs normalUsers (_: {
+          directories = userDirectories;
+        });
       };
     };
 }

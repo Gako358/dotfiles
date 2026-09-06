@@ -68,15 +68,7 @@ in
     gaming.enable = false;
     server.enable = false;
 
-    persistence."/persist".users.farstrider = {
-      directories = [
-        "Documents"
-        "Downloads"
-        "Music"
-        "Pictures"
-        "Videos"
-      ];
-    };
+    persistence."/persist".users.farstrider.directories = [ "Videos" ];
   };
 
   service = {
