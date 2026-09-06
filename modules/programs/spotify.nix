@@ -14,7 +14,7 @@ _: {
             "spotify_secret" = { };
           };
 
-          home.persistence."/persist/" = {
+          home.persistence."/persist" = {
             directories = [
               ".cache/spotify-player"
               ".config/spotifyd"

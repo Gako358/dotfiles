@@ -66,7 +66,9 @@ in
       enable = true;
       windowManager = "kde";
       develop = false;
+      kde.displayServer = "x11";
       kde.persistenceUsers = [ "farstrider" ];
+      theme.wallpaper = "/run/current-system/sw/share/backgrounds/nixos-wallpaper.png";
     };
     gaming.enable = false;
     server.enable = false;
@@ -78,7 +80,6 @@ in
         "Music"
         "Pictures"
         "Videos"
-        ".zen"
       ];
     };
   };

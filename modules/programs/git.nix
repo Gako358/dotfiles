@@ -1,6 +1,8 @@
 _: {
   flake.homeModules.programs-git =
     {
+      config,
+      lib,
       pkgs,
       ...
     }:
@@ -45,10 +47,16 @@ _: {
           "https://github.com/".insteadOf = "gh:";
           "ssh://git@github.com".pushInsteadOf = "gh:";
         };
-        github.user = "gako358";
       };
 
       rg = "${pkgs.ripgrep}/bin/rg";
+      personalConfig = lib.optionalAttrs config.home.personalConfig.enable {
+        github.user = "gako358";
+        user = {
+          email = "gako.footwork856@passinbox.com";
+          name = "merrinx";
+        };
+      };
     in
     {
       home.packages = with pkgs; [
@@ -60,28 +68,26 @@ _: {
 
       programs.git = {
         enable = true;
-        settings = gitConfig // {
-          alias = {
-            amend = "commit --amend -m";
-            fixup = "!f(){ git reset --soft HEAD~$${1} && git commit --amend -C HEAD; };f";
-            loc = "!f(){ git ls-files | ${rg} \"\\.$${1}\" | xargs wc -l; };f";
-            staash = "stash --all";
-            graph = "log --decorate --oneline --graph";
-            br = "branch";
-            co = "checkout";
-            st = "status";
-            ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
-            ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
-            cm = "commit -m";
-            ca = "commit -am";
-            dc = "diff --cached";
+        settings =
+          gitConfig
+          // personalConfig
+          // {
+            alias = {
+              amend = "commit --amend -m";
+              fixup = "!f(){ git reset --soft HEAD~\${1} && git commit --amend -C HEAD; };f";
+              loc = "!f(){ git ls-files | ${rg} \"\\.\${1}\" | xargs wc -l; };f";
+              staash = "stash --all";
+              graph = "log --decorate --oneline --graph";
+              br = "branch";
+              co = "checkout";
+              st = "status";
+              ls = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate";
+              ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat";
+              cm = "commit -m";
+              ca = "commit -am";
+              dc = "diff --cached";
+            };
           };
-
-          user = {
-            email = "gako.footwork856@passinbox.com";
-            name = "merrinx";
-          };
-        };
 
         ignores = [
           "*.bloop"
@@ -96,7 +102,7 @@ _: {
           "*.jvmopts"
         ];
 
-        includes = [
+        includes = lib.optionals config.home.personalConfig.enable [
           {
             condition = "gitdir:~/Workflow/";
             contents = {

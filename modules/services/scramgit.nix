@@ -68,7 +68,7 @@ _: {
       scramgit = inputs.scramgit.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
     {
-      home.packages = [
+      home.packages = lib.mkIf config.home.personalConfig.enable [
         (pkgs.writeShellScriptBin "scramgit" ''
           exec ${lib.getExe scramgit} ${lib.escapeShellArgs flags} "$@"
         '')

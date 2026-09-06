@@ -2,6 +2,7 @@ _: {
   flake.homeModules.programs-zen =
     {
       osConfig,
+      config,
       inputs,
       pkgs,
       lib,
@@ -29,11 +30,17 @@ _: {
     {
       home = lib.mkIf osConfig.environment.desktop.enable {
         packages = [ zen ];
-        persistence."/persist/" = {
-          directories = [
-            ".zen"
-          ];
-        };
+        persistence."/persist" =
+          lib.mkIf
+            (
+              !(
+                osConfig.environment.desktop.windowManager == "kde"
+                && lib.elem config.home.username osConfig.environment.desktop.kde.persistenceUsers
+              )
+            )
+            {
+              directories = [ ".zen" ];
+            };
       };
     };
 }

@@ -125,190 +125,192 @@ _: {
         };
       };
 
-      config = lib.mkIf (cfg.enable && osConfig.environment.desktop.develop) {
-        home = {
-          packages =
-            (with pkgs; [
-              protonmail-bridge
-            ])
-            ++ lib.optional cfg.work.enable pkgs.davmail;
-          persistence."/persist/" = {
-            directories = [
-              (lib.removePrefix "${config.home.homeDirectory}/" config.accounts.email.maildirBasePath)
-              ".config/protonmail"
-              ".local/share/protonmail"
-            ]
-            ++ lib.optional cfg.work.enable ".config/davmail";
-          };
-        };
-
-        sops.secrets = lib.mkIf osConfig.service.sops.enable {
-          "email_user" = { };
-          "email_home-passwd" = { };
-          "email_work-passwd" = { };
-          "email_outlook-passwd" = { };
-          "email_alias-private" = { };
-          "email_alias-service" = { };
-          "email_alias-social" = { };
-        };
-
-        accounts.email = {
-          maildirBasePath = "Mail";
-          accounts = {
-            personal = {
-              primary = true;
-              aliases = [
-                "mugge.acrobat989@passinbox.com"
-                "gako.footwork856@passinbox.com"
-                "knut.sly692@passinbox.com"
-              ];
-              address = "merrinx@proton.me";
-              userName = "merrinx@proton.me";
-              passwordCommand = "${cfg.password}";
-              realName = "merrinx";
-              folders = {
-                inbox = "INBOX";
-                drafts = "Drafts";
-                sent = "Sent";
-                trash = "Trash";
+      config =
+        lib.mkIf (cfg.enable && osConfig.environment.desktop.develop && config.home.personalConfig.enable)
+          {
+            home = {
+              packages =
+                (with pkgs; [
+                  protonmail-bridge
+                ])
+                ++ lib.optional cfg.work.enable pkgs.davmail;
+              persistence."/persist/" = {
+                directories = [
+                  (lib.removePrefix "${config.home.homeDirectory}/" config.accounts.email.maildirBasePath)
+                  ".config/protonmail"
+                  ".local/share/protonmail"
+                ]
+                ++ lib.optional cfg.work.enable ".config/davmail";
               };
-              mbsync = {
-                enable = true;
-                create = "both";
-                expunge = "both";
-                patterns = [
-                  "*"
-                  "!All Mail"
-                ];
-                subFolders = "Verbatim";
-              };
-              mu.enable = true;
-              imap = {
-                host = "127.0.0.1";
-                port = 1143;
-                tls = {
-                  enable = true;
-                  useStartTls = true;
-                  # Use protonmail-bride -c and cert export
-                  inherit certificatesFile;
+            };
+
+            sops.secrets = lib.mkIf osConfig.service.sops.enable {
+              "email_user" = { };
+              "email_home-passwd" = { };
+              "email_work-passwd" = { };
+              "email_outlook-passwd" = { };
+              "email_alias-private" = { };
+              "email_alias-service" = { };
+              "email_alias-social" = { };
+            };
+
+            accounts.email = {
+              maildirBasePath = "Mail";
+              accounts = {
+                personal = {
+                  primary = true;
+                  aliases = [
+                    "mugge.acrobat989@passinbox.com"
+                    "gako.footwork856@passinbox.com"
+                    "knut.sly692@passinbox.com"
+                  ];
+                  address = "merrinx@proton.me";
+                  userName = "merrinx@proton.me";
+                  passwordCommand = "${cfg.password}";
+                  realName = "merrinx";
+                  folders = {
+                    inbox = "INBOX";
+                    drafts = "Drafts";
+                    sent = "Sent";
+                    trash = "Trash";
+                  };
+                  mbsync = {
+                    enable = true;
+                    create = "both";
+                    expunge = "both";
+                    patterns = [
+                      "*"
+                      "!All Mail"
+                    ];
+                    subFolders = "Verbatim";
+                  };
+                  mu.enable = true;
+                  imap = {
+                    host = "127.0.0.1";
+                    port = 1143;
+                    tls = {
+                      enable = true;
+                      useStartTls = true;
+                      # Use protonmail-bride -c and cert export
+                      inherit certificatesFile;
+                    };
+                  };
+                  smtp = {
+                    host = "127.0.0.1";
+                    port = 1025;
+                    tls = {
+                      enable = true;
+                      useStartTls = true;
+                      inherit certificatesFile;
+                    };
+                  };
+                  msmtp.enable = true;
+                };
+              }
+              // lib.optionalAttrs cfg.work.enable {
+                work = {
+                  address = cfg.work.address;
+                  userName = cfg.work.address;
+                  realName = cfg.work.realName;
+                  passwordCommand = "${pkgs.coreutils}/bin/cat ${config.sops.secrets."email_outlook-passwd".path}";
+                  folders = {
+                    inbox = "INBOX";
+                    drafts = "Drafts";
+                    sent = "Sent";
+                    trash = "Trash";
+                  };
+                  mbsync = {
+                    enable = true;
+                    create = "maildir";
+                    expunge = "both";
+                    patterns = [
+                      "*"
+                      "!Calendar"
+                      "!Contacts"
+                      "!Conversation History"
+                      "!Tasks"
+                      "!Journal"
+                      "!Notes"
+                      "!Outbox"
+                    ];
+                    subFolders = "Verbatim";
+                    extraConfig.account.AuthMechs = "LOGIN";
+                  };
+                  mu.enable = true;
+                  imap = {
+                    host = "127.0.0.1";
+                    port = cfg.work.imapPort;
+                    tls.enable = false;
+                  };
+                  smtp = {
+                    host = "127.0.0.1";
+                    port = cfg.work.smtpPort;
+                    tls.enable = false;
+                  };
+                  msmtp.enable = true;
                 };
               };
-              smtp = {
-                host = "127.0.0.1";
-                port = 1025;
-                tls = {
-                  enable = true;
-                  useStartTls = true;
-                  inherit certificatesFile;
-                };
-              };
-              msmtp.enable = true;
             };
-          }
-          // lib.optionalAttrs cfg.work.enable {
-            work = {
-              address = cfg.work.address;
-              userName = cfg.work.address;
-              realName = cfg.work.realName;
-              passwordCommand = "${pkgs.coreutils}/bin/cat ${config.sops.secrets."email_outlook-passwd".path}";
-              folders = {
-                inbox = "INBOX";
-                drafts = "Drafts";
-                sent = "Sent";
-                trash = "Trash";
-              };
-              mbsync = {
-                enable = true;
-                create = "maildir";
-                expunge = "both";
-                patterns = [
-                  "*"
-                  "!Calendar"
-                  "!Contacts"
-                  "!Conversation History"
-                  "!Tasks"
-                  "!Journal"
-                  "!Notes"
-                  "!Outbox"
-                ];
-                subFolders = "Verbatim";
-                extraConfig.account.AuthMechs = "LOGIN";
-              };
+            programs = {
+              mbsync.enable = true;
+              msmtp.enable = true;
               mu.enable = true;
-              imap = {
-                host = "127.0.0.1";
-                port = cfg.work.imapPort;
-                tls.enable = false;
+            };
+            services.mbsync = {
+              enable = true;
+              frequency = "*:0/1";
+            };
+
+            systemd.user.services = {
+              protonmail-bridge = {
+                Unit = {
+                  Description = "Proton Mail Bridge";
+                  After = [ "network.target" ];
+                };
+                Service = {
+                  Restart = "always";
+                  RestartSec = 5;
+                  ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
+                  ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --noninteractive --log-level debug";
+                };
+                Install.WantedBy = [ "default.target" ];
               };
-              smtp = {
-                host = "127.0.0.1";
-                port = cfg.work.smtpPort;
-                tls.enable = false;
+
+              davmail = lib.mkIf cfg.work.enable {
+                Unit = {
+                  Description = "DavMail Office365 gateway";
+                  After = [ "network.target" ];
+                };
+                Service = {
+                  Restart = "always";
+                  RestartSec = 10;
+                  ExecStartPre = pkgs.writeShellScript "davmail-init" ''
+                    ${pkgs.coreutils}/bin/mkdir -p ${davmailDir}
+                    token="$(${pkgs.gnugrep}/bin/grep '^davmail\.oauth\.' ${davmailProperties} 2>/dev/null || true)"
+                    ${pkgs.coreutils}/bin/cp --no-preserve=mode ${davmailConfigBase} ${davmailProperties}
+                    ${pkgs.coreutils}/bin/chmod u+w ${davmailProperties}
+                    if [ -n "$token" ]; then
+                      printf '%s\n' "$token" >> ${davmailProperties}
+                    fi
+                  '';
+                  ExecStart = "${pkgs.davmail}/bin/davmail ${davmailProperties}";
+                };
+                Install.WantedBy = [ "default.target" ];
               };
-              msmtp.enable = true;
-            };
-          };
-        };
-        programs = {
-          mbsync.enable = true;
-          msmtp.enable = true;
-          mu.enable = true;
-        };
-        services.mbsync = {
-          enable = true;
-          frequency = "*:0/1";
-        };
 
-        systemd.user.services = {
-          protonmail-bridge = {
-            Unit = {
-              Description = "Proton Mail Bridge";
-              After = [ "network.target" ];
+              mbsync = {
+                Unit = {
+                  After = [
+                    "protonmail-bridge.service"
+                  ]
+                  ++ lib.optional cfg.work.enable "davmail.service";
+                  Requires = [ "protonmail-bridge.service" ];
+                  PartOf = [ "protonmail-bridge.service" ];
+                  Wants = lib.optional cfg.work.enable "davmail.service";
+                };
+                Service.ExecStartPre = "${waitForBridge}";
+              };
             };
-            Service = {
-              Restart = "always";
-              RestartSec = 5;
-              ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
-              ExecStart = "${pkgs.protonmail-bridge}/bin/protonmail-bridge --no-window --noninteractive --log-level debug";
-            };
-            Install.WantedBy = [ "default.target" ];
           };
-
-          davmail = lib.mkIf cfg.work.enable {
-            Unit = {
-              Description = "DavMail Office365 gateway";
-              After = [ "network.target" ];
-            };
-            Service = {
-              Restart = "always";
-              RestartSec = 10;
-              ExecStartPre = pkgs.writeShellScript "davmail-init" ''
-                ${pkgs.coreutils}/bin/mkdir -p ${davmailDir}
-                token="$(${pkgs.gnugrep}/bin/grep '^davmail\.oauth\.' ${davmailProperties} 2>/dev/null || true)"
-                ${pkgs.coreutils}/bin/cp --no-preserve=mode ${davmailConfigBase} ${davmailProperties}
-                ${pkgs.coreutils}/bin/chmod u+w ${davmailProperties}
-                if [ -n "$token" ]; then
-                  printf '%s\n' "$token" >> ${davmailProperties}
-                fi
-              '';
-              ExecStart = "${pkgs.davmail}/bin/davmail ${davmailProperties}";
-            };
-            Install.WantedBy = [ "default.target" ];
-          };
-
-          mbsync = {
-            Unit = {
-              After = [
-                "protonmail-bridge.service"
-              ]
-              ++ lib.optional cfg.work.enable "davmail.service";
-              Requires = [ "protonmail-bridge.service" ];
-              PartOf = [ "protonmail-bridge.service" ];
-              Wants = lib.optional cfg.work.enable "davmail.service";
-            };
-            Service.ExecStartPre = "${waitForBridge}";
-          };
-        };
-      };
     };
 }

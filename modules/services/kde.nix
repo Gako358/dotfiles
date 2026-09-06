@@ -22,6 +22,14 @@ _: {
     in
     {
       options.environment.desktop.kde = {
+        displayServer = lib.mkOption {
+          type = lib.types.enum [
+            "wayland"
+            "x11"
+          ];
+          default = "wayland";
+          description = "Display server used by KDE and SDDM.";
+        };
         persistenceDirectories = lib.mkOption {
           type = lib.types.listOf (
             lib.types.oneOf [
@@ -53,16 +61,18 @@ _: {
             message = "environment.desktop.kde.persistenceUsers must contain existing normal users";
           }
         ];
-        environment.persistence."/persist".users = lib.genAttrs persistenceUsers (_: {
+        environment.persistence."/persist".users = lib.genAttrs persistenceUsers (user: {
           directories = desktop.kde.persistenceDirectories;
+          files = lib.optional (user == "farstrider") ".zen";
         });
         services = {
+          xserver.enable = desktop.kde.displayServer == "x11";
           displayManager.sddm = {
             enable = true;
             enableHidpi = true;
             settings.Theme.CursorTheme = "Yaru";
             theme = "breeze";
-            wayland.enable = false;
+            wayland.enable = desktop.kde.displayServer == "wayland";
           };
           desktopManager.plasma6.enable = true;
         };

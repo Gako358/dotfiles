@@ -4,6 +4,19 @@
   inputs,
   ...
 }:
+let
+  homeUser = username: extraImports: {
+    imports =
+      (lib.attrValues config.flake.homeModules)
+      ++ [
+        inputs.nix-colors.homeManagerModules.default
+        inputs.sops-nix.homeManagerModules.sops
+      ]
+      ++ extraImports;
+    home.username = username;
+    home.homeDirectory = "/home/${username}";
+  };
+in
 {
   flake.nixosConfigurations.farmadding = inputs.nixpkgs.lib.nixosSystem {
     specialArgs = {
@@ -27,10 +40,11 @@
             self = config.flake;
           };
           backupFileExtension = ".hm-backup";
-          users.merrinx.imports = (lib.attrValues config.flake.homeModules) ++ [
-            inputs.nix-colors.homeManagerModules.default
-            inputs.sops-nix.homeManagerModules.sops
-            ./_home.nix
+          users.merrinx = homeUser "merrinx" [ ./_home.nix ];
+          users.farstrider = homeUser "farstrider" [
+            {
+              home.personalConfig.enable = false;
+            }
           ];
         };
       }

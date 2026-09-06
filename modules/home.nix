@@ -1,28 +1,31 @@
 _: {
   flake.homeModules.base =
-    _:
-    let
-      username = "merrinx";
-      homeDirectory = "/home/${username}";
-      configHome = "${homeDirectory}/.config";
-    in
     {
-      programs = {
-        home-manager.enable = true;
-        gh.enable = true;
+      config,
+      lib,
+      ...
+    }:
+    {
+      options.home.personalConfig.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable personal Home Manager configuration.";
       };
 
-      xdg = {
-        inherit configHome;
-        enable = true;
-      };
+      config = {
+        xdg = {
+          configHome = "${config.home.homeDirectory}/.config";
+          enable = true;
+        };
 
-      home = {
-        inherit username homeDirectory;
-        stateVersion = "26.11";
-      };
+        home.stateVersion = "26.11";
+        systemd.user.startServices = "sd-switch";
+        news.display = "silent";
 
-      systemd.user.startServices = "sd-switch";
-      news.display = "silent";
+        programs = {
+          home-manager.enable = true;
+          gh.enable = true;
+        };
+      };
     };
 }

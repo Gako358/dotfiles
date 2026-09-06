@@ -5,10 +5,12 @@ _: {
       inputs,
       pkgs,
       lib,
+      config,
       ...
     }:
     let
       inherit (osConfig.environment) desktop;
+      personal = config.home.personalConfig.enable;
     in
     {
       imports = [
@@ -56,7 +58,7 @@ _: {
               };
             };
 
-            hotkeys.commands = {
+            hotkeys.commands = lib.mkIf personal {
               clear-notifications = {
                 name = "Clear all KDE Plasma notifications";
                 key = "Meta+Shift+Backspace";
@@ -129,7 +131,7 @@ _: {
               };
             };
 
-            input = {
+            input = lib.mkIf personal {
               keyboard = {
                 layouts = [
                   {
@@ -182,7 +184,7 @@ _: {
             };
 
             kwin = {
-              nightLight = {
+              nightLight = lib.mkIf personal {
                 enable = true;
                 location.latitude = "52.23";
                 location.longitude = "21.01";
@@ -355,7 +357,7 @@ _: {
               };
             };
 
-            window-rules = [
+            window-rules = lib.mkIf personal [
               {
                 apply = {
                   noborder = {

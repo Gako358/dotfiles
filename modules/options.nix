@@ -8,9 +8,6 @@ let
   };
 in
 {
-  # `flake.nixosModules` is already declared by flake-parts itself, so we
-  # rely on its built-in option here. Only `homeModules` needs a
-  # custom declaration — flake-parts doesn't ship one for home-manager.
   options.flake.homeModules = lib.mkOption {
     type = lib.types.lazyAttrsOf moduleType;
     default = { };

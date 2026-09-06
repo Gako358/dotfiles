@@ -2,6 +2,7 @@ _: {
   flake.homeModules.services-easyeffect =
     {
       osConfig,
+      config,
       lib,
       ...
     }:
@@ -9,6 +10,18 @@ _: {
       inherit (osConfig.environment) desktop;
     in
     {
+      home.persistence."/persist" =
+        lib.mkIf
+          (
+            !(
+              osConfig.environment.desktop.windowManager == "kde"
+              && lib.elem config.home.username osConfig.environment.desktop.kde.persistenceUsers
+            )
+          )
+          {
+            directories = [ ".config/easyeffects" ];
+          };
+
       services.easyeffects = lib.mkIf desktop.enable {
         enable = true;
         preset = "noise-cancellation";
@@ -19,12 +32,6 @@ _: {
       systemd.user.services.easyeffects.Service = lib.mkIf desktop.enable {
         ExecStop = lib.mkForce "";
         TimeoutStopSec = lib.mkForce "5s";
-      };
-
-      home.persistence."/persist/" = {
-        directories = [
-          ".config/easyeffects"
-        ];
       };
 
       xdg.configFile."easyeffects/input/noise-cancellation.json" = lib.mkIf desktop.enable {
