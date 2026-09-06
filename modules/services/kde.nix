@@ -75,7 +75,6 @@ _: {
             ffmpegthumbs
             kate
             khelpcenter
-            konsole
             krdp
             plasma-browser-integration
           ];
