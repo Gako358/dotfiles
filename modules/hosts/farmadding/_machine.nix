@@ -67,7 +67,6 @@ in
       windowManager = "kde";
       develop = false;
       kde = {
-        autoLoginUser = "farstrider";
         displayServer = "x11";
         persistenceUsers = [ "farstrider" ];
       };
