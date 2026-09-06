@@ -26,7 +26,12 @@ _: {
         registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
         nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
         settings = {
-          experimental-features = "nix-command flakes impure-derivations ca-derivations";
+          experimental-features = [
+            "nix-command"
+            "flakes"
+            "impure-derivations"
+            "ca-derivations"
+          ];
           auto-optimise-store = true;
           trusted-users = [
             "root"

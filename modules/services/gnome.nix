@@ -58,7 +58,6 @@ _: {
             ];
           };
           environment.gnome.excludePackages = with pkgs; [
-            gnome-photos
             gnome-tour
             cheese # webcam tool
             gnome-music
