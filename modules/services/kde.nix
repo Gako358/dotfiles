@@ -19,6 +19,11 @@ _: {
         }
       ];
       persistenceUsers = desktop.kde.persistenceUsers;
+      effectiveGreeterDisplayServer =
+        if desktop.kde.greeterDisplayServer == null then
+          desktop.kde.displayServer
+        else
+          desktop.kde.greeterDisplayServer;
     in
     {
       options.environment.desktop.kde = {
@@ -33,7 +38,17 @@ _: {
             "x11"
           ];
           default = "wayland";
-          description = "Display server used by KDE and SDDM.";
+          description = "Display server used by the Plasma user session.";
+        };
+        greeterDisplayServer = lib.mkOption {
+          type = lib.types.nullOr (
+            lib.types.enum [
+              "wayland"
+              "x11"
+            ]
+          );
+          default = null;
+          description = "Display server used by the SDDM greeter; null follows the Plasma user session.";
         };
         persistenceDirectories = lib.mkOption {
           type = lib.types.listOf (
@@ -86,12 +101,13 @@ _: {
               enable = desktop.kde.autoLoginUser != null;
               user = desktop.kde.autoLoginUser;
             };
+            defaultSession = if desktop.kde.displayServer == "x11" then "plasmax11" else "plasma";
             sddm = {
               enable = true;
               enableHidpi = true;
               settings.Theme.CursorTheme = "Yaru";
               theme = "breeze";
-              wayland.enable = desktop.kde.displayServer == "wayland";
+              wayland.enable = effectiveGreeterDisplayServer == "wayland";
             };
           };
           desktopManager.plasma6.enable = true;
