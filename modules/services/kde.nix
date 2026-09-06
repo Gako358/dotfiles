@@ -62,7 +62,7 @@ _: {
             enableHidpi = true;
             settings.Theme.CursorTheme = "Yaru";
             theme = "breeze";
-            wayland.enable = true;
+            wayland.enable = false;
           };
           desktopManager.plasma6.enable = true;
         };
