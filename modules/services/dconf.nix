@@ -2,17 +2,37 @@ _: {
   flake.homeModules.services-dconf =
     {
       osConfig,
+      config,
       pkgs,
       lib,
       ...
     }:
     let
+      inputSources = {
+        us = [
+          "us"
+          "no"
+        ];
+        no = [
+          "no"
+          "us"
+        ];
+      };
       autostartPrograms = [
-        pkgs.discord
+        # pkgs.discord
         # pkgs.ckb-next
       ];
     in
     {
+      options.services.dconf.defaultInputSource = lib.mkOption {
+        type = lib.types.enum [
+          "us"
+          "no"
+        ];
+        default = "us";
+        description = "Default GNOME keyboard input source.";
+      };
+
       config = lib.mkMerge [
         (lib.mkIf osConfig.program.qemu.enable {
           dconf.settings = {
@@ -40,16 +60,13 @@ _: {
               enable-hot-corners = true;
             };
             "org/gnome/desktop/input-sources" = {
-              sources = [
-                (lib.hm.gvariant.mkTuple [
+              sources = map (
+                source:
+                lib.hm.gvariant.mkTuple [
                   "xkb"
-                  "us"
-                ])
-                (lib.hm.gvariant.mkTuple [
-                  "xkb"
-                  "no"
-                ])
-              ];
+                  source
+                ]
+              ) inputSources.${config.services.dconf.defaultInputSource};
             };
             "org/gnome/desktop/screensaver" = {
               picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/sheet-l.jxl";
@@ -107,9 +124,10 @@ _: {
                 "org.gnome.Nautilus.desktop"
                 "spotify.desktop"
                 "steam.desktop"
-                "zen.desktop"
-                "proton-pass.desktop"
-              ];
+              ]
+              ++ lib.optional config.programs.chromium.enable "chromium-browser.desktop"
+              ++ lib.optional config.programs.zen.enable "zen.desktop"
+              ++ [ "proton-pass.desktop" ];
             };
             "org/gnome/shell/app-switcher" = {
               current-workspace-only = false;

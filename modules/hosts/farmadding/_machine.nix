@@ -1,8 +1,6 @@
 {
   config,
-  inputs,
   lib,
-  pkgs,
   ...
 }:
 
@@ -36,7 +34,6 @@ in
     farstrider = {
       isNormalUser = true;
       hashedPassword = "$7$CU..../....qkuhViJJTCgCMvVI9/VDA.$PKglcmXWniIiT.tH.dojKAMAXmJmr/9/M6sJE65yplA";
-      packages = [ inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default ];
       extraGroups = [
         "networkmanager"
         "video"
@@ -91,11 +88,17 @@ in
     };
   };
 
-  services.openssh = {
-    openFirewall = false;
-    settings = {
-      KbdInteractiveAuthentication = false;
-      AllowUsers = [ "merrinx" ];
+  services = {
+    displayManager.autoLogin = {
+      enable = true;
+      user = "farstrider";
+    };
+    openssh = {
+      openFirewall = false;
+      settings = {
+        KbdInteractiveAuthentication = false;
+        AllowUsers = [ "merrinx" ];
+      };
     };
   };
 

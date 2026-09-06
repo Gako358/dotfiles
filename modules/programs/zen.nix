@@ -28,19 +28,27 @@ _: {
           };
     in
     {
-      home = lib.mkIf osConfig.environment.desktop.enable {
-        packages = [ zen ];
-        persistence."/persist" =
-          lib.mkIf
-            (
-              !(
-                osConfig.environment.desktop.windowManager == "kde"
-                && lib.elem config.home.username osConfig.environment.desktop.kde.persistenceUsers
+      options.programs.zen.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Zen Browser.";
+      };
+
+      config = lib.mkIf (osConfig.environment.desktop.enable && config.programs.zen.enable) {
+        home = {
+          packages = [ zen ];
+          persistence."/persist" =
+            lib.mkIf
+              (
+                !(
+                  osConfig.environment.desktop.windowManager == "kde"
+                  && lib.elem config.home.username osConfig.environment.desktop.kde.persistenceUsers
+                )
               )
-            )
-            {
-              directories = [ ".zen" ];
-            };
+              {
+                directories = [ ".zen" ];
+              };
+        };
       };
     };
 }

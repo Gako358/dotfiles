@@ -41,7 +41,7 @@ in
           };
           backupFileExtension = ".hm-backup";
           users.merrinx = homeUser "merrinx" [ ./_home.nix ];
-          users.farstrider = homeUser "farstrider" [ ];
+          users.farstrider = homeUser "farstrider" [ ./_home.nix ];
         };
       }
     ];
