@@ -1,8 +1,8 @@
 _: {
   flake.homeModules.programs-git =
     {
-      config,
       lib,
+      osConfig,
       pkgs,
       ...
     }:
@@ -50,7 +50,7 @@ _: {
       };
 
       rg = "${pkgs.ripgrep}/bin/rg";
-      personalConfig = lib.optionalAttrs config.home.personalConfig.enable {
+      develop = lib.optionalAttrs osConfig.environment.desktop.develop {
         github.user = "gako358";
         user = {
           email = "gako.footwork856@passinbox.com";
@@ -70,7 +70,7 @@ _: {
         enable = true;
         settings =
           gitConfig
-          // personalConfig
+          // develop
           // {
             alias = {
               amend = "commit --amend -m";
@@ -102,7 +102,7 @@ _: {
           "*.jvmopts"
         ];
 
-        includes = lib.optionals config.home.personalConfig.enable [
+        includes = lib.optionals osConfig.environment.desktop.develop [
           {
             condition = "gitdir:~/Workflow/";
             contents = {

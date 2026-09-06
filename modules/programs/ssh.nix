@@ -1,8 +1,8 @@
 _: {
   flake.homeModules.programs-ssh =
     {
-      config,
       lib,
+      osConfig,
       ...
     }:
     {
@@ -21,7 +21,7 @@ _: {
             userKnownHostsFile = "~/.ssh/known_hosts";
           };
 
-          "github.com" = lib.mkIf config.home.personalConfig.enable {
+          "github.com" = lib.mkIf osConfig.environment.desktop.develop {
             # "Using SSH over the HTTPS port for GitHub"
             # "(port 22 is banned by some proxies / firewalls)"
             hostname = "ssh.github.com";

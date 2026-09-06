@@ -51,7 +51,7 @@ _: {
       ...
     }:
     {
-      config = lib.mkIf (osConfig.service.sops.enable && config.home.personalConfig.enable) {
+      config = lib.mkIf osConfig.service.sops.enable {
         home.persistence."/persist" = {
           directories = [
             ".config/sops/age"

@@ -2,16 +2,9 @@ _: {
   flake.homeModules.base =
     {
       config,
-      lib,
       ...
     }:
     {
-      options.home.personalConfig.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Enable personal Home Manager configuration.";
-      };
-
       config = {
         xdg = {
           configHome = "${config.home.homeDirectory}/.config";

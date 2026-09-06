@@ -3,6 +3,7 @@ _: {
     {
       config,
       lib,
+      osConfig,
       pkgs,
       inputs,
       ...
@@ -68,7 +69,7 @@ _: {
       scramgit = inputs.scramgit.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
     {
-      home.packages = lib.mkIf config.home.personalConfig.enable [
+      home.packages = lib.mkIf osConfig.environment.desktop.develop [
         (pkgs.writeShellScriptBin "scramgit" ''
           exec ${lib.getExe scramgit} ${lib.escapeShellArgs flags} "$@"
         '')

@@ -111,11 +111,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788627314,
-        "narHash": "sha256-GXnAK/LPbW0MU6A5GYM12aweazSORADjDwB/EfmJ4OU=",
+        "lastModified": 1788704757,
+        "narHash": "sha256-Cg+yDFs9+W7KDaqv+sPyK1AFsjWWBnLU76PBHxBbI9c=",
         "owner": "Gako358",
         "repo": "emacs-flake",
-        "rev": "7d2f7844ed6eed390febe1683aeb8a945e85c856",
+        "rev": "0e531cea3368d886508b6e97e8b88253fd28b1c9",
         "type": "github"
       },
       "original": {

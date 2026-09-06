@@ -64,13 +64,8 @@ in
   environment = {
     desktop = {
       enable = true;
-      windowManager = "kde";
+      windowManager = "gnome";
       develop = false;
-      kde = {
-        displayServer = "x11";
-        greeterDisplayServer = "wayland";
-        persistenceUsers = [ "farstrider" ];
-      };
       theme.wallpaper = "/run/current-system/sw/share/backgrounds/nixos-wallpaper.png";
     };
     gaming.enable = false;
