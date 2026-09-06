@@ -22,6 +22,11 @@ _: {
     in
     {
       options.environment.desktop.kde = {
+        autoLoginUser = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "User automatically logged into KDE by SDDM.";
+        };
         displayServer = lib.mkOption {
           type = lib.types.enum [
             "wayland"
@@ -55,6 +60,15 @@ _: {
       config = lib.mkIf (desktop.windowManager == "kde") {
         assertions = [
           {
+            assertion =
+              desktop.kde.autoLoginUser == null
+              || (
+                lib.hasAttr desktop.kde.autoLoginUser config.users.users
+                && config.users.users.${desktop.kde.autoLoginUser}.isNormalUser
+              );
+            message = "environment.desktop.kde.autoLoginUser must name an existing normal user";
+          }
+          {
             assertion = lib.all (
               user: lib.hasAttr user config.users.users && config.users.users.${user}.isNormalUser
             ) persistenceUsers;
@@ -67,12 +81,18 @@ _: {
         });
         services = {
           xserver.enable = desktop.kde.displayServer == "x11";
-          displayManager.sddm = {
-            enable = true;
-            enableHidpi = true;
-            settings.Theme.CursorTheme = "Yaru";
-            theme = "breeze";
-            wayland.enable = desktop.kde.displayServer == "wayland";
+          displayManager = {
+            autoLogin = {
+              enable = desktop.kde.autoLoginUser != null;
+              user = desktop.kde.autoLoginUser;
+            };
+            sddm = {
+              enable = true;
+              enableHidpi = true;
+              settings.Theme.CursorTheme = "Yaru";
+              theme = "breeze";
+              wayland.enable = desktop.kde.displayServer == "wayland";
+            };
           };
           desktopManager.plasma6.enable = true;
         };

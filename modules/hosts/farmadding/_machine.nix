@@ -66,8 +66,11 @@ in
       enable = true;
       windowManager = "kde";
       develop = false;
-      kde.displayServer = "x11";
-      kde.persistenceUsers = [ "farstrider" ];
+      kde = {
+        autoLoginUser = "farstrider";
+        displayServer = "x11";
+        persistenceUsers = [ "farstrider" ];
+      };
       theme.wallpaper = "/run/current-system/sw/share/backgrounds/nixos-wallpaper.png";
     };
     gaming.enable = false;
