@@ -9,23 +9,31 @@ _: {
       ...
     }:
     let
-      zen =
-        pkgs.wrapFirefox
-          inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".zen-browser-unwrapped
-          {
-            pname = "zen-browser";
-            extraPolicies = {
-              DisableAppUpdate = true;
-              DisableTelemetry = true;
-              DisablePocket = true;
-              ExtensionSettings = {
-                "78272b6fa58f4a1abaac99321d503a20@proton.me" = {
-                  installation_mode = "force_installed";
-                  install_url = "https://addons.mozilla.org/firefox/downloads/latest/proton-pass/latest.xpi";
-                };
-              };
+      # Upstream still sets the pre-rename passthru flags, so wrapFirefox drops
+      # ffmpeg from the library path and media playback fails.
+      # Drop once https://github.com/youwen5/zen-browser-flake/pull/20 lands.
+      zen-unwrapped =
+        inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".zen-browser-unwrapped.overrideAttrs
+          (prev: {
+            passthru = prev.passthru // {
+              withGSSAPI = true;
+              withFFmpeg = true;
+            };
+          });
+      zen = pkgs.wrapFirefox zen-unwrapped {
+        pname = "zen-browser";
+        extraPolicies = {
+          DisableAppUpdate = true;
+          DisableTelemetry = true;
+          DisablePocket = true;
+          ExtensionSettings = {
+            "78272b6fa58f4a1abaac99321d503a20@proton.me" = {
+              installation_mode = "force_installed";
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/proton-pass/latest.xpi";
             };
           };
+        };
+      };
     in
     {
       options.programs.zen.enable = lib.mkOption {
