@@ -6,6 +6,9 @@ _: {
       lib,
       ...
     }:
+    let
+      schemas = pkgs.gsettings-desktop-schemas;
+    in
     {
       config = lib.mkMerge [
         (lib.mkIf config.environment.desktop.enable {
@@ -26,7 +29,10 @@ _: {
               gnome-online-accounts.enable = true;
             };
           };
-          programs.dconf.enable = true; # Needed to manages user settings
+          programs.dconf.enable = true;
+          environment.sessionVariables.XDG_DATA_DIRS = [
+            "${schemas}/share/gsettings-schemas/${schemas.name}"
+          ];
           systemd = lib.mkIf (config.environment.desktop.windowManager != "gnome") {
             user.services.polkit-gnome-authentication-agent-1 = {
               description = "polkit-gnome-authentication-agent-1";
