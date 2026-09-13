@@ -16,10 +16,7 @@ _: {
             dbus = {
               enable = true;
               implementation = "broker";
-              packages = [
-                pkgs.gnome-keyring
-                pkgs.gcr
-              ];
+              packages = [ pkgs.gnome-keyring ];
             };
             gnome = {
               evolution-data-server.enable = true;
