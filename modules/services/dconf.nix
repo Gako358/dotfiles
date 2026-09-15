@@ -69,12 +69,14 @@ _: {
               ) inputSources.${config.services.dconf.defaultInputSource};
             };
             "org/gnome/desktop/screensaver" = {
+              lock-delay = lib.hm.gvariant.mkUint32 0;
+              lock-enabled = true;
               picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/sheet-l.jxl";
               primary-color = "#1a5fb4";
               secondary-color = "#000000";
             };
             "org/gnome/desktop/session" = {
-              idle-delay = lib.hm.gvariant.mkUint32 0;
+              idle-delay = lib.hm.gvariant.mkUint32 1500;
             };
             "org/gnome/desktop/wm/keybindings" = {
               close = [ "<Alt>q" ];
@@ -108,6 +110,12 @@ _: {
               binding = "<Super>Return";
               command = "kgx";
               name = "console";
+            };
+            "org/gnome/settings-daemon/plugins/power" = {
+              sleep-inactive-ac-timeout = 3600;
+              sleep-inactive-ac-type = "suspend";
+              sleep-inactive-battery-timeout = 3600;
+              sleep-inactive-battery-type = "suspend";
             };
             "org/gnome/shell" = {
               disable-user-extensions = false;
