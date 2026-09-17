@@ -34,6 +34,17 @@ _: {
             controlPersist = "10m";
           };
 
+          "aanallein" = {
+            hostname = "aanallein";
+            user = "merrinx";
+            identityFile = "~/.ssh/id_rsa";
+            identitiesOnly = true;
+            forwardAgent = false;
+            controlMaster = "auto";
+            controlPath = "~/.ssh/master-%r@%n:%p";
+            controlPersist = "10m";
+          };
+
           "10.0.0.*" = {
             # "allow to securely use local SSH agent to authenticate on the remote machine."
             # "It has the same effect as adding cli option `ssh -A user@host`"

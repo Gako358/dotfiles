@@ -9,6 +9,7 @@
     {
       packages = {
         repl = pkgs.callPackage ../../pkgs/repl { };
+        eca = pkgs.callPackage ../../pkgs/eca { };
       }
       # raiderio-client and warcraftlogs are x86_64 AppImages, so they
       # don't evaluate on aarch64-linux. Only expose them where they work,
