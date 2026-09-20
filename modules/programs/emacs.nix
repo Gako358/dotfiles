@@ -13,28 +13,39 @@ _: {
     {
       imports = [ inputs.emacs-flake.homeModules.emacs ];
 
-      config = lib.mkIf (desktop.enable && desktop.develop) {
-        programs.merrinx-emacs.enable = true;
+      config = lib.mkMerge [
+        (lib.mkIf (desktop.enable && desktop.develop) {
+          programs.merrinx-emacs.enable = true;
 
-        programs.fish.shellAliases = {
-          vim = "emacs-minimal";
-          vi = "emacs-minimal";
-        };
-
-        sops = lib.mkIf osConfig.service.sops.enable {
-          secrets = {
-            "forge_auth" = { };
-            "pr_auth" = { };
+          programs.fish.shellAliases = {
+            vim = "emacs-minimal";
+            vi = "emacs-minimal";
           };
 
-          templates."authinfo" = {
-            path = "${config.home.homeDirectory}/.authinfo";
-            content = ''
-              ${config.sops.placeholder."forge_auth"}
-              ${config.sops.placeholder."pr_auth"}
-            '';
+          sops = lib.mkIf osConfig.service.sops.enable {
+            secrets = {
+              "forge_auth" = { };
+              "pr_auth" = { };
+            };
+
+            templates."authinfo" = {
+              path = "${config.home.homeDirectory}/.authinfo";
+              content = ''
+                ${config.sops.placeholder."forge_auth"}
+                ${config.sops.placeholder."pr_auth"}
+              '';
+            };
           };
-        };
-      };
+        })
+        (lib.mkIf config.programs.merrinx-emacs.enable {
+          programs.merrinx-emacs.eca.nixMcp = {
+            enable = true;
+            roots = [
+              "${config.home.homeDirectory}/Projects/emacs-flake"
+              "${config.home.homeDirectory}/Sources/dotfiles"
+            ];
+          };
+        })
+      ];
     };
 }
