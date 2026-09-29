@@ -15,6 +15,7 @@ _: {
       git-pull-all = pkgs.callPackage ./_git-pull-all.nix { inherit pkgs; };
       git-prune-branches = pkgs.callPackage ./_git-prune-branches.nix { inherit pkgs; };
       git-pr-count = pkgs.callPackage ./_git-pr-count.nix { inherit pkgs; };
+      git-pr-review-time = pkgs.callPackage ./_git-pr-review-time.nix { inherit pkgs; };
       run-rdp = pkgs.callPackage ./_run-rdp.nix { inherit pkgs; };
       system-check = pkgs.callPackage ./_system-check.nix { inherit pkgs; };
     in
@@ -33,6 +34,7 @@ _: {
         git-pull-all
         git-prune-branches
         git-pr-count
+        git-pr-review-time
         run-rdp
         system-check
       ]
