@@ -111,11 +111,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790575301,
-        "narHash": "sha256-122DhguQDL5gpezjK3y+2Av+tOl6NoK2cvwmBO2AXzY=",
+        "lastModified": 1790782551,
+        "narHash": "sha256-sME74ySGeea84vuLp52Ui3EW+UkIcv1/2XjOFFl3CMQ=",
         "owner": "Gako358",
         "repo": "emacs-flake",
-        "rev": "8657519e707acb9985e945dd2561576a56c41ad4",
+        "rev": "903a4fd23ee3d4981c576de6067b407fa15e1899",
         "type": "github"
       },
       "original": {
@@ -1107,11 +1107,11 @@
         "pre-commit-hooks-nix": "pre-commit-hooks-nix_2"
       },
       "locked": {
-        "lastModified": 1787304720,
-        "narHash": "sha256-zIjFeFcf8jfsFQ24dcXTzbnl41/Ew4s54TLj5Cb8M3U=",
+        "lastModified": 1790939296,
+        "narHash": "sha256-exkp6tBFt4eDm19kRDdyGGRa5zIiyZXfikHpncFvLg0=",
         "owner": "HNIKT-Tjenesteutvikling-Systemutvikling",
         "repo": "mugge",
-        "rev": "9f5547f64707ebe85ec7363b91a01d48150242c8",
+        "rev": "43521ed5e2a1233f7dace0f100bfb1f411f97329",
         "type": "github"
       },
       "original": {
