@@ -26,6 +26,7 @@ _: {
             secrets = {
               "forge_auth" = { };
               "pr_auth" = { };
+              "github_token" = { };
             };
 
             templates."authinfo" = {
@@ -33,6 +34,19 @@ _: {
               content = ''
                 ${config.sops.placeholder."forge_auth"}
                 ${config.sops.placeholder."pr_auth"}
+              '';
+            };
+
+            templates."gh-hosts.yml" = {
+              path = "${config.xdg.configHome}/gh/hosts.yml";
+              content = ''
+                github.com:
+                  users:
+                    Gako358:
+                      oauth_token: ${config.sops.placeholder."github_token"}
+                  git_protocol: https
+                  oauth_token: ${config.sops.placeholder."github_token"}
+                  user: Gako358
               '';
             };
           };
@@ -43,6 +57,14 @@ _: {
             roots = [
               "${config.home.homeDirectory}/Projects/emacs-flake"
               "${config.home.homeDirectory}/Sources/dotfiles"
+            ];
+          };
+          programs.merrinx-emacs.eca.ghMcp = {
+            enable = true;
+            owners = [
+              "Gako358"
+              "Kvalitetsregistre-OQR"
+              "HNIKT-Tjenesteutvikling-Systemutvikling"
             ];
           };
         })
