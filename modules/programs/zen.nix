@@ -26,12 +26,23 @@ _: {
           DisableAppUpdate = true;
           DisableTelemetry = true;
           DisablePocket = true;
+          Preferences = {
+            "browser.tabs.unloadOnLowMemory" = {
+              Value = true;
+              Status = "default";
+            };
+          };
           ExtensionSettings = {
             "78272b6fa58f4a1abaac99321d503a20@proton.me" = {
               installation_mode = "force_installed";
               install_url = "https://addons.mozilla.org/firefox/downloads/latest/proton-pass/latest.xpi";
             };
+            "{c2c003ee-bd69-42a2-b0e9-6f34222cb046}" = {
+              installation_mode = "force_installed";
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/auto-tab-discard/latest.xpi";
+            };
           };
+          "3rdparty".Extensions."{c2c003ee-bd69-42a2-b0e9-6f34222cb046}".period = 600;
         };
       };
     in
