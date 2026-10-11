@@ -34,6 +34,7 @@ _: {
         jrt = "Projects/jrt";
         leetcode = "Projects/leetcode";
         Masterplan = "Projects/Masterplan";
+        Merrinxui = "Projects/merrinxui";
         mXoverlay = "Projects/mXoverlay";
         mxgitbucket = "Projects/mxgitbucket";
         neovim = "Projects/neovim";
