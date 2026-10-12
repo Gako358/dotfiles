@@ -58,6 +58,9 @@ _: {
               "${config.home.homeDirectory}/Projects/emacs-flake"
               "${config.home.homeDirectory}/Sources/dotfiles"
             ];
+            rootParents = [
+              "${config.home.homeDirectory}/Projects"
+            ];
           };
           programs.merrinx-emacs.eca.ghMcp = {
             enable = true;
