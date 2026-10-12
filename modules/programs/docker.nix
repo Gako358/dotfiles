@@ -9,6 +9,7 @@ _: {
         podman.enable = true;
         docker = {
           enable = true;
+          logDriver = "json-file";
           daemon.settings = {
             data-root = "/opt/docker";
           };
