@@ -61,14 +61,6 @@ _: {
             rootParents = [
               "${config.home.homeDirectory}/Projects"
             ];
-            impureBuilds = [
-              {
-                root = "${config.home.homeDirectory}/Projects/workspace/pdp";
-                attributes = [ "sbtDepsCache" ];
-                envFile = "${config.home.homeDirectory}/Sources/agentx/azure/.env";
-                env = [ "MVN_PCKGS" ];
-              }
-            ];
           };
           programs.merrinx-emacs.eca.ghMcp = {
             enable = true;
