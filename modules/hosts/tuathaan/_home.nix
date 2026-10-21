@@ -11,6 +11,15 @@ let
 in
 {
   program.quickshell.battery.enable = true;
+
+  programs.merrinx-emacs.eca.nixMcp = {
+    maxConcurrentJobs = 1;
+    slice = {
+      CPUWeight = 20;
+      MemoryHigh = "8G";
+      MemoryMax = "12G";
+    };
+  };
   program.quickshell.lock.monitors = [
     "HP E27u"
     "DP-1"

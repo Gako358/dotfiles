@@ -12,6 +12,15 @@ in
 {
   program.quickshell.lock.monitors = [ "DP-2" ];
 
+  programs.merrinx-emacs.eca.nixMcp = {
+    maxConcurrentJobs = 3;
+    slice = {
+      CPUWeight = 50;
+      MemoryHigh = "16G";
+      MemoryMax = "20G";
+    };
+  };
+
   services.hyprpaper.settings = lib.mkMerge [
     {
       wallpaper = [
