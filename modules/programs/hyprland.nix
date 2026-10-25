@@ -270,10 +270,6 @@
               xwayland = {
                   force_zero_scaling = true,
               },
-
-              debug = {
-                  disable_logs = false,
-              },
           })
 
           ----------------

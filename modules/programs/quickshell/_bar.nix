@@ -108,7 +108,9 @@
           interval: 120
           repeat: false
           onTriggered: {
-              if (bar.hoveredDockItem === null) bar.hoveredWsId = -1
+              if (bar.hoveredDockItem !== null) return
+              bar.hoveredWsId = -1
+              snapshotTimer.restart()
           }
       }
 
@@ -154,7 +156,8 @@
                   var parts = line.split(" ")
                   var wsId  = parseInt(parts[0])
                   var mtime = parseInt(parts[1])
-                  if (wsId > 0 && !isNaN(mtime) && !stamps[wsId]) {
+                  // The other screens' bars write here too; adopt their newer files.
+                  if (wsId > 0 && !isNaN(mtime) && mtime * 1000 > (stamps[wsId] || 0)) {
                       stamps[wsId] = mtime * 1000
                   }
               }
@@ -163,6 +166,7 @@
       }
 
       function snapshotAllVisible() {
+          if (grimProc.running) return
           var mons = Hyprland.monitors ? Hyprland.monitors.values : []
           var cmds = []
           var ids  = []
@@ -207,13 +211,18 @@
           return null
       }
 
+      // Delay lets the new workspace render and the preview popup close before grim.
       Timer {
           id: snapshotTimer
-          interval: 3000
-          repeat: true
-          running: true
-          triggeredOnStart: true
+          interval: 1000
           onTriggered: bar.snapshotAllVisible()
+      }
+
+      Connections {
+          target: Hyprland
+          function onFocusedWorkspaceChanged() {
+              if (bar.isFocused) snapshotTimer.restart()
+          }
       }
 
       PwObjectTracker {
@@ -442,6 +451,7 @@
                                           bar.hoveredWsId     = dockItem.modelData.wsId
                                           previewHideTimer.stop()
                                           clientsProc.running = true
+                                          scanCacheProc.running = true
                                       } else if (bar.hoveredDockItem === dockItem) {
                                           bar.hoveredDockItem = null
                                           previewHideTimer.restart()
@@ -773,7 +783,7 @@
                   // ── Live or cached preview thumbnail ─────────────
                   // 16:9 area: live ScreencopyView on top if the
                   // workspace is visible on a monitor, otherwise a
-                  // cached PNG from the periodic snapshotter.
+                  // cached PNG from the last snapshot.
                   Item {
                       Layout.fillWidth: true
                       Layout.preferredHeight: 158

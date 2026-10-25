@@ -5,11 +5,11 @@ in
 pkgs.writeShellScriptBin "handle-monitor" ''
   handle() {
     case $1 in monitoradded*)
-      hyprctl dispatch moveworkspacetomonitor "1 1"
-      hyprctl dispatch moveworkspacetomonitor "2 1"
-      hyprctl dispatch moveworkspacetomonitor "4 1"
-      hyprctl dispatch moveworkspacetomonitor "7 1"
-      hyprctl dispatch moveworkspacetomonitor "9 1"
+      hyprctl dispatch 'hl.dsp.workspace.move({ workspace = "1", monitor = "1" })'
+      hyprctl dispatch 'hl.dsp.workspace.move({ workspace = "2", monitor = "1" })'
+      hyprctl dispatch 'hl.dsp.workspace.move({ workspace = "4", monitor = "1" })'
+      hyprctl dispatch 'hl.dsp.workspace.move({ workspace = "7", monitor = "1" })'
+      hyprctl dispatch 'hl.dsp.workspace.move({ workspace = "9", monitor = "1" })'
     esac
   }
 

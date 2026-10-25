@@ -30,7 +30,7 @@ _: {
           functions.enable = true;
         };
         interactiveShellInit = ''
-          eval (direnv hook fish)
+          direnv hook fish | source
           jump shell fish | source
           any-nix-shell fish --info-right | source
         '';

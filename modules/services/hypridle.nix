@@ -12,6 +12,7 @@ _: {
       hyprctl = "${pkgs.hyprland}/bin/hyprctl";
       qs = "${pkgs.quickshell}/bin/qs";
       suspend = "${pkgs.systemd}/bin/systemctl suspend";
+      dpms = action: "${hyprctl} dispatch 'hl.dsp.dpms({ action = \"${action}\" })'";
 
       cfg = config.service.hypridle;
     in
@@ -52,7 +53,7 @@ _: {
           settings = {
             general = {
               before_sleep_cmd = "${qs} ipc call lock lock";
-              after_sleep_cmd = "${hyprctl} dispatch dpms on";
+              after_sleep_cmd = dpms "on";
               lock_cmd = "${qs} ipc call lock lock";
               ignore_dbus_inhibit = true;
               ignore_systemd_inhibit = false;
@@ -60,8 +61,8 @@ _: {
             listener =
               (lib.optional cfg.dpms {
                 inherit (cfg) timeout;
-                on-timeout = "${hyprctl} dispatch dpms off";
-                on-resume = "${hyprctl} dispatch dpms on";
+                on-timeout = dpms "off";
+                on-resume = dpms "on";
               })
               ++ (lib.optional cfg.suspend {
                 timeout = cfg.timeout + cfg.suspendTimer;
