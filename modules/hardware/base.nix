@@ -47,19 +47,13 @@ _: {
     {
       boot = {
         consoleLogLevel = 3;
-        initrd = {
-          verbose = false;
-          systemd = {
-            enable = true;
-            services.wipe_root = {
-              wantedBy = [ "initrd.target" ];
-              after = [ "systemd-cryptsetup@crypted_root.service" ];
-              before = [ "sysroot.mount" ];
-              unitConfig.DefaultDependencies = "no";
-              serviceConfig.Type = "oneshot";
-              script = cleanup;
-            };
-          };
+        initrd.systemd.services.wipe_root = {
+          wantedBy = [ "initrd.target" ];
+          after = [ "systemd-cryptsetup@crypted_root.service" ];
+          before = [ "sysroot.mount" ];
+          unitConfig.DefaultDependencies = "no";
+          serviceConfig.Type = "oneshot";
+          script = cleanup;
         };
         kernelParams = [
           "quiet"
