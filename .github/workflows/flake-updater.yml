@@ -234,6 +234,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           token: "${{ secrets.TEST_TOKEN }}"
+          fetch-depth: 0
 
       - name: Restore flake.lock
         uses: actions/download-artifact@v7
@@ -257,15 +258,12 @@ jobs:
           git config user.email "gako.footwork856@passinbox.com"
           git config user.name "Gako358"
 
-      - name: Assemble PR body
+      - name: Write update summary
         env:
-          MAX_BODY_BYTES: 63000
           MAX_HOST_DIFF_LINES: 150
         run: |
           {
             echo "Automatic flake update on $(date -I)."
-            echo ""
-            echo "Review the per-host package changes below before merging."
             echo ""
             echo "## Input changes"
             echo ""
@@ -291,32 +289,15 @@ jobs:
               echo "</details>"
               echo ""
             done
-          } > pr-body.md
+          } >> "$GITHUB_STEP_SUMMARY"
 
-          # Final safety net: hard-truncate the whole body if it still overflows.
-          if [ "$(wc -c < pr-body.md)" -gt "$MAX_BODY_BYTES" ]; then
-            note=$'\n\n_… PR body truncated to stay under GitHub'"'"'s size limit; see the closure-diff-* artifacts for full diffs._\n'
-            keep=$(( MAX_BODY_BYTES - ${#note} ))
-            head -c "$keep" pr-body.md > pr-body.trimmed
-            printf '%s' "$note" >> pr-body.trimmed
-            mv pr-body.trimmed pr-body.md
-          fi
-
-      - name: Create PR
+      - name: Rebase onto main and push
         run: |
-          git switch -c updates-${{ github.run_id }}
           if git diff --quiet flake.lock; then
-            echo "No changes to flake.lock, skipping PR"
+            echo "No changes to flake.lock, skipping push"
             exit 0
           fi
-          git commit -am "flake.lock: Update"
-          git push -u origin updates-${{ github.run_id }}
-          gh pr create \
-            --assignee Gako358 \
-            --base main \
-            --body-file pr-body.md \
-            --label bot \
-            --title "Auto update $(date -I)"
-        env:
-          GITHUB_TOKEN: ${{ secrets.TEST_TOKEN }}
+          { echo "flake.lock: Update"; echo ""; cat flake-update.log; } | git commit -F - flake.lock
+          git pull --rebase origin main
+          git push origin HEAD:main
 
