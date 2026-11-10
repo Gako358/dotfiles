@@ -48,7 +48,10 @@ in
   };
 
   # Modules loaded
-  program.qemu.enable = true;
+  program = {
+    obs.enable = true;
+    qemu.enable = true;
+  };
 
   service = {
     sops.emergencyKeyFile = "/etc/sops/age/keys.txt";

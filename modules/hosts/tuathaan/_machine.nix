@@ -47,6 +47,8 @@ in
     ];
   };
   # Modules loaded
+  program.obs.enable = true;
+
   system = {
     disks.extraStoreDisk.enable = false;
     bluetooth.enable = true;

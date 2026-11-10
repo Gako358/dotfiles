@@ -332,6 +332,7 @@
           hl.bind(k(mainMod, "W"),                    hl.dsp.exec_cmd("qs -c bivrost ipc call wallpaper toggle"))
           hl.bind(k(mainMod, "Escape"),               hl.dsp.exec_cmd("qs -c bivrost ipc call session toggle"))
           hl.bind(k(mainMod, SECONDARY, "P"),         hl.dsp.exec_cmd(runOnce("grimblast --notify copy area")))
+          ${lib.optionalString osConfig.program.obs.enable ''hl.bind(k(mainMod, SECONDARY, "R"),         hl.dsp.exec_cmd("${osConfig.program.obs.recorder}/bin/obs-record toggle"))''}
 
           -- Special workspace
           hl.bind(k(mainMod, SECONDARY, "T"),         hl.dsp.window.move({ workspace = "special" }))

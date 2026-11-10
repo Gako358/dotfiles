@@ -4,6 +4,7 @@
   lib,
   grim,
   battery ? false,
+  obsRecord ? null,
 }:
 ''
   import QtQuick
@@ -64,6 +65,32 @@
           triggeredOnStart: true
           onTriggered: barNetProc.running = true
       }
+
+      ${lib.optionalString (obsRecord != null) ''
+        // ── OBS recording state ─────────────────────────────────────
+        property string recState: "idle"
+
+        Process {
+            id: recStatusProc
+            command: ["${obsRecord}/bin/obs-record", "status"]
+            stdout: StdioCollector { id: recStatusOut }
+            onExited: bar.recState = (recStatusOut.text || "").trim() || "idle"
+        }
+
+        Process {
+            id: recToggleProc
+            command: ["${obsRecord}/bin/obs-record", "toggle"]
+            onExited: recStatusProc.running = true
+        }
+
+        Timer {
+            running: bar.isFocused
+            repeat: true
+            interval: 2000
+            triggeredOnStart: true
+            onTriggered: recStatusProc.running = true
+        }
+      ''}
 
       // ── Workspace clients (for hover preview) ────────────────────
       property var clientsByWs: ({})
@@ -521,6 +548,70 @@
               spacing: 2
               visible: bar.isFocused
 
+              ${lib.optionalString (obsRecord != null) ''
+                // ── OBS recording indicator (click to stop) ─────────
+                Item {
+                    id: recItem
+                    visible: bar.recState !== "idle"
+                    width: recRow.implicitWidth + 16
+                    height: 42
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 6
+                        color: recHover.hovered
+                            ? "${ca "base08" "33"}"
+                            : "transparent"
+                        Behavior on color { ColorAnimation { duration: 120 } }
+                        HoverHandler { id: recHover }
+
+                        Row {
+                            id: recRow
+                            anchors.centerIn: parent
+                            spacing: 6
+
+                            Rectangle {
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 10
+                                height: 10
+                                radius: 5
+                                color: bar.recState === "paused"
+                                    ? "${c "base0A"}"
+                                    : "${c "base08"}"
+                                SequentialAnimation on opacity {
+                                    running: recItem.visible && bar.recState === "recording"
+                                    loops: Animation.Infinite
+                                    alwaysRunToEnd: true
+                                    NumberAnimation { to: 0.3; duration: 700 }
+                                    NumberAnimation { to: 1.0; duration: 700 }
+                                }
+                            }
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: bar.recState === "paused" ? "PAUSED" : "REC"
+                                font.family: "RobotoMono Nerd Font"
+                                font.pixelSize: 11
+                                font.weight: Font.Bold
+                                color: "${c "base05"}"
+                            }
+                        }
+                    }
+
+                    ToolTip {
+                        visible: recHover.hovered
+                        delay: 600
+                        text: "Stop recording"
+                        font.family: "RobotoMono Nerd Font"
+                        font.pixelSize: 11
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: recToggleProc.running = true
+                    }
+                }
+              ''}
               // ── Win11-style system tray corner ───────────────────
               // Shows up to 4 tray icons in a 2×2 grid, click to open
               // the full tray panel. Styled like Win11's corner icons.

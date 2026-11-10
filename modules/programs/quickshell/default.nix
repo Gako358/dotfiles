@@ -34,6 +34,7 @@ _: {
         inherit c ca lib;
         inherit (pkgs) grim;
         battery = cfg.battery.enable;
+        obsRecord = if osConfig.program.obs.enable then osConfig.program.obs.recorder else null;
       };
       dashboardQml = import ./_dashboard.nix {
         inherit c ca lib;
