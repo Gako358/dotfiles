@@ -21,6 +21,7 @@ _: {
 
         xdg.configFile = {
           "discord/settings.json" = {
+            force = true;
             text = ''
               {
                 "SKIP_HOST_UPDATE": true
