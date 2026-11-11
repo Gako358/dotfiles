@@ -35,6 +35,8 @@ _: {
         leetcode = "Projects/leetcode";
         Masterplan = "Projects/Masterplan";
         Merrinxui = "Projects/merrinxui";
+        Merrinxui-auctioneer = "Projects/merrinxui-auctioneer";
+        Merrinxui-layerhop = "Projects/merrinxui-layerhop";
         mXoverlay = "Projects/mXoverlay";
         mxgitbucket = "Projects/mxgitbucket";
         neovim = "Projects/neovim";
