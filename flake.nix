@@ -55,6 +55,7 @@
         systems.follows = "hyprland/systems";
       };
     };
+    hyprfm.url = "github:soyeb-jim285/hyprfm";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";

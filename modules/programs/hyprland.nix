@@ -326,7 +326,7 @@
           hl.bind(k(mainMod, "B"),                    hl.dsp.exec_cmd(toggle("ghostty --title=btop -e btm")))
           hl.bind(k(mainMod, "R"),                    hl.dsp.exec_cmd(toggle("ghostty --title=ranger -e ranger")))
           hl.bind(k(mainMod, "S"),                    hl.dsp.exec_cmd(toggle("ghostty --title=spotify_player -e spotify_player")))
-          hl.bind(k(mainMod, SECONDARY, "D"),         hl.dsp.exec_cmd(runOnce("pcmanfm")))
+          hl.bind(k(mainMod, SECONDARY, "D"),         hl.dsp.exec_cmd(runOnce("hyprfm")))
           hl.bind(k(mainMod, SECONDARY, "L"),         hl.dsp.exec_cmd("qs -c bivrost ipc call lock lock"))
           hl.bind(k(mainMod, "A"),                    hl.dsp.exec_cmd("qs -c bivrost ipc call dashboard toggle"))
           hl.bind(k(mainMod, "W"),                    hl.dsp.exec_cmd("qs -c bivrost ipc call wallpaper toggle"))
@@ -396,7 +396,7 @@
               "nm-connection-editor",
               "Color Picker",
               "Network",
-              "pcmanfm",
+              "hyprfm",
               "com.github.flxzt.rnote",
               "xdg-desktop-portal",
               "xdg-desktop-portal-gnome",
