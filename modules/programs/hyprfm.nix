@@ -19,14 +19,21 @@ _: {
       ...
     }:
     {
-      home.packages = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") [
-        inputs.hyprfm.packages.${pkgs.stdenv.hostPlatform.system}.default
-        pkgs.exiftool
-        pkgs.ffmpeg
-        pkgs.libimobiledevice
-        pkgs.ntfs3g
-        pkgs.rclone
-        pkgs.usbmuxd
-      ];
+      home = lib.mkIf (osConfig.environment.desktop.windowManager == "hyprland") {
+        packages = [
+          inputs.hyprfm.packages.${pkgs.stdenv.hostPlatform.system}.default
+          pkgs.exiftool
+          pkgs.ffmpeg
+          pkgs.libimobiledevice
+          pkgs.ntfs3g
+          pkgs.rclone
+          pkgs.usbmuxd
+        ];
+        persistence."/persist/" = {
+          directories = [
+            ".config/hyprfm"
+          ];
+        };
+      };
     };
 }
