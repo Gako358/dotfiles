@@ -4,6 +4,9 @@ _: {
     {
       config = lib.mkIf (config.environment.desktop.windowManager == "hyprland") {
         services.usbmuxd.enable = true;
+        systemd.tmpfiles.rules = [
+          "L+ /usr/share/gvfs - - - - ${config.services.gvfs.package}/share/gvfs"
+        ];
       };
     };
 
