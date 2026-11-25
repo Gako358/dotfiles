@@ -52,23 +52,26 @@ _: {
           };
         })
         (lib.mkIf config.programs.merrinx-emacs.enable {
-          programs.merrinx-emacs.eca.nixMcp = {
-            enable = true;
-            roots = [
-              "${config.home.homeDirectory}/Projects/emacs-flake"
-              "${config.home.homeDirectory}/Sources/dotfiles"
-            ];
-            rootParents = [
-              "${config.home.homeDirectory}/Projects"
-            ];
-          };
-          programs.merrinx-emacs.eca.ghMcp = {
-            enable = true;
-            owners = [
-              "Gako358"
-              "Kvalitetsregistre-OQR"
-              "HNIKT-Tjenesteutvikling-Systemutvikling"
-            ];
+          programs.merrinx-emacs.eca = {
+            nixMcp = {
+              enable = true;
+              roots = [
+                "${config.home.homeDirectory}/Projects/emacs-flake"
+                "${config.home.homeDirectory}/Sources/dotfiles"
+              ];
+              rootParents = [
+                "${config.home.homeDirectory}/Projects"
+              ];
+            };
+            ghMcp = {
+              enable = true;
+              owners = [
+                "Gako358"
+                "Kvalitetsregistre-OQR"
+                "HNIKT-Tjenesteutvikling-Systemutvikling"
+              ];
+            };
+            reviewStandardsFile = "${config.home.homeDirectory}/Projects/emacs-flake/emacs/eca/skills/review-standards/SKILL.md";
           };
         })
       ];
